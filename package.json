@@ -35,7 +35,7 @@
 		"autoprefixer": "10.4.17",
 		"axios": "1.6.7",
 		"babel-runtime": "6.26.0",
-		"chai": "4.4.1",
+		"chai": "5.1.0",
 		"circular-dependency-plugin": "5.2.2",
 		"classnames": "2.5.1",
 		"dayjs": "1.11.10",
