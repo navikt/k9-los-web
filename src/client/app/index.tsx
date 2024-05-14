@@ -17,9 +17,6 @@ import '@navikt/ft-plattform-komponenter/dist/style.css';
 const environment = window.location.hostname;
 
 async function prepare() {
-	if (process.env.NODE_ENV !== 'production') {
-		return import('../mocks/browser').then(({ worker }) => worker.start({ onUnhandledRequest: 'bypass' }));
-	}
 	if (environment.includes('nav.no')) {
 		init({
 			dsn: 'https://ee88a0763c614159ba73dbae305f737e@sentry.gc.nav.no/38',

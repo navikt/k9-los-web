@@ -56,20 +56,6 @@ Nå kan du søke opp saksnummeret eller søkeren i k9-los-web. Dersom oppgaven m
    docker run -p 8031:8031 --env IS_VERDIKJEDE=true --env PORT=8031 --env PROXY_CONFIG='{"apis":[{"path":"/api/k9-los-api","url":"http://host.docker.internal:8020","scopes":"api://k9-los-web/.default", "backendPath":"/api"}]}' k9-los-web:din-valgfrie-tag
 ```
 
-##### Mock Service Worker
-
-MSW kan brukes til å enkelt mocke API-requests.
-Definer hvilket API som skal mockes og hva som skal returneres i handlers.js
-Kjør opp applikasjonen med følgende kommando for å bruke mockdata fra handlers.js
-Dette er mest nyttig dersom man skal teste en spesifikk case som er vanskelig å få til med ekte data.
-Ellers er det anbefalt å benytte verdikjede for å få mest mulig likt oppsett som i produksjon.
-
-```
-
-MSW_MODE=test yarn dev
-
-```
-
 #### Windows oppsett
 
 For att kjøre vtp som fungerer for LOS lokalt kan det hente att man må specifisere path til modig i docker-compose.

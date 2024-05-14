@@ -34,7 +34,6 @@ const config = {
 		}),
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.EnvironmentPlugin({
-			MSW_MODE: process.env.MSW_MODE || 'disabled',
 			SENTRY_RELEASE: '',
 		}),
 	],
