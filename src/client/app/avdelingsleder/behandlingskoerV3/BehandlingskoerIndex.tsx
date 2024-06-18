@@ -44,7 +44,7 @@ const Row = ({
 		>
 			<Table.DataCell scope="row">{kø.tittel}</Table.DataCell>
 			<Table.DataCell>{kø.antallSaksbehandlere || '0'}</Table.DataCell>
-			<Table.DataCell>{isLoading ? <Skeleton variant="text" /> : antallOppgaver || '-'}</Table.DataCell>
+			<Table.DataCell>{isLoading ? <Skeleton variant="text" /> : antallOppgaver ?? '-'}</Table.DataCell>
 			<Table.DataCell>{kø.sistEndret ? dayjs(kø.sistEndret).format('DD.MM.YYYY HH:mm') : '-'}</Table.DataCell>
 			<Table.DataCell>
 				<KopierKø kø={kø} />
