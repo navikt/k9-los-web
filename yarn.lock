@@ -2853,7 +2853,7 @@ __metadata:
     express-http-proxy: 2.0.0
     express-rate-limit: ^7.3.1
     helmet: 7.1.0
-    jose: 5.4.1
+    jose: 5.6.2
     morgan: 1.10.0
     node-cache: 5.1.2
     winston: 3.13.0
@@ -10975,10 +10975,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:5.4.1":
-  version: 5.4.1
-  resolution: "jose@npm:5.4.1"
-  checksum: 2084d237d243d41d0de1e291097e601ef63ae40dab707d21e7ef675e611d5408dd520dcf2982ec525c498592a3192d7ca5fa16cf098d60c334bbdd4d65c07237
+"jose@npm:5.6.2":
+  version: 5.6.2
+  resolution: "jose@npm:5.6.2"
+  checksum: 53201bc1b623561e78287a867b84edf4c73014023da1f48508cba4fcd0e808adcbc3fab5d6835c642a1bd43ad867e965a1a62a547f7ec661a98b780ac0a3c96b
   languageName: node
   linkType: hard
 
