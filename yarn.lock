@@ -2981,7 +2981,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/ds-tokens@npm:6.11.0, @navikt/ds-tokens@npm:^6.10.1, @navikt/ds-tokens@npm:^6.11.0":
+"@navikt/ds-tokens@npm:6.13.0":
+  version: 6.13.0
+  resolution: "@navikt/ds-tokens@npm:6.13.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F6.13.0%2F6704caca2fffee89abdce0207e5dfe00b875482f"
+  checksum: a5bb9b0d8b4867912ecac8f04d21119a649c7fe6d3d74ca18782c5b5bf749d0dab6a3de6fb261d63d00620fcbd40c2f26e8aedab27c50d6fa7acc4fb1d45200c
+  languageName: node
+  linkType: hard
+
+"@navikt/ds-tokens@npm:^6.10.1, @navikt/ds-tokens@npm:^6.11.0":
   version: 6.11.0
   resolution: "@navikt/ds-tokens@npm:6.11.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F6.11.0%2Fad1fc80e0934e1576e1c1f88a74eb52e40771e9b"
   checksum: 0a840cc9d5c4fe420a009124e951b6023b26363f8f63d16623399f183a882a734f7701acad98088ef440c96a3df5aa5fd3fbf3094deba7bf5675d332bc3182b1
@@ -11234,7 +11241,7 @@ __metadata:
     "@navikt/ds-icons": 3.4.3
     "@navikt/ds-react": 6.11.0
     "@navikt/ds-tailwind": 6.11.0
-    "@navikt/ds-tokens": 6.11.0
+    "@navikt/ds-tokens": 6.13.0
     "@navikt/familie-endringslogg": 12.0.2
     "@navikt/fnrvalidator": ^2.1.0
     "@navikt/ft-form-hooks": 4.4.11
