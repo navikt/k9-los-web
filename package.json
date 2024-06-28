@@ -113,7 +113,7 @@
 		"@babel/preset-react": "7.24.7",
 		"@babel/preset-typescript": "7.24.7",
 		"@babel/register": "7.24.6",
-		"@navikt/aksel-stylelint": "6.11.0",
+		"@navikt/aksel-stylelint": "6.13.0",
 		"@playwright/test": "1.44.1",
 		"@testing-library/react": "16.0.0",
 		"@trivago/prettier-plugin-sort-imports": "4.3.0",
