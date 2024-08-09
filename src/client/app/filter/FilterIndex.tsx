@@ -4,11 +4,12 @@ import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Download, Refresh, Search } from '@navikt/ds-icons';
 import { Alert, BodyShort, Button, Heading, Loader, ReadMore, Select, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
+import apiPaths from 'api/apiPaths';
 import { K9LosApiKeys, k9LosApi } from 'api/k9LosApi';
 import { useAlleKoer, useKo } from 'api/queries/avdelingslederQueries';
 import { REQUEST_POLLING_CANCELLED } from 'api/rest-api';
-import apiPaths from 'api/apiPaths';
 import { post } from 'utils/axios';
+import { AntallOppgaver } from './AntallOppgaver';
 import { FilterContext } from './FilterContext';
 import OppgaveQueryModel from './OppgaveQueryModel';
 import * as styles from './filterIndex.css';
@@ -17,9 +18,8 @@ import OppgaveQueryResultat from './parts/OppgaveQueryResultat';
 import OppgaveSelectFelter from './parts/OppgaveSelectFelter';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
 import { QueryFunction, addFilter, addGruppe, applyFunctions } from './queryUtils';
-import OppgaveOrderFelter from './sortering/OppgaveOrderFelter';
 import EnkelSortering from './sortering/EnkelSortering';
-import { AntallOppgaver } from './AntallOppgaver';
+import OppgaveOrderFelter from './sortering/OppgaveOrderFelter';
 
 interface OwnProps {
 	lagre?: (oppgaveQuery: OppgaveQuery) => void;

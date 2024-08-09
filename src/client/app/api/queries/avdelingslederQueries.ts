@@ -60,7 +60,7 @@ export const useSlettKøMutation = (callback?: () => void) => {
 	});
 };
 
-export const useOppdaterKøMutation = (callback) => {
+export const useOppdaterKøMutation = (callback: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation<OppgavekøV3, unknown, OppgavekøV3>(
 		(payload) => axiosInstance.post(`${apiPaths.oppdaterOppgaveko}`, { ...payload }).then((res) => res.data),

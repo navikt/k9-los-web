@@ -11,7 +11,6 @@ import FilterIndex from 'filter/FilterIndex';
 import { OppgaveQuery } from 'filter/filterTsTypes';
 import SearchWithDropdown from 'sharedComponents/searchWithDropdown/SearchWithDropdown';
 import { OppgavekøV3 } from 'types/OppgavekøV3Type';
-import LagreKoModal from './LagreKoModal';
 
 enum fieldnames {
 	TITTEL = 'tittel',
@@ -34,7 +33,6 @@ interface BehandlingsKoFormProps extends BaseProps {
 const BehandlingsKoForm = ({ kø, lukk, ekspandert, id }: BehandlingsKoFormProps) => {
 	const { versjon } = kø;
 	const [visFilterModal, setVisFilterModal] = useState(false);
-	const [visLagreModal, setVisLagreModal] = useState(false);
 	const [visSuksess, setVisSuksess] = useState(false);
 	const { saksbehandlere: alleSaksbehandlere } = useContext(AvdelingslederContext);
 	const defaultValues = {
@@ -50,9 +48,9 @@ const BehandlingsKoForm = ({ kø, lukk, ekspandert, id }: BehandlingsKoFormProps
 	});
 
 	const lagreMutation = useOppdaterKøMutation(() => {
-		setVisLagreModal(false);
 		setVisSuksess(true);
 	});
+
 	useEffect(() => {
 		formMethods.reset(defaultValues);
 	}, [ekspandert, versjon]);
@@ -69,12 +67,12 @@ const BehandlingsKoForm = ({ kø, lukk, ekspandert, id }: BehandlingsKoFormProps
 		label: saksbehandler.navn || saksbehandler.epost,
 		group: saksbehandler.enhet || manglerGruppering,
 	}));
-	const lagreOppgaveQuery = (oppgaveQuery: OppgaveQuery) => {
-		formMethods.setValue(fieldnames.OPPGAVE_QUERY, oppgaveQuery, { shouldDirty: true });
-		setVisFilterModal(false);
-	};
 	const onSubmit = (data) => {
 		lagreMutation.mutate(data);
+	};
+	const lagreIModal = (oppgaveQuery: OppgaveQuery) => {
+		onSubmit({ ...kø, ...formMethods.getValues(), oppgaveQuery });
+		setVisFilterModal(false);
 	};
 	const grupper = [...new Set(formaterteSaksbehandlere.map((oppgavekode) => oppgavekode.group))].sort();
 	const saksbehandlere = formMethods.watch(fieldnames.SAKSBEHANDLERE);
@@ -163,7 +161,7 @@ const BehandlingsKoForm = ({ kø, lukk, ekspandert, id }: BehandlingsKoFormProps
 					onClick={async () => {
 						const isValid = await formMethods.trigger();
 						if (isValid) {
-							setVisLagreModal(true);
+							onSubmit({ ...kø, ...formMethods.getValues() });
 						}
 					}}
 					disabled={!formMethods.formState.isDirty}
@@ -174,18 +172,17 @@ const BehandlingsKoForm = ({ kø, lukk, ekspandert, id }: BehandlingsKoFormProps
 					{formMethods.formState.isDirty ? 'Lukk uten å lagre' : 'Lukk'}
 				</Button>
 			</div>
-			<LagreKoModal
-				visLagreModal={visLagreModal}
-				setVisLagreModal={setVisLagreModal}
-				onSubmit={formMethods.handleSubmit((values) => onSubmit({ ...kø, ...values }))}
-				lagreMutation={lagreMutation}
-			/>
+			{lagreMutation.isError && (
+				<div>
+					<ErrorMessage>Noe gikk galt ved lagring av kø</ErrorMessage>
+				</div>
+			)}
 			{visFilterModal && (
 				<Modal open={visFilterModal} onClose={() => setVisFilterModal(false)} portal width={900}>
 					<Modal.Body className="flex flex-col min-h-[45rem]">
 						<FilterIndex
 							initialQuery={formMethods.watch(fieldnames.OPPGAVE_QUERY)}
-							lagre={lagreOppgaveQuery}
+							lagre={lagreIModal}
 							avbryt={() => setVisFilterModal(false)}
 							tittel="Kriterier for kø"
 							visningV3
