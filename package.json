@@ -14,7 +14,7 @@
 		"@formatjs/intl-datetimeformat": "6.12.5",
 		"@formatjs/intl-numberformat": "8.10.3",
 		"@navikt/aksel-icons": "6.14.0",
-		"@navikt/ds-css": "6.14.0",
+		"@navikt/ds-css": "6.15.0",
 		"@navikt/ds-icons": "3.4.3",
 		"@navikt/ds-react": "6.14.0",
 		"@navikt/ds-tailwind": "6.14.0",
