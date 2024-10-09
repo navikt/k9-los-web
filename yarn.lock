@@ -2170,6 +2170,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@formatjs/ecma402-abstract@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@formatjs/ecma402-abstract@npm:2.1.0"
+  dependencies:
+    "@formatjs/fast-memoize": "npm:2.2.0"
+    "@formatjs/intl-localematcher": "npm:0.5.4"
+    tslib: "npm:^2.4.0"
+  checksum: 10/8e25d2739c03913c61f0ec12a71ab7baf03386cff540e7470bee73e78e4fe9f09c9dfa860223f1177acdcfd0fa341041d25b2fe4e0a77e7209d0680831982bac
+  languageName: node
+  linkType: hard
+
 "@formatjs/fast-memoize@npm:2.2.0":
   version: 2.2.0
   resolution: "@formatjs/fast-memoize@npm:2.2.0"
@@ -2242,14 +2253,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/intl-numberformat@npm:8.10.3":
-  version: 8.10.3
-  resolution: "@formatjs/intl-numberformat@npm:8.10.3"
+"@formatjs/intl-numberformat@npm:8.11.0":
+  version: 8.11.0
+  resolution: "@formatjs/intl-numberformat@npm:8.11.0"
   dependencies:
-    "@formatjs/ecma402-abstract": "npm:2.0.0"
+    "@formatjs/ecma402-abstract": "npm:2.1.0"
     "@formatjs/intl-localematcher": "npm:0.5.4"
     tslib: "npm:^2.4.0"
-  checksum: 10/7044fdef3cd8c51f801304342a28f31fa9f82b37cd3388bd7f45bea5b54f259a1e38769d628db2f17a27fb9faa9d8316e1ab0afc9d9dc85cd865f2c142666eb3
+  checksum: 10/ca08753068ae375f9c1a6be871005fe64b758005aa54ae8c083ea9efa7ae023a06312031d1bf03b9f022005e3aba2796c1fc183efe0c172bd4eea562301aec91
   languageName: node
   linkType: hard
 
@@ -12087,7 +12098,7 @@ __metadata:
     "@babel/register": "npm:7.24.6"
     "@chromatic-com/storybook": "npm:^2.0.2"
     "@formatjs/intl-datetimeformat": "npm:6.12.5"
-    "@formatjs/intl-numberformat": "npm:8.10.3"
+    "@formatjs/intl-numberformat": "npm:8.11.0"
     "@grafana/faro-web-sdk": "npm:^1.10.2"
     "@grafana/faro-web-tracing": "npm:^1.10.2"
     "@navikt/aksel-icons": "npm:7.1.0"
