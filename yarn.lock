@@ -2850,7 +2850,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/ds-tokens@npm:7.1.0, @navikt/ds-tokens@npm:^7.1.0":
+"@navikt/ds-tokens@npm:7.2.1":
+  version: 7.2.1
+  resolution: "@navikt/ds-tokens@npm:7.2.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F7.2.1%2F0df577b32219208add6ca8646449fb558faad282"
+  checksum: 10/a8c506a07469fcd53a1c6caf41b3b2043d05809b7459f735f1f4d13b3551fa5e4c36f7eb2f6e6fa445a61363a37846c6a1eb7289170b352bc95cc46de402bc31
+  languageName: node
+  linkType: hard
+
+"@navikt/ds-tokens@npm:^7.1.0":
   version: 7.1.0
   resolution: "@navikt/ds-tokens@npm:7.1.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F7.1.0%2Fc03dd5e1c9656faf78474c65c9d2c9ee76143695"
   checksum: 10/7e477e6048e75ecffbe071e04fb480c846e552d91af760c7a4429cf6b7a52f6693644c4c4a7f546cdbe7baeecdd2108f17020f23e976de86a1c6a514e4ff25ad
@@ -12095,7 +12102,7 @@ __metadata:
     "@navikt/ds-css": "npm:7.1.0"
     "@navikt/ds-react": "npm:7.1.0"
     "@navikt/ds-tailwind": "npm:7.1.0"
-    "@navikt/ds-tokens": "npm:7.1.0"
+    "@navikt/ds-tokens": "npm:7.2.1"
     "@navikt/familie-endringslogg": "npm:13.1.4"
     "@navikt/fnrvalidator": "npm:^2.1.2"
     "@navikt/ft-form-hooks": "npm:5.1.1"
