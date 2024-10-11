@@ -171,7 +171,7 @@
     "prettier": "^3.3.3",
     "prop-types": "15.8.1",
     "storybook": "^8.3.4",
-    "stylelint": "15.11.0",
+    "stylelint": "16.10.0",
     "stylelint-config-prettier": "9.0.5",
     "stylelint-order": "6.0.4",
     "terser-webpack-plugin": "5.3.10",
