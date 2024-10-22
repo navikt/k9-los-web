@@ -28,7 +28,7 @@
     "@popperjs/core": "2.11.8",
     "@reach/combobox": "0.18.0",
     "@sentry/browser": "8.32.0",
-    "@sentry/cli": "^2.36.6",
+    "@sentry/cli": "^2.38.0",
     "@sentry/react": "^8.32.0",
     "axios": "1.7.7",
     "classnames": "2.5.1",
