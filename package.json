@@ -24,7 +24,7 @@
     "@navikt/fnrvalidator": "^2.1.2",
     "@navikt/ft-form-hooks": "5.1.1",
     "@navikt/ft-form-validators": "2.4.1",
-    "@navikt/ft-plattform-komponenter": "3.1.1",
+    "@navikt/ft-plattform-komponenter": "5.0.3",
     "@popperjs/core": "2.11.8",
     "@reach/combobox": "0.18.0",
     "@sentry/browser": "8.32.0",
