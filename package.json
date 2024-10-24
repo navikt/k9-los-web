@@ -17,7 +17,7 @@
     "@grafana/faro-web-tracing": "^1.10.2",
     "@navikt/aksel-icons": "7.1.0",
     "@navikt/ds-css": "7.1.0",
-    "@navikt/ds-react": "7.1.0",
+    "@navikt/ds-react": "7.4.0",
     "@navikt/ds-tailwind": "7.1.0",
     "@navikt/ds-tokens": "7.1.0",
     "@navikt/familie-endringslogg": "13.1.4",
