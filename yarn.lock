@@ -2037,16 +2037,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chromatic-com/storybook@npm:2.0.2":
-  version: 2.0.2
-  resolution: "@chromatic-com/storybook@npm:2.0.2"
+"@chromatic-com/storybook@npm:3.2.2":
+  version: 3.2.2
+  resolution: "@chromatic-com/storybook@npm:3.2.2"
   dependencies:
-    chromatic: "npm:^11.4.0"
+    chromatic: "npm:^11.15.0"
     filesize: "npm:^10.0.12"
     jsonfile: "npm:^6.1.0"
     react-confetti: "npm:^6.1.0"
     strip-ansi: "npm:^7.1.0"
-  checksum: 10/acd23f87072aaec2a4db174ec19b2479d9a0a4390f10ca804198f6453dce0c35055861bc19a4905fee97f8fd87e43b6c51fda7ce3e30bb355a2729af85f53440
+  peerDependencies:
+    storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
+  checksum: 10/71338edf56cdbc855074c78981f2e1612b364cd864fa99bbda5c0aad147769b9f476de2fd76816102fd504efc5c0c54ba559d5ac9e3828d53278fe7000863d54
   languageName: node
   linkType: hard
 
@@ -7040,9 +7042,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromatic@npm:^11.4.0":
-  version: 11.11.0
-  resolution: "chromatic@npm:11.11.0"
+"chromatic@npm:^11.15.0":
+  version: 11.20.0
+  resolution: "chromatic@npm:11.20.0"
   peerDependencies:
     "@chromatic-com/cypress": ^0.*.* || ^1.0.0
     "@chromatic-com/playwright": ^0.*.* || ^1.0.0
@@ -7055,7 +7057,7 @@ __metadata:
     chroma: dist/bin.js
     chromatic: dist/bin.js
     chromatic-cli: dist/bin.js
-  checksum: 10/5b1fd78af5b0c68b4a3d85f0886326c8bb790e3da7b69c8375a829cc9fa697c7d701d2ef2891109d0b9024102d402b163e5653b3f597d40d01baa74393ed4599
+  checksum: 10/9faaa07819abb3c9be8e2be479bcb6b9b47168fadad77a2d17828e74a786b7b4472fba25b0dbebc660b7f26c94736b5c77a0c116cc720e11521ed3f0e10febc8
   languageName: node
   linkType: hard
 
@@ -12136,7 +12138,7 @@ __metadata:
     "@babel/preset-react": "npm:7.25.9"
     "@babel/preset-typescript": "npm:7.26.0"
     "@babel/register": "npm:7.25.9"
-    "@chromatic-com/storybook": "npm:2.0.2"
+    "@chromatic-com/storybook": "npm:3.2.2"
     "@formatjs/intl-datetimeformat": "npm:6.16.5"
     "@formatjs/intl-numberformat": "npm:8.14.5"
     "@grafana/faro-web-sdk": "npm:1.12.2"
