@@ -100,7 +100,7 @@
     "@babel/preset-typescript": "7.26.0",
     "@babel/register": "7.25.9",
     "@chromatic-com/storybook": "2.0.2",
-    "@navikt/aksel-stylelint": "7.5.1",
+    "@navikt/aksel-stylelint": "7.7.0",
     "@playwright/test": "1.49.0",
     "@storybook/addon-essentials": "8.4.6",
     "@storybook/addon-interactions": "8.4.6",
