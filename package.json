@@ -99,7 +99,7 @@
 		"@babel/preset-react": "7.26.3",
 		"@babel/preset-typescript": "7.26.0",
 		"@babel/register": "7.25.9",
-		"@chromatic-com/storybook": "2.0.2",
+		"@chromatic-com/storybook": "3.2.2",
 		"@navikt/aksel-stylelint": "7.8.0",
 		"@playwright/test": "1.49.1",
 		"@storybook/addon-essentials": "8.4.7",
