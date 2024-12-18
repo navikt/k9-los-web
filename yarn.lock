@@ -3268,17 +3268,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/ft-form-hooks@npm:5.2.8":
-  version: 5.2.8
-  resolution: "@navikt/ft-form-hooks@npm:5.2.8::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-form-hooks%2F5.2.8%2F0a40ed0c0d4e49b2e87a758a701f7e0dba8477b3"
+"@navikt/ft-form-hooks@npm:5.2.9":
+  version: 5.2.9
+  resolution: "@navikt/ft-form-hooks@npm:5.2.9::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-form-hooks%2F5.2.9%2Fcf46cb1b0c0eed89e493f1fd2f1f6615a264590c"
   dependencies:
     "@navikt/aksel-icons": "npm:7.6.0"
     "@navikt/ds-css": "npm:7.6.0"
     "@navikt/ds-react": "npm:7.6.0"
-    "@navikt/ft-form-validators": "npm:^2.5.6"
-    "@navikt/ft-types": "npm:^2.5.10"
-    "@navikt/ft-ui-komponenter": "npm:^2.6.4"
-    "@navikt/ft-utils": "npm:^2.5.3"
+    "@navikt/ft-form-validators": "npm:^2.5.7"
+    "@navikt/ft-types": "npm:^2.5.11"
+    "@navikt/ft-ui-komponenter": "npm:^2.6.5"
+    "@navikt/ft-utils": "npm:^2.5.4"
     classnames: "npm:2.5.1"
     dayjs: "npm:1.11.13"
     lodash.throttle: "npm:4.1.1"
@@ -3299,38 +3299,38 @@ __metadata:
     react: 18.3.1
     react-dom: 18.3.1
     react-hook-form: 7.x
-  checksum: 10/057137e3668063e41b20ed5a986114a8b3049f08713b381439eeb46973539ee6f5d0d852842927cd18f04403fafca14fedfc7bb1dce9fdea0caf374f66aca21e
+  checksum: 10/2d0770a6e4a45c214572851670015ca4ea4313d9529f343a27fb58ef94a8792f1cd97c0424a556e29242e51ac32d4764ed8718525fb0ae5e7632b542c5e36b8b
   languageName: node
   linkType: hard
 
-"@navikt/ft-form-validators@npm:2.5.6, @navikt/ft-form-validators@npm:^2.5.6":
-  version: 2.5.6
-  resolution: "@navikt/ft-form-validators@npm:2.5.6::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-form-validators%2F2.5.6%2Fdac2694142ce643bbe2a0c02c11e2098860ff214"
+"@navikt/ft-form-validators@npm:2.5.7, @navikt/ft-form-validators@npm:^2.5.7":
+  version: 2.5.7
+  resolution: "@navikt/ft-form-validators@npm:2.5.7::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-form-validators%2F2.5.7%2F0af8c781da1a20344899153f988f7f9e405d9361"
   dependencies:
-    "@navikt/ft-utils": "npm:^2.5.3"
+    "@navikt/ft-utils": "npm:^2.5.4"
     dayjs: "npm:1.11.13"
   peerDependencies:
     "@navikt/ft-utils": 2.x
     dayjs: 1.11.x
-  checksum: 10/ec2f133d3fcead9b27569ffe934e28e176b8a328526419f80bffded9c214e0d0781b74c6dd7458306bb2885fb0b5ece022ca75542842d78e2161408fd9b3ef95
+  checksum: 10/fcfbfcb841859bb3e8a4f7a19e3a28a8dc912ff0850f8d97cdafcf9c2190a4c4029e52400ee473a4a89f2cca58f2642a21f64cafdbd77d846f7774b6a34a41a5
   languageName: node
   linkType: hard
 
-"@navikt/ft-kodeverk@npm:^2.5.9":
-  version: 2.5.9
-  resolution: "@navikt/ft-kodeverk@npm:2.5.9::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-kodeverk%2F2.5.9%2F93ba5d5f5d9a307112345ac47c8faf299ae75114"
-  checksum: 10/923315096fdc241a7031dd75f7894cf6f438b41e70ec0cb1023b98f10446475df66dd3629cfb7ec42491b0e7509e7ef4ebd8634a9d43bc420556fc90b2576584
+"@navikt/ft-kodeverk@npm:^2.5.10":
+  version: 2.5.10
+  resolution: "@navikt/ft-kodeverk@npm:2.5.10::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-kodeverk%2F2.5.10%2Fffefe1b726f8d529490d8dd589d0879d1d0b55f5"
+  checksum: 10/3fd07fc703ec66d26248db491c63a657901068b4c2956f1c3c72efef9cea3d45b745a44dd86b75a0856a25ba90b256b66b8f622533e5fd63869845f25f090f63
   languageName: node
   linkType: hard
 
-"@navikt/ft-plattform-komponenter@npm:5.1.5":
-  version: 5.1.5
-  resolution: "@navikt/ft-plattform-komponenter@npm:5.1.5::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-plattform-komponenter%2F5.1.5%2Fe7f29189cb616183d9ed54696574d932d0a416d7"
+"@navikt/ft-plattform-komponenter@npm:5.3.0":
+  version: 5.3.0
+  resolution: "@navikt/ft-plattform-komponenter@npm:5.3.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-plattform-komponenter%2F5.3.0%2F1eb1fe81f102e4c8421cb6869e66e28fd7703ba8"
   dependencies:
     "@navikt/aksel-icons": "npm:7.6.0"
     "@navikt/ds-css": "npm:7.6.0"
     "@navikt/ds-react": "npm:7.6.0"
-    "@navikt/ft-utils": "npm:^2.5.3"
+    "@navikt/ft-utils": "npm:^2.5.4"
     classnames: "npm:2.5.1"
   peerDependencies:
     "@navikt/aksel-icons": 7.x
@@ -3343,29 +3343,29 @@ __metadata:
     react: 18.3.1
     react-dom: 18.3.1
     react-popper: 2.3.0
-  checksum: 10/5fdeea90cad7bdcbf1ab079133b6d26af95ecf1f9b521fdabf4b8194472acd59ac0eb7da792e775cd5c87ab7349ab0553fb40fec82d768fe1c2868b7255ca515
+  checksum: 10/0c3b7731efccf38dc43ab9d34682a8f18ef2008f5a2d54c637ee0634a8a6c5bdb2b7ddff7c394ed4cbc1a46588a898b3a28ff91c84267a6e46bd402a0f37b047
   languageName: node
   linkType: hard
 
-"@navikt/ft-types@npm:^2.5.10":
-  version: 2.5.10
-  resolution: "@navikt/ft-types@npm:2.5.10::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-types%2F2.5.10%2F2c4c0d7f82f421a5ee75b7861d7ced0178ee198c"
+"@navikt/ft-types@npm:^2.5.11":
+  version: 2.5.11
+  resolution: "@navikt/ft-types@npm:2.5.11::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-types%2F2.5.11%2F86a1c77684ee0b46de259d925016bf923aaa71cb"
   dependencies:
-    "@navikt/ft-kodeverk": "npm:^2.5.9"
+    "@navikt/ft-kodeverk": "npm:^2.5.10"
   peerDependencies:
     "@navikt/ft-kodeverk": 2.x
-  checksum: 10/1042fedb075555c2ff8f669ce19147f1b06f96b929e78a004e5437d6fd4c7cdee97ed0d5f9c18e5c6ddc3bae373ee6852b544db5d05f35984e782576520f546a
+  checksum: 10/b44c007caf6d19b1b4b48971d9a5b95025512d57d405b62137b8c9ea94155821245911513ea4365cb254bb3ea977769c9da2e8a95fe16412910b719a0ff8ca55
   languageName: node
   linkType: hard
 
-"@navikt/ft-ui-komponenter@npm:^2.6.4":
-  version: 2.6.4
-  resolution: "@navikt/ft-ui-komponenter@npm:2.6.4::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-ui-komponenter%2F2.6.4%2F4308b363a7ba78c67b909b521955d520e244b61f"
+"@navikt/ft-ui-komponenter@npm:^2.6.5":
+  version: 2.6.5
+  resolution: "@navikt/ft-ui-komponenter@npm:2.6.5::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-ui-komponenter%2F2.6.5%2F89773ecf93f9e09be944099c4701c88ab51d468c"
   dependencies:
     "@navikt/aksel-icons": "npm:7.6.0"
     "@navikt/ds-css": "npm:7.6.0"
     "@navikt/ds-react": "npm:7.6.0"
-    "@navikt/ft-utils": "npm:^2.5.3"
+    "@navikt/ft-utils": "npm:^2.5.4"
     classnames: "npm:2.5.1"
     react: "npm:18.3.1"
     react-dom: "npm:18.3.1"
@@ -3381,16 +3381,16 @@ __metadata:
     react-dom: 18.3.1
     react-intl: 6.x
     react-modal: 3.16.1
-  checksum: 10/11b596cab99c4a004310715411a9dc9a9da0927c3ae896abaed8cc533c6f2f58a99e8df4b6d452e6484a9f55cd001947fcd5111563d2a773025344099f848fa7
+  checksum: 10/ae40868bab188baaf336e776e8534afce1c800398121e731b715e7ad5e9c048e630ebaec0ad81eeca32a1772064e94464fc5a70b5bbd77202b31d2d23971cf85
   languageName: node
   linkType: hard
 
-"@navikt/ft-utils@npm:^2.5.3":
-  version: 2.5.3
-  resolution: "@navikt/ft-utils@npm:2.5.3::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-utils%2F2.5.3%2F18310735929cd365ef9db341a1d9cb148e18963c"
+"@navikt/ft-utils@npm:^2.5.4":
+  version: 2.5.4
+  resolution: "@navikt/ft-utils@npm:2.5.4::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-utils%2F2.5.4%2F0db1239a265a5f97b5bf8dd2823dd2c53708b379"
   dependencies:
-    "@navikt/ft-kodeverk": "npm:^2.5.9"
-    "@navikt/ft-types": "npm:^2.5.10"
+    "@navikt/ft-kodeverk": "npm:^2.5.10"
+    "@navikt/ft-types": "npm:^2.5.11"
     dayjs: "npm:1.11.13"
     react-intl: "npm:7.0.1"
   peerDependencies:
@@ -3399,7 +3399,7 @@ __metadata:
     dayjs: 1.11.x
     react: "*"
     react-intl: 6.x
-  checksum: 10/f939d1f64e53d09acb64852540b8f04132c3ad411b235d3a87a2c390e2e22d5faf9b664527fe1dcd07680e81977593fd88b3f5bea0fd42e771af83b712e43e3e
+  checksum: 10/efdecf9fd7af958174fe85b7595b771a138bc0469a50b82bfe1f097d5766e03846e2f5b745840f02e88412d993ceb443c127c9a4caab7c57d52566b5b6d8f833
   languageName: node
   linkType: hard
 
@@ -12332,9 +12332,9 @@ __metadata:
     "@navikt/ds-tokens": "npm:7.8.0"
     "@navikt/familie-endringslogg": "npm:13.1.4"
     "@navikt/fnrvalidator": "npm:2.1.5"
-    "@navikt/ft-form-hooks": "npm:5.2.8"
-    "@navikt/ft-form-validators": "npm:2.5.6"
-    "@navikt/ft-plattform-komponenter": "npm:5.1.5"
+    "@navikt/ft-form-hooks": "npm:5.2.9"
+    "@navikt/ft-form-validators": "npm:2.5.7"
+    "@navikt/ft-plattform-komponenter": "npm:5.3.0"
     "@playwright/test": "npm:1.49.1"
     "@popperjs/core": "npm:2.11.8"
     "@reach/combobox": "npm:0.18.0"
