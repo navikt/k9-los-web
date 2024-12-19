@@ -12,7 +12,13 @@ proxyRedirects:
     scope: "api://prod-fss.k9saksbehandling.k9-los-api/.default"
     url: "https://k9-los-api.prod-fss-pub.nais.io"
     backendPath: "/forvaltning"
-
+resources:
+  limits:
+    cpu: 500m
+    memory: 200Mi
+  requests:
+    cpu: 50m
+    memory: 100Mi
 observability:
   autoInstrumentation:
     enabled: true
