@@ -3174,10 +3174,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/aksel-stylelint@npm:7.8.0":
-  version: 7.8.0
-  resolution: "@navikt/aksel-stylelint@npm:7.8.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Faksel-stylelint%2F7.8.0%2F16b5e2b12726412cbc4eee4d8f529c5e16840e30"
-  checksum: 10/ad7ce00429db55cc7d1b3e575af19521c23c6d6ccb755103fef932c80753f8b72858a88bee2f32633a2768cd60b2c846a28d018f1d578ea7a3f3407f4c82b542
+"@navikt/aksel-stylelint@npm:7.8.1":
+  version: 7.8.1
+  resolution: "@navikt/aksel-stylelint@npm:7.8.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Faksel-stylelint%2F7.8.1%2F6c3e6606b9d75c7a46a68b7ae30f87d0512bfba1"
+  checksum: 10/dd9e000d9784aa49b498f1c76facd5e578ab64491e85a1b79483fed90bb90aa19a9b0025ce585f060c7facaa1d2ae86d3df3efee03839890f525576e59730e20
   languageName: node
   linkType: hard
 
@@ -12325,7 +12325,7 @@ __metadata:
     "@grafana/faro-web-sdk": "npm:1.12.2"
     "@grafana/faro-web-tracing": "npm:1.12.2"
     "@navikt/aksel-icons": "npm:7.8.0"
-    "@navikt/aksel-stylelint": "npm:7.8.0"
+    "@navikt/aksel-stylelint": "npm:7.8.1"
     "@navikt/ds-css": "npm:7.8.0"
     "@navikt/ds-react": "npm:7.8.0"
     "@navikt/ds-tailwind": "npm:7.8.0"
