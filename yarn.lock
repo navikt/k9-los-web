@@ -3337,9 +3337,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/ft-plattform-komponenter@npm:5.3.0":
-  version: 5.3.0
-  resolution: "@navikt/ft-plattform-komponenter@npm:5.3.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-plattform-komponenter%2F5.3.0%2F1eb1fe81f102e4c8421cb6869e66e28fd7703ba8"
+"@navikt/ft-plattform-komponenter@npm:5.3.1":
+  version: 5.3.1
+  resolution: "@navikt/ft-plattform-komponenter@npm:5.3.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fft-plattform-komponenter%2F5.3.1%2Ff1c9955a24f1c1088233f5089324a60a3d466cf3"
   dependencies:
     "@navikt/aksel-icons": "npm:7.6.0"
     "@navikt/ds-css": "npm:7.6.0"
@@ -3356,8 +3356,7 @@ __metadata:
     prop-types: 15.8.1
     react: 18.3.1
     react-dom: 18.3.1
-    react-popper: 2.3.0
-  checksum: 10/0c3b7731efccf38dc43ab9d34682a8f18ef2008f5a2d54c637ee0634a8a6c5bdb2b7ddff7c394ed4cbc1a46588a898b3a28ff91c84267a6e46bd402a0f37b047
+  checksum: 10/aa90125cac11e1fd13336249d03d19abc5205cfc2d8ac9808ee7ddee1c94af9aa4bb4c545035d288b80051ba8ada4b301692f27b89c420b677f4fc52c8bb643b
   languageName: node
   linkType: hard
 
@@ -12729,7 +12728,7 @@ __metadata:
     "@navikt/fnrvalidator": "npm:2.1.5"
     "@navikt/ft-form-hooks": "npm:5.2.9"
     "@navikt/ft-form-validators": "npm:2.5.7"
-    "@navikt/ft-plattform-komponenter": "npm:5.3.0"
+    "@navikt/ft-plattform-komponenter": "npm:5.3.1"
     "@playwright/test": "npm:1.49.1"
     "@popperjs/core": "npm:2.11.8"
     "@reach/combobox": "npm:0.18.0"
