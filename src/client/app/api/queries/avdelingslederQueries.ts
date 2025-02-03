@@ -1,4 +1,11 @@
-import { DefaultError, UseQueryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+	DefaultError,
+	UseMutationOptions,
+	UseQueryOptions,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
@@ -152,20 +159,30 @@ export const useKo = (id: string, options?: Omit<UseQueryOptions<OppgavekøV3>, 
 	});
 
 export const useHentDagensTall = () =>
-	useQuery<{
-		oppdatertTidspunkt: string;
-		hovedgrupper: [{ kode: string; navn: string }];
-		undergrupper: [{ kode: string; navn: string }];
-		tall: [
-			{
-				hovedgruppe: string;
-				undergruppe: string;
-				nyeIDag: number;
-				ferdigstilteIDag: number;
-				nyeSiste7Dager: number;
-				ferdigstilteSiste7Dager: number;
-			},
-		];
-	}>({
+	useQuery<
+		| {
+				oppdatertTidspunkt: string;
+				hovedgrupper: [{ kode: string; navn: string }];
+				undergrupper: [{ kode: string; navn: string }];
+				tall: [
+					{
+						hovedgruppe: string;
+						undergruppe: string;
+						nyeIDag: number;
+						ferdigstilteIDag: number;
+						nyeSiste7Dager: number;
+						ferdigstilteSiste7Dager: number;
+					},
+				];
+		  }
+		| { feilmelding: string }
+	>({
 		queryKey: [apiPaths.hentDagensTall],
+		refetchInterval: 10000,
+	});
+
+export const useOppdaterDagensTall = (onSuccess: UseMutationOptions['onSuccess']) =>
+	useMutation({
+		mutationFn: () => axiosInstance.post(apiPaths.oppdaterDagensTall),
+		onSuccess,
 	});
