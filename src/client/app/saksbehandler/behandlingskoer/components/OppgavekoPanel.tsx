@@ -37,9 +37,14 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 		resetRequestData,
 	} = useRestApiRunner<Oppgave>(K9LosApiKeys.FÅ_OPPGAVE_FRA_KO);
 
-	const { mutate, error } = usePlukkOppgaveMutation((oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkelDto);
-		window.location.assign(oppgave.oppgavebehandlingsUrl);
+	const { mutate } = usePlukkOppgaveMutation(async (reservasjoner) => {
+		if (reservasjoner.length > 0) {
+			const { oppgaveNøkkelDto, oppgavebehandlingsUrl } = reservasjoner[0];
+			await leggTilBehandletOppgave(oppgaveNøkkelDto);
+			window.location.assign(oppgavebehandlingsUrl);
+		} else {
+			setVisFinnesIngenBehandlingerIKoModal(true);
+		}
 	});
 
 	useEffect(() => {
@@ -53,12 +58,6 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 			resetRequestData();
 		}
 	}, [restApiState, restApiError]);
-
-	useEffect(() => {
-		if (error && error.toString().includes('404')) {
-			setVisFinnesIngenBehandlingerIKoModal(true);
-		}
-	}, [error]);
 
 	const plukkNyOppgave = () => {
 		if (!erKoV3(valgtOppgavekoId)) {
