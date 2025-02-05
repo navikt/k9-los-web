@@ -23,14 +23,14 @@ interface OwnProps {
  */
 
 export const RadioOption: FunctionComponent<OwnProps> = ({
-	name,
-	className,
+	name = '',
+	className = '',
 	label,
 	value,
 	actualValue,
 	disabled,
 	groupDisabled,
-	onChange,
+	onChange = () => undefined,
 	children,
 	style,
 	manualHideChildren,
@@ -52,15 +52,6 @@ export const RadioOption: FunctionComponent<OwnProps> = ({
 			{(checked || manualHideChildren) && children}
 		</div>
 	);
-};
-
-RadioOption.defaultProps = {
-	name: '',
-	className: '',
-	disabled: false,
-	groupDisabled: false,
-	onChange: () => undefined,
-	manualHideChildren: false,
 };
 
 RadioOption.displayName = 'RadioOption';

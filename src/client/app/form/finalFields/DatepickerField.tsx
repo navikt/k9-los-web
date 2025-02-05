@@ -53,10 +53,10 @@ interface OwnProps {
  */
 const DatepickerField: FunctionComponent<OwnProps> = ({
 	name,
-	label,
+	label = '',
 	readOnly,
-	format,
-	parse,
+	format = (value) => value,
+	parse = (value) => value,
 	isEdited,
 	validate,
 	...otherProps
@@ -75,13 +75,5 @@ const DatepickerField: FunctionComponent<OwnProps> = ({
 		isEdited={isEdited}
 	/>
 );
-
-DatepickerField.defaultProps = {
-	label: '',
-	readOnly: false,
-	isEdited: false,
-	format: (value) => value,
-	parse: (value) => value,
-};
 
 export default DatepickerField;

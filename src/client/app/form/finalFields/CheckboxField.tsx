@@ -48,9 +48,5 @@ const CheckboxField: FunctionComponent<OwnProps> = ({ name, label, validate, rea
 	/>
 );
 
-CheckboxField.defaultProps = {
-	validate: null,
-	readOnly: false,
-};
 
 export default CheckboxField;
