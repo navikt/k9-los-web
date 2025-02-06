@@ -102,10 +102,9 @@ export const usePlukkOppgaveMutation = (callback?: (oppgave: ReservasjonV3FraKø
 	return useMutation({
 		mutationFn: (data: { oppgaveKøId: string }): Promise<ReservasjonV3FraKøDto[]> =>
 			axiosInstance.post(`${apiPaths.hentOppgaveFraKoV3(data.oppgaveKøId)}`, data).then((response) => response.data),
-		onSuccess: async (data: ReservasjonV3FraKøDto[] | ReservasjonV3FraKøDto) => {
-			const array = Array.isArray(data) ? data : [data]; // Midlertidig, for å slippe å deploye backend og frontend helt samtidig
-			if (callback) callback(array);
-			if (array.length > 0) {
+		onSuccess: async (data: ReservasjonV3FraKøDto[]) => {
+			if (callback) callback(data);
+			if (data.length > 0) {
 				await queryClient.refetchQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] });
 			}
 		},
