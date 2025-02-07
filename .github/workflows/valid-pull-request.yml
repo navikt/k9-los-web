@@ -47,8 +47,6 @@ jobs:
         if: ${{github.actor != 'dependabot[bot]'}}
         with:
           build-version: ${{ github.sha }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           push-image: 'false'
           upload-image: 'true'
           docker_platforms: 'linux/amd64'
