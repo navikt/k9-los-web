@@ -70,3 +70,6 @@ C:/Users/xxxxxxx/.modig:/app/.modig
 ### For NAV-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen **#k9-los**.
+
+## Kode generert av GitHub Copilot
+Dette repoet bruker GitHub Copilot til å generere kode.
