@@ -15,15 +15,12 @@ import { erKoV3, getKoId } from '../utils';
 import OppgavekoVelgerForm from './OppgavekoVelgerForm';
 import * as styles from './oppgavekoPanel.css';
 import OppgaverTabell from './oppgavetabeller/OppgaverTabell';
-import { OppgavetabellV3Container } from './oppgavetabeller/OppgavetabellV3Container';
+import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
 
 interface OwnProps {
 	apneOppgave: (oppgave: Oppgave) => void;
 }
 
-/**
- * OppgavekoPanel
- */
 const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 	const [visBehandlingerIKo, setVisBehandlingerIKo] = useState<boolean>(false);
 	const [loadingOppgaveFraKo, setLoadingOppgaveFraKo] = useState<boolean>(false);
@@ -126,7 +123,11 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 
 				{visBehandlingerIKo &&
 					valgtOppgaveko &&
-					(erKoV3(valgtOppgaveko.id) ? <OppgavetabellV3Container /> : <OppgaverTabell valgtKo={valgtOppgaveko} />)}
+					(erKoV3(valgtOppgaveko.id) ? (
+						<OppgavetabellV3 køId={valgtOppgavekoId} />
+					) : (
+						<OppgaverTabell valgtKo={valgtOppgaveko} />
+					))}
 			</div>
 		</div>
 	);
