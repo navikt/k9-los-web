@@ -6,8 +6,7 @@ on:
       - '.gitignore'
       - 'CODEOWNERS'
       - 'LICENCE'
-      - 'e2e/**'
-      - '.github/workflows/e2e-docker-image.yml'
+
     branches:
       - master
 
@@ -56,8 +55,6 @@ jobs:
         with:
           tag: 'latest'
           team: k9saksbehandling
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: Deploy k9-los-web til dev
         uses: nais/deploy/actions/deploy@v2
@@ -86,8 +83,8 @@ jobs:
       packages: read
     uses: navikt/sif-gha-workflows/.github/workflows/verdikjede-test-v2.yml@main
     with:
-      tag: ${{ needs.build-and-deploy.outputs.image_version }}
       suites: 'frontend-los'
+      tag: ${{ needs.build-and-deploy.outputs.image_version}}
       image_version: ${{ needs.build-and-deploy.outputs.image_version}}
 
   compare-url-prod:
@@ -113,7 +110,6 @@ jobs:
       contents: write
     if: github.ref_name == 'master'
     environment: prod-gcp:k9saksbehandling
-    concurrency: prod-gcp:k9saksbehandling
     needs: [verdikjede-tester, build-and-deploy, compare-url-prod]
     runs-on: ubuntu-latest
     steps:

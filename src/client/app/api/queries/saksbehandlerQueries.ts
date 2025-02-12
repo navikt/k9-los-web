@@ -9,9 +9,9 @@ import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
 import EndreOppgaveType from 'types/EndreOppgaveType';
+import { NesteOppgaverFraKoDto } from 'types/NesteOppgaverFraKoDto';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
-import OppgaveV3 from 'types/OppgaveV3';
-import { OppgavekøV3, OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
+import { OppgavekøV3 } from 'types/OppgavekøV3Type';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 export const useInnloggetSaksbehandler = (options?: Omit<UseQueryOptions<NavAnsatt, Error>, 'queryKey'>) =>
@@ -45,11 +45,11 @@ export const useAlleSaksbehandlerKoerV3 = (options?: Omit<UseQueryOptions<Oppgav
 		...options,
 	});
 
-export const useSaksbehandlerNesteTiV3 = (
+export const useNesteOppgaverFraKø = (
 	id: string,
-	options?: Omit<UseQueryOptions<OppgaveV3[], Error>, 'queryKey'>,
+	options?: Omit<UseQueryOptions<NesteOppgaverFraKoDto, Error>, 'queryKey'>,
 ) =>
-	useQuery<OppgaveV3[], Error, OppgaveV3[]>({
+	useQuery<NesteOppgaverFraKoDto, Error, NesteOppgaverFraKoDto>({
 		queryKey: [apiPaths.hentTiNesteIKoV3(id)],
 		...options,
 	});
@@ -96,16 +96,17 @@ export const useEndreReservasjoner = (onSuccess?: () => void) => {
 		},
 	});
 };
-export const usePlukkOppgaveMutation = (callback?: (oppgave: ReservasjonV3FraKøDto) => void) => {
+export const usePlukkOppgaveMutation = (callback?: (oppgave: ReservasjonV3FraKøDto[]) => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (data: { oppgaveKøId: string }): Promise<ReservasjonV3FraKøDto> =>
+		mutationFn: (data: { oppgaveKøId: string }): Promise<ReservasjonV3FraKøDto[]> =>
 			axiosInstance.post(`${apiPaths.hentOppgaveFraKoV3(data.oppgaveKøId)}`, data).then((response) => response.data),
-		onSuccess: (data: ReservasjonV3FraKøDto) => {
-			queryClient.refetchQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }).then(() => {
-				if (callback) callback(data);
-			});
+		onSuccess: async (data: ReservasjonV3FraKøDto[]) => {
+			if (callback) callback(data);
+			if (data.length > 0) {
+				await queryClient.refetchQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] });
+			}
 		},
 	});
 };

@@ -15,15 +15,12 @@ import { erKoV3, getKoId } from '../utils';
 import OppgavekoVelgerForm from './OppgavekoVelgerForm';
 import * as styles from './oppgavekoPanel.css';
 import OppgaverTabell from './oppgavetabeller/OppgaverTabell';
-import { OppgavetabellV3Container } from './oppgavetabeller/OppgavetabellV3Container';
+import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
 
 interface OwnProps {
 	apneOppgave: (oppgave: Oppgave) => void;
 }
 
-/**
- * OppgavekoPanel
- */
 const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 	const [visBehandlingerIKo, setVisBehandlingerIKo] = useState<boolean>(false);
 	const [loadingOppgaveFraKo, setLoadingOppgaveFraKo] = useState<boolean>(false);
@@ -37,9 +34,14 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 		resetRequestData,
 	} = useRestApiRunner<Oppgave>(K9LosApiKeys.FÅ_OPPGAVE_FRA_KO);
 
-	const { mutate, error } = usePlukkOppgaveMutation((oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkelDto);
-		window.location.assign(oppgave.oppgavebehandlingsUrl);
+	const { mutate } = usePlukkOppgaveMutation(async (reservasjoner) => {
+		if (reservasjoner.length > 0) {
+			const { oppgaveNøkkelDto, oppgavebehandlingsUrl } = reservasjoner[0];
+			await leggTilBehandletOppgave(oppgaveNøkkelDto);
+			window.location.assign(oppgavebehandlingsUrl);
+		} else {
+			setVisFinnesIngenBehandlingerIKoModal(true);
+		}
 	});
 
 	useEffect(() => {
@@ -53,12 +55,6 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 			resetRequestData();
 		}
 	}, [restApiState, restApiError]);
-
-	useEffect(() => {
-		if (error && error.toString().includes('404')) {
-			setVisFinnesIngenBehandlingerIKoModal(true);
-		}
-	}, [error]);
 
 	const plukkNyOppgave = () => {
 		if (!erKoV3(valgtOppgavekoId)) {
@@ -127,7 +123,11 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 
 				{visBehandlingerIKo &&
 					valgtOppgaveko &&
-					(erKoV3(valgtOppgaveko.id) ? <OppgavetabellV3Container /> : <OppgaverTabell valgtKo={valgtOppgaveko} />)}
+					(erKoV3(valgtOppgaveko.id) ? (
+						<OppgavetabellV3 køId={valgtOppgavekoId} />
+					) : (
+						<OppgaverTabell valgtKo={valgtOppgaveko} />
+					))}
 			</div>
 		</div>
 	);

@@ -32,7 +32,7 @@ const skalViseListe = (resultat) => {
 const FagsakSearch: FunctionComponent<OwnProps> = ({ setOppgave, goToFagsak }) => {
 	const queryFraURL = queryString.parse(window.location?.search ? window.location.search : '');
 	const erSokViaQueryParams = queryFraURL.sok && !hasValidSaksnummerEllerJournalpostFormat(queryFraURL.sok);
-	const { data: resultat, mutate: sok, isSuccess, isLoading } = useSøk();
+	const { data: resultat, mutate: sok, isSuccess, isPending } = useSøk();
 	useEffect(() => {
 		if (erSokViaQueryParams) {
 			const paramToString = queryFraURL.sok.toString();
@@ -42,7 +42,7 @@ const FagsakSearch: FunctionComponent<OwnProps> = ({ setOppgave, goToFagsak }) =
 
 	return (
 		<div>
-			<SearchForm onSubmit={sok} searchStarted={isLoading} />
+			<SearchForm onSubmit={sok} searchStarted={isPending} />
 			{isSuccess && resultat && resultat.oppgaver.length === 0 && !resultat.ikkeTilgang && (
 				<BodyShort className={styles.label}>
 					<FormattedMessage id="FagsakSearch.ZeroSearchResults" />

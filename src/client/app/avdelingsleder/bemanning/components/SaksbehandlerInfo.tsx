@@ -47,7 +47,7 @@ const SaksbehandlerInfo: FunctionComponent<OwnProps> = ({ saksbehandler }) => {
 		isLoading: isLoadingKøerV3,
 		isSuccess: isSuccessKøerV3,
 	} = useHentAndreSaksbehandleresKøer(saksbehandler.id);
-	const { mutate, isLoading: isLoadingSlett } = useSlettSaksbehandler();
+	const { mutate, isPending: isLoadingSlett } = useSlettSaksbehandler();
 	const slettSaksbehandler = () => mutate({ epost: saksbehandler.epost }, { onSuccess: lukkSlettModal });
 
 	return (

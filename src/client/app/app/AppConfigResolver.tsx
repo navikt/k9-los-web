@@ -30,10 +30,6 @@ const AppConfigResolver: FunctionComponent<OwnProps> = ({ children }) => {
 		suspendRequest: !harHentetInnloggetSaksbehandler,
 		updateTriggers: [innloggetSaksbehandler],
 	});
-	const { state: stateSseUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.REFRESH_URL, undefined, {
-		suspendRequest: !harHentetInnloggetSaksbehandler,
-		updateTriggers: [innloggetSaksbehandler],
-	});
 	const { state: stateK9punsjUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.PUNSJ_URL, undefined, {
 		suspendRequest: !harHentetInnloggetSaksbehandler,
 		updateTriggers: [innloggetSaksbehandler],
@@ -41,7 +37,7 @@ const AppConfigResolver: FunctionComponent<OwnProps> = ({ children }) => {
 
 	if (
 		isLoadingSaksbehandler ||
-		[stateK9sakUrl, stateKodeverk, stateSseUrl, stateK9punsjUrl].some((v) => v === RestApiState.LOADING)
+		[stateK9sakUrl, stateKodeverk, stateK9punsjUrl].some((v) => v === RestApiState.LOADING)
 	) {
 		return <LoadingPanel />;
 	}

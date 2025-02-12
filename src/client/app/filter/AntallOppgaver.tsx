@@ -14,7 +14,7 @@ export const AntallOppgaver = ({ setQueryError }: OwnProps) => {
 	const { oppgaveQuery } = useContext(FilterContext);
 
 	const [antallOppgaver, setAntallOppgaver] = useState('');
-	const { mutate, isLoading } = useMutation<string, unknown, { url: string; body: OppgaveQuery }>({
+	const { mutate, isPending } = useMutation<string, unknown, { url: string; body: OppgaveQuery }>({
 		onSuccess: (respons) => {
 			if (respons !== undefined) {
 				setAntallOppgaver(respons);
@@ -32,15 +32,15 @@ export const AntallOppgaver = ({ setQueryError }: OwnProps) => {
 	return (
 		<div className="flex flex-col m-auto">
 			<Label size="small">
-				Antall oppgaver: {isLoading ? <Skeleton className="inline-block w-12" /> : antallOppgaver}
+				Antall oppgaver: {isPending ? <Skeleton className="inline-block w-12" /> : antallOppgaver}
 			</Label>
 			<Button
 				variant="tertiary"
 				icon={<ArrowsCirclepathIcon aria-hidden />}
 				size="small"
 				onClick={hentOppgaver}
-				loading={isLoading}
-				disabled={isLoading}
+				loading={isPending}
+				disabled={isPending}
 			>
 				Oppdater antall
 			</Button>

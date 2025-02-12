@@ -9,7 +9,7 @@ interface OwnProps {
 }
 
 const SlettKøModal = ({ lukk, id, køTittel }: OwnProps) => {
-	const { mutate, isLoading, isError } = useSlettKøMutation(lukk);
+	const { mutate, isPending, isError } = useSlettKøMutation(lukk);
 	return (
 		<Modal open onClose={lukk} portal>
 			<Modal.Body>
@@ -17,7 +17,7 @@ const SlettKøModal = ({ lukk, id, køTittel }: OwnProps) => {
 				<BodyShort>{`Er du sikker på at du vil slette ${køTittel}?`}</BodyShort>
 				{isError && <ErrorMessage>Noe gikk galt ved oppretting av kø.</ErrorMessage>}
 				<div className="mt-8 flex gap-4">
-					<Button loading={isLoading} onClick={() => mutate(id)}>
+					<Button loading={isPending} onClick={() => mutate(id)}>
 						Slett
 					</Button>
 					<Button variant="secondary" type="button" onClick={lukk}>

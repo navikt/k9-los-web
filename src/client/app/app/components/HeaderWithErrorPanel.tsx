@@ -128,46 +128,6 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({ queryStrings, crash
 		return true;
 	};
 
-	const popperPropsChildren = useCallback(
-		() => (
-			<BoxedListWithLinks
-				onClick={() => {
-					setLenkePanelApent(false);
-				}}
-				items={[
-					{
-						name: intl.formatMessage({ id: 'Header.Rettskilde' }),
-						href: RETTSKILDE_URL,
-						isExternal: true,
-					},
-					{
-						name: intl.formatMessage({ id: 'Header.Sharepoint' }),
-						href: SHAREPOINT_URL,
-						isExternal: true,
-					},
-				]}
-			/>
-		),
-		[],
-	);
-
-	const referencePropsChildren = useCallback(
-		({ ref }) => (
-			<div ref={ref}>
-				<SystemButton
-					onClick={() => {
-						if (erAvdelingerPanelApent) {
-							setAvdelingerPanelApent(false);
-						}
-						setLenkePanelApent(!erLenkePanelApent);
-					}}
-					isToggled={erLenkePanelApent}
-				/>
-			</div>
-		),
-		[erLenkePanelApent],
-	);
-
 	return (
 		<header ref={fixedHeaderRef} className={`${styles.container} ${isDev ? styles.containerDev : ''}`}>
 			<div ref={wrapperRef}>
@@ -182,11 +142,6 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({ queryStrings, crash
 							Avdelingslederpanel
 						</button>
 					)}
-					{/*
-            Går mot en backend som foreldrepenger styrer.
-            https://github.com/navikt/familie-endringslogg
-            For å nå backend lokalt må man være tilkoblet naisdevice og kjøre opp k9-sak-web på port 8000 pga CORS
-            */}
 					{innloggetSaksbehandler?.brukerIdent && window.location.hostname.includes('nav') && (
 						<div className={styles['endringslogg-container']}>
 							<Endringslogg
@@ -227,7 +182,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({ queryStrings, crash
 					</ActionMenu>
 					<Dropdown.Menu.Divider />
 					<Spacer />
-					<InternalHeader.User className="text-white" name="Ola Normann" />
+					<InternalHeader.User className="text-white" name={innloggetSaksbehandler?.brukerIdent} />
 					{isDev && (
 						<button type="button" className={styles.knapp} onClick={loggUt}>
 							Logg ut

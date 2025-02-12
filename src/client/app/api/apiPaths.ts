@@ -40,7 +40,6 @@ const apiPaths = {
 	oppgaverAntallTotalt: '/api/k9-los-api/avdelingsleder/oppgaver/antall-totalt',
 	opprettOppgaveko: '/api/k9-los-api/ny-oppgavestyring/ko/opprett',
 	reserverOppgave: '/api/k9-los-api/saksbehandler/oppgaver/reserver',
-	refreshUrl: '/api/k9-los-api/konfig/refresh-url',
 	saksbehandler: '/api/k9-los-api/saksbehandler',
 	saksbehandlerNesteOppgaver: (id: string) => `/api/k9-los-api/saksbehandler/oppgaver?id=${id}`,
 	saksbehandlerReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/reserverte',

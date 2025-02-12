@@ -15,7 +15,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent = () => {
 		isLoading: isLoadingSaksbehandlere,
 		isSuccess: isSuccessSaksbehandlere,
 	} = useHentSaksbehandlereAvdelingsleder();
-	const { mutate: leggTilSaksbehandler, isLoading: isLoadingLeggTil } = useLeggTilSaksbehandler();
+	const { mutate: leggTilSaksbehandler, isPending: isLoadingLeggTil } = useLeggTilSaksbehandler();
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const addSaksbehandler = (epost: string, form: FormApi<any, Partial<any>>, meta: FieldMetaState<any>) => {

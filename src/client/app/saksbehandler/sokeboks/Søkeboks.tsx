@@ -5,11 +5,11 @@ import { SøkResultat } from 'saksbehandler/sokeboks/SøkResultat';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 export function Søkeboks() {
-	const { isLoading, mutate: utførSøk, data, reset: nullstillSøk } = useSøkOppgaveV3();
+	const { isPending, mutate: utførSøk, data, reset: nullstillSøk } = useSøkOppgaveV3();
 
 	return (
 		<>
-			<SøkForm utførSøk={utførSøk} loading={isLoading} nullstillSøk={nullstillSøk} />
+			<SøkForm utførSøk={utførSøk} loading={isPending} nullstillSøk={nullstillSøk} />
 			<VerticalSpacer sixteenPx />
 			<SøkResultat oppgaver={data} />
 		</>

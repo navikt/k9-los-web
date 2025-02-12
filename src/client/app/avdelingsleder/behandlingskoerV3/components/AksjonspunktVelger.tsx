@@ -6,7 +6,7 @@ import SearchDropdownMedPredefinerteVerdier, {
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 
 const AksjonspunktVelger: FunctionComponent<
-	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown: boolean }
+	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown }) => {
 	const oppgavekoder = useKodeverk(kodeverkTyper.OPPGAVE_KODE);
 	const formaterteOppgavekoder = oppgavekoder
