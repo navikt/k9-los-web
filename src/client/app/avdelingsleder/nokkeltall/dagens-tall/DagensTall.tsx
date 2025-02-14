@@ -1,67 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import dayjs from 'dayjs';
-import { Normaltekst } from 'nav-frontend-typografi';
-import { ArrowCirclepathIcon } from '@navikt/aksel-icons';
-import { Box, Button, Detail, HGrid, HStack, Heading, Loader, Select, ToggleGroup } from '@navikt/ds-react';
-import { useHentDagensTall, useOppdaterDagensTall } from 'api/queries/avdelingslederQueries';
+import { Box, Detail, HGrid, HStack, Heading, Select, ToggleGroup } from '@navikt/ds-react';
+import { useHentDagensTall } from 'api/queries/avdelingslederQueries';
 import Teller from 'avdelingsleder/nokkeltall/components/dagensTallPanel/Teller';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 export default function DagensTall() {
 	const [valgtHovedgruppe, setValgtHovedgruppe] = useState('ALLE');
-	const { data, isFetching, isSuccess } = useHentDagensTall();
+	const { data } = useHentDagensTall();
 	const [tidsområde, setTidsområde] = useState('I_DAG');
-	const [oppdaterer, setOppdaterer] = useState(false);
-	const [henter, setHenter] = useState(false);
 
-	const { mutate: oppdaterDagensTall, isPending } = useOppdaterDagensTall();
-
-	useEffect(() => {
-		setOppdaterer(false);
-		setHenter(false);
-	}, [data?.oppdatertTidspunkt]);
+	// Henter alltid fra direkte fra cache, så bruker kort tid på loading
+	if (data === undefined) return null;
 
 	return (
 		<Box padding="4" borderWidth="1" borderColor="border-default">
 			<HStack align="center" justify="space-between">
 				<Heading size="small">Dagens tall</Heading>
-				{!data?.feilmelding && (
-					<Button
-						size="small"
-						variant="tertiary"
-						loading={isPending}
-						disabled={oppdaterer}
-						icon={oppdaterer ? <ArrowCirclepathIcon className="animate-spin" /> : <ArrowCirclepathIcon />}
-						onClick={() => {
-							setOppdaterer(true);
-							oppdaterDagensTall();
-						}}
-					>
-						{oppdaterer ? 'Oppdaterer data ...' : 'Oppdater'}
-					</Button>
-				)}
 			</HStack>
 			<VerticalSpacer eightPx />
-			{isFetching && <Loader />}
-			{isSuccess && data.feilmelding && (
-				<div>
-					<Normaltekst className="mb-4">{data.feilmelding}</Normaltekst>
-					<Button
-						variant="secondary"
-						size="medium"
-						loading={isPending}
-						disabled={henter}
-						icon={henter ? <ArrowCirclepathIcon className="animate-spin" /> : <ArrowCirclepathIcon />}
-						onClick={() => {
-							setHenter(true);
-							oppdaterDagensTall();
-						}}
-					>
-						{henter ? 'Henter data ...' : 'Hent data'}
-					</Button>
-				</div>
-			)}
-			{isSuccess && !data.feilmelding && (
+			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
+			{data.oppdatertTidspunkt && (
 				<>
 					<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
 					<HStack className="mt-4 mb-6" gap="4">

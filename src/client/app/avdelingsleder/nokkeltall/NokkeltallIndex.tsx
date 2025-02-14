@@ -2,6 +2,7 @@ import React from 'react';
 import AksjonspunkterPerEnhetPanel from 'avdelingsleder/nokkeltall/components/aksjonspunkterPerEnhet/AksjonspunkterPerEnhetPanel';
 import InngangOgFerdigstiltePanel from 'avdelingsleder/nokkeltall/components/dagensTallPanel/InngangOgFerdigstiltePanel';
 import DagensTall from 'avdelingsleder/nokkeltall/dagens-tall/DagensTall';
+import FerdigstiltePerEnhet from 'avdelingsleder/nokkeltall/ferdigstilte-per-enhet/FerdigstiltePerEnhet';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 function NokkeltallIndex() {
@@ -10,6 +11,8 @@ function NokkeltallIndex() {
 			<InngangOgFerdigstiltePanel />
 			<VerticalSpacer twentyPx />
 			<DagensTall />
+			<VerticalSpacer twentyPx />
+			<FerdigstiltePerEnhet />
 			<VerticalSpacer twentyPx />
 			<AksjonspunkterPerEnhetPanel />
 		</div>

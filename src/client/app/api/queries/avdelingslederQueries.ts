@@ -1,7 +1,7 @@
 import {
 	DefaultError,
-	UseMutationOptions,
 	UseQueryOptions,
+	keepPreviousData,
 	useMutation,
 	useQuery,
 	useQueryClient,
@@ -9,7 +9,6 @@ import {
 import apiPaths from 'api/apiPaths';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
-import BehandlingType from 'kodeverk/behandlingType';
 import { OppgaveKoIdOgTittel, OppgavekøV3, OppgavekøV3Enkel, OppgavekøerV3 } from 'types/OppgavekøV3Type';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
@@ -159,30 +158,43 @@ export const useKo = (id: string, options?: Omit<UseQueryOptions<OppgavekøV3>, 
 	});
 
 export const useHentDagensTall = () =>
-	useQuery<
-		| {
-				oppdatertTidspunkt: string;
-				hovedgrupper: [{ kode: string; navn: string }];
-				undergrupper: [{ kode: string; navn: string }];
-				tall: [
-					{
-						hovedgruppe: string;
-						undergruppe: string;
-						nyeIDag: number;
-						ferdigstilteIDag: number;
-						nyeSiste7Dager: number;
-						ferdigstilteSiste7Dager: number;
-					},
-				];
-		  }
-		| { feilmelding: string }
-	>({
+	useQuery<{
+		oppdatertTidspunkt?: string;
+		hovedgrupper: [{ kode: string; navn: string }];
+		undergrupper: [{ kode: string; navn: string }];
+		tall: [
+			{
+				hovedgruppe: string;
+				undergruppe: string;
+				nyeIDag: number;
+				ferdigstilteIDag: number;
+				nyeSiste7Dager: number;
+				ferdigstilteSiste7Dager: number;
+			},
+		];
+	}>({
+		placeholderData: keepPreviousData,
 		queryKey: [apiPaths.hentDagensTall],
-		refetchInterval: 10000,
+		refetchInterval: 60000,
 	});
 
-export const useOppdaterDagensTall = (onSuccess: UseMutationOptions['onSuccess']) =>
-	useMutation({
-		mutationFn: () => axiosInstance.post(apiPaths.oppdaterDagensTall),
-		onSuccess,
+export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; uker: string }) =>
+	useQuery<{
+		oppdatertTidspunkt?: string;
+		grupper: { kode: string; navn: string }[];
+		kolonner: string[];
+		serier: [
+			{
+				navn: string;
+				data: number[];
+			},
+		];
+	}>({
+		placeholderData: keepPreviousData,
+		queryFn: () =>
+			axiosInstance
+				.get(apiPaths.hentFerdigstiltePerEnhet, { params: { gruppe, uker } })
+				.then((response) => response.data),
+		queryKey: [apiPaths.hentFerdigstiltePerEnhet, gruppe, uker],
+		refetchInterval: 60000,
 	});
