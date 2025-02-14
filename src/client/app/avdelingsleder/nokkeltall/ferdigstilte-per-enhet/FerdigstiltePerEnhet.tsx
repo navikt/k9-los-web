@@ -18,6 +18,9 @@ export default function FerdigstiltePerEnhet() {
 	// Henter alltid fra direkte fra cache, så bruker kort tid på loading
 	if (data === undefined) return null;
 
+	// TODO: Fjern denne linja når jobber for å hente data er på plass, gjør det sånn for å slippe å feature toggle
+	if (!data.oppdatertTidspunkt) return null;
+
 	const chartOption: EChartsOption = {
 		tooltip: {
 			trigger: 'axis',
