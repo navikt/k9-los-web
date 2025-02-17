@@ -19,7 +19,7 @@ export default function DagensTall() {
 	return (
 		<Box padding="4" borderWidth="1" borderColor="border-default">
 			<HStack align="center" justify="space-between">
-				<Heading size="small">Dagens tall</Heading>
+				<Heading size="small">Dagens tall (ny)</Heading>
 			</HStack>
 			<VerticalSpacer eightPx />
 			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}

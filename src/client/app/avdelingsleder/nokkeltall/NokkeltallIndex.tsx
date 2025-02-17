@@ -10,11 +10,11 @@ function NokkeltallIndex() {
 		<div>
 			<InngangOgFerdigstiltePanel />
 			<VerticalSpacer twentyPx />
+			<AksjonspunkterPerEnhetPanel />
+			<VerticalSpacer twentyPx />
 			<DagensTall />
 			<VerticalSpacer twentyPx />
 			<FerdigstiltePerEnhet />
-			<VerticalSpacer twentyPx />
-			<AksjonspunkterPerEnhetPanel />
 		</div>
 	);
 }
