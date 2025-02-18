@@ -1,0 +1,77 @@
+.frame {
+	background-color: #fff;
+	box-shadow: 0 0 5px 1px #0033;
+	color: #262626;
+	font-family: 'Source Sans Pro', Arial, sans-serif;
+	height: 130px;
+	justify-content: center;
+	margin-right: 32px;
+	text-align: center;
+	width: 240px;
+}
+.container {
+	display: flex;
+	justify-content: center;
+}
+.beskrivelse {
+	align-items: center;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: normal;
+	margin-top: 10px;
+}
+.coloredField {
+	background-color: #cde7d8;
+	height: 50px;
+	margin-top: -20px;
+	text-align: center;
+	width: 75px;
+}
+.field {
+	height: 50px;
+	margin-top: -20px;
+	text-align: center;
+	width: 75px;
+}
+.forklaring {
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 10px;
+}
+.vl {
+	border: 1px solid #a0a0a0;
+	height: 74px;
+	margin: 13px 15px 0;
+}
+.number {
+	font-size: 25px;
+	padding-top: 7px;
+}
+@media only screen and (max-width: 1650px) {
+	.frame {
+		height: 122px;
+		width: 203px;
+	}
+	.beskrivelse {
+		margin-top: 15px;
+	}
+	.forklaring {
+		font-size: 16px;
+		margin-top: -10px;
+	}
+	.vl {
+		height: 67px;
+		margin: 17px 10px 0;
+	}
+	.number {
+		font-size: 20px;
+		padding-top: 7px;
+	}
+	.coloredField,
+	.field {
+		height: 40px;
+		margin-top: -13px;
+		width: 70px;
+	}
+}

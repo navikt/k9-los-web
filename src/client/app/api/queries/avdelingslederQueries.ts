@@ -1,4 +1,11 @@
-import { DefaultError, UseQueryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+	DefaultError,
+	UseQueryOptions,
+	keepPreviousData,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
@@ -148,4 +155,46 @@ export const useKo = (id: string, options?: Omit<UseQueryOptions<OppgavekøV3>, 
 	useQuery<OppgavekøV3, unknown, OppgavekøV3>({
 		...options,
 		queryKey: [apiPaths.hentOppgaveko(id)],
+	});
+
+export const useHentDagensTall = () =>
+	useQuery<{
+		oppdatertTidspunkt?: string;
+		hovedgrupper: [{ kode: string; navn: string }];
+		undergrupper: [{ kode: string; navn: string }];
+		tall: [
+			{
+				hovedgruppe: string;
+				undergruppe: string;
+				nyeIDag: number;
+				ferdigstilteIDag: number;
+				nyeSiste7Dager: number;
+				ferdigstilteSiste7Dager: number;
+			},
+		];
+	}>({
+		placeholderData: keepPreviousData,
+		queryKey: [apiPaths.hentDagensTall],
+		refetchInterval: 60000,
+	});
+
+export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; uker: string }) =>
+	useQuery<{
+		oppdatertTidspunkt?: string;
+		grupper: { kode: string; navn: string }[];
+		kolonner: string[];
+		serier: [
+			{
+				navn: string;
+				data: number[];
+			},
+		];
+	}>({
+		placeholderData: keepPreviousData,
+		queryFn: () =>
+			axiosInstance
+				.get(apiPaths.hentFerdigstiltePerEnhet, { params: { gruppe, uker } })
+				.then((response) => response.data),
+		queryKey: [apiPaths.hentFerdigstiltePerEnhet, gruppe, uker],
+		refetchInterval: 60000,
 	});
