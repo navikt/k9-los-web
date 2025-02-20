@@ -142,7 +142,7 @@ export const useOppdaterKøMutation = (callback: () => void) => {
 					queryKey: [apiPaths.hentOppgaveko(id)],
 				}),
 				queryClient.invalidateQueries({
-					queryKey: [apiPaths.antallOppgaverIKoV3(id)],
+					queryKey: ['antallOppgaver', id],
 				}),
 			]).then(() => {
 				if (callback) callback();
