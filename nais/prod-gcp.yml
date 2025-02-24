@@ -31,7 +31,7 @@ observability:
 
 env:
   - name: SOKEBOKS_NYE_KOER
-    value: ""
+    value: "enabled"
   - name: SAKSBEHANDLER_KAN_VELGE_NYE_KOER
     value: "enabled"
   - name: AVDELINGSLEDER_TILGANG_TIL_NYE_KOER
