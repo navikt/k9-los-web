@@ -13,6 +13,7 @@ const apiPaths = {
 	hentAlleKoerSaksbehandlerV1: '/api/k9-los-api/saksbehandler/oppgaveko',
 	hentAlleKoerSaksbehandlerV3: '/api/k9-los-api/ny-oppgavestyring/ko/saksbehandlerskoer',
 	hentAndreSaksbehandleresKøerV3: '/api/k9-los-api/ny-oppgavestyring/ko/andre-saksbehandleres-koer',
+	hentAvdelingslederStatus: '/api/k9-los-api/ny-oppgavestyring/nokkeltall/status',
 	hentDagensTall: '/api/k9-los-api/ny-oppgavestyring/nokkeltall/dagens-tall',
 	hentFerdigstiltePerEnhet: '/api/k9-los-api/ny-oppgavestyring/nokkeltall/ferdigstilte-per-enhet',
 	hentFelter: '/api/k9-los-api/ny-oppgavestyring/oppgave/felter',
