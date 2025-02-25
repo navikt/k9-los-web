@@ -126,6 +126,6 @@ export const useOpphevReservasjoner = (onSuccess?: () => void) => {
 
 export const useSøkOppgaveV3 = () =>
 	useMutation({
-		mutationFn: (searchString: string): Promise<SøkeboksOppgaveDto[]> =>
-			axiosInstance.post(apiPaths.sokV3, { searchString }).then((response) => response.data),
+		mutationFn: (params: { searchString: string; fraAktiv: boolean }): Promise<SøkeboksOppgaveDto[]> =>
+			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
 	});
