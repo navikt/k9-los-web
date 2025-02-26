@@ -5,7 +5,7 @@ import { SøkResultat } from 'saksbehandler/sokeboks/SøkResultat';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 export function Søkeboks() {
-	const { isPending, mutate: utførSøk, data, reset: nullstillSøk } = useSøkOppgaveV3();
+	const { mutate: utførSøk, isPending, data, reset: nullstillSøk } = useSøkOppgaveV3();
 
 	return (
 		<>
