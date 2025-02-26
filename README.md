@@ -57,16 +57,6 @@ Nå kan du søke opp saksnummeret eller søkeren i k9-los-web. Dersom oppgaven m
 ```
 
 
-#### Windows oppsett
-
-For att kjøre vtp som fungerer for LOS lokalt kan det hente att man må specifisere path til modig i docker-compose.
-
-```
-
-C:/Users/xxxxxxx/.modig:/app/.modig
-
-```
-
 ### For NAV-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen **#k9-los**.
