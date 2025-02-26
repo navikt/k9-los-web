@@ -19,7 +19,7 @@ export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolea
 	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
 	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
 	const leggTilBehandletOgÅpneOppgave = () =>
-		leggTilBehandletOppgave(props.oppgave.oppgaveNøkkel).then(() => åpneOppgave(props.oppgave));
+		leggTilBehandletOppgave(props.oppgave.oppgaveNøkkel).finally(() => åpneOppgave(props.oppgave));
 	const { isPending: isLoadingEndreReservasjoner, mutate: endreReservasjoner } = useEndreReservasjoner(() =>
 		leggTilBehandletOgÅpneOppgave(),
 	);
