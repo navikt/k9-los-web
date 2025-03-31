@@ -12829,7 +12829,7 @@ __metadata:
     react-intl: "npm:7.1.6"
     react-modal: "npm:3.16.3"
     react-popper: "npm:2.3.0"
-    react-router: "npm:7.3.0"
+    react-router: "npm:7.4.1"
     storybook: "npm:8.6.9"
     tailwindcss: "npm:3.4.17"
     terser-webpack-plugin: "npm:5.3.14"
@@ -15943,9 +15943,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:7.3.0":
-  version: 7.3.0
-  resolution: "react-router@npm:7.3.0"
+"react-router@npm:7.4.1":
+  version: 7.4.1
+  resolution: "react-router@npm:7.4.1"
   dependencies:
     "@types/cookie": "npm:^0.6.0"
     cookie: "npm:^1.0.1"
@@ -15957,7 +15957,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10/f7694785f95b989e55c0ae058c36c5f523e318109aea26f4e1567a3c50dcbff769417c54451d976990c507f83499bfe7bc4ec9bea52b2fabab4e6da57d21b231
+  checksum: 10/5873187abcd1d898f4bf7c0f31af48d7a867ec35bfa030d582c03bfb390fdf6ebfb252732a200d2212771319133124279b7c8ba034df0cde77daf9140345a1c6
   languageName: node
   linkType: hard
 
