@@ -21,6 +21,10 @@ export default function FerdigstiltePerEnhet() {
 	// TODO: Fjern denne linja når jobber for å hente data er på plass, gjør det sånn for å slippe å feature toggle
 	if (!data.oppdatertTidspunkt) return null;
 
+	// Ikke vis i prod ennå
+	const isProd = window.location.hostname.includes('intern.nav.no');
+	if (isProd) return null;
+
 	const chartOption: EChartsOption = {
 		tooltip: {
 			trigger: 'axis',
