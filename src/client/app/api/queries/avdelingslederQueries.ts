@@ -157,6 +157,18 @@ export const useKo = (id: string, options?: Omit<UseQueryOptions<OppgavekøV3>, 
 		queryKey: [apiPaths.hentOppgaveko(id)],
 	});
 
+export const useHentAvdelingslederStatus = () =>
+	useQuery<
+		{
+			behandlingstype: string;
+			antall: number;
+		}[]
+	>({
+		placeholderData: keepPreviousData,
+		queryKey: [apiPaths.hentAvdelingslederStatus],
+		refetchInterval: 60000,
+	});
+
 export const useHentDagensTall = () =>
 	useQuery<{
 		oppdatertTidspunkt?: string;
