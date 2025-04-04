@@ -3,7 +3,7 @@ import * as styles from './enkelTeller.css';
 
 interface OwnProps {
 	antall: number;
-	tekst: string;
+	tekst: string | React.ReactNode;
 }
 const EnkelTeller: FunctionComponent<OwnProps> = ({ antall, tekst }) => (
 	<div className={styles.frame}>
