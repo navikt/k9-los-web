@@ -33,7 +33,16 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 								enabled={<Søkeboks />}
 								disabled={<FagsakSearchIndex k9punsjUrl={k9punsjUrl.verdi} k9sakUrl={k9sakUrl.verdi} />}
 								switchLabel="Vis ny søkeboks"
-								helpText="Dette er funksjonalitet under utvikling. Søket går her mot ny kø- og oppgavemodell."
+								helpText={
+									<>
+										<p>Dette er funksjonalitet under utvikling.</p>
+										<p>
+											Ny søkeboks går mot ny kø- og oppgavemodell. Det er ønskelig å teste at søkeresultatet vises
+											riktig, og at søket er raskt nok. Søk mot lukkede oppgaver kan være tregt, og det er derfor lagt
+											til en checkbox for slike søk. Dette kan bli endret.
+										</p>
+									</>
+								}
 							/>
 						</Panel>
 						{saksbehandler.finnesISaksbehandlerTabell && (

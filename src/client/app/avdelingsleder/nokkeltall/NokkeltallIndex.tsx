@@ -24,7 +24,15 @@ function NokkeltallIndex() {
 				</div>
 			}
 			switchLabel="Vis nye nøkkeltall"
-			helpText="Dette er funksjonalitet under utvikling. Nøkkeltallene produseres her fra ny kø- og oppgavemodell."
+			helpText={
+				<>
+					<p>Dette er funksjonalitet under utvikling.</p>
+					<p>
+						Nøkkeltallene produseres her fra ny kø- og oppgavemodell. I de nye nøkkeltallene telles ferdigstilte
+						behandlinger i stedet for aksjonspunkter.
+					</p>
+				</>
+			}
 		/>
 	);
 }

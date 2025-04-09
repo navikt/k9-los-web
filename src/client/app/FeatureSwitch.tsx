@@ -6,7 +6,7 @@ export default function FeatureSwitch(props: {
 	enabled: React.ReactNode;
 	disabled: React.ReactNode;
 	switchLabel: string;
-	helpText?: string;
+	helpText?: React.ReactNode;
 	flex?: boolean;
 }) {
 	const [featureEnabled, setFeatureEnabled] = useState(false);
