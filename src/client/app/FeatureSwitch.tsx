@@ -16,7 +16,7 @@ export default function FeatureSwitch(props: {
 			<Switch size="small" checked={featureEnabled} onChange={(event) => setFeatureEnabled(event.target.checked)}>
 				{props.switchLabel}
 			</Switch>
-			<HelpText>{props.helpText}</HelpText>
+			{props.helpText && <HelpText>{props.helpText}</HelpText>}
 		</HStack>
 	);
 	const feature = featureEnabled ? props.enabled : props.disabled;
