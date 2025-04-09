@@ -18,13 +18,6 @@ export default function FerdigstiltePerEnhet() {
 	// Henter alltid fra direkte fra cache, så bruker kort tid på loading
 	if (data === undefined) return null;
 
-	// TODO: Fjern denne linja når jobber for å hente data er på plass, gjør det sånn for å slippe å feature toggle
-	if (!data.oppdatertTidspunkt) return null;
-
-	// Ikke vis i prod ennå
-	const isProd = window.location.hostname.includes('intern.nav.no');
-	if (isProd) return null;
-
 	const chartOption: EChartsOption = {
 		tooltip: {
 			trigger: 'axis',
@@ -55,7 +48,7 @@ export default function FerdigstiltePerEnhet() {
 
 	return (
 		<Box padding="4" borderWidth="1" borderColor="border-default">
-			<Heading size="small">Ferdigstilte per enhet (ny)</Heading>
+			<Heading size="small">Ferdigstilte per enhet</Heading>
 			<VerticalSpacer eightPx />
 			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
 			{data.oppdatertTidspunkt && (
