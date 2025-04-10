@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { Button, Loader, Skeleton, Table } from '@navikt/ds-react';
+import { Button, Loader, Skeleton, SortState, Table } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { useAlleKoer } from 'api/queries/avdelingslederQueries';
 import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
@@ -38,8 +38,7 @@ const berikMedAntallOppgaverIndividuelt = (køArray: OppgavekøV3Enkel[]) => {
 						...kø,
 						...data,
 					};
-				} catch (error) {
-					console.error('Error fetching antallOppgaver', error);
+				} catch {
 					return {
 						...kø,
 					};
@@ -101,7 +100,10 @@ const BehandlingskoerIndex = () => {
 		initielleKøer || [],
 	);
 	const [visNyKøModal, setVisNyKøModal] = useState(false);
-	const [sort, setSort] = useState(null);
+	const [sort, setSort] = useState<SortState | undefined>({
+		orderBy: 'tittel',
+		direction: 'ascending',
+	});
 	const [ekspanderteKøer, setEkspanderteKøer] = useState([]);
 	const [køSomNettoppBleLaget, setKøSomNettoppBleLaget] = useState('');
 
