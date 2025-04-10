@@ -1,0 +1,24 @@
+.header {
+	color: #262626;
+	font-family: 'Source Sans Pro', Arial, sans-serif;
+	font-size: 24px;
+	font-weight: 600;
+	letter-spacing: 0;
+	line-height: 28px;
+	padding-left: 60px;
+}
+.container {
+	display: flex;
+	flex-wrap: wrap;
+	padding-left: 60px;
+	width: 65%;
+}
+@media all and (max-width: 1650px) {
+	.header {
+		padding-left: 30px;
+	}
+	.container {
+		padding-left: 30px;
+		width: 100%;
+	}
+}
