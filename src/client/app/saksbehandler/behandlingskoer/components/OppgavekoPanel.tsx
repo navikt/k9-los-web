@@ -4,7 +4,7 @@ import NavFrontendChevron from 'nav-frontend-chevron';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Label, Modal } from '@navikt/ds-react';
 import { K9LosApiKeys } from 'api/k9LosApi';
-import { usePlukkOppgaveMutation } from 'api/queries/saksbehandlerQueries';
+import { usePlukkOppgaveMutation, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
 import { useRestApiRunner } from 'api/rest-api-hooks';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/oppgavetabeller/ReserverteOppgaverTabell';
@@ -33,11 +33,12 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 		error: restApiError,
 		resetRequestData,
 	} = useRestApiRunner<Oppgave>(K9LosApiKeys.FÅ_OPPGAVE_FRA_KO);
-
+	const { mutateAsync: mutateSisteOppgaver } = useSisteOppgaverMutation();
 	const { mutate } = usePlukkOppgaveMutation(async (reservasjoner) => {
 		if (reservasjoner.length > 0) {
 			const { oppgaveNøkkelDto, oppgavebehandlingsUrl } = reservasjoner[0];
 			await leggTilBehandletOppgave(oppgaveNøkkelDto);
+			await mutateSisteOppgaver(oppgaveNøkkelDto);
 			window.location.assign(oppgavebehandlingsUrl);
 		} else {
 			setVisFinnesIngenBehandlingerIKoModal(true);
