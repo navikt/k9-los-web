@@ -14,15 +14,10 @@ import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
 import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
 import * as styles from './saksbehandlerDashboard.css';
 
-/**
- * SaksbehandlerDashboard
- */
 export const SaksbehandlerDashboard: FunctionComponent = () => {
 	const k9sakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.K9SAK_URL);
 	const k9punsjUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.PUNSJ_URL);
 	const { data: saksbehandler } = useInnloggetSaksbehandler();
-
-	const isProd = window.location.hostname.includes('intern.nav.no');
 
 	return (
 		<div>
@@ -30,26 +25,21 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 				<div className={styles.gridContainer}>
 					<div className={styles.leftColumn}>
 						<Panel className={styles.sakslistePanel}>
-							{isProd ? (
-								<FagsakSearchIndex k9punsjUrl={k9punsjUrl.verdi} k9sakUrl={k9sakUrl.verdi} />
-							) : (
-								<FeatureSwitch
-									flex
-									enabled={<Søkeboks />}
-									disabled={<FagsakSearchIndex k9punsjUrl={k9punsjUrl.verdi} k9sakUrl={k9sakUrl.verdi} />}
-									switchLabel="Vis ny søkeboks"
-									helpText={
-										<>
-											<p>Dette er funksjonalitet under utvikling.</p>
-											<p>
-												Ny søkeboks går mot ny kø- og oppgavemodell. Det er ønskelig å teste at søkeresultatet vises
-												riktig, og at søket er raskt nok. Søk mot lukkede oppgaver kan være tregt, og det er derfor lagt
-												til en checkbox for slike søk. Dette kan bli endret.
-											</p>
-										</>
-									}
-								/>
-							)}
+							<FeatureSwitch
+								flex
+								enabled={<Søkeboks />}
+								disabled={<FagsakSearchIndex k9punsjUrl={k9punsjUrl.verdi} k9sakUrl={k9sakUrl.verdi} />}
+								switchLabel="Vis ny søkeboks"
+								helpText={
+									<>
+										<p>Dette er funksjonalitet under utvikling.</p>
+										<p>
+											Ny søkeboks går mot ny kø- og oppgavemodell. Det er ønskelig å teste at søkeresultatet vises
+											riktig, og at søket er raskt nok.
+										</p>
+									</>
+								}
+							/>
 						</Panel>
 						{saksbehandler.finnesISaksbehandlerTabell && (
 							<div>
