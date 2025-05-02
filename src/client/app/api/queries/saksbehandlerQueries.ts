@@ -10,10 +10,8 @@ import NavAnsatt from 'app/navAnsattTsType';
 import apiPaths from 'api/apiPaths';
 import { SaksbehandlerEnkel } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import ReservasjonV3, { ReservasjonV3FraKøDto } from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
-import { OppgavekøV1 } from 'saksbehandler/behandlingskoer/oppgavekoTsType';
 import { SokeResultat } from 'saksbehandler/fagsakSearch/sokeResultatTsType';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
 import EndreOppgaveType from 'types/EndreOppgaveType';
 import { NesteOppgaverFraKoDto } from 'types/NesteOppgaverFraKoDto';
@@ -40,12 +38,6 @@ export const useAntallOppgaverIKoV3UtenReserverte = (
 		...options,
 	});
 
-export const useAlleSaksbehandlerKoerV1 = (options?: Omit<UseQueryOptions<OppgavekøV1[], Error>, 'queryKey'>) =>
-	useQuery<OppgavekøV1[], Error>({
-		queryKey: [apiPaths.hentAlleKoerSaksbehandlerV1],
-		...options,
-	});
-
 export const useAlleSaksbehandlerKoerV3 = (options?: Omit<UseQueryOptions<OppgavekøV3[], Error>, 'queryKey'>) =>
 	useQuery<OppgavekøV3[], Error>({
 		queryKey: [apiPaths.hentAlleKoerSaksbehandlerV3],
@@ -58,12 +50,6 @@ export const useNesteOppgaverFraKø = (
 ) =>
 	useQuery<NesteOppgaverFraKoDto, Error, NesteOppgaverFraKoDto>({
 		queryKey: [apiPaths.hentTiNesteIKoV3(id)],
-		...options,
-	});
-
-export const useSaksbehandlerNesteTiV1 = (id: string, options?: Omit<UseQueryOptions<Oppgave[], Error>, 'queryKey'>) =>
-	useQuery<Oppgave[], Error, Oppgave[]>({
-		queryKey: [apiPaths.saksbehandlerNesteOppgaver(id)],
 		...options,
 	});
 

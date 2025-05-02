@@ -17,7 +17,6 @@ import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
 import * as kopanelStyles from '../oppgavekoPanel.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
-import ReservertOppgaveRadV1 from './ReservertOppgaveRadV1';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
 import * as styles from './oppgaverTabell.css';
 
@@ -57,8 +56,8 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 	const forlengOppgaveReservasjonFn = (oppgaveNøkkel: OppgaveNøkkel) => {
 		forlengOppgavereservasjon({ oppgaveNøkkel }).then(() => {
 			queryClient.invalidateQueries({
-                queryKey: [apiPaths.saksbehandlerReservasjoner]
-            });
+				queryKey: [apiPaths.saksbehandlerReservasjoner],
+			});
 		});
 	};
 	const ref = useRef({});
@@ -140,33 +139,20 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 						{reservasjoner
 							.sort((a, b) => new Date(a.reservertTil).getTime() - new Date(b.reservertTil).getTime())
 							.map((reservasjon) =>
-								reservasjon.reservertOppgaveV1Dto ? (
-									<ReservertOppgaveRadV1
-										key={reservasjon.reservertOppgaveV1Dto.eksternId}
-										reservasjon={reservasjon}
-										goToFagsak={goToFagsak}
-										forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
-										valgtOppgaveId={valgtOppgaveId}
-										setValgtOppgaveId={setValgtOppgaveId}
-										gjelderHastesaker={gjelderHastesaker}
-										ref={ref}
-									/>
-								) : (
-									reservasjon.reserverteV3Oppgaver
-										?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN)
-										.map((oppgave) => (
-											<ReservertOppgaveRadV3
-												key={oppgave.oppgaveNøkkel.oppgaveEksternId}
-												oppgave={oppgave}
-												reservasjon={reservasjon}
-												forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
-												valgtOppgaveId={valgtOppgaveId}
-												setValgtOppgaveId={setValgtOppgaveId}
-												gjelderHastesaker={gjelderHastesaker}
-												ref={ref}
-											/>
-										))
-								),
+								reservasjon.reserverteV3Oppgaver
+									?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN)
+									.map((oppgave) => (
+										<ReservertOppgaveRadV3
+											key={oppgave.oppgaveNøkkel.oppgaveEksternId}
+											oppgave={oppgave}
+											reservasjon={reservasjon}
+											forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
+											valgtOppgaveId={valgtOppgaveId}
+											setValgtOppgaveId={setValgtOppgaveId}
+											gjelderHastesaker={gjelderHastesaker}
+											ref={ref}
+										/>
+									)),
 							)}
 					</Table.Body>
 				</Table>

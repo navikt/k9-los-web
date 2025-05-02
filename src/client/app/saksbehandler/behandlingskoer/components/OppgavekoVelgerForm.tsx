@@ -5,7 +5,6 @@ import { BodyShort, Button, ReadMore, Select, Skeleton } from '@navikt/ds-react'
 import apiPaths from 'api/apiPaths';
 import { useAntallOppgaverIKoV3UtenReserverte } from 'api/queries/saksbehandlerQueries';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
-import { OppgavekøV1 } from 'saksbehandler/behandlingskoer/oppgavekoTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import {
@@ -38,10 +37,10 @@ const createTooltip = (saksbehandlere: Saksbehandler[]): ReactNode | undefined =
 	);
 };
 
-const getValgtOppgaveko = (oppgavekoer: Array<OppgavekøV1 | OppgavekøV3MedNavn>, oppgavekoId: string) =>
+const getValgtOppgaveko = (oppgavekoer: Array<OppgavekøV3MedNavn>, oppgavekoId: string) =>
 	oppgavekoer.find((s) => oppgavekoId === s.id);
 
-const getDefaultOppgaveko = (oppgavekoer: Array<OppgavekøV1 | OppgavekøV3MedNavn>) => {
+const getDefaultOppgaveko = (oppgavekoer: Array<OppgavekøV3MedNavn>) => {
 	const lagretOppgavekoId = getValueFromLocalStorage('id');
 	if (lagretOppgavekoId) {
 		if (oppgavekoer.some((s) => s.id === lagretOppgavekoId)) {
