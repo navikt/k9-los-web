@@ -1,15 +1,14 @@
 import React, { FunctionComponent, useCallback, useMemo, useState } from 'react';
 import { WrappedComponentProps, injectIntl } from 'react-intl';
-import { saksbehandlerKanVelgeNyeKoer } from 'app/envVariablesUtils';
-import { OppgavekøV3, OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
-import { getK9punsjRef, getK9sakHref } from 'app/paths';
 import { Loader } from '@navikt/ds-react';
+import { getK9punsjRef, getK9sakHref } from 'app/paths';
 import { K9LosApiKeys } from 'api/k9LosApi';
 import { useAlleSaksbehandlerKoerV1, useAlleSaksbehandlerKoerV3 } from 'api/queries/saksbehandlerQueries';
 import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import { OppgavekøV1 } from 'saksbehandler/behandlingskoer/oppgavekoTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
+import { OppgavekøV3, OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import OppgaveSystem from '../../types/OppgaveSystem';
 import OppgavekoPanel from './components/OppgavekoPanel';
 
@@ -24,9 +23,7 @@ interface OwnProps {
 const BehandlingskoerIndex: FunctionComponent<OwnProps & WrappedComponentProps> = ({ k9sakUrl, k9punsjUrl }) => {
 	const [valgtOppgavekoId, setValgtOppgavekoId] = useState('');
 	const { data: oppgavekoerV1 = [], isLoading: oppgavekoerV1IsLoading } = useAlleSaksbehandlerKoerV1();
-	const { data: oppgavekoerV3, isLoading: oppgavekoerV3IsLoading } = useAlleSaksbehandlerKoerV3({
-		enabled: saksbehandlerKanVelgeNyeKoer(),
-	});
+	const { data: oppgavekoerV3, isLoading: oppgavekoerV3IsLoading } = useAlleSaksbehandlerKoerV3();
 
 	const isLoading = oppgavekoerV3IsLoading || oppgavekoerV1IsLoading;
 	const mapKøV1 = (kø: OppgavekøV1): OppgavekøV1 => ({ ...kø, id: `${kø.id}__v1` });

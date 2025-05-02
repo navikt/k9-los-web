@@ -1,6 +1,6 @@
 import { useCallback, useContext, useState } from 'react';
 import { K9LosApiKeys } from 'api/k9LosApi';
-import { ErrorType, REQUEST_POLLING_CANCELLED } from 'api/rest-api';
+import { REQUEST_POLLING_CANCELLED } from 'api/rest-api';
 import { RestApiRequestContext } from '../RestApiContext';
 import RestApiState from '../RestApiState';
 
@@ -8,7 +8,7 @@ interface RestApiData<T> {
 	startRequest: (params?: any, keepData?: boolean) => Promise<T>;
 	resetRequestData: () => void;
 	state: RestApiState;
-	error?: ErrorType;
+	error?: unknown;
 	data?: T;
 	cancelRequest: () => void;
 }
