@@ -6,6 +6,7 @@ import {
 	useInnloggetSaksbehandler,
 	useOpphevReservasjoner,
 	useReserverOppgaveMutation,
+	useSisteOppgaverMutation,
 } from 'api/queries/saksbehandlerQueries';
 import { useRestApiRunner } from 'api/rest-api-hooks';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
@@ -18,8 +19,12 @@ const åpneOppgave = (oppgave: SøkeboksOppgaveDto) => {
 export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolean; closeModal: () => void }) {
 	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
 	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
+	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 	const leggTilBehandletOgÅpneOppgave = () =>
-		leggTilBehandletOppgave(props.oppgave.oppgaveNøkkel).finally(() => åpneOppgave(props.oppgave));
+		Promise.all([
+			leggTilBehandletOppgave(props.oppgave.oppgaveNøkkel),
+			leggTilSisteOppgaver(props.oppgave.oppgaveNøkkel),
+		]).finally(() => åpneOppgave(props.oppgave));
 	const { isPending: isLoadingEndreReservasjoner, mutate: endreReservasjoner } = useEndreReservasjoner(() =>
 		leggTilBehandletOgÅpneOppgave(),
 	);
