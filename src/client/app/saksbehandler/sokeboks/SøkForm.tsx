@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, HStack, HelpText, Search } from '@navikt/ds-react';
+import { Checkbox, Search } from '@navikt/ds-react';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 export function SøkForm(props: {
@@ -31,7 +31,7 @@ export function SøkForm(props: {
 			</Search>
 			<VerticalSpacer eightPx />
 			<Checkbox size="small" value={inkluderLukkede} onChange={() => setInkluderLukkede(!inkluderLukkede)}>
-				Søk også i lukkede saker
+				Søk også i lukkede behandlinger
 			</Checkbox>
 		</form>
 	);
