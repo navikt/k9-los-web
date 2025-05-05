@@ -129,3 +129,13 @@ export const useSøkOppgaveV3 = () =>
 		mutationFn: (params: { searchString: string; fraAktiv: boolean }): Promise<SøkeboksOppgaveDto[]> =>
 			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
 	});
+
+export const useSisteOppgaverMutation = () =>
+	useMutation({
+		mutationFn: (data: OppgaveNøkkel) => axiosInstance.post(apiPaths.sisteOppgaver, data),
+	});
+
+export const useHentSisteOppgaver = () =>
+	useQuery({
+		queryKey: [apiPaths.sisteOppgaver],
+	});
