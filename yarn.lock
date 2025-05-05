@@ -3550,13 +3550,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nolyfill/is-core-module@npm:1.0.39":
-  version: 1.0.39
-  resolution: "@nolyfill/is-core-module@npm:1.0.39"
-  checksum: 10/0d6e098b871eca71d875651288e1f0fa770a63478b0b50479c99dc760c64175a56b5b04f58d5581bbcc6b552b8191ab415eada093d8df9597ab3423c8cac1815
-  languageName: node
-  linkType: hard
-
 "@npmcli/agent@npm:^2.0.0":
   version: 2.2.2
   resolution: "@npmcli/agent@npm:2.2.2"
@@ -9504,17 +9497,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-typescript@npm:3.10.1":
-  version: 3.10.1
-  resolution: "eslint-import-resolver-typescript@npm:3.10.1"
+"eslint-import-resolver-typescript@npm:4.3.4":
+  version: 4.3.4
+  resolution: "eslint-import-resolver-typescript@npm:4.3.4"
   dependencies:
-    "@nolyfill/is-core-module": "npm:1.0.39"
     debug: "npm:^4.4.0"
     get-tsconfig: "npm:^4.10.0"
     is-bun-module: "npm:^2.0.0"
     stable-hash: "npm:^0.0.5"
     tinyglobby: "npm:^0.2.13"
-    unrs-resolver: "npm:^1.6.2"
+    unrs-resolver: "npm:^1.6.3"
   peerDependencies:
     eslint: "*"
     eslint-plugin-import: "*"
@@ -9524,7 +9516,7 @@ __metadata:
       optional: true
     eslint-plugin-import-x:
       optional: true
-  checksum: 10/b8d6a9b2045c70f043f722f78c9e65bc0283126f0ad92c8f07473f7647d77f7b1562f765a472f17e06b81897b407091c0ec9f2e4592b158c9fd92d0b0c33de89
+  checksum: 10/3620479c17bfbe7d40706c06e15a559a0a626af16bec3fe3046644ca84a5b49d5b8996753e5caf1b4f3de2140dbde5dc852aa3ea5fc4f459c080400b23af9e7e
   languageName: node
   linkType: hard
 
@@ -12996,7 +12988,7 @@ __metadata:
     eslint-config-airbnb: "npm:19.0.4"
     eslint-config-import: "npm:0.13.0"
     eslint-config-prettier: "npm:9.1.0"
-    eslint-import-resolver-typescript: "npm:3.10.1"
+    eslint-import-resolver-typescript: "npm:4.3.4"
     eslint-import-resolver-webpack: "npm:0.13.10"
     eslint-plugin-import: "npm:2.31.0"
     eslint-plugin-jest: "npm:28.11.0"
@@ -18632,7 +18624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unrs-resolver@npm:^1.6.2":
+"unrs-resolver@npm:^1.6.3":
   version: 1.7.2
   resolution: "unrs-resolver@npm:1.7.2"
   dependencies:
