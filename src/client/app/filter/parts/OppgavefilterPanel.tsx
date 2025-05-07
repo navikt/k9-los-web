@@ -52,9 +52,6 @@ const OppgavefilterPanel = ({
 	throw new Error(`Unhandled type: ${oppgavefilter.type}`);
 };
 
-interface CombineOppgavefilterPanelProps {
-	oppgavefilter: CombineOppgavefilter;
-}
 interface FilterGruppeProps {
 	oppgavefilter: CombineOppgavefilter;
 	køvisning: boolean;
