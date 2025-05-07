@@ -3,9 +3,9 @@ import Panel from 'nav-frontend-paneler';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import useGlobalStateRestApiData from 'api/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
+import SaksstottePaneler from 'saksbehandler/saksstotte/components/SaksstottePaneler';
 import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
-import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
 import * as styles from './saksbehandlerDashboard.css';
 
 export const SaksbehandlerDashboard: FunctionComponent = () => {
@@ -31,7 +31,7 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 					</div>
 					<div className={styles.rightColumn}>
 						<Panel>
-							<SaksstotteIndex />
+							<SaksstottePaneler />
 						</Panel>
 					</div>
 				</div>
