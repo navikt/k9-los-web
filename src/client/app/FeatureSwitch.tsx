@@ -8,8 +8,9 @@ export default function FeatureSwitch(props: {
 	switchLabel: string;
 	helpText?: React.ReactNode;
 	flex?: boolean;
+	defaultValue?: boolean;
 }) {
-	const [featureEnabled, setFeatureEnabled] = useState(false);
+	const [featureEnabled, setFeatureEnabled] = useState(props.defaultValue ?? false);
 
 	const featureSwitch = (
 		<HStack gap="2" align="center">
