@@ -1,9 +1,5 @@
-import React, { FunctionComponent, useRef, useState } from 'react';
-import Hjelpetekst from 'nav-frontend-hjelpetekst';
+import React, { FunctionComponent } from 'react';
 import Panel from 'nav-frontend-paneler';
-import { MenuElipsisHorizontalIcon, MenuHamburgerIcon, SparklesIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, HStack, HelpText, Popover, Switch, VStack } from '@navikt/ds-react';
-import { sokeboksNyeKoer } from 'app/envVariablesUtils';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import useGlobalStateRestApiData from 'api/rest-api-hooks/src/global-data/useGlobalStateRestApiData';

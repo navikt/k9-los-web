@@ -1,4 +1,11 @@
-import { UseMutationOptions, UseQueryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+	UseMutationOptions,
+	UseQueryOptions,
+	keepPreviousData,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from '@tanstack/react-query';
 import NavAnsatt from 'app/navAnsattTsType';
 import apiPaths from 'api/apiPaths';
 import { SaksbehandlerEnkel } from 'avdelingsleder/bemanning/saksbehandlerTsType';
@@ -128,6 +135,20 @@ export const useSøkOppgaveV3 = () =>
 	useMutation({
 		mutationFn: (params: { searchString: string; fraAktiv: boolean }): Promise<SøkeboksOppgaveDto[]> =>
 			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
+	});
+
+export const useHentNyeOgFerdigstilteSisteSyvDager = (gruppe: string) =>
+	useQuery<
+		{
+			oppdatertTidspunkt: string;
+			grupper: { kode: string; navn: string }[];
+			kolonner: string[];
+			serier: { navn: string; data: number[] }[];
+		},
+		Error
+	>({
+		queryKey: [apiPaths.hentNyeOgFerdigstilteSisteSyvDager(gruppe)],
+		placeholderData: keepPreviousData,
 	});
 
 export const useSisteOppgaverMutation = () =>
