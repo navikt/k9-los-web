@@ -12,7 +12,7 @@ export default function SisteOppgaver() {
 			<ul className="mt-2 list-none pl-0">
 				{data.map((oppgave) => (
 					<li key={oppgave.oppgaveEksternId}>
-						<a href={oppgave.url}>{oppgave.tittel}</a>
+						{oppgave.url ? <a href={oppgave.url}>{oppgave.tittel}</a> : oppgave.tittel}
 					</li>
 				))}
 			</ul>
