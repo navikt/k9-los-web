@@ -1,17 +1,11 @@
-import React, { FunctionComponent, useRef, useState } from 'react';
-import Hjelpetekst from 'nav-frontend-hjelpetekst';
+import React, { FunctionComponent } from 'react';
 import Panel from 'nav-frontend-paneler';
-import { MenuElipsisHorizontalIcon, MenuHamburgerIcon, SparklesIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, HStack, HelpText, Popover, Switch, VStack } from '@navikt/ds-react';
-import { sokeboksNyeKoer } from 'app/envVariablesUtils';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import useGlobalStateRestApiData from 'api/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
+import SaksstottePaneler from 'saksbehandler/saksstotte/components/SaksstottePaneler';
 import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
-import FeatureSwitch from '../../FeatureSwitch';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
-import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
-import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
 import * as styles from './saksbehandlerDashboard.css';
 
 export const SaksbehandlerDashboard: FunctionComponent = () => {
@@ -25,21 +19,7 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 				<div className={styles.gridContainer}>
 					<div className={styles.leftColumn}>
 						<Panel className={styles.sakslistePanel}>
-							<FeatureSwitch
-								flex
-								enabled={<Søkeboks />}
-								disabled={<FagsakSearchIndex k9punsjUrl={k9punsjUrl.verdi} k9sakUrl={k9sakUrl.verdi} />}
-								switchLabel="Vis ny søkeboks"
-								helpText={
-									<>
-										<p>Dette er funksjonalitet under utvikling.</p>
-										<p>
-											Ny søkeboks går mot ny kø- og oppgavemodell. Det er ønskelig å teste at søkeresultatet vises
-											riktig, og at søket er raskt nok.
-										</p>
-									</>
-								}
-							/>
+							<Søkeboks />
 						</Panel>
 						{saksbehandler.finnesISaksbehandlerTabell && (
 							<div>
@@ -51,7 +31,7 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 					</div>
 					<div className={styles.rightColumn}>
 						<Panel>
-							<SaksstotteIndex />
+							<SaksstottePaneler />
 						</Panel>
 					</div>
 				</div>

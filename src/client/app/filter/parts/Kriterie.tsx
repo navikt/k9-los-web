@@ -7,9 +7,9 @@ import { aksjonspunktKoder } from 'filter/konstanter';
 import { removeFilter } from 'filter/queryUtils';
 import { FeltverdiOppgavefilter, OppgavefilterKode } from '../filterTsTypes';
 import { Aksjonspunktvisning } from './Aksjonspunktvisning';
-import { generateId } from './FeltverdiOppgavefilterPanel/idGenerator';
 import KriterieOperator from './KriterieOperator';
 import KriterieVerdi from './KriterieVerdi';
+import { generateId } from './idGenerator';
 
 interface Props {
 	oppgavefilter: FeltverdiOppgavefilter;

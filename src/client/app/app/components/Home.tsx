@@ -21,8 +21,8 @@ import MissingPage from './MissingPage';
 const SentryRoutes = withSentryReactRouterV6Routing(Routes);
 const Home: FunctionComponent = () => {
 	const { data } = useQuery({
-        queryKey: [apiPaths.hentOppgaveFelter]
-    });
+		queryKey: [apiPaths.hentOppgaveFelter],
+	});
 	const { data: saksbehandler } = useInnloggetSaksbehandler();
 
 	const queryClient = useQueryClient();
@@ -31,12 +31,12 @@ const Home: FunctionComponent = () => {
 		if (saksbehandler.brukerIdent) {
 			if (saksbehandler.kanOppgavestyre) {
 				queryClient.prefetchQuery({
-                    queryKey: [apiPaths.hentSaksbehandlereAvdelingsleder]
-                });
+					queryKey: [apiPaths.hentSaksbehandlereAvdelingsleder],
+				});
 			}
 			queryClient.prefetchQuery({
-                queryKey: [apiPaths.hentSaksbehandlereSomSaksbehandler]
-            });
+				queryKey: [apiPaths.hentSaksbehandlereSomSaksbehandler],
+			});
 		}
 	}, [queryClient, saksbehandler.brukerIdent, saksbehandler.kanOppgavestyre]);
 
@@ -46,7 +46,7 @@ const Home: FunctionComponent = () => {
 		<div className="mt-5">
 			<AppContext.Provider value={contextValues}>
 				<SentryRoutes>
-					<Route path="/filter" element={<FilterIndex tittel="Søk på oppgaver" visningV3 />} />
+					<Route path="/filter" element={<FilterIndex tittel="Søk på oppgaver" />} />
 					<Route path="/" element={<SaksbehandlerIndex />} />
 					<Route path="/avdelingsleder" element={<AvdelingslederIndex />} />
 					<Route path="/admin" element={<AdminIndex />} />

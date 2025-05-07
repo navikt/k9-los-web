@@ -1,12 +1,9 @@
-import { UseMutationOptions, UseQueryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { UseQueryOptions, keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import NavAnsatt from 'app/navAnsattTsType';
 import apiPaths from 'api/apiPaths';
 import { SaksbehandlerEnkel } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import ReservasjonV3, { ReservasjonV3FraKøDto } from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
-import { OppgavekøV1 } from 'saksbehandler/behandlingskoer/oppgavekoTsType';
-import { SokeResultat } from 'saksbehandler/fagsakSearch/sokeResultatTsType';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
 import EndreOppgaveType from 'types/EndreOppgaveType';
 import { NesteOppgaverFraKoDto } from 'types/NesteOppgaverFraKoDto';
@@ -33,12 +30,6 @@ export const useAntallOppgaverIKoV3UtenReserverte = (
 		...options,
 	});
 
-export const useAlleSaksbehandlerKoerV1 = (options?: Omit<UseQueryOptions<OppgavekøV1[], Error>, 'queryKey'>) =>
-	useQuery<OppgavekøV1[], Error>({
-		queryKey: [apiPaths.hentAlleKoerSaksbehandlerV1],
-		...options,
-	});
-
 export const useAlleSaksbehandlerKoerV3 = (options?: Omit<UseQueryOptions<OppgavekøV3[], Error>, 'queryKey'>) =>
 	useQuery<OppgavekøV3[], Error>({
 		queryKey: [apiPaths.hentAlleKoerSaksbehandlerV3],
@@ -54,22 +45,10 @@ export const useNesteOppgaverFraKø = (
 		...options,
 	});
 
-export const useSaksbehandlerNesteTiV1 = (id: string, options?: Omit<UseQueryOptions<Oppgave[], Error>, 'queryKey'>) =>
-	useQuery<Oppgave[], Error, Oppgave[]>({
-		queryKey: [apiPaths.saksbehandlerNesteOppgaver(id)],
-		...options,
-	});
-
 export const useSaksbehandlerReservasjoner = (options?: Omit<UseQueryOptions<ReservasjonV3[], Error>, 'queryKey'>) =>
 	useQuery<ReservasjonV3[], Error, ReservasjonV3[]>({
 		queryKey: [apiPaths.saksbehandlerReservasjoner],
 		...options,
-	});
-export const useSøk = (options?: UseMutationOptions<SokeResultat, Error, string>) =>
-	useMutation({
-		...options,
-		mutationFn: (searchString: string): Promise<SokeResultat> =>
-			axiosInstance.post(apiPaths.sok, { searchString }).then((response) => response.data),
 	});
 
 export const useReserverOppgaveMutation = (onSuccess?: () => void) => {
@@ -128,6 +107,20 @@ export const useSøkOppgaveV3 = () =>
 	useMutation({
 		mutationFn: (params: { searchString: string; fraAktiv: boolean }): Promise<SøkeboksOppgaveDto[]> =>
 			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
+	});
+
+export const useHentNyeOgFerdigstilteSisteSyvDager = (gruppe: string) =>
+	useQuery<
+		{
+			oppdatertTidspunkt: string;
+			grupper: { kode: string; navn: string }[];
+			kolonner: string[];
+			serier: { navn: string; data: number[] }[];
+		},
+		Error
+	>({
+		queryKey: [apiPaths.hentNyeOgFerdigstilteSisteSyvDager(gruppe)],
+		placeholderData: keepPreviousData,
 	});
 
 export const useSisteOppgaverMutation = () =>
