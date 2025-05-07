@@ -1,16 +1,8 @@
-import {
-	UseMutationOptions,
-	UseQueryOptions,
-	keepPreviousData,
-	useMutation,
-	useQuery,
-	useQueryClient,
-} from '@tanstack/react-query';
+import { UseQueryOptions, keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import NavAnsatt from 'app/navAnsattTsType';
 import apiPaths from 'api/apiPaths';
 import { SaksbehandlerEnkel } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import ReservasjonV3, { ReservasjonV3FraKøDto } from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
-import { SokeResultat } from 'saksbehandler/fagsakSearch/sokeResultatTsType';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
 import EndreOppgaveType from 'types/EndreOppgaveType';
@@ -57,12 +49,6 @@ export const useSaksbehandlerReservasjoner = (options?: Omit<UseQueryOptions<Res
 	useQuery<ReservasjonV3[], Error, ReservasjonV3[]>({
 		queryKey: [apiPaths.saksbehandlerReservasjoner],
 		...options,
-	});
-export const useSøk = (options?: UseMutationOptions<SokeResultat, Error, string>) =>
-	useMutation({
-		...options,
-		mutationFn: (searchString: string): Promise<SokeResultat> =>
-			axiosInstance.post(apiPaths.sok, { searchString }).then((response) => response.data),
 	});
 
 export const useReserverOppgaveMutation = (onSuccess?: () => void) => {
