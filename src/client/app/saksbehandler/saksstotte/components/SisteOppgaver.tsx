@@ -14,7 +14,7 @@ export default function SisteOppgaver() {
 			<ul className="mt-2 list-none pl-0">
 				{isLoading && (
 					<Repeat times={10}>
-						<li>
+						<li className="mb-2">
 							<Skeleton width={250} />
 						</li>
 					</Repeat>
@@ -22,7 +22,7 @@ export default function SisteOppgaver() {
 				{isSuccess &&
 					data.length > 0 &&
 					data.map((oppgave) => (
-						<li key={oppgave.oppgaveEksternId}>
+						<li className="mb-2" key={oppgave.oppgaveEksternId}>
 							{oppgave.url ? <a href={oppgave.url}>{oppgave.tittel}</a> : oppgave.tittel}
 						</li>
 					))}
