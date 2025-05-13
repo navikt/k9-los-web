@@ -9,7 +9,7 @@ import FeatureSwitch from '../../FeatureSwitch';
 function NokkeltallIndex() {
 	return (
 		<FeatureSwitch
-			defaultValue
+			defaultValue={false}
 			enabled={
 				<div className="flex-grow-0 w-full">
 					<DagensTall />
