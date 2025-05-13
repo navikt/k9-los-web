@@ -157,6 +157,7 @@ export const useSisteOppgaverMutation = () =>
 	});
 
 export const useHentSisteOppgaver = () =>
-	useQuery({
+	useQuery<{ oppgaveEksternId: string; tittel: string; url: string | undefined }[]>({
 		queryKey: [apiPaths.sisteOppgaver],
+		placeholderData: keepPreviousData,
 	});
