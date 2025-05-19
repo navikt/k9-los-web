@@ -11,7 +11,7 @@ export function Søkeboks() {
 		<>
 			<SøkForm utførSøk={utførSøk} loading={isPending} nullstillSøk={nullstillSøk} />
 			<VerticalSpacer sixteenPx />
-			<SøkResultat oppgaver={data} />
+			<SøkResultat søkeresultat={data} />
 		</>
 	);
 }

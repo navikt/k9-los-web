@@ -1,20 +1,27 @@
 import React from 'react';
 import { OppgaveTabell } from 'saksbehandler/sokeboks/OppgaveTabell';
 import { PersonInfo } from 'saksbehandler/sokeboks/PersonInfo';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
+import { Søkeresultat } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
-export function SøkResultat(props: { oppgaver: SøkeboksOppgaveDto[] | undefined }) {
-	if (props.oppgaver === undefined) {
-		return null;
-	}
-	if (props.oppgaver.length === 0) {
-		return 'Søket ga ingen treff';
-	}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function assertNever(_: never) {}
 
-	return (
-		<div>
-			<PersonInfo oppgaver={props.oppgaver} />
-			<OppgaveTabell oppgaver={props.oppgaver} />
-		</div>
-	);
+export function SøkResultat({ søkeresultat }: { søkeresultat: Søkeresultat | undefined }) {
+	switch (søkeresultat?.type) {
+		case undefined:
+			return null;
+		case 'IKKE_TILGANG':
+			return 'Du har ikke tilgang til å slå opp denne personen';
+		case 'TOMT_RESULTAT':
+			return 'Søket ga ingen treff';
+		case 'MED_RESULTAT':
+			return (
+				<div>
+					{søkeresultat.person && <PersonInfo person={søkeresultat.person} />}
+					<OppgaveTabell oppgaver={søkeresultat.oppgaver} />
+				</div>
+			);
+		default:
+			assertNever(søkeresultat);
+	}
 }

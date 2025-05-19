@@ -1,5 +1,5 @@
 import NavAnsatt from 'app/navAnsattTsType';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
+import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 import { dateFormat, timeFormat } from 'utils/dateUtils';
 
 export type ModalInnholdRetur = {

@@ -9,8 +9,8 @@ import {
 	useSisteOppgaverMutation,
 } from 'api/queries/saksbehandlerQueries';
 import { useRestApiRunner } from 'api/rest-api-hooks';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
 import { modalInnhold } from 'saksbehandler/sokeboks/modal-innhold';
+import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 const åpneOppgave = (oppgave: SøkeboksOppgaveDto) => {
 	window.location.href = oppgave.oppgavebehandlingsUrl;
