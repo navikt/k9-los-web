@@ -11,7 +11,7 @@ export function SøkResultat({ søkeresultat }: { søkeresultat: Søkeresultat |
 		case undefined:
 			return null;
 		case 'IKKE_TILGANG':
-			return 'Ikke tilgang til person';
+			return 'Du har ikke tilgang til å slå opp denne personen';
 		case 'TOMT_RESULTAT':
 			return 'Søket ga ingen treff';
 		case 'MED_RESULTAT':
