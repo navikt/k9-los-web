@@ -52,6 +52,7 @@ const apiPaths = {
 	sisteOppgaver: '/api/k9-los-api/ny-oppgavestyring/siste-oppgaver',
 	sok: '/api/k9-los-api/fagsak/sok',
 	sokV3: '/api/k9-los-api/ny-oppgavestyring/sok',
+	sokV3Ny: '/api/k9-los-api/ny-oppgavestyring/sok/ny',
 	validerQuery: '/api/k9-los-api/ny-oppgavestyring/oppgave/validate',
 };
 

@@ -14,6 +14,7 @@ import { OppgavekøV1 } from 'saksbehandler/behandlingskoer/oppgavekoTsType';
 import { SokeResultat } from 'saksbehandler/fagsakSearch/sokeResultatTsType';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
+import { Søkeresultat } from 'saksbehandler/sokeboks-ny/søkeboks-oppgave-dto';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
 import EndreOppgaveType from 'types/EndreOppgaveType';
 import { NesteOppgaverFraKoDto } from 'types/NesteOppgaverFraKoDto';
@@ -135,6 +136,12 @@ export const useSøkOppgaveV3 = () =>
 	useMutation({
 		mutationFn: (params: { searchString: string; fraAktiv: boolean }): Promise<SøkeboksOppgaveDto[]> =>
 			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
+	});
+
+export const useSøkOppgaveV3Ny = () =>
+	useMutation({
+		mutationFn: (params: { søkeord: string; oppgavestatus: string[] }): Promise<Søkeresultat> =>
+			axiosInstance.post(apiPaths.sokV3Ny, params).then((response) => response.data),
 	});
 
 export const useHentNyeOgFerdigstilteSisteSyvDager = (gruppe: string) =>
