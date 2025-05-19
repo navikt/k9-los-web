@@ -3,7 +3,7 @@ import Panel from 'nav-frontend-paneler';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import useGlobalStateRestApiData from 'api/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
-import { Søkeboks } from 'saksbehandler/sokeboks-ny/Søkeboks';
+import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
 import FeatureSwitch from '../../FeatureSwitch';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
 import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';

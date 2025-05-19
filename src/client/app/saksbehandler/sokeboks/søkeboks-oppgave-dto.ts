@@ -14,7 +14,6 @@ export type SøkeboksPersonDto = {
 export type SøkeboksOppgaveDto = {
 	navn: string;
 	ytelsestype: string;
-	behandlingstype: { kode: string; navn: string };
 	saksnummer: string | undefined;
 	oppgaveNøkkel: OppgaveNøkkelDto;
 	hastesak: boolean;

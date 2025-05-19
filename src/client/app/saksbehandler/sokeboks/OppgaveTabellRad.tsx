@@ -2,10 +2,11 @@ import React from 'react';
 import Chevron from 'nav-frontend-chevron';
 import { Table } from '@navikt/ds-react';
 import { OppgaveModal } from 'saksbehandler/sokeboks/OppgaveModal';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
+import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 import { HastesakIkon } from 'sharedComponents/HastesakIkon';
 import ModalButton from 'sharedComponents/ModalButton';
 
+// ny
 export function OppgaveTabellRad(props: { oppgave: SøkeboksOppgaveDto; visHastesakKolonne: boolean }) {
 	return (
 		<ModalButton
@@ -14,8 +15,8 @@ export function OppgaveTabellRad(props: { oppgave: SøkeboksOppgaveDto; visHaste
 					{props.visHastesakKolonne && <Table.DataCell>{props.oppgave.hastesak && <HastesakIkon />}</Table.DataCell>}
 					<Table.DataCell>{props.oppgave.saksnummer ?? props.oppgave.journalpostId}</Table.DataCell>
 					<Table.DataCell>{props.oppgave.navn}</Table.DataCell>
-					<Table.DataCell>{props.oppgave.ytelsestype.navn}</Table.DataCell>
-					<Table.DataCell>{props.oppgave.behandlingsstatus?.navn ?? props.oppgave.oppgavestatus.navn}</Table.DataCell>
+					<Table.DataCell>{props.oppgave.ytelsestype}</Table.DataCell>
+					<Table.DataCell>{props.oppgave.status}</Table.DataCell>
 					<Table.DataCell>
 						<Chevron />
 					</Table.DataCell>

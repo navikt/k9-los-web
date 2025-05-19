@@ -4,24 +4,27 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 export function SøkForm(props: {
 	loading: boolean;
-	utførSøk: (søk: { searchString: string; fraAktiv: boolean }) => void;
+	utførSøk: (søk: { søkeord: string; oppgavestatus: string[] }) => void;
 	nullstillSøk: () => void;
 }) {
-	const [searchString, setSearchString] = useState('');
+	const [søkeord, setSøkeord] = useState('');
 	const [inkluderLukkede, setInkluderLukkede] = useState(false);
 	return (
 		<form
 			role="search"
 			onSubmit={(e) => {
 				e.preventDefault();
-				props.utførSøk({ searchString, fraAktiv: !inkluderLukkede });
+				props.utførSøk({
+					søkeord,
+					oppgavestatus: inkluderLukkede ? ['AAPEN', 'VENTER', 'LUKKET'] : ['AAPEN', 'VENTER'],
+				});
 			}}
 		>
 			<Search
 				label="Søk på saksnummer, personnummer eller journalpost-id"
 				variant="primary"
 				hideLabel={false}
-				onChange={setSearchString}
+				onChange={setSøkeord}
 				htmlSize={40}
 				maxLength={11}
 				onClear={props.nullstillSøk}

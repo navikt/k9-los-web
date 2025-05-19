@@ -1,17 +1,17 @@
 import React from 'react';
-import { useSøkOppgaveV3 } from 'api/queries/saksbehandlerQueries';
+import { useSøkOppgaveV3Ny } from 'api/queries/saksbehandlerQueries';
 import { SøkForm } from 'saksbehandler/sokeboks/SøkForm';
 import { SøkResultat } from 'saksbehandler/sokeboks/SøkResultat';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 export function Søkeboks() {
-	const { mutate: utførSøk, isPending, data, reset: nullstillSøk } = useSøkOppgaveV3();
+	const { mutate: utførSøk, isPending, data, reset: nullstillSøk } = useSøkOppgaveV3Ny();
 
 	return (
 		<>
 			<SøkForm utførSøk={utførSøk} loading={isPending} nullstillSøk={nullstillSøk} />
 			<VerticalSpacer sixteenPx />
-			<SøkResultat oppgaver={data} />
+			<SøkResultat søkeresultat={data} />
 		</>
 	);
 }
