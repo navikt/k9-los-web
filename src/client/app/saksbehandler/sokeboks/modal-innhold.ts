@@ -11,7 +11,7 @@ export type ModalInnholdRetur = {
 };
 
 export function modalInnhold(oppgave: SøkeboksOppgaveDto, innloggetSaksbehandler: NavAnsatt): ModalInnholdRetur {
-	if (oppgave.oppgavestatus.kode === 'VENTER') {
+	if (oppgave.status === 'Venter') {
 		let modaltekst: string;
 		if (innloggetSaksbehandler.brukerIdent === oppgave.reservertAvSaksbehandlerIdent) {
 			modaltekst = 'Oppgaven er reservert av deg.';

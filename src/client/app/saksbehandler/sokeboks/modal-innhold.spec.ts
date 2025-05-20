@@ -1,6 +1,6 @@
 import NavAnsatt from 'app/navAnsattTsType';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
 import { modalInnhold } from 'saksbehandler/sokeboks/modal-innhold';
+import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 const innloggetSaksbehandler: NavAnsatt = {
 	navn: 'Sara Saksbehandler',
@@ -17,17 +17,10 @@ const innloggetSaksbehandler: NavAnsatt = {
 
 const oppgave: SøkeboksOppgaveDto = {
 	navn: 'Ola Oppgave',
-	fnr: '01234567890',
 	reservertTom: null,
-	oppgavestatus: {
-		kode: 'AAPEN',
-		navn: 'Åpen',
-	},
-	kjønn: 'MANN',
+	status: 'Åpen',
 	oppgavebehandlingsUrl: '',
-	dødsdato: null,
-	behandlingstype: { kode: '', navn: '', kodeverk: '' },
-	ytelsestype: { kode: '', navn: '', kodeverk: '' },
+	ytelsestype: '',
 	oppgaveNøkkel: { oppgaveEksternId: '', oppgaveTypeEksternId: '', områdeEksternId: 'K9' },
 	journalpostId: null,
 	opprettetTidspunkt: '',
@@ -40,10 +33,7 @@ const oppgave: SøkeboksOppgaveDto = {
 
 describe('Skal lage riktig modalinnhold', () => {
 	test('på vent, ikke reservert', () => {
-		const resultat = modalInnhold(
-			{ ...oppgave, oppgavestatus: { kode: 'VENTER', navn: 'Venter' } },
-			{ ...innloggetSaksbehandler, kanReservere: true },
-		);
+		const resultat = modalInnhold({ ...oppgave, status: 'Venter' }, { ...innloggetSaksbehandler, kanReservere: true });
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er satt på vent',
 			modaltekst: 'Oppgaven er ikke reservert.',
@@ -60,10 +50,7 @@ describe('Skal lage riktig modalinnhold', () => {
 				reservertAvSaksbehandlerIdent: 'M999999',
 				reservertAvSaksbehandlerNavn: 'Super Saksbehandler',
 				reservertTom: '2029-12-31T23:59:59.000',
-				oppgavestatus: {
-					kode: 'VENTER',
-					navn: 'Venter',
-				},
+				status: 'Venter',
 			},
 			{ ...innloggetSaksbehandler, kanReservere: true },
 		);

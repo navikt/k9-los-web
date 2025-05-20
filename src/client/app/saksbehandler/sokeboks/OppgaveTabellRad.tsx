@@ -6,7 +6,6 @@ import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dt
 import { HastesakIkon } from 'sharedComponents/HastesakIkon';
 import ModalButton from 'sharedComponents/ModalButton';
 
-// ny
 export function OppgaveTabellRad(props: { oppgave: SøkeboksOppgaveDto; visHastesakKolonne: boolean }) {
 	return (
 		<ModalButton
