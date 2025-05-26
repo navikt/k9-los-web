@@ -8,7 +8,6 @@ export function SøkForm(props: {
 	nullstillSøk: () => void;
 }) {
 	const [søkeord, setSøkeord] = useState('');
-	const [inkluderLukkede, setInkluderLukkede] = useState(false);
 	return (
 		<form
 			role="search"
@@ -16,7 +15,7 @@ export function SøkForm(props: {
 				e.preventDefault();
 				props.utførSøk({
 					søkeord,
-					oppgavestatus: inkluderLukkede ? ['AAPEN', 'VENTER', 'LUKKET'] : ['AAPEN', 'VENTER'],
+					oppgavestatus: ['AAPEN', 'VENTER', 'LUKKET'],
 				});
 			}}
 		>
@@ -32,10 +31,6 @@ export function SøkForm(props: {
 			>
 				<Search.Button loading={props.loading}>Søk</Search.Button>
 			</Search>
-			<VerticalSpacer eightPx />
-			<Checkbox size="small" value={inkluderLukkede} onChange={() => setInkluderLukkede(!inkluderLukkede)}>
-				Søk også i lukkede behandlinger
-			</Checkbox>
 		</form>
 	);
 }
