@@ -6,18 +6,13 @@ import { Button, Heading, Label, Modal } from '@navikt/ds-react';
 import { usePlukkOppgaveMutation, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/oppgavetabeller/ReserverteOppgaverTabell';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKoId } from '../utils';
 import OppgavekoVelgerForm from './OppgavekoVelgerForm';
 import * as styles from './oppgavekoPanel.css';
 import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
 
-interface OwnProps {
-	apneOppgave: (oppgave: Oppgave) => void;
-}
-
-const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
+const OppgavekoPanel: FunctionComponent = () => {
 	const [visBehandlingerIKo, setVisBehandlingerIKo] = useState<boolean>(false);
 	const { valgtOppgavekoId, oppgavekoer } = useContext(BehandlingskoerContext);
 	const [visFinnesIngenBehandlingerIKoModal, setVisFinnesIngenBehandlingerIKoModal] = useState<boolean>(false);
@@ -49,8 +44,8 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 			<OppgavekoVelgerForm plukkNyOppgave={plukkNyOppgave} />
 			<VerticalSpacer twentyPx />
 			<div className={styles.behandlingskoerContainer}>
-				<ReserverteOppgaverTabell gjelderHastesaker apneOppgave={apneOppgave} />
-				<ReserverteOppgaverTabell apneOppgave={apneOppgave} />
+				<ReserverteOppgaverTabell gjelderHastesaker />
+				<ReserverteOppgaverTabell />
 			</div>
 			<VerticalSpacer eightPx />
 			{visFinnesIngenBehandlingerIKoModal && (

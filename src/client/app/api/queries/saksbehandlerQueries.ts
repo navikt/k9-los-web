@@ -4,7 +4,7 @@ import apiPaths from 'api/apiPaths';
 import { SaksbehandlerEnkel } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import ReservasjonV3, { ReservasjonV3FraKøDto } from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
+import { Søkeresultat } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 import EndreOppgaveType from 'types/EndreOppgaveType';
 import { NesteOppgaverFraKoDto } from 'types/NesteOppgaverFraKoDto';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
@@ -105,7 +105,7 @@ export const useOpphevReservasjoner = (onSuccess?: () => void) => {
 
 export const useSøkOppgaveV3 = () =>
 	useMutation({
-		mutationFn: (params: { searchString: string; fraAktiv: boolean }): Promise<SøkeboksOppgaveDto[]> =>
+		mutationFn: (params: { søkeord: string; oppgavestatus: string[] }): Promise<Søkeresultat> =>
 			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
 	});
 
@@ -129,6 +129,7 @@ export const useSisteOppgaverMutation = () =>
 	});
 
 export const useHentSisteOppgaver = () =>
-	useQuery({
+	useQuery<{ oppgaveEksternId: string; tittel: string; url: string | undefined }[]>({
 		queryKey: [apiPaths.sisteOppgaver],
+		placeholderData: keepPreviousData,
 	});

@@ -4,39 +4,30 @@ type OppgaveNøkkelDto = {
 	oppgaveTypeEksternId: string;
 };
 
-type KodeverkMedNavn = {
-	kode: string;
-	navn: string;
-	kodeverk: string;
-};
-
-type Oppgavestatus = {
-	kode: 'AAPEN' | 'VENTER' | 'LUKKET';
-	navn: string;
-};
-
-type Behandlingsstatus = {
-	kode: string;
-	navn: string;
-};
-
-export type SøkeboksOppgaveDto = {
+export type SøkeboksPersonDto = {
 	navn: string;
 	fnr: string;
 	kjønn: string;
 	dødsdato?: string;
-	ytelsestype: KodeverkMedNavn;
-	behandlingstype: KodeverkMedNavn;
+};
+
+export type SøkeboksOppgaveDto = {
+	navn: string;
+	ytelsestype: string;
 	saksnummer: string | undefined;
 	oppgaveNøkkel: OppgaveNøkkelDto;
 	hastesak: boolean;
 	journalpostId: string | undefined;
 	opprettetTidspunkt: string | undefined;
-	oppgavestatus: Oppgavestatus;
-	behandlingsstatus?: Behandlingsstatus;
+	status: string;
 	oppgavebehandlingsUrl: string | undefined;
 	reservasjonsnøkkel: string;
 	reservertAvSaksbehandlerNavn: string | undefined;
 	reservertAvSaksbehandlerIdent: string | undefined;
 	reservertTom: string | undefined;
 };
+
+export type Søkeresultat =
+	| { type: 'IKKE_TILGANG' }
+	| { type: 'TOMT_RESULTAT' }
+	| { type: 'MED_RESULTAT'; person?: SøkeboksPersonDto; oppgaver: SøkeboksOppgaveDto[] };

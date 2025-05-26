@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router';
 import classnames from 'classnames/bind';
@@ -9,12 +9,9 @@ import { CircleSlashIcon, KeyHorizontalIcon, PersonGroupIcon, TasklistIcon } fro
 import { BodyShort, Heading } from '@navikt/ds-react';
 import useTrackRouteParam from 'app/data/trackRouteParam';
 import { getPanelLocationCreator } from 'app/paths';
-import { K9LosApiKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
-import DagensTallPanel from 'avdelingsleder/dagensTall/DagensTallPanel';
-import ApneBehandlinger from 'avdelingsleder/dagensTall/apneBehandlingerTsType';
 import NokkeltallIndex from 'avdelingsleder/nokkeltall/NokkeltallIndex';
+import Status from 'avdelingsleder/status/Status';
 import Image from 'sharedComponents/Image';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -102,18 +99,6 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 		isQueryParam: true,
 	});
 
-	const { startRequest: hentAntallIdag, data: totaltIdag = 0 } = useRestApiRunner<number>(
-		K9LosApiKeys.OPPGAVE_ANTALL_TOTALT,
-	);
-	const { startRequest: hentDagensTall, data: dagensTall = [] } = useRestApiRunner<ApneBehandlinger[]>(
-		K9LosApiKeys.HENT_DAGENS_TALL,
-	);
-
-	useEffect(() => {
-		hentAntallIdag();
-		hentDagensTall();
-	}, []);
-
 	const getPanelFromUrlOrDefault = (loc) => {
 		const panelFromUrl = parseQueryString(loc.search);
 		return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER_V3;
@@ -135,7 +120,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 					<BodyShort className={styles.paneltekst}>Avdelingslederpanel</BodyShort>
 				</Row>
 				<Row>
-					<DagensTallPanel totaltIdag={totaltIdag} dagensTall={dagensTall} />
+					<Status />
 				</Row>
 				<VerticalSpacer twentyPx />
 				<Row>

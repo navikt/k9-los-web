@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from '@navikt/ds-react';
 import { OppgaveTabellRad } from 'saksbehandler/sokeboks/OppgaveTabellRad';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
+import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 export function OppgaveTabell(props: { oppgaver: SøkeboksOppgaveDto[] }) {
 	const visHastesakKolonne = props.oppgaver.find((oppgave) => oppgave.hastesak) !== undefined;

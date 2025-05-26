@@ -11,7 +11,6 @@ import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
 import merknadType from 'kodeverk/merknadType';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { getHeaderCodes } from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgavetabellerfelles';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
@@ -21,11 +20,10 @@ import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
 import * as styles from './oppgaverTabell.css';
 
 interface OwnProps {
-	apneOppgave: (oppgave: Oppgave) => void;
 	gjelderHastesaker?: boolean;
 }
 
-const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gjelderHastesaker }) => {
+const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ gjelderHastesaker }) => {
 	const [valgtOppgaveId, setValgtOppgaveId] = useState<string>();
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
 	const queryClient = useQueryClient();
@@ -48,7 +46,6 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 		},
 	});
 
-	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
 	const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Reservasjon[]>(
 		K9LosApiKeys.FORLENG_OPPGAVERESERVASJON,
 	);
@@ -61,11 +58,6 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 		});
 	};
 	const ref = useRef({});
-
-	const goToFagsak = (oppgave: Oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkel);
-		apneOppgave(oppgave);
-	};
 
 	const countReservations = (reservasjon: ReservasjonV3) => {
 		if (reservasjon.reservertOppgaveV1Dto) {

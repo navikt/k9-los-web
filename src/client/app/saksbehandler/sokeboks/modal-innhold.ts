@@ -1,5 +1,5 @@
 import NavAnsatt from 'app/navAnsattTsType';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/SøkeboksOppgaveDto';
+import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 import { dateFormat, timeFormat } from 'utils/dateUtils';
 
 export type ModalInnholdRetur = {
@@ -11,7 +11,7 @@ export type ModalInnholdRetur = {
 };
 
 export function modalInnhold(oppgave: SøkeboksOppgaveDto, innloggetSaksbehandler: NavAnsatt): ModalInnholdRetur {
-	if (oppgave.oppgavestatus.kode === 'VENTER') {
+	if (oppgave.status === 'Venter') {
 		let modaltekst: string;
 		if (innloggetSaksbehandler.brukerIdent === oppgave.reservertAvSaksbehandlerIdent) {
 			modaltekst = 'Oppgaven er reservert av deg.';

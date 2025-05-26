@@ -1,14 +1,14 @@
 import React, { FunctionComponent } from 'react';
+import SisteOppgaver from 'saksbehandler/saksstotte/components/SisteOppgaver';
 import SaksbehandlerNøkkeltall from 'saksbehandler/saksstotte/nokkeltall/SaksbehandlerNøkkeltall';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import SistBehandledeSaker from './SistBehandledeSaker';
 
 /**
  * SaksstottePaneler
  */
 const SaksstottePaneler: FunctionComponent = () => (
 	<>
-		<SistBehandledeSaker />
+		<SisteOppgaver />
 		<VerticalSpacer twentyPx />
 		<SaksbehandlerNøkkeltall />
 	</>

@@ -1,16 +1,12 @@
 import React, { FunctionComponent } from 'react';
 import Panel from 'nav-frontend-paneler';
-import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import useGlobalStateRestApiData from 'api/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
 import SaksstottePaneler from 'saksbehandler/saksstotte/components/SaksstottePaneler';
 import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
 import * as styles from './saksbehandlerDashboard.css';
 
 export const SaksbehandlerDashboard: FunctionComponent = () => {
-	const k9sakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.K9SAK_URL);
-	const k9punsjUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.PUNSJ_URL);
 	const { data: saksbehandler } = useInnloggetSaksbehandler();
 
 	return (
@@ -24,7 +20,7 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 						{saksbehandler.finnesISaksbehandlerTabell && (
 							<div>
 								<Panel className={styles.sakslistePanel}>
-									<BehandlingskoerIndex k9sakUrl={k9sakUrl.verdi} k9punsjUrl={k9punsjUrl.verdi} />
+									<BehandlingskoerIndex />
 								</Panel>
 							</div>
 						)}
