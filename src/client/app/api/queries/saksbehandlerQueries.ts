@@ -14,7 +14,7 @@ import { axiosInstance } from 'utils/reactQueryConfig';
 export const useInnloggetSaksbehandler = (options?: Omit<UseQueryOptions<NavAnsatt, Error>, 'queryKey'>) =>
 	useQuery({
 		...options,
-		queryKey: [apiPaths.saksbehandler],
+		queryKey: [apiPaths.innloggetBruker],
 		gcTime: Infinity,
 		refetchOnWindowFocus: false,
 	});
