@@ -2,7 +2,7 @@ const apiPaths = {
 	antallOppgaverIKoV3: (id: string) => `/api/k9-los-api/ny-oppgavestyring/ko/${id}/antall`,
 	antallOppgaverIKoV3UtenReserverte: (id: string) =>
 		`/api/k9-los-api/ny-oppgavestyring/ko/${id}/antall-uten-reserverte`,
-	avdelinglederReservasjoner: '/api/k9-los-api/avdelingsleder/reservasjoner',
+	avdelinglederReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/alle-reservasjoner',
 	endreReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/reservasjon/endre',
 	opphevReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/opphev',
 	driftsmeldinger: '/api/k9-los-api/driftsmeldinger',
@@ -34,7 +34,7 @@ const apiPaths = {
 	oppgaverAntallTotalt: '/api/k9-los-api/avdelingsleder/oppgaver/antall-totalt',
 	opprettOppgaveko: '/api/k9-los-api/ny-oppgavestyring/ko/opprett',
 	reserverOppgave: '/api/k9-los-api/saksbehandler/oppgaver/reserver',
-	saksbehandler: '/api/k9-los-api/saksbehandler',
+	innloggetBruker: '/api/k9-los-api/innloggetbruker',
 	saksbehandlerReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/reserverte',
 	slettOppgaveko: '/api/k9-los-api/ny-oppgavestyring/ko/',
 	slettSaksbehandler: '/api/k9-los-api/avdelingsleder/saksbehandlere/slett',
