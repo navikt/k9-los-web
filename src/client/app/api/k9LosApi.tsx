@@ -3,18 +3,12 @@ import { RestApiConfigBuilder, createRequestApi } from './rest-api';
 export enum RestApiGlobalStatePathsKeys {
 	KODEVERK = 'KODEVERK',
 	NAV_ANSATT = 'NAV_ANSATT',
-	K9SAK_URL = 'K9SAK_URL',
-	PUNSJ_URL = 'PUNSJ_URL',
 }
 
 export enum K9LosApiKeys {
 	KODEVERK = 'KODEVERK',
 	NAV_ANSATT = 'NAV_ANSATT',
-	PUNSJ_URL = 'PUNSJ_URL',
-	SEARCH_FAGSAK = 'SEARCH_FAGSAK',
 	BEHANDLEDE_OPPGAVER = 'BEHANDLEDE_OPPGAVER',
-	K9SAK_URL = 'K9SAK_URL',
-	K9TILBAKE_URL = 'K9TILBAKE_URL',
 	FEATURE_TOGGLES = 'FEATURE_TOGGLES',
 	OPPGAVEKO = 'OPPGAVEKO',
 	HENT_OPPGAVEKO = 'HENT_OPPGAVEKO',
@@ -76,9 +70,6 @@ export enum K9LosApiKeys {
 
 export const endpoints = () =>
 	new RestApiConfigBuilder('api/k9-los-api')
-		/* /api/fagsak */
-		.withPost('/fagsak/sok', K9LosApiKeys.SEARCH_FAGSAK)
-
 		/* /api/saksbehandler */
 		.withGet('/saksbehandler', K9LosApiKeys.NAV_ANSATT)
 
@@ -156,14 +147,7 @@ export const endpoints = () =>
 			'/avdelingsleder/nokkeltall/behandlinger-forste-stonadsdag',
 			K9LosApiKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG,
 		)
-		.withGet('/avdelingsleder/nokkeltall/dagens-tall', K9LosApiKeys.HENT_DAGENS_TALL)
-		.withGet('/avdelingsleder/nokkeltall/alle-paa-vent_v2', K9LosApiKeys.HENT_BEHANDLINGER_SOM_GÅR_AV_VENT)
-
 		.withGet('/avdelingsleder/reservasjoner', K9LosApiKeys.HENT_ALLE_RESERVASJONER)
-
-		/* /api/konfig */
-		.withGet('/konfig/k9-sak-url', K9LosApiKeys.K9SAK_URL)
-		.withGet('/konfig/k9-punsj-url', K9LosApiKeys.PUNSJ_URL)
 
 		/* /api/kodeverk */
 		.withGet('/kodeverk', K9LosApiKeys.KODEVERK)

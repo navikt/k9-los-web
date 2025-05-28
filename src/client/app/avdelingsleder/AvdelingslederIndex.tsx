@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router';
 import classnames from 'classnames/bind';
@@ -8,13 +8,8 @@ import Tabs from 'nav-frontend-tabs';
 import { CircleSlashIcon, KeyHorizontalIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import useTrackRouteParam from 'app/data/trackRouteParam';
-import { avdelingslederTilgangTilNyeKoer } from 'app/envVariablesUtils';
 import { getPanelLocationCreator } from 'app/paths';
-import { K9LosApiKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import { useRestApiRunner } from 'api/rest-api-hooks';
-import DagensTallPanel from 'avdelingsleder/dagensTall/DagensTallPanel';
-import ApneBehandlinger from 'avdelingsleder/dagensTall/apneBehandlingerTsType';
 import NokkeltallIndex from 'avdelingsleder/nokkeltall/NokkeltallIndex';
 import Status from 'avdelingsleder/status/Status';
 import Image from 'sharedComponents/Image';
@@ -23,7 +18,6 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { parseQueryString } from 'utils/urlUtils';
 import * as styles from './avdelingslederIndex.css';
 import AvdelingslederPanels from './avdelingslederPanels';
-import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
 import BehandlingskoerIndex from './behandlingskoerV3/BehandlingskoerIndex';
 import SaksbehandlereTabell from './bemanning/components/SaksbehandlereTabell';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
@@ -32,10 +26,8 @@ import ReservasjonerTabell from './reservasjoner/components/ReservasjonerTabellV
 
 const classNames = classnames.bind(styles);
 
-const renderAvdelingslederPanel = (avdelingslederPanel) => {
+const renderAvdelingslederPanel = (avdelingslederPanel: string) => {
 	switch (avdelingslederPanel) {
-		case AvdelingslederPanels.BEHANDLINGSKOER:
-			return <EndreBehandlingskoerIndex />;
 		case AvdelingslederPanels.BEHANDLINGSKOER_V3:
 			return <BehandlingskoerIndex />;
 		case AvdelingslederPanels.NOKKELTALL:
@@ -50,7 +42,6 @@ const renderAvdelingslederPanel = (avdelingslederPanel) => {
 };
 
 const messageId = {
-	[AvdelingslederPanels.BEHANDLINGSKOER]: 'AvdelingslederIndex.Behandlingskoer',
 	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: 'AvdelingslederIndex.Behandlingskoer.V3',
 	[AvdelingslederPanels.NOKKELTALL]: 'AvdelingslederIndex.Nokkeltall',
 	[AvdelingslederPanels.RESERVASJONER]: 'AvdelingslederIndex.Reservasjoner',
@@ -58,7 +49,6 @@ const messageId = {
 };
 
 const tabStyle = {
-	[AvdelingslederPanels.BEHANDLINGSKOER]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.NOKKELTALL]: [<KeyHorizontalIcon fontSize="1.5rem" />, <KeyHorizontalIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.RESERVASJONER]: [<CircleSlashIcon fontSize="1.5rem" />, <CircleSlashIcon fontSize="1.5rem" />],
@@ -111,22 +101,10 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 
 	const getPanelFromUrlOrDefault = (loc) => {
 		const panelFromUrl = parseQueryString(loc.search);
-		return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER;
+		return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER_V3;
 	};
 
 	const { data: innnloggetSaksbehandler } = useInnloggetSaksbehandler();
-
-	const { startRequest: hentAntallIdag, data: totaltIdag = 0 } = useRestApiRunner<number>(
-		K9LosApiKeys.OPPGAVE_ANTALL_TOTALT,
-	);
-	const { startRequest: hentDagensTall, data: dagensTall = [] } = useRestApiRunner<ApneBehandlinger[]>(
-		K9LosApiKeys.HENT_DAGENS_TALL,
-	);
-
-	useEffect(() => {
-		hentAntallIdag();
-		hentDagensTall();
-	}, []);
 
 	const getAvdelingslederPanelLocation = getPanelLocationCreator(location);
 	const activeAvdelingslederPanel = activeAvdelingslederPanelTemp || getPanelFromUrlOrDefault(location);
@@ -142,7 +120,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 					<BodyShort className={styles.paneltekst}>Avdelingslederpanel</BodyShort>
 				</Row>
 				<Row>
-					<DagensTallPanel dagensTall={dagensTall} totaltIdag={totaltIdag} />
+					<Status />
 				</Row>
 				<VerticalSpacer twentyPx />
 				<Row>
@@ -151,16 +129,10 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 							<Tabs
 								tabs={[
 									getTab(
-										AvdelingslederPanels.BEHANDLINGSKOER,
+										AvdelingslederPanels.BEHANDLINGSKOER_V3,
 										activeAvdelingslederPanel,
 										getAvdelingslederPanelLocation,
 									),
-									avdelingslederTilgangTilNyeKoer() &&
-										getTab(
-											AvdelingslederPanels.BEHANDLINGSKOER_V3,
-											activeAvdelingslederPanel,
-											getAvdelingslederPanelLocation,
-										),
 									getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
 									getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
 									getTab(

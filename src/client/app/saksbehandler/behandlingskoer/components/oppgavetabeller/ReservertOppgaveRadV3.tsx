@@ -5,10 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { ExclamationmarkTriangleFillIcon, MenuHamburgerIcon } from '@navikt/aksel-icons';
 import { Button, Table } from '@navikt/ds-react';
-import { getK9sakHref } from 'app/paths';
-import { K9LosApiKeys, RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
-import { useGlobalStateRestApiData, useRestApiRunner } from 'api/rest-api-hooks';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
 import DateLabel from 'sharedComponents/DateLabel';
@@ -44,8 +41,6 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 		}: OwnProps,
 		ref: React.RefObject<{ [key: string]: HTMLElement | null }>,
 	) => {
-		const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
-		const k9sakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.K9SAK_URL);
 		const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 
 		const toggleMenu = (oppgaveValgt?: OppgaveV3) => {
@@ -57,15 +52,9 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 		};
 
 		const tilOppgave = async () => {
-			await leggTilBehandletOppgave(oppgave.oppgaveNøkkel);
 			await leggTilSisteOppgaver(oppgave.oppgaveNøkkel);
 
-			let fallbackUrl = '';
-
-			if (oppgave?.saksnummer) {
-				fallbackUrl = getK9sakHref(k9sakUrl.verdi, oppgave?.saksnummer, oppgave?.oppgaveNøkkel?.oppgaveEksternId);
-			}
-			window.location.assign(oppgave.oppgavebehandlingsUrl || fallbackUrl);
+			window.location.assign(oppgave.oppgavebehandlingsUrl);
 		};
 		return (
 			<Table.Row
