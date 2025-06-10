@@ -27,6 +27,7 @@ interface OwnProps {
 	tittel: string;
 	paakrevdeKoder?: OppgavefilterKode[];
 	readOnlyKoder?: OppgavefilterKode[];
+	visningV3?: boolean;
 	køvisning?: boolean;
 }
 
@@ -56,7 +57,16 @@ const hasQueryChangedExcludingLimit = (prev, current) => {
 
 	return JSON.stringify(prevRest) !== JSON.stringify(currRest);
 };
-const FilterIndex = ({ initialQuery, lagre, avbryt, tittel, køvisning, paakrevdeKoder, readOnlyKoder }: OwnProps) => {
+const FilterIndex = ({
+	initialQuery,
+	lagre,
+	avbryt,
+	tittel,
+	visningV3,
+	køvisning,
+	paakrevdeKoder,
+	readOnlyKoder,
+}: OwnProps) => {
 	const [queryErrorMessage, setQueryErrorMessage] = useState(null);
 	const [queryErrors, setQueryErrors] = useState([]);
 	const [shouldRevalidate, setShouldRevalidate] = useState(false);
@@ -263,6 +273,7 @@ const FilterIndex = ({ initialQuery, lagre, avbryt, tittel, køvisning, paakrevd
 							key={item.id}
 							køvisning={køvisning}
 							oppgavefilter={item}
+							visningV3={visningV3}
 							addGruppeOperation={addGruppe(oppgaveQuery.id)}
 							paakrevdeKoder={paakrevdeKoder}
 							readOnlyKoder={readOnlyKoder}

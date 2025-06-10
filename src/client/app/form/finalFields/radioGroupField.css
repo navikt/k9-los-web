@@ -1,0 +1,7 @@
+.radioGroup.readOnly {
+	display: inline-block;
+	width: auto;
+}
+.radioGroupLabel {
+	display: inline-block;
+}

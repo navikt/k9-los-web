@@ -1,0 +1,141 @@
+.form {
+	padding-bottom: 20px;
+	padding-left: 10px;
+	padding-top: 10px;
+}
+.stonadstypeRadios {
+	margin-top: 6px;
+}
+.lowerRow {
+	display: inline-flex;
+}
+.antall {
+	left: 70%;
+}
+.radios {
+	display: -webkit-box;
+}
+.kriterier {
+	margin-left: 10%;
+}
+.skjermet {
+	padding-bottom: 30px;
+}
+.sortering {
+	margin-left: 10%;
+}
+.header {
+	color: #262626;
+	font-family: 'Source Sans Pro', Arial, sans-serif;
+	font-size: 22px;
+	font-weight: bold;
+	line-height: 22px;
+}
+.line {
+	color: #262626;
+}
+.label {
+	color: #262626;
+	font-family: 'Source Sans Pro', Arial, sans-serif;
+	font-size: 16px;
+	font-style: normal;
+	font-weight: 600;
+	line-height: 22px;
+}
+.punsjUndervalg {
+	margin-left: 0.5rem;
+}
+.navn {
+	padding-bottom: 30px;
+}
+.stonadsVelger {
+	padding-bottom: 30px;
+}
+.slett {
+	color: #c30000;
+	font-size: 16px;
+	line-height: 22px;
+	padding-left: 5px;
+	text-decoration-line: underline;
+}
+.slettContainer {
+	align-self: flex-end;
+	display: inline-flex;
+	float: right;
+	padding-right: 0.5rem;
+}
+.middleHeader {
+	margin-right: 300px;
+}
+.punsjVal {
+	align-items: center;
+	background-color: white;
+	border: 0;
+	display: flex;
+	font-weight: normal;
+	padding-bottom: 0.5rem;
+	padding-top: 0.5rem;
+}
+.punsjVal :first-child {
+	margin-left: -0.25rem;
+	margin-right: 0.7rem;
+}
+.punsjVal .punsjTekst {
+	color: #262626;
+}
+@media only screen and (max-width: 1600px) {
+	.punsjVal .punsjTekst {
+		font-size: 13px;
+	}
+}
+.belopContainer {
+	display: flex;
+}
+.belopContainer > * {
+	padding-bottom: 1rem;
+	padding-right: 10px;
+	width: 5rem;
+}
+.belopContainer > * > input {
+	min-height: 1rem;
+}
+.belopContainer > * > label {
+	font-size: 14px;
+	font-weight: normal;
+}
+.belop {
+	padding-top: 40px;
+	width: 2rem;
+}
+.feilmelding {
+	color: #c30000;
+	font-size: 1rem;
+	font-weight: bold;
+}
+.container {
+	display: flex;
+}
+.container > div {
+	padding: 0 1.5rem;
+}
+.container > div:last-child {
+	padding: 0;
+}
+.container > div:first-child {
+	padding: 0 1.5rem 0 0;
+}
+.saksbehandler {
+	flex-grow: 2;
+}
+.arrowBoxContainer {
+	margin-left: -2rem;
+	padding-top: 1rem;
+}
+.kriterierTitel {
+	font-size: 1rem;
+}
+@media only screen and (max-width: 1600px) {
+	.kriterierTitel {
+		font-size: 13px;
+	}
+}

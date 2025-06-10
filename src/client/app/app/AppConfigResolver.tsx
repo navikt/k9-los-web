@@ -22,12 +22,23 @@ const AppConfigResolver: FunctionComponent<OwnProps> = ({ children }) => {
 		isLoading: isLoadingSaksbehandler,
 	} = useInnloggetSaksbehandler();
 
+	const { state: stateK9sakUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.K9SAK_URL, undefined, {
+		suspendRequest: !harHentetInnloggetSaksbehandler,
+		updateTriggers: [innloggetSaksbehandler],
+	});
 	const { state: stateKodeverk } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.KODEVERK, undefined, {
 		suspendRequest: !harHentetInnloggetSaksbehandler,
 		updateTriggers: [innloggetSaksbehandler],
 	});
+	const { state: stateK9punsjUrl } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.PUNSJ_URL, undefined, {
+		suspendRequest: !harHentetInnloggetSaksbehandler,
+		updateTriggers: [innloggetSaksbehandler],
+	});
 
-	if (isLoadingSaksbehandler || stateKodeverk === RestApiState.LOADING) {
+	if (
+		isLoadingSaksbehandler ||
+		[stateK9sakUrl, stateKodeverk, stateK9punsjUrl].some((v) => v === RestApiState.LOADING)
+	) {
 		return <LoadingPanel />;
 	}
 

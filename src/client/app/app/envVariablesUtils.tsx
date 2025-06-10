@@ -38,3 +38,5 @@ export const setEnvVariables = async () => {
 };
 
 export const sokeboksNyeKoer = () => window?.env?.SOKEBOKS_NYE_KOER === 'enabled';
+export const saksbehandlerKanVelgeNyeKoer = () => window?.env?.SAKSBEHANDLER_KAN_VELGE_NYE_KOER === 'enabled';
+export const avdelingslederTilgangTilNyeKoer = () => window?.env?.AVDELINGSLEDER_TILGANG_TIL_NYE_KOER === 'enabled';
