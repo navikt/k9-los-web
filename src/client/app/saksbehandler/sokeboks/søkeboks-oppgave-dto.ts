@@ -25,9 +25,10 @@ export type SøkeboksOppgaveDto = {
 	reservertAvSaksbehandlerNavn: string | undefined;
 	reservertAvSaksbehandlerIdent: string | undefined;
 	reservertTom: string | undefined;
+	fagsakÅr: number | undefined;
 };
 
 export type Søkeresultat =
 	| { type: 'IKKE_TILGANG' }
 	| { type: 'TOMT_RESULTAT' }
-	| { type: 'MED_RESULTAT'; person?: SøkeboksPersonDto; oppgaver: SøkeboksOppgaveDto[] };
+	| { type: 'MED_RESULTAT'; person: SøkeboksPersonDto; oppgaver: SøkeboksOppgaveDto[] };
