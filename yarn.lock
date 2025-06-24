@@ -14087,6 +14087,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-alertstriper@patch:nav-frontend-alertstriper@npm%3A4.0.2#./.yarn/patches/nav-frontend-alertstriper-npm-4.0.2-b212c92a4c.patch::locator=k9-los-web%40workspace%3A.":
+  version: 4.0.2
+  resolution: "nav-frontend-alertstriper@patch:nav-frontend-alertstriper@npm%3A4.0.2#./.yarn/patches/nav-frontend-alertstriper-npm-4.0.2-b212c92a4c.patch::version=4.0.2&hash=ff89da&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-alertstriper-style: ^3.0.0
+    nav-frontend-ikoner-assets: ^3.0.0
+    nav-frontend-typografi: ^4.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/fd4d12110448ed97b5ac3f84d24b47df23b0907cd7ef3c0576ace3a2088871fabf88d46c3f2553e7c3eb6aa9619788d2b363fe6f68adab25710657f250b706b4
+  languageName: node
+  linkType: hard
+
 "nav-frontend-chevron-style@npm:1.0.4":
   version: 1.0.4
   resolution: "nav-frontend-chevron-style@npm:1.0.4"
@@ -14103,6 +14117,18 @@ __metadata:
     prop-types: ^15.5.10
     react: ^16.8.0 || ^17.0.0
   checksum: 10/3f587f8abc5c2c00e1d14d9e188ca7417d074d024f5ead095b75029bb3a2ffdb157a514e0172d9ce12ce17c87320c2e333cb1f6f7c0d70dca33af0979c006a3d
+  languageName: node
+  linkType: hard
+
+"nav-frontend-chevron@patch:nav-frontend-chevron@npm%3A1.0.30#./.yarn/patches/nav-frontend-chevron-npm-1.0.30-1fbba039a5.patch::locator=k9-los-web%40workspace%3A.":
+  version: 1.0.30
+  resolution: "nav-frontend-chevron@patch:nav-frontend-chevron@npm%3A1.0.30#./.yarn/patches/nav-frontend-chevron-npm-1.0.30-1fbba039a5.patch::version=1.0.30&hash=34a0b3&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-chevron-style: ^1.0.4
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/ac3fb888cacb6dcb826ee9cdfda7ba0e4acdda55d0d55272c8629264fa922fa8155ef06498159b6bb4850e0088c0192a69bc1c465208fb9b3e944496f97973bc
   languageName: node
   linkType: hard
 
@@ -14136,6 +14162,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-etiketter@patch:nav-frontend-etiketter@npm%3A3.0.3#./.yarn/patches/nav-frontend-etiketter-npm-3.0.3-509c94aa5d.patch::locator=k9-los-web%40workspace%3A.":
+  version: 3.0.3
+  resolution: "nav-frontend-etiketter@patch:nav-frontend-etiketter@npm%3A3.0.3#./.yarn/patches/nav-frontend-etiketter-npm-3.0.3-509c94aa5d.patch::version=3.0.3&hash=7b258c&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-core: ^6.0.0
+    nav-frontend-etiketter-style: ^2.0.0
+    nav-frontend-typografi: ^4.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/6b47123bf37654933671e64b86ec0d3a1eec16c11d901a58aa4eb020865e21677d2acadfc4e621d6e43bd34696141a7e4922e1e0d3306e58810b25fa7c90c47e
+  languageName: node
+  linkType: hard
+
 "nav-frontend-grid-style@npm:1.0.3":
   version: 1.0.3
   resolution: "nav-frontend-grid-style@npm:1.0.3"
@@ -14153,6 +14193,19 @@ __metadata:
     prop-types: ^15.5.10
     react: ^16.8.0 || ^17.0.0
   checksum: 10/6e944c11a6d48647c7b6bb2846192d535446ce0f08023fd61d4ce5675c9405394a96869ff20c232a6c7c6a1d239837c69052fd88f089898190786e7f7fde35b0
+  languageName: node
+  linkType: hard
+
+"nav-frontend-grid@patch:nav-frontend-grid@npm%3A2.0.2#./.yarn/patches/nav-frontend-grid-npm-2.0.2-a14357d0a8.patch::locator=k9-los-web%40workspace%3A.":
+  version: 2.0.2
+  resolution: "nav-frontend-grid@patch:nav-frontend-grid@npm%3A2.0.2#./.yarn/patches/nav-frontend-grid-npm-2.0.2-a14357d0a8.patch::version=2.0.2&hash=bac39f&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-core: ^6.0.0
+    nav-frontend-grid-style: ^1.0.2
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/5773f89be27ef2576e2c6301f44a9b05799e05cb708058ac2f6b8069d16e26e505920599f23ff107446c1830e33afc310af8fc147b030db19fa03426622111e0
   languageName: node
   linkType: hard
 
@@ -14178,6 +14231,21 @@ __metadata:
     prop-types: ^15.5.10
     react: ^16.8.0 || ^17.0.0
   checksum: 10/186e1b1e1acf55abeac6a7c3764de2ae98c80717c2fb9682a8e924d370b7ec177dc96002b8af6203930def578cb78948551f9e6e7f8b251c21b9d9fec01510cc
+  languageName: node
+  linkType: hard
+
+"nav-frontend-hjelpetekst@patch:nav-frontend-hjelpetekst@npm%3A3.1.3#./.yarn/patches/nav-frontend-hjelpetekst-npm-3.1.3-f2edad701c.patch::locator=k9-los-web%40workspace%3A.":
+  version: 3.1.3
+  resolution: "nav-frontend-hjelpetekst@patch:nav-frontend-hjelpetekst@npm%3A3.1.3#./.yarn/patches/nav-frontend-hjelpetekst-npm-3.1.3-f2edad701c.patch::version=3.1.3&hash=d8ea4a&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-hjelpetekst-style: ^3.0.0
+    nav-frontend-ikoner-assets: ^3.0.0
+    nav-frontend-js-utils: ^1.0.19
+    nav-frontend-popover: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/3d9512394a7a7a6ed926452063e5710573b56f7aa3cf54e74284580dcaf1f6d845fd424f1017c76777ebf7a900034d9eaf59a5a3eb083b03353fcf03ef29b432
   languageName: node
   linkType: hard
 
@@ -14236,6 +14304,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-knapper@patch:nav-frontend-knapper@npm%3A3.1.3#./.yarn/patches/nav-frontend-knapper-npm-3.1.3-f1d93117df.patch::locator=k9-los-web%40workspace%3A.":
+  version: 3.1.3
+  resolution: "nav-frontend-knapper@patch:nav-frontend-knapper@npm%3A3.1.3#./.yarn/patches/nav-frontend-knapper-npm-3.1.3-f1d93117df.patch::version=3.1.3&hash=c26b6e&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-js-utils: ^1.0.19
+    nav-frontend-knapper-style: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/51c9ea2e88eca2ba1483c74641c73aec49544eb6f1317b49e741e42fbdea73a8c6df8c9f41319fef652850c0f3825afb2ab0b711231dc888020bbeeb242d10fd
+  languageName: node
+  linkType: hard
+
 "nav-frontend-lenkepanel-style@npm:2.0.2":
   version: 2.0.2
   resolution: "nav-frontend-lenkepanel-style@npm:2.0.2"
@@ -14260,6 +14341,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-lenkepanel@patch:nav-frontend-lenkepanel@npm%3A2.0.2#./.yarn/patches/nav-frontend-lenkepanel-npm-2.0.2-c191f8e773.patch::locator=k9-los-web%40workspace%3A.":
+  version: 2.0.2
+  resolution: "nav-frontend-lenkepanel@patch:nav-frontend-lenkepanel@npm%3A2.0.2#./.yarn/patches/nav-frontend-lenkepanel-npm-2.0.2-c191f8e773.patch::version=2.0.2&hash=ad2e24&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-lenkepanel-style: ^2.0.0
+    nav-frontend-typografi: ^4.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/ca7dc38a6642e02c0b24ede88af9cb2f6cdf30c30e44e58aa3485452edd479e9de92b6edc761940f5754a24352f55ae2e339a3e0def6a556a66481eaab5db237
+  languageName: node
+  linkType: hard
+
 "nav-frontend-lenker-style@npm:2.0.2":
   version: 2.0.2
   resolution: "nav-frontend-lenker-style@npm:2.0.2"
@@ -14281,6 +14375,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-lenker@patch:nav-frontend-lenker@npm%3A2.0.2#./.yarn/patches/nav-frontend-lenker-npm-2.0.2-f01a3f3c03.patch::locator=k9-los-web%40workspace%3A.":
+  version: 2.0.2
+  resolution: "nav-frontend-lenker@patch:nav-frontend-lenker@npm%3A2.0.2#./.yarn/patches/nav-frontend-lenker-npm-2.0.2-f01a3f3c03.patch::version=2.0.2&hash=4b5d67&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-lenker-style: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/184e7a98a00a0be64683af75ac6209a028f2f914ef92e25434c2a88e697e23933f9741ce7678b253295869eb030bb34b6389f83962a2461c60cf63e0ba7f4ad0
+  languageName: node
+  linkType: hard
+
 "nav-frontend-lukknapp-style@npm:2.0.2":
   version: 2.0.2
   resolution: "nav-frontend-lukknapp-style@npm:2.0.2"
@@ -14299,6 +14405,18 @@ __metadata:
     prop-types: ^15.5.10
     react: ^16.8.0 || ^17.0.0
   checksum: 10/56adeb220696aea940bd9ca9e20775ccb0d2f3b61513e9dfdaf9044f88cf6f4137fdc4823db2d41a1db59f5d25236482b69664a3424a4e07686e42cca7d3d988
+  languageName: node
+  linkType: hard
+
+"nav-frontend-lukknapp@patch:nav-frontend-lukknapp@npm%3A2.0.2#./.yarn/patches/nav-frontend-lukknapp-npm-2.0.2-fa6e0532f9.patch::locator=k9-los-web%40workspace%3A.":
+  version: 2.0.2
+  resolution: "nav-frontend-lukknapp@patch:nav-frontend-lukknapp@npm%3A2.0.2#./.yarn/patches/nav-frontend-lukknapp-npm-2.0.2-fa6e0532f9.patch::version=2.0.2&hash=248a4d&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-lukknapp-style: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/1d041c3576626855bd80871762458c331a91d44be316da4dc3a7dd67000823e3aee68476a17b62c63ba659da0c19694191c43664cd9a22afd501806cb1d66d0c
   languageName: node
   linkType: hard
 
@@ -14325,6 +14443,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-paneler@patch:nav-frontend-paneler@npm%3A3.0.2#./.yarn/patches/nav-frontend-paneler-npm-3.0.2-45502b626d.patch::locator=k9-los-web%40workspace%3A.":
+  version: 3.0.2
+  resolution: "nav-frontend-paneler@patch:nav-frontend-paneler@npm%3A3.0.2#./.yarn/patches/nav-frontend-paneler-npm-3.0.2-45502b626d.patch::version=3.0.2&hash=51f6b5&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-paneler-style: ^2.0.0
+    nav-frontend-typografi: ^4.0.0
+    nav-frontend-typografi-style: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/ca693fe04bc43e74481c50f2e38b2f534e6905a1d4ea4a4b224235ea951825feb3a194f909a835c3266b5868a3cad8080aabf170f2ff5d63c4d7b137a6bbee66
+  languageName: node
+  linkType: hard
+
 "nav-frontend-popover-style@npm:2.0.2":
   version: 2.0.2
   resolution: "nav-frontend-popover-style@npm:2.0.2"
@@ -14345,6 +14477,20 @@ __metadata:
     react: ^16.8.0 || ^17.0.0
     react-dom: ^16.8.0 || ^17.0.0
   checksum: 10/521ee13b7716c2ae6c31822273f487ba77d3762c4c16deacc01ae2107161708f442e28677b5658dda32b58e56b39cebb166b9d3782cca50da4f44791f1d50171
+  languageName: node
+  linkType: hard
+
+"nav-frontend-popover@patch:nav-frontend-popover@npm%3A2.0.4#./.yarn/patches/nav-frontend-popover-npm-2.0.4-5118064ee1.patch::locator=k9-los-web%40workspace%3A.":
+  version: 2.0.4
+  resolution: "nav-frontend-popover@patch:nav-frontend-popover@npm%3A2.0.4#./.yarn/patches/nav-frontend-popover-npm-2.0.4-5118064ee1.patch::version=2.0.4&hash=b6ef46&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-js-utils: ^1.0.19
+    nav-frontend-popover-style: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  checksum: 10/88a956aae2c940d30878e6fe41f299612fd16c1d0925ee7176fbf70eb2532bc7c85aa165df35f5896ca8ddf72f93042bfad32f094d8171e13fa390aa6846d1f6
   languageName: node
   linkType: hard
 
@@ -14375,6 +14521,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-skjema@patch:nav-frontend-skjema@npm%3A4.0.6#./.yarn/patches/nav-frontend-skjema-npm-4.0.6-34e6189688.patch::locator=k9-los-web%40workspace%3A.":
+  version: 4.0.6
+  resolution: "nav-frontend-skjema@patch:nav-frontend-skjema@npm%3A4.0.6#./.yarn/patches/nav-frontend-skjema-npm-4.0.6-34e6189688.patch::version=4.0.6&hash=4e0ef7&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    "@navikt/fnrvalidator": ^1.1.0
+    classnames: ^2.2.5
+    nav-frontend-js-utils: ^1.0.19
+    nav-frontend-lenker: ^2.0.0
+    nav-frontend-skjema-style: ^3.0.0
+    nav-frontend-typografi: ^4.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/1e5a75c8ad5f5373ebf928e44f2f34bad2a60382ba1440be52812e8d5563404d1d04f810f1ebbdba728a41b28088d884fe2cc0c2f3418b05e8b568a782181747
+  languageName: node
+  linkType: hard
+
 "nav-frontend-tabs-style@npm:2.0.2":
   version: 2.0.2
   resolution: "nav-frontend-tabs-style@npm:2.0.2"
@@ -14394,6 +14556,18 @@ __metadata:
     nav-frontend-tabs-style: ^2.0.0
     react: ^16.8.0 || ^17.0.0
   checksum: 10/c6e6a9d35b954419bbe0d31490eacd37f068de73ccb0d25afcd238c61c0a4684c7f956f6c9b3ea47ea600d3a1d424fd0fa0b95311dd08376b9290404ac101f07
+  languageName: node
+  linkType: hard
+
+"nav-frontend-tabs@patch:nav-frontend-tabs@npm%3A2.0.3#./.yarn/patches/nav-frontend-tabs-npm-2.0.3-3d1b6739cc.patch::locator=k9-los-web%40workspace%3A.":
+  version: 2.0.3
+  resolution: "nav-frontend-tabs@patch:nav-frontend-tabs@npm%3A2.0.3#./.yarn/patches/nav-frontend-tabs-npm-2.0.3-3d1b6739cc.patch::version=2.0.3&hash=77026c&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-js-utils: ^1.0.19
+    nav-frontend-tabs-style: ^2.0.0
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/2ad8c0c96765170cbdf16f18f49dbfc4eefd1be031ca9455e507af66af1db42415a20b83116c5aba9df3b0ca06f3d052abad6e27fd53edfbf2fffdb784c817cb
   languageName: node
   linkType: hard
 
@@ -14421,6 +14595,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nav-frontend-toggle@patch:nav-frontend-toggle@npm%3A2.1.3#~/.yarn/patches/nav-frontend-toggle-npm-2.1.3-989fadd409.patch":
+  version: 2.1.3
+  resolution: "nav-frontend-toggle@patch:nav-frontend-toggle@npm%3A2.1.3#~/.yarn/patches/nav-frontend-toggle-npm-2.1.3-989fadd409.patch::version=2.1.3&hash=88ff15"
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-js-utils: ^1.0.19
+    nav-frontend-toggle-style: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/7b78cc89feeecf118126221f4e2c44792adee3fc2a7d49b048b34d6d1371e9bb01a980ed23f91c10746dd050a7c214f01ea81b46709d1c723a01f108895e839f
+  languageName: node
+  linkType: hard
+
 "nav-frontend-typografi-style@npm:2.0.2":
   version: 2.0.2
   resolution: "nav-frontend-typografi-style@npm:2.0.2"
@@ -14440,6 +14627,19 @@ __metadata:
     prop-types: ^15.5.10
     react: ^16.8.0 || ^17.0.0
   checksum: 10/fb5a67240b02a650a3fd7cc1230ed6406b3141af73032e32ac00059bce96323aa84991ab4e02d016d59e70d323919719cb16d1ded210569a303e56e913b5b641
+  languageName: node
+  linkType: hard
+
+"nav-frontend-typografi@patch:nav-frontend-typografi@npm%3A4.0.2#./.yarn/patches/nav-frontend-typografi-npm-4.0.2-67ec896090.patch::locator=k9-los-web%40workspace%3A.":
+  version: 4.0.2
+  resolution: "nav-frontend-typografi@patch:nav-frontend-typografi@npm%3A4.0.2#./.yarn/patches/nav-frontend-typografi-npm-4.0.2-67ec896090.patch::version=4.0.2&hash=4d9d16&locator=k9-los-web%40workspace%3A."
+  peerDependencies:
+    classnames: ^2.2.5
+    nav-frontend-core: ^6.0.0
+    nav-frontend-typografi-style: ^2.0.0
+    prop-types: ^15.5.10
+    react: ^16.8.0 || ^17.0.0
+  checksum: 10/d2a39d64882655d60e88cf4f7e1be7046da5a259a22c11cdbcdbf2f1d99dab780148003312cd4fc6bd7ec9ce5c761340b9c3b364f412a856f1cd439c92d10a8d
   languageName: node
   linkType: hard
 

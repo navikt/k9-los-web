@@ -50,7 +50,7 @@ const config = {
 				include: [APP_DIR],
 			},
 			{
-				test: /\.(less|css)?$/,
+				test: /\.(css)?$/,
 				use: [
 					{
 						loader: MiniCssExtractPlugin.loader,
@@ -60,17 +60,6 @@ const config = {
 					},
 					{
 						loader: 'css-loader',
-					},
-					{
-						loader: 'less-loader',
-						options: {
-							lessOptions: {
-								modifyVars: {
-									nodeModulesPath: '~',
-									coreModulePath: '~',
-								},
-							},
-						},
 					},
 				],
 				include: [CORE_DIR],
@@ -126,7 +115,7 @@ const config = {
 			filter: path.join(APP_DIR, 'filter'),
 		},
 		fullySpecified: false,
-		extensions: ['.js', '.ts', '.tsx', '.mjs', '.cjs', '.jsx', '.less', '.css'],
+		extensions: ['.js', '.ts', '.tsx', '.mjs', '.cjs', '.jsx', '.css'],
 	},
 
 	externals: {

@@ -2,10 +2,13 @@
 
 # dependencies
 **/node_modules
-.yarn/*
-!.yarn/releases
 .editorconfig
-
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 # testing
 /coverage
 /target/
@@ -22,8 +25,6 @@
 .env.production.local
 
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
 .idea
 .eslintcache
