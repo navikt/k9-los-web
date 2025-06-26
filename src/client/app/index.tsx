@@ -23,11 +23,15 @@ import 'nav-frontend-typografi-style/dist/main.css';
 import '@navikt/ds-css';
 import '@navikt/ft-plattform-komponenter/dist/style.css';
 import AppContainer from 'app/AppContainer';
+import { setEnvVariables } from 'app/envVariablesUtils';
+import naisConfig from '../nais';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;
 
 async function prepare() {
+	window.nais = naisConfig;
+
 	if (environment.includes('nav.no')) {
 		init({
 			dsn: 'https://ee88a0763c614159ba73dbae305f737e@sentry.gc.nav.no/38',
@@ -55,7 +59,7 @@ if (app === null) {
 }
 const root = createRoot(app);
 async function bootstrap() {
-	// await setEnvVariables();
+	await setEnvVariables();
 
 	root.render(<AppContainer />);
 }

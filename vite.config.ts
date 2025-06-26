@@ -8,6 +8,21 @@ export default defineConfig({
 		react({
 			include: [/\.jsx$/, /\.tsx?$/],
 		}),
+		{
+			name: 'env-variables-middleware',
+			configureServer(server) {
+				server.middlewares.use('/envVariables', async (req, res, next) => {
+					if (req.method === 'GET') {
+						// Import the envVariables function dynamically
+						const { envVariables } = await import('@k9-los-web/server/envVariables.js');
+						res.setHeader('Content-Type', 'application/json');
+						res.end(JSON.stringify(envVariables()));
+					} else {
+						next();
+					}
+				});
+			},
+		},
 	],
 	resolve: {
 		alias: {
@@ -29,10 +44,6 @@ export default defineConfig({
 	server: {
 		port: 8031,
 		proxy: {
-			'/envVariables': {
-				target: 'http://localhost:8030',
-				changeOrigin: true,
-			},
 			'/api/k9-los-api': {
 				target: 'http://localhost:8020',
 				changeOrigin: true,
