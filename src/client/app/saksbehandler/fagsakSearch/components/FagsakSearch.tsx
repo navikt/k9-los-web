@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import queryString from 'query-string';
 import { BodyShort } from '@navikt/ds-react';
@@ -8,7 +8,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { hasValidSaksnummerEllerJournalpostFormat } from 'utils/validation/validators';
 import FagsakList from './FagsakList';
 import SearchForm from './SearchForm';
-import * as styles from './fagsakSearch.css';
+import * as styles from './fagsakSearch.module.css';
 import PersonInfo from './person/PersonInfo';
 
 interface OwnProps {

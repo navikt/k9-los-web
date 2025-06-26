@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo, useState } from 'react';
+import { FunctionComponent, useMemo, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { Select } from 'nav-frontend-skjema';
@@ -19,7 +19,7 @@ import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import NyeOgFerdigstilteOppgaverForIdagGraf from 'saksbehandler/saksstotte/nokkeltall/components/nyeOgFerdigstilteOppgaverForIdag/NyeOgFerdigstilteOppgaverForIdagGraf';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ISO_DATE_FORMAT } from 'utils/formats';
-import * as styles from '../nyeOgFerdigstilteOppgaverFelles.css';
+import * as styles from '../nyeOgFerdigstilteOppgaverFelles.module.css';
 import NyeOgFerdigstilteOppgaver, { fagytelsetyperForOppgaveFiltrering } from '../nyeOgFerdigstilteOppgaverTsType';
 
 export const getNyeOgFerdigstilteForIDag = (nyeOgFerdigstilte: NyeOgFerdigstilteOppgaver[] = []) => {

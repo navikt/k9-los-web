@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { addSortering, removeSortering, updateSortering } from 'filter/queryUtils';
 import { feltverdiKey, kodeFraKey, områdeFraKey } from '../utils';
-import * as styles from './OppgaveOrderFelter.css';
+import * as styles from './OppgaveOrderFelter.module.css';
 
 const OppgaveOrderFelter = () => {
 	const { felter } = useContext(AppContext);

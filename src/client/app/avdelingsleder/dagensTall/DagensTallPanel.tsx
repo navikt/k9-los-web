@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useMemo } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 import { WrappedComponentProps, injectIntl } from 'react-intl';
 import { BodyShort } from '@navikt/ds-react';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
@@ -10,7 +10,7 @@ import AlleKodeverk from 'kodeverk/alleKodeverkTsType';
 import behandlingType from 'kodeverk/behandlingType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { getKodeverkFraKode, getKodeverknavnFraKode } from 'utils/kodeverkUtils';
-import * as styles from './dagensTallPanel.css';
+import * as styles from './dagensTallPanel.module.css';
 
 interface OwnProps {
 	totaltIdag: number;

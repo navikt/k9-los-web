@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames/bind';
 import TableColumn from './TableColumn';
 import TableRow from './TableRow';
-import * as styles from './table.css';
+import * as styles from './table.module.css';
 
 const classNames = classnames.bind(styles);
 

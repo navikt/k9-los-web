@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useMemo } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 import { IntlShape, WrappedComponentProps, injectIntl } from 'react-intl';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button } from '@navikt/ds-react';
 import EventType from 'api/rest-api/src/requestApi/eventType';
 import decodeHtmlEntity from 'utils/decodeHtmlEntityUtils';
-import * as styles from './errorMessagePanel.css';
+import * as styles from './errorMessagePanel.module.css';
 
 export const getErrorMessageList = (
 	intl: IntlShape,

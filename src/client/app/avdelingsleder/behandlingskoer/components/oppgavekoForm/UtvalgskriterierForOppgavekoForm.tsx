@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { Form } from 'react-final-form';
 import { FormattedMessage, IntlShape, WrappedComponentProps, injectIntl } from 'react-intl';
 import { TrashIcon } from '@navikt/aksel-icons';
@@ -19,7 +19,7 @@ import FagsakYtelseTypeVelger from './FagsakYtelseTypeVelger';
 import MerknadVelger from './MerknadVelger';
 import OppgaveKoKriterieVelger from './OppgaveKøKriterieVelger';
 import SorteringVelger from './SorteringVelger';
-import * as styles from './utvalgskriterierForOppgavekoForm.css';
+import * as styles from './utvalgskriterierForOppgavekoForm.module.css';
 
 const minLength3 = minLength(3);
 const maxLength100 = maxLength(100);

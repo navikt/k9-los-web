@@ -2,7 +2,7 @@ import React from 'react';
 import { PersonPencilIcon } from '@navikt/aksel-icons';
 import { FlexColumn, FlexContainer, FlexRow } from 'sharedComponents/flexGrid';
 import { range } from 'utils/arrayUtils';
-import * as styles from './optionGrid.css';
+import * as styles from './optionGrid.module.css';
 
 interface OptionGridProps {
 	columns?: number;

@@ -5,7 +5,7 @@ import { Button, Panel, Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { removeFilter, updateFilter } from 'filter/queryUtils';
-import * as styles from '../../filterIndex.css';
+import * as styles from '../../filterIndex.module.css';
 import { FeltverdiOppgavefilter, Oppgavefelt } from '../../filterTsTypes';
 import { feltverdiKey, kodeFraKey, områdeFraKey } from '../../utils';
 import FilterOperatorOgVerdi from '../FilterOperatorOgVerdi';

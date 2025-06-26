@@ -1,8 +1,7 @@
-import React from 'react';
 import { HStack, Heading } from '@navikt/ds-react';
 import { useHentAvdelingslederStatus } from 'api/queries/avdelingslederQueries';
 import EnkelTeller from './EnkelTeller';
-import * as styles from './Status.css';
+import * as styles from './Status.module.css';
 
 // Pynter visningsnavnet som kommer fra backend
 function visningsnavn(behandlingstype: string) {

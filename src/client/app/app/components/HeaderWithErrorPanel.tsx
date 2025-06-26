@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 import { MenuGridIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Dropdown, InternalHeader, Spacer } from '@navikt/ds-react';
 import Endringslogg from '@navikt/familie-endringslogg';
-import { BoxedListWithLinks, Header, SystemButton } from '@navikt/ft-plattform-komponenter';
+import { Header } from '@navikt/ft-plattform-komponenter';
 import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
 import ErrorFormatter from 'app/feilhandtering/ErrorFormatter';
 import { RETTSKILDE_URL, SHAREPOINT_URL } from 'api/eksterneLenker';
@@ -15,7 +15,7 @@ import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import useRestApi from 'api/rest-api-hooks/src/local-data/useRestApi';
 import { Driftsmelding } from '../../admin/driftsmeldinger/driftsmeldingTsType';
 import ErrorMessagePanel from './ErrorMessagePanel';
-import * as styles from './headerWithErrorPanel.css';
+import * as styles from './headerWithErrorPanel.module.css';
 
 interface OwnProps {
 	queryStrings: {

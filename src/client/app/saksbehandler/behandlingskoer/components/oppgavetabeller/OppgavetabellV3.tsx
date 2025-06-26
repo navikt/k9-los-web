@@ -1,9 +1,8 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import dayjs from 'dayjs';
 import { BodyShort, ErrorMessage, Loader, Table } from '@navikt/ds-react';
 import { useNesteOppgaverFraKø } from 'api/queries/saksbehandlerQueries';
-import * as styles from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgaverTabell.css';
+import * as styles from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgaverTabell.module.css';
 import { getKoId } from 'saksbehandler/behandlingskoer/utils';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
