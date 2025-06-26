@@ -5,7 +5,7 @@
 		<meta charset="utf-8" />
 		<meta name="format-detection" content="telephone=no" />
 		<title>K9 LOS</title>
-		<script type="module">
+		<!-- <script type="module">
 			// Dynamically import nais.js. Workaround til vi kan importere nais.js direkte i app.tsx via relative path når vi bytter til vite
 			// https://docs.nais.io/explanation/observability/frontend/?h=faro#tracing-opentelemetry
 			import('/public/nais.js')
@@ -16,10 +16,11 @@
 				.catch((error) => {
 					console.error('Failed to load nais.js:', error);
 				});
-		</script>
+		</script> -->
 	</head>
 	<body>
 		<div id="app"></div>
+		<script type="module" src="/app/index.tsx"></script>
 	</body>
 </html>
 <!-- <%= htmlWebpackPlugin.options.version %> -->

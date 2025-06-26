@@ -1,15 +1,28 @@
 /* eslint-disable import/no-unused-modules */
- 
- 
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 import { init } from '@sentry/browser';
 import { breadcrumbsIntegration, reactRouterV6BrowserTracingIntegration } from '@sentry/react';
+import 'nav-frontend-alertstriper-style/dist/main.css';
+import 'nav-frontend-chevron-style/dist/main.css';
+import 'nav-frontend-core/dist/main.css';
+import 'nav-frontend-etiketter-style/dist/main.css';
+import 'nav-frontend-grid-style/dist/main.css';
+import 'nav-frontend-hjelpetekst-style/dist/main.css';
+import 'nav-frontend-knapper-style/dist/main.css';
+import 'nav-frontend-lenkepanel-style/dist/main.css';
+import 'nav-frontend-lenker-style/dist/main.css';
+import 'nav-frontend-lukknapp-style/dist/main.css';
+import 'nav-frontend-paneler-style/dist/main.css';
+import 'nav-frontend-popover-style/dist/main.css';
+import 'nav-frontend-skjema-style/dist/main.css';
+import 'nav-frontend-tabs-style/dist/main.css';
+import 'nav-frontend-toggle-style/dist/main.css';
+import 'nav-frontend-typografi-style/dist/main.css';
 import '@navikt/ds-css';
 import '@navikt/ft-plattform-komponenter/dist/style.css';
 import AppContainer from 'app/AppContainer';
-import { setEnvVariables } from 'app/envVariablesUtils';
 
 /* eslint no-undef: "error" */
 const environment = window.location.hostname;
@@ -42,7 +55,7 @@ if (app === null) {
 }
 const root = createRoot(app);
 async function bootstrap() {
-	await setEnvVariables();
+	// await setEnvVariables();
 
 	root.render(<AppContainer />);
 }
