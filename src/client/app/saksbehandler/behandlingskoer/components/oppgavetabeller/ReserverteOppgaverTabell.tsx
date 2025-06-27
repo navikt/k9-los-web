@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useRef, useState } from 'react';
+import { FunctionComponent, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useQueryClient } from '@tanstack/react-query';
 import NavFrontendChevron from 'nav-frontend-chevron';
@@ -15,11 +15,11 @@ import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
-import * as kopanelStyles from '../oppgavekoPanel.css';
+import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
 import ReservertOppgaveRadV1 from './ReservertOppgaveRadV1';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
-import * as styles from './oppgaverTabell.css';
+import * as styles from './oppgaverTabell.module.css';
 
 interface OwnProps {
 	apneOppgave: (oppgave: Oppgave) => void;
@@ -57,8 +57,8 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 	const forlengOppgaveReservasjonFn = (oppgaveNøkkel: OppgaveNøkkel) => {
 		forlengOppgavereservasjon({ oppgaveNøkkel }).then(() => {
 			queryClient.invalidateQueries({
-                queryKey: [apiPaths.saksbehandlerReservasjoner]
-            });
+				queryKey: [apiPaths.saksbehandlerReservasjoner],
+			});
 		});
 	};
 	const ref = useRef({});

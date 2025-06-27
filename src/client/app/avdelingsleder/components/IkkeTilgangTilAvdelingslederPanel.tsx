@@ -1,8 +1,7 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Panel from 'nav-frontend-paneler';
 import { Heading } from '@navikt/ds-react';
-import * as styles from './ikkeTilgangTilAvdelingslederPanel.css';
+import * as styles from './ikkeTilgangTilAvdelingslederPanel.module.css';
 
 /**
  * IkkeTilgangTilAvdelingslederPanel

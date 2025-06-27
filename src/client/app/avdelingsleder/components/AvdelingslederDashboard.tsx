@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
-import * as styles from './avdelingslederDashboard.css';
+import { FunctionComponent } from 'react';
+import * as styles from './avdelingslederDashboard.module.css';
 
 type OwnProps = Readonly<{
 	children: any;

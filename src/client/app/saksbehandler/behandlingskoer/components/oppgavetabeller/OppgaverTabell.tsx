@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { BodyShort, ErrorMessage, Loader } from '@navikt/ds-react';
 import { useSaksbehandlerNesteTiV1 } from 'api/queries/saksbehandlerQueries';
@@ -11,7 +11,7 @@ import TableColumn from 'sharedComponents/TableColumn';
 import TableRow from 'sharedComponents/TableRow';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
-import * as styles from './oppgaverTabell.css';
+import * as styles from './oppgaverTabell.module.css';
 
 interface OwnProps {
 	valgtKo: OppgavekøV1 | OppgavekøV3MedNavn;

@@ -1,11 +1,11 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import moment from 'moment';
 import { Column, Row } from 'nav-frontend-grid';
 import { Heading } from '@navikt/ds-react';
 import { WarningIcon } from '@navikt/ft-plattform-komponenter';
 import { DD_MM_HHMM } from 'utils/formats';
 import { Driftsmelding } from '../../admin/driftsmeldinger/driftsmeldingTsType';
-import * as styles from './driftsmeldingPanel.css';
+import * as styles from './driftsmeldingPanel.module.css';
 
 interface OwnProps {
 	driftsmeldinger: Driftsmelding[];

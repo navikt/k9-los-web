@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { FormattedMessage, WrappedComponentProps, injectIntl } from 'react-intl';
 import dayjs from 'dayjs';
 import Panel from 'nav-frontend-paneler';
@@ -21,7 +21,7 @@ import { ISO_DATE_FORMAT } from 'utils/formats';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
 import { getValueFromLocalStorage, lagreTilLocalStorageCallback } from 'utils/localStorageHelper';
 import Teller from './Teller';
-import * as styles from './inngangOgFerdigstiltePanel.css';
+import * as styles from './inngangOgFerdigstiltePanel.module.css';
 
 export const slaSammenLikeBehandlingstyper = (oppgaver) => {
 	const sammenslatte = [];

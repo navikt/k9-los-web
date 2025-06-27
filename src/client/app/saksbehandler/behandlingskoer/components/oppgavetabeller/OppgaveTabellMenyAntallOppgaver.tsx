@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import * as styles from './oppgaverTabellMenyAntallOppgaver.css';
+import * as styles from './oppgaverTabellMenyAntallOppgaver.module.css';
 
 interface OwnProps {
 	antallOppgaver: number;
