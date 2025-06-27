@@ -91,6 +91,7 @@ export default [
 			'react/prop-types': 'off',
 			'import/prefer-default-export': 'off',
 			'import/extensions': 'off',
+			'react/react-in-jsx-scope': 'off',
 		},
 	},
 	{
