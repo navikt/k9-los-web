@@ -17,7 +17,7 @@ export function SøkResultat({ søkeresultat }: { søkeresultat: Søkeresultat |
 		case 'MED_RESULTAT':
 			return (
 				<div>
-					{søkeresultat.person && <PersonInfo person={søkeresultat.person} />}
+					<PersonInfo person={søkeresultat.person} />
 					<OppgaveTabell oppgaver={søkeresultat.oppgaver} />
 				</div>
 			);

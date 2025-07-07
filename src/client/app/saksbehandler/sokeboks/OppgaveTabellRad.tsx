@@ -12,7 +12,10 @@ export function OppgaveTabellRad(props: { oppgave: SøkeboksOppgaveDto; visHaste
 			renderButton={({ openModal }) => (
 				<Table.Row key={props.oppgave.oppgaveNøkkel.oppgaveEksternId} onClick={openModal} className="cursor-pointer">
 					{props.visHastesakKolonne && <Table.DataCell>{props.oppgave.hastesak && <HastesakIkon />}</Table.DataCell>}
-					<Table.DataCell>{props.oppgave.saksnummer ?? props.oppgave.journalpostId}</Table.DataCell>
+					<Table.DataCell>
+						{props.oppgave.saksnummer ?? props.oppgave.journalpostId}{' '}
+						{props.oppgave.fagsakÅr && `(${props.oppgave.fagsakÅr})`}
+					</Table.DataCell>
 					<Table.DataCell>{props.oppgave.navn}</Table.DataCell>
 					<Table.DataCell>{props.oppgave.ytelsestype}</Table.DataCell>
 					<Table.DataCell>{props.oppgave.status}</Table.DataCell>
