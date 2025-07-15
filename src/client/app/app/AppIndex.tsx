@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import { useLocation } from 'react-router';
 import { getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk';

@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { addSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 import { feltverdiKey } from '../utils';
-import * as styles from './OppgaveSelectFelter.css';
+import * as styles from './OppgaveSelectFelter.module.css';
 
 const OppgaveSelectFelter = () => {
 	const { felter } = useContext(AppContext);

@@ -1,33 +1,37 @@
 {
-    "compilerOptions": {
-        "module": "ES2020",
-        "moduleResolution": "node",
-        "allowJs": true,
-        "skipLibCheck": true,
-        "noEmit": true,
-        "strict": false,
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "sourceMap": true,
-        "target": "ES2020",
-        "jsx": "react",
-        "typeRoots": ["./node_modules/@types", "./src/@types"],
-        "baseUrl": "src/client/",
-        "paths": {
-            "app/*": ["app/app/*"],
-            "api/*": ["app/api/*"],
-            "form/*": ["app/form/*"],
-            "hooks/*": ["app/hooks/*"],
-            "kodeverk/*": ["app/kodeverk/*"],
-            "navAnsatt/*": ["app/navAnsatt/*"],
-            "sharedComponents/*": ["app/sharedComponents/*"],
-            "avdelingsleder/*": ["app/avdelingsleder/*"],
-            "saksbehandler/*": ["app/saksbehandler/*"],
-            "filter/*": ["app/filter/*"],
-            "types/*": ["app/types/*"],
-            "utils/*": ["app/utils/*"]
-        }
-    },
-    "include": ["src", "setup/setup-test-env.ts", "./globals.d.ts"],
-    "exclude": ["node_modules"]
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"allowJs": true,
+		"skipLibCheck": true,
+		"noEmit": true,
+		"strict": false,
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"target": "ES2023",
+		"lib": ["ES2023"],
+		"jsx": "react-jsx",
+		"typeRoots": ["./node_modules/@types", "./src/@types"],
+		"types": ["vite/client"],
+		"baseUrl": "src/client/",
+		"paths": {
+			"app/*": ["app/app/*"],
+			"api/*": ["app/api/*"],
+			"form/*": ["app/form/*"],
+			"hooks/*": ["app/hooks/*"],
+			"kodeverk/*": ["app/kodeverk/*"],
+			"navAnsatt/*": ["app/navAnsatt/*"],
+			"sharedComponents/*": ["app/sharedComponents/*"],
+			"avdelingsleder/*": ["app/avdelingsleder/*"],
+			"saksbehandler/*": ["app/saksbehandler/*"],
+			"filter/*": ["app/filter/*"],
+			"types/*": ["app/types/*"],
+			"utils/*": ["app/utils/*"],
+			"styles/*": ["styles/*"]
+		}
+	},
+	"include": ["src", "setup/setup-test-env.ts", "./globals.d.ts", "vite.config.ts"],
+	"exclude": ["node_modules"]
 }

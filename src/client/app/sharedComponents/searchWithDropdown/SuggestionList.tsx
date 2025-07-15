@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { ComboboxList, ComboboxPopover } from '@reach/combobox';
 import { Button, Checkbox } from '@navikt/ds-react';
 import SelectCheckbox from '../SelectCheckbox';
-import * as styles from './searchWithDropdown.css';
+import * as styles from './searchWithDropdown.module.css';
 
 const SuggestionList = ({
 	groups,

@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 import { Field } from 'react-final-form';
 import { FormattedMessage, WrappedComponentProps, injectIntl } from 'react-intl';
 import EtikettFokus from 'nav-frontend-etiketter';
@@ -6,7 +6,7 @@ import { Textarea as NavTextarea } from 'nav-frontend-skjema';
 import { LabelType } from './Label';
 import ReadOnlyField from './ReadOnlyField';
 import renderNavField from './renderNavField';
-import * as styles from './textAreaField.css';
+import * as styles from './textAreaField.module.css';
 
 const composeValidators = (validators) => (value) =>
 	validators ? validators.reduce((error, validator) => error || validator(value), undefined) : [];
@@ -43,7 +43,6 @@ const TextAreaWithBadge: FunctionComponent<TextAreaWithBadgeProps & WrappedCompo
 		<NavTextarea label={label} value={value} onChange={onChange} {...otherProps} />
 	</div>
 );
-
 
 const renderNavTextArea = renderNavField(injectIntl(TextAreaWithBadge));
 

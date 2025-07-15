@@ -1,6 +1,6 @@
-import React, { FunctionComponent, ReactNode, useRef } from 'react';
+import { FunctionComponent, ReactNode, useRef } from 'react';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import * as styles from './merkelapp.css';
+import * as styles from './merkelapp.module.css';
 
 type Props = {
 	onClick: () => void;

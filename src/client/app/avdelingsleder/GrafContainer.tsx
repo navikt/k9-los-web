@@ -1,11 +1,10 @@
-import React from 'react';
 import { useIntl } from 'react-intl';
 import { Column, Row } from 'nav-frontend-grid';
 import Hjelpetekst from 'nav-frontend-hjelpetekst';
 import { Heading, Panel, Select } from '@navikt/ds-react';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { lagreTilLocalStorageCallback } from 'utils/localStorageHelper';
-import * as styles from './grafContainer.css';
+import * as styles from './grafContainer.module.css';
 import { fremtidigeUker, uker, ytelseTyper } from './nokkeltall/nokkeltallUtils';
 
 interface OwnProps {
