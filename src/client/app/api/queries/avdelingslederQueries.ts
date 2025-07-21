@@ -228,3 +228,82 @@ export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; 
 		queryKey: [apiPaths.hentFerdigstiltePerEnhet, gruppe, uker],
 		refetchInterval: 60000,
 	});
+
+interface LagretSøk {
+	id: string;
+	tittel: string;
+	beskrivelse?: string;
+	query: OppgaveQuery;
+	opprettetDato: string;
+	opprettetAv: string;
+}
+
+interface OpprettLagretSøkPayload {
+	navn: string;
+	beskrivelse?: string;
+	query: OppgaveQuery;
+}
+
+interface OppdaterLagretSøkPayload {
+	navn: string;
+	beskrivelse?: string;
+	query: OppgaveQuery;
+}
+
+export const useHentLagredeSøk = (
+	options?: Omit<UseQueryOptions<LagretSøk[], DefaultError, LagretSøk[]>, 'queryKey'>,
+) =>
+	useQuery<LagretSøk[], DefaultError, LagretSøk[]>({
+		queryKey: [apiPaths.hentLagredeSøk],
+		...options,
+	});
+
+export const useOpprettLagretSøkMutation = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: OpprettLagretSøkPayload) =>
+			axiosInstance.post(apiPaths.opprettLagretSøk, data).then((res) => res.data),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useOppdaterLagretSøkMutation = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: ({ id, ...data }: { id: string } & OppdaterLagretSøkPayload) =>
+			axiosInstance.put(apiPaths.oppdaterLagretSøk(id), data).then((res) => res.data),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useSlettLagretSøkMutation = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id: string) => axiosInstance.delete(apiPaths.slettLagretSøk(id)),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
