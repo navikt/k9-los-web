@@ -5,11 +5,12 @@ import classnames from 'classnames/bind';
 import { Row } from 'nav-frontend-grid';
 import Panel from 'nav-frontend-paneler';
 import Tabs from 'nav-frontend-tabs';
-import { CircleSlashIcon, KeyHorizontalIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
+import { CircleSlashIcon, FileSearchIcon, KeyHorizontalIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { BodyShort, Heading } from '@navikt/ds-react';
 import useTrackRouteParam from 'app/data/trackRouteParam';
 import { getPanelLocationCreator } from 'app/paths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
+import { LagredeSøk } from 'avdelingsleder/lagredeSøk/LagredeSøk';
 import NokkeltallIndex from 'avdelingsleder/nokkeltall/NokkeltallIndex';
 import Status from 'avdelingsleder/status/Status';
 import Image from 'sharedComponents/Image';
@@ -30,6 +31,8 @@ const renderAvdelingslederPanel = (avdelingslederPanel: string) => {
 	switch (avdelingslederPanel) {
 		case AvdelingslederPanels.BEHANDLINGSKOER_V3:
 			return <BehandlingskoerIndex />;
+		case AvdelingslederPanels.LAGREDE_SØK:
+			return <LagredeSøk />;
 		case AvdelingslederPanels.NOKKELTALL:
 			return <NokkeltallIndex />;
 		case AvdelingslederPanels.RESERVASJONER:
@@ -43,6 +46,7 @@ const renderAvdelingslederPanel = (avdelingslederPanel: string) => {
 
 const messageId = {
 	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: 'AvdelingslederIndex.Behandlingskoer.V3',
+	[AvdelingslederPanels.LAGREDE_SØK]: 'AvdelingslederIndex.LagredeSøk',
 	[AvdelingslederPanels.NOKKELTALL]: 'AvdelingslederIndex.Nokkeltall',
 	[AvdelingslederPanels.RESERVASJONER]: 'AvdelingslederIndex.Reservasjoner',
 	[AvdelingslederPanels.SAKSBEHANDLERE]: 'AvdelingslederIndex.Saksbehandlere',
@@ -50,6 +54,7 @@ const messageId = {
 
 const tabStyle = {
 	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
+	[AvdelingslederPanels.LAGREDE_SØK]: [<FileSearchIcon fontSize="1.5rem" />, <FileSearchIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.NOKKELTALL]: [<KeyHorizontalIcon fontSize="1.5rem" />, <KeyHorizontalIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.RESERVASJONER]: [<CircleSlashIcon fontSize="1.5rem" />, <CircleSlashIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.SAKSBEHANDLERE]: [<PersonGroupIcon fontSize="1.5rem" />, <PersonGroupIcon fontSize="1.5rem" />],
@@ -133,6 +138,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 										activeAvdelingslederPanel,
 										getAvdelingslederPanelLocation,
 									),
+									getTab(AvdelingslederPanels.LAGREDE_SØK, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
 									getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
 									getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
 									getTab(
