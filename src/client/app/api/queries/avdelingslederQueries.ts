@@ -230,24 +230,25 @@ export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; 
 	});
 
 interface LagretSøk {
-	id: string;
+	id: number;
 	tittel: string;
-	beskrivelse?: string;
+	beskrivelse: string;
 	query: OppgaveQuery;
-	opprettetDato: string;
-	opprettetAv: string;
+	lagetAv: number;
+	versjon: number;
 }
 
-interface OpprettLagretSøkPayload {
-	navn: string;
-	beskrivelse?: string;
-	query: OppgaveQuery;
+interface OpprettLagretSøkRequest {
+	tittel: string;
+	beskrivelse: string;
 }
 
-interface OppdaterLagretSøkPayload {
-	navn: string;
-	beskrivelse?: string;
+interface EndreLagretSøkRequest {
+	id: number;
+	tittel: string;
+	beskrivelse: string;
 	query: OppgaveQuery;
+	versjon: number;
 }
 
 export const useHentLagredeSøk = (
@@ -258,11 +259,11 @@ export const useHentLagredeSøk = (
 		...options,
 	});
 
-export const useOpprettLagretSøkMutation = (callback?: () => void) => {
+export const useOpprettLagretSøk = (callback?: () => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (data: OpprettLagretSøkPayload) =>
+		mutationFn: (data: OpprettLagretSøkRequest) =>
 			axiosInstance.post(apiPaths.opprettLagretSøk, data).then((res) => res.data),
 		onSuccess: () =>
 			queryClient
@@ -275,12 +276,12 @@ export const useOpprettLagretSøkMutation = (callback?: () => void) => {
 	});
 };
 
-export const useOppdaterLagretSøkMutation = (callback?: () => void) => {
+export const useEndreLagretSøk = (callback?: () => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: ({ id, ...data }: { id: string } & OppdaterLagretSøkPayload) =>
-			axiosInstance.put(apiPaths.oppdaterLagretSøk(id), data).then((res) => res.data),
+		mutationFn: (data: EndreLagretSøkRequest) =>
+			axiosInstance.put(apiPaths.oppdaterLagretSøk(data.id.toString()), data).then((res) => res.data),
 		onSuccess: () =>
 			queryClient
 				.invalidateQueries({
@@ -292,7 +293,7 @@ export const useOppdaterLagretSøkMutation = (callback?: () => void) => {
 	});
 };
 
-export const useSlettLagretSøkMutation = (callback?: () => void) => {
+export const useSlettLagretSøk = (callback?: () => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
