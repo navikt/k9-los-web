@@ -229,13 +229,14 @@ export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; 
 		refetchInterval: 60000,
 	});
 
-interface LagretSøk {
+export interface LagretSøk {
 	id: number;
 	tittel: string;
 	beskrivelse: string;
 	query: OppgaveQuery;
 	lagetAv: number;
 	versjon: number;
+	sistEndret: string;
 }
 
 interface OpprettLagretSøkRequest {

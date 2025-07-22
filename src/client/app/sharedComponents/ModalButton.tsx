@@ -1,8 +1,13 @@
 import React, { FunctionComponent, ReactNode, useEffect, useState } from 'react';
 
+export interface RenderModalProps {
+	open: boolean;
+	closeModal: () => void;
+}
+
 interface Props {
-	renderButton: (props: { openModal: () => void }) => ReactNode;
-	renderModal: (props: { open: boolean; closeModal: () => void }) => ReactNode;
+	renderButton: React.FunctionComponent<{ openModal: () => void }>;
+	renderModal: React.FunctionComponent<RenderModalProps>;
 	setModal?: (modal: ReactNode) => void;
 }
 
