@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 
+export interface RenderModalProps {
+	open: boolean;
+	closeModal: () => void;
+}
+
 interface Props {
 	renderButton: React.FunctionComponent<{ openModal: () => void }>;
-	renderModal: React.FunctionComponent<{ open: boolean; closeModal: () => void }>;
+	renderModal: React.FunctionComponent<RenderModalProps>;
 }
 
 const ModalButton = (props: Props) => {

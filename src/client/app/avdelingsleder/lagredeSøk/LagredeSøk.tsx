@@ -1,18 +1,24 @@
 import React from 'react';
+import { PlusCircleIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
 import { useHentLagredeSøk } from 'api/queries/avdelingslederQueries';
+import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
+import { OpprettLagretSøkModal } from 'avdelingsleder/lagredeSøk/OpprettLagretSøkModal';
+import ModalButton from 'sharedComponents/ModalButton';
 
 export function LagredeSøk() {
 	const { data, isSuccess } = useHentLagredeSøk();
 	return (
-		<div>
-			Lagrede søk
-			{isSuccess && data.length > 0 && (
-				<ul>
-					{data.map(({ id, tittel }) => (
-						<li key={id}>{tittel}</li>
-					))}
-				</ul>
-			)}
-		</div>
+		<>
+			<ModalButton
+				renderButton={({ openModal }) => (
+					<Button className="mb-7" variant="primary" onClick={openModal} icon={<PlusCircleIcon />}>
+						Legg til nytt lagret søk
+					</Button>
+				)}
+				renderModal={OpprettLagretSøkModal}
+			/>
+			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} />}
+		</>
 	);
 }
