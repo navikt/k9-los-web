@@ -16,7 +16,7 @@ export function LagredeSøk() {
 						Legg til nytt lagret søk
 					</Button>
 				)}
-				renderModal={OpprettLagretSøkModal}
+				renderModal={({ open, closeModal }) => <OpprettLagretSøkModal open={open} closeModal={closeModal} />}
 			/>
 			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} />}
 		</>
