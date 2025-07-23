@@ -281,7 +281,7 @@ export const useEndreLagretSøk = (callback?: () => void) => {
 
 	return useMutation({
 		mutationFn: (data: EndreLagretSøkRequest) =>
-			axiosInstance.put(apiPaths.oppdaterLagretSøk(data.id.toString()), data).then((res) => res.data),
+			axiosInstance.put(apiPaths.endreLagretSøk(data.id.toString()), data).then((res) => res.data),
 		onSuccess: () =>
 			queryClient
 				.invalidateQueries({

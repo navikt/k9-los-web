@@ -54,7 +54,7 @@ const apiPaths = {
 	validerQuery: '/api/k9-los-api/ny-oppgavestyring/oppgave/validate',
 	hentLagredeSøk: '/api/k9-los-api/ny-oppgavestyring/lagret-sok',
 	opprettLagretSøk: '/api/k9-los-api/ny-oppgavestyring/lagret-sok/opprett',
-	oppdaterLagretSøk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/lagret-sok/${id}`,
+	endreLagretSøk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/lagret-sok/${id}/endre`,
 	slettLagretSøk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/lagret-sok/${id}`,
 	hentAntallLagretSøk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/lagret-sok/${id}/antall`,
 };
