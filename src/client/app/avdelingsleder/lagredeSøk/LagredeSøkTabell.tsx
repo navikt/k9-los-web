@@ -1,7 +1,18 @@
 import React from 'react';
-import { Table } from '@navikt/ds-react';
-import { LagretSøk } from 'api/queries/avdelingslederQueries';
+import { Skeleton, Table } from '@navikt/ds-react';
+import { LagretSøk, useHentAntallLagretSøk } from 'api/queries/avdelingslederQueries';
 import { momentDateFormat } from 'utils/dateUtils';
+
+function AntallLagretSøk({ id }: { id: number }) {
+	const { data, isFetching, isSuccess } = useHentAntallLagretSøk(id);
+	if (isFetching) {
+		return <Skeleton variant="text" width={50} />;
+	}
+	if (!isSuccess) {
+		return '-';
+	}
+	return data;
+}
 
 export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 	return (
@@ -14,10 +25,12 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{props.lagredeSøk.map(({ tittel, sistEndret }) => (
-					<Table.Row>
+				{props.lagredeSøk.map(({ id, tittel, sistEndret }) => (
+					<Table.Row key={id}>
 						<Table.DataCell>{tittel}</Table.DataCell>
-						<Table.DataCell>{0}</Table.DataCell>
+						<Table.DataCell>
+							<AntallLagretSøk id={id} />
+						</Table.DataCell>
 						<Table.DataCell>{momentDateFormat(sistEndret)}</Table.DataCell>
 					</Table.Row>
 				))}

@@ -308,3 +308,10 @@ export const useSlettLagretSøk = (callback?: () => void) => {
 				}),
 	});
 };
+
+export const useHentAntallLagretSøk = (id: number) =>
+	useQuery<number, DefaultError, number>({
+		queryKey: [apiPaths.hentAntallLagretSøk(''), apiPaths.hentAntallLagretSøk(id.toString())],
+		queryFn: () => axiosInstance.get(apiPaths.hentAntallLagretSøk(id.toString())).then((response) => response.data),
+		staleTime: 1000 * 60 * 5, // 5 minutes
+	});
