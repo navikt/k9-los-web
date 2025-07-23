@@ -2,7 +2,6 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, Button, Heading, Modal, TextField } from '@navikt/ds-react';
 import { useOpprettLagretSøk } from 'api/queries/avdelingslederQueries';
-import OppgaveQueryModel from 'filter/OppgaveQueryModel';
 import { OppgaveQuery } from 'filter/filterTsTypes';
 import { RenderModalProps } from 'sharedComponents/ModalButton';
 
@@ -24,7 +23,6 @@ export function OpprettLagretSøkModal({ open, closeModal }: RenderModalProps) {
 		opprettLagretSøk(
 			{
 				tittel: data.tittel,
-				query: { id: '', filtere: [], select: [], order: [], limit: 10 },
 			},
 			{
 				onSuccess: () => {

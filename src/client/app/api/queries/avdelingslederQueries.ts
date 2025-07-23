@@ -241,7 +241,6 @@ export interface LagretSøk {
 
 interface OpprettLagretSøkRequest {
 	tittel: string;
-	query: OppgaveQuery;
 }
 
 interface EndreLagretSøkRequest {
