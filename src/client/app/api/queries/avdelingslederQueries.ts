@@ -293,11 +293,28 @@ export const useEndreLagretSøk = (callback?: () => void) => {
 	});
 };
 
+export const useKopierLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: { id: number; tittel: string }) =>
+			axiosInstance.post(apiPaths.kopierLagretSøk(data.id.toString()), { tittel: data.tittel }),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
 export const useSlettLagretSøk = (callback?: () => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (id: string) => axiosInstance.delete(apiPaths.slettLagretSøk(id)),
+		mutationFn: (id: number) => axiosInstance.delete(apiPaths.slettLagretSøk(id.toString())),
 		onSuccess: () =>
 			queryClient
 				.invalidateQueries({

@@ -1,22 +1,10 @@
 import React from 'react';
-import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
-import { Alert, Button, Heading, Modal, TextField } from '@navikt/ds-react';
+import { Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import {
-	LagretSøk,
-	useEndreLagretSøk,
-	useHentLagredeSøk,
-	useOpprettLagretSøk,
-} from 'api/queries/avdelingslederQueries';
+import { LagretSøk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
 import FilterIndex from 'filter/FilterIndex';
-import { OppgaveQuery } from 'filter/filterTsTypes';
 import { RenderModalProps } from 'sharedComponents/ModalButton';
-
-interface FormData {
-	tittel: string;
-	query: OppgaveQuery;
-}
 
 export function EndreLagretSøkModal({ lagretSøk, open, closeModal }: RenderModalProps & { lagretSøk: LagretSøk }) {
 	const queryClient = useQueryClient();
