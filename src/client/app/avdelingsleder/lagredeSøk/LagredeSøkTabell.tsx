@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Modal, Skeleton, SortState, Table } from '@navikt/ds-react';
 import { LagretSøk, useHentAntallLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreLagretSøkModal';
+import { EndreLagretSøkRadInnhold } from 'avdelingsleder/lagredeSøk/EndreLagretSøkRadInnhold';
 import ModalButton from 'sharedComponents/ModalButton';
 import { momentDateFormat } from 'utils/dateUtils';
 
@@ -14,6 +16,37 @@ function AntallLagretSøk({ id }: { id: number }) {
 		return '-';
 	}
 	return data;
+}
+
+function Rad({ lagretSøk }: { lagretSøk: LagretSøk }) {
+	const [ekspandert, setEkspandert] = useState(false);
+
+	return (
+		<Table.ExpandableRow
+			key={lagretSøk.id}
+			onOpenChange={(open) => setEkspandert(open)}
+			open={ekspandert}
+			content={<EndreLagretSøkRadInnhold lagretSøk={lagretSøk} close={() => setEkspandert(false)} />}
+		>
+			<Table.DataCell>{lagretSøk.tittel}</Table.DataCell>
+			<Table.DataCell>
+				<AntallLagretSøk id={lagretSøk.id} />
+			</Table.DataCell>
+			<Table.DataCell>{momentDateFormat(lagretSøk.sistEndret)}</Table.DataCell>
+			<Table.DataCell>
+				<ModalButton
+					renderButton={({ openModal }) => (
+						<Button icon={<PencilIcon />} variant="tertiary" size="medium" onClick={openModal}>
+							Endre kriterier
+						</Button>
+					)}
+					renderModal={({ open, closeModal }) => (
+						<EndreLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+					)}
+				/>
+			</Table.DataCell>
+		</Table.ExpandableRow>
+	);
 }
 
 export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
@@ -33,9 +66,10 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 	};
 
 	return (
-		<Table sort={sort} onSortChange={handleSort}>
+		<Table sort={sort} onSortChange={handleSort} size="small">
 			<Table.Header>
 				<Table.Row>
+					<Table.ColumnHeader scope="col" />
 					<Table.ColumnHeader sortable sortKey="tittel" scope="col">
 						Tittel
 					</Table.ColumnHeader>
@@ -43,26 +77,12 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 					<Table.ColumnHeader sortable sortKey="sistEndret" scope="col">
 						Sist endret
 					</Table.ColumnHeader>
-					<Table.HeaderCell scope="col" />
+					<Table.ColumnHeader scope="col" />
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
 				{props.lagredeSøk.map((lagretSøk) => (
-					<Table.Row key={lagretSøk.id}>
-						<Table.DataCell>{lagretSøk.tittel}</Table.DataCell>
-						<Table.DataCell>
-							<AntallLagretSøk id={lagretSøk.id} />
-						</Table.DataCell>
-						<Table.DataCell>{momentDateFormat(lagretSøk.sistEndret)}</Table.DataCell>
-						<Table.DataCell>
-							<ModalButton
-								renderButton={({ openModal }) => <Button onClick={openModal}>Endre</Button>}
-								renderModal={({ open, closeModal }) => (
-									<EndreLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-								)}
-							/>
-						</Table.DataCell>
-					</Table.Row>
+					<Rad lagretSøk={lagretSøk} key={lagretSøk.id} />
 				))}
 			</Table.Body>
 		</Table>
