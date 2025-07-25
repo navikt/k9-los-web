@@ -282,14 +282,13 @@ export const useEndreLagretSøk = (callback?: () => void) => {
 	return useMutation({
 		mutationFn: (data: EndreLagretSøkRequest) =>
 			axiosInstance.put(apiPaths.endreLagretSøk(data.id.toString()), data).then((res) => res.data),
-		onSuccess: () =>
-			queryClient
-				.invalidateQueries({
-					queryKey: [apiPaths.hentLagredeSøk],
-				})
-				.then(() => {
-					if (callback) callback();
-				}),
+		onSuccess: ({ id }) =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: [apiPaths.hentLagredeSøk] }),
+				queryClient.invalidateQueries({ queryKey: [apiPaths.hentAntallLagretSøk(id.toString())] }),
+			]).then(() => {
+				if (callback) callback();
+			}),
 	});
 };
 
@@ -328,7 +327,6 @@ export const useSlettLagretSøk = (callback?: () => void) => {
 
 export const useHentAntallLagretSøk = (id: number) =>
 	useQuery<number, DefaultError, number>({
-		queryKey: [apiPaths.hentAntallLagretSøk(''), apiPaths.hentAntallLagretSøk(id.toString())],
+		queryKey: [apiPaths.hentAntallLagretSøk(id.toString())],
 		queryFn: () => axiosInstance.get(apiPaths.hentAntallLagretSøk(id.toString())).then((response) => response.data),
-		staleTime: 1000 * 60 * 5, // 5 minutes
 	});

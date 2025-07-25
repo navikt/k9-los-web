@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Modal, Skeleton, SortState, Table } from '@navikt/ds-react';
 import { LagretSøk, useHentAntallLagretSøk } from 'api/queries/avdelingslederQueries';
-import { EndreLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreLagretSøkModal';
+import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { EndreLagretSøkRadInnhold } from 'avdelingsleder/lagredeSøk/EndreLagretSøkRadInnhold';
 import ModalButton from 'sharedComponents/ModalButton';
 import { momentDateFormat } from 'utils/dateUtils';
@@ -41,7 +41,7 @@ function Rad({ lagretSøk }: { lagretSøk: LagretSøk }) {
 						</Button>
 					)}
 					renderModal={({ open, closeModal }) => (
-						<EndreLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+						<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
 					)}
 				/>
 			</Table.DataCell>
