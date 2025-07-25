@@ -10,30 +10,22 @@ interface FormData {
 }
 
 export function EndreLagretSøkRadInnhold({ lagretSøk, close }: { lagretSøk: LagretSøk; close: () => void }) {
-	const { mutate: endreLagretSøk } = useEndreLagretSøk();
-	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
-	const { mutate: slettLagretSøk } = useSlettLagretSøk();
+	const { mutate: endreLagretSøk } = useEndreLagretSøk(close);
+	const { mutate: kopierLagretSøk } = useKopierLagretSøk(close);
+	const { mutate: slettLagretSøk } = useSlettLagretSøk(close);
 
 	const {
 		register,
 		handleSubmit,
-		reset,
 		formState: { errors, isSubmitting, isDirty },
 	} = useForm({ defaultValues: { tittel: lagretSøk.tittel, beskrivelse: lagretSøk.beskrivelse } });
 
 	const onSubmit = (data: FormData) => {
-		endreLagretSøk(
-			{
-				...lagretSøk,
-				tittel: data.tittel,
-				beskrivelse: data.beskrivelse,
-			},
-			{
-				onSuccess: () => {
-					reset();
-				},
-			},
-		);
+		endreLagretSøk({
+			...lagretSøk,
+			tittel: data.tittel,
+			beskrivelse: data.beskrivelse,
+		});
 	};
 
 	return (
