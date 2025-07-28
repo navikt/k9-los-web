@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { Button, Modal, Skeleton, SortState, Table } from '@navikt/ds-react';
+import { Button, Skeleton, SortState, Table } from '@navikt/ds-react';
 import { LagretSøk, useHentAntallLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { EndreLagretSøkRadInnhold } from 'avdelingsleder/lagredeSøk/EndreLagretSøkRadInnhold';
@@ -65,6 +65,18 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		);
 	};
 
+	const sorterteLagredeSøk = [...props.lagredeSøk].sort((a, b) => {
+		if (sort?.orderBy === 'tittel') {
+			return sort.direction === 'ascending' ? a.tittel.localeCompare(b.tittel) : b.tittel.localeCompare(a.tittel);
+		}
+		if (sort?.orderBy === 'sistEndret') {
+			return sort.direction === 'ascending'
+				? new Date(a.sistEndret).getTime() - new Date(b.sistEndret).getTime()
+				: new Date(b.sistEndret).getTime() - new Date(a.sistEndret).getTime();
+		}
+		return 0;
+	});
+
 	return (
 		<Table sort={sort} onSortChange={handleSort} size="small">
 			<Table.Header>
@@ -81,7 +93,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{props.lagredeSøk.map((lagretSøk) => (
+				{sorterteLagredeSøk.map((lagretSøk) => (
 					<Rad lagretSøk={lagretSøk} key={lagretSøk.id} />
 				))}
 			</Table.Body>
