@@ -19,6 +19,11 @@ export function LagredeSøk() {
 				renderModal={({ open, closeModal }) => <OpprettLagretSøkModal open={open} closeModal={closeModal} />}
 			/>
 			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} />}
+			{isSuccess && data.length === 0 && (
+				<div>
+					<i>Du har ingen lagrede søk ennå</i>
+				</div>
+			)}
 		</>
 	);
 }
