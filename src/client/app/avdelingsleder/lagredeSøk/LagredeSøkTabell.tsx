@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
+import { UseQueryResult, useQueries } from '@tanstack/react-query';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton, SortState, Table } from '@navikt/ds-react';
-import { LagretSøk, useHentAntallLagretSøk } from 'api/queries/avdelingslederQueries';
+import apiPaths from 'api/apiPaths';
+import { LagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { EndreLagretSøkRadInnhold } from 'avdelingsleder/lagredeSøk/EndreLagretSøkRadInnhold';
 import ModalButton from 'sharedComponents/ModalButton';
 import { momentDateFormat } from 'utils/dateUtils';
+import { axiosInstance } from 'utils/reactQueryConfig';
 
-function AntallLagretSøk({ id }: { id: number }) {
-	const { data, isFetching, isSuccess } = useHentAntallLagretSøk(id);
-	if (isFetching) {
-		return <Skeleton variant="text" width={50} />;
-	}
-	if (!isSuccess) {
-		return '-';
-	}
-	return data;
-}
-
-function Rad({ lagretSøk }: { lagretSøk: LagretSøk }) {
+function Rad({ lagretSøk, antallQueryResult }: { lagretSøk: LagretSøk; antallQueryResult: UseQueryResult<number> }) {
 	const [ekspandert, setEkspandert] = useState(false);
 
 	return (
@@ -30,7 +22,7 @@ function Rad({ lagretSøk }: { lagretSøk: LagretSøk }) {
 		>
 			<Table.DataCell>{lagretSøk.tittel}</Table.DataCell>
 			<Table.DataCell>
-				<AntallLagretSøk id={lagretSøk.id} />
+				{antallQueryResult.isLoading ? <Skeleton variant="text" width={50} /> : (antallQueryResult.data ?? '-')}
 			</Table.DataCell>
 			<Table.DataCell>{momentDateFormat(lagretSøk.sistEndret)}</Table.DataCell>
 			<Table.DataCell>
@@ -55,6 +47,14 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		direction: 'ascending',
 	});
 
+	const antallQueries = useQueries({
+		queries: props.lagredeSøk.map((søk) => ({
+			queryKey: [apiPaths.hentAntallLagretSøk(søk.id.toString())],
+			queryFn: () =>
+				axiosInstance.get(apiPaths.hentAntallLagretSøk(søk.id.toString())).then((response) => response.data),
+		})),
+	});
+
 	const handleSort = (sortKey: string) => {
 		const newDirection =
 			sort && sortKey === sort.orderBy && sort.direction === 'ascending' ? 'descending' : 'ascending';
@@ -74,6 +74,11 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 				? new Date(a.sistEndret).getTime() - new Date(b.sistEndret).getTime()
 				: new Date(b.sistEndret).getTime() - new Date(a.sistEndret).getTime();
 		}
+		if (sort?.orderBy === 'antall') {
+			const antallA = antallQueries[props.lagredeSøk.indexOf(a)].data ?? 0;
+			const antallB = antallQueries[props.lagredeSøk.indexOf(b)].data ?? 0;
+			return sort.direction === 'ascending' ? antallA - antallB : antallB - antallA;
+		}
 		return 0;
 	});
 
@@ -85,7 +90,9 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 					<Table.ColumnHeader sortable sortKey="tittel" scope="col">
 						Tittel
 					</Table.ColumnHeader>
-					<Table.ColumnHeader scope="col">Antall oppgaver</Table.ColumnHeader>
+					<Table.ColumnHeader sortable={antallQueries.every((query) => query.isSuccess)} sortKey="antall" scope="col">
+						Antall oppgaver
+					</Table.ColumnHeader>
 					<Table.ColumnHeader sortable sortKey="sistEndret" scope="col">
 						Sist endret
 					</Table.ColumnHeader>
@@ -94,7 +101,11 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 			</Table.Header>
 			<Table.Body>
 				{sorterteLagredeSøk.map((lagretSøk) => (
-					<Rad lagretSøk={lagretSøk} key={lagretSøk.id} />
+					<Rad
+						lagretSøk={lagretSøk}
+						key={lagretSøk.id}
+						antallQueryResult={antallQueries[props.lagredeSøk.indexOf(lagretSøk)]}
+					/>
 				))}
 			</Table.Body>
 		</Table>
