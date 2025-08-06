@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react';
+import { getK9punsjRef, getK9sakHref } from 'app/paths';
 import { K9LosApiKeys } from 'api/k9LosApi';
 import { useRestApiRunner } from 'api/rest-api-hooks';
-import { getK9punsjRef, getK9sakHref } from 'app/paths';
 import ValgtOppgaveModal from 'saksbehandler/components/ValgtOppgaveModal';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import OppgaveSystem from '../../types/OppgaveSystem';
@@ -25,7 +25,7 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({ k9sakUrl, k9punsjUrl }
 	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
 
 	const goToFagsak = (oppgave: Oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkel).then(() => {
+		leggTilBehandletOppgave(oppgave.oppgaveNøkkel).finally(() => {
 			switch (oppgave.system) {
 				case OppgaveSystem.K9SAK:
 					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));

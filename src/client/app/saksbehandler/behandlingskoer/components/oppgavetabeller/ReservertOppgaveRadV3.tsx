@@ -57,15 +57,17 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 		};
 
 		const tilOppgave = async () => {
-			await leggTilBehandletOppgave(oppgave.oppgaveNøkkel);
-			await leggTilSisteOppgaver(oppgave.oppgaveNøkkel);
+			Promise.all([
+				leggTilBehandletOppgave(oppgave.oppgaveNøkkel),
+				leggTilSisteOppgaver(oppgave.oppgaveNøkkel),
+			]).finally(() => {
+				let fallbackUrl = '';
 
-			let fallbackUrl = '';
-
-			if (oppgave?.saksnummer) {
-				fallbackUrl = getK9sakHref(k9sakUrl.verdi, oppgave?.saksnummer, oppgave?.oppgaveNøkkel?.oppgaveEksternId);
-			}
-			window.location.assign(oppgave.oppgavebehandlingsUrl || fallbackUrl);
+				if (oppgave?.saksnummer) {
+					fallbackUrl = getK9sakHref(k9sakUrl.verdi, oppgave?.saksnummer, oppgave?.oppgaveNøkkel?.oppgaveEksternId);
+				}
+				window.location.assign(oppgave.oppgavebehandlingsUrl || fallbackUrl);
+			});
 		};
 		return (
 			<Table.Row

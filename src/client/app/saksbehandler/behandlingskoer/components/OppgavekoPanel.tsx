@@ -34,12 +34,12 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 		resetRequestData,
 	} = useRestApiRunner<Oppgave>(K9LosApiKeys.FÅ_OPPGAVE_FRA_KO);
 	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
-	const { mutate } = usePlukkOppgaveMutation(async (reservasjoner) => {
+	const { mutate } = usePlukkOppgaveMutation((reservasjoner) => {
 		if (reservasjoner.length > 0) {
 			const { oppgaveNøkkelDto, oppgavebehandlingsUrl } = reservasjoner[0];
-			await leggTilBehandletOppgave(oppgaveNøkkelDto);
-			await leggTilSisteOppgaver(oppgaveNøkkelDto);
-			window.location.assign(oppgavebehandlingsUrl);
+			Promise.all([leggTilBehandletOppgave(oppgaveNøkkelDto), leggTilSisteOppgaver(oppgaveNøkkelDto)]).finally(() =>
+				window.location.assign(oppgavebehandlingsUrl),
+			);
 		} else {
 			setVisFinnesIngenBehandlingerIKoModal(true);
 		}
