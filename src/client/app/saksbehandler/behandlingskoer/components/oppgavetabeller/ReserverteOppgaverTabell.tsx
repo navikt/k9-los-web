@@ -57,15 +57,14 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 	const forlengOppgaveReservasjonFn = (oppgaveNøkkel: OppgaveNøkkel) => {
 		forlengOppgavereservasjon({ oppgaveNøkkel }).then(() => {
 			queryClient.invalidateQueries({
-                queryKey: [apiPaths.saksbehandlerReservasjoner]
-            });
+				queryKey: [apiPaths.saksbehandlerReservasjoner],
+			});
 		});
 	};
 	const ref = useRef({});
 
 	const goToFagsak = (oppgave: Oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkel);
-		apneOppgave(oppgave);
+		leggTilBehandletOppgave(oppgave.oppgaveNøkkel).finally(() => apneOppgave(oppgave));
 	};
 
 	const countReservations = (reservasjon: ReservasjonV3) => {
