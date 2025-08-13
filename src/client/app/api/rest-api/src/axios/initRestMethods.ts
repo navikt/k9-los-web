@@ -1,6 +1,8 @@
 const openPreview = (data, filename) => {
-	if (window.navigator.msSaveOrOpenBlob) {
-		window.navigator.msSaveOrOpenBlob(data, filename);
+	// Type assertion for legacy IE method
+	const navigator = window.navigator as any;
+	if (navigator.msSaveOrOpenBlob) {
+		navigator.msSaveOrOpenBlob(data, filename);
 	} else {
 		// Last ned filinnholdet i nettleser:
 		const downloadLink = document.createElement('a');

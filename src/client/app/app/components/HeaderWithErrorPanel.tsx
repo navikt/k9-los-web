@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { MenuGridIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Dropdown, InternalHeader, Spacer } from '@navikt/ds-react';
 import Endringslogg from '@navikt/familie-endringslogg';
-import { BoxedListWithLinks, Header, SystemButton } from '@navikt/ft-plattform-komponenter';
+import { Header } from '@navikt/ft-plattform-komponenter';
 import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
 import ErrorFormatter from 'app/feilhandtering/ErrorFormatter';
 import { RETTSKILDE_URL, SHAREPOINT_URL } from 'api/eksterneLenker';
