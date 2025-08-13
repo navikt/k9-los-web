@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Hente kode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Sette yarn-config
         run: |
           yarn config set npmScopes.navikt.npmRegistryServer "https://npm.pkg.github.com"
