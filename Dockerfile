@@ -1,7 +1,7 @@
 FROM gcr.io/distroless/nodejs22-debian12:nonroot
 
 ENV TZ="Europe/Oslo"
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 WORKDIR /app
 
