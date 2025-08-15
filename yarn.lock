@@ -8152,24 +8152,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001663":
-  version: 1.0.30001666
-  resolution: "caniuse-lite@npm:1.0.30001666"
-  checksum: 10/c3b5a85f658d140ba53f6e99ee824935194c78effd6f3b7e62c2c0d17f8886a12f5d4ce775f8faf7172f8373fffef713ecfbef2702beb053d558e92d47844b10
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001688, caniuse-lite@npm:^1.0.30001702":
-  version: 1.0.30001703
-  resolution: "caniuse-lite@npm:1.0.30001703"
-  checksum: 10/cfab174766ed5593eec87c49fda10ccef3a68d983907ef63307ccebe514113017281c2e1d6177cf7bef180001812d0466cd00cefa4f861689aa7b8ee0f52b7f5
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001726":
-  version: 1.0.30001727
-  resolution: "caniuse-lite@npm:1.0.30001727"
-  checksum: 10/6155a4141332c337d6317325bea58a09036a65f45bd9bd834ec38978b40c27d214baa04d25b21a5661664f3fbd00cb830e2bdb7eee8df09970bdd98a71f4dabf
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001663, caniuse-lite@npm:^1.0.30001688, caniuse-lite@npm:^1.0.30001702, caniuse-lite@npm:^1.0.30001726":
+  version: 1.0.30001735
+  resolution: "caniuse-lite@npm:1.0.30001735"
+  checksum: 10/4b404ed363a5ccf3ec07144c2360106aa47dcec1f896ea6705a2773c6977e9ffb19a2b58be9492462733170e29b4823211533b0986d5a25f0f65f7ff702470ab
   languageName: node
   linkType: hard
 
