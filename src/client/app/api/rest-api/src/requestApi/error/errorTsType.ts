@@ -1,4 +1,4 @@
-export type ErrorType = Readonly<{
+type ErrorType = Readonly<{
 	response?: {
 		data?: any;
 		statusText?: string;
@@ -11,3 +11,6 @@ export type ErrorType = Readonly<{
 		responseType: string;
 	};
 }>;
+
+export { ErrorType };
+export default ErrorType;
