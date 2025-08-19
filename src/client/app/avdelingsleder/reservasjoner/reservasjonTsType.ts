@@ -9,6 +9,7 @@ type Reservasjon = Readonly<{
 	reservertTilTidspunkt: string;
 	saksnummer: string;
 	journalpostId: string;
+	ytelse: string;
 	behandlingType: KodeverkMedNavn;
 	tilBeslutter: boolean;
 	kommentar?: string;

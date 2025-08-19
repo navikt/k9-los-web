@@ -5,7 +5,6 @@ import { renderWithAllProviders } from '../../../../../setup/testHelpers/testUti
 import { unitTestHandlers } from '../../../mocks/unitTestHandlers';
 import HeaderWithErrorPanel from './HeaderWithErrorPanel';
 
-const setSiteHeight = (): void => null;
 const crashMessage = 'CrashMessage';
 
 const server = setupServer(...unitTestHandlers);
@@ -17,7 +16,7 @@ describe('<HeaderWithErrorPanel>', () => {
 	it('skal vise lenker for rettskilde i header men ingen avdelinger når det ikke er noen', async () => {
 		act(() => {
 			renderWithAllProviders(
-				<HeaderWithErrorPanel queryStrings={{}} crashMessage={crashMessage} setSiteHeight={setSiteHeight} />,
+				<HeaderWithErrorPanel queryStrings={{}} crashMessage={crashMessage} />,
 			);
 		});
 		await waitFor(() => {

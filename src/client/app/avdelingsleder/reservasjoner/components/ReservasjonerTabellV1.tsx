@@ -25,6 +25,7 @@ type ReservasjonTableData = {
 	reservasjon: Reservasjon;
 	id: string;
 	navn: string;
+	ytelse: string;
 	type: string;
 	reservertTil: string;
 };
@@ -87,6 +88,7 @@ const ReservasjonerTabell = () => {
 		reservasjon,
 		navn: reservasjon.reservertAvNavn || reservasjon.reservertAvEpost,
 		id: reservasjon.saksnummer || reservasjon.journalpostId,
+		ytelse: reservasjon.ytelse,
 		type:
 			getKodeverknavnFraKode(reservasjon.behandlingType?.kode, kodeverkTyper.BEHANDLING_TYPE, alleKodeverk) +
 			(reservasjon.tilBeslutter ? ' - [B] ' : ''),
@@ -184,6 +186,9 @@ const ReservasjonerTabell = () => {
 							<Table.ColumnHeader scope="col" sortable sortKey="id">
 								Id
 							</Table.ColumnHeader>
+							<Table.ColumnHeader scope="col" sortable sortKey="ytelse">
+								Ytelse
+							</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col" sortable sortKey="type">
 								Type
 							</Table.ColumnHeader>
@@ -194,7 +199,7 @@ const ReservasjonerTabell = () => {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{reservasjonerSomSkalVises.map(({ reservasjon, id, navn, type, reservertTil }) => (
+						{reservasjonerSomSkalVises.map(({ reservasjon, id, navn, ytelse, type, reservertTil }) => (
 							<Table.Row key={`${reservasjon.oppgavenøkkel}`}>
 								<Table.DataCell>
 									<Checkbox
@@ -222,6 +227,7 @@ const ReservasjonerTabell = () => {
 								</Table.DataCell>
 								<Table.DataCell>{navn}</Table.DataCell>
 								<Table.DataCell>{id}</Table.DataCell>
+								<Table.DataCell>{ytelse}</Table.DataCell>
 								<Table.DataCell>{type}</Table.DataCell>
 								<Table.DataCell>{reservertTil}</Table.DataCell>
 								<Table.DataCell>

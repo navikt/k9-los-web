@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import DayPicker from 'react-day-picker';
+import { DayPicker } from 'react-day-picker';
 import { WrappedComponentProps, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';

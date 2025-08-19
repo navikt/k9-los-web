@@ -24,7 +24,7 @@ jobs:
       image_version: ${{ steps.docker-push.outputs.tag }}
     steps:
       - name: Hente kode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Sette yarn-config
         run: |
           yarn config set npmScopes.navikt.npmRegistryServer "https://npm.pkg.github.com"
@@ -114,7 +114,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Deploy k9-los-web til prod
         uses: nais/deploy/actions/deploy@v2
         env:

@@ -64,8 +64,7 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 	const ref = useRef({});
 
 	const goToFagsak = (oppgave: Oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkel);
-		apneOppgave(oppgave);
+		leggTilBehandletOppgave(oppgave.oppgaveNøkkel).finally(() => apneOppgave(oppgave));
 	};
 
 	const countReservations = (reservasjon: ReservasjonV3) => {
