@@ -238,6 +238,7 @@ export const felter = [
 		tolkes_som: 'Duration',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -246,6 +247,7 @@ export const felter = [
 		tolkes_som: 'Duration',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -254,6 +256,7 @@ export const felter = [
 		tolkes_som: 'Duration',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -262,6 +265,7 @@ export const felter = [
 		tolkes_som: 'Duration',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -270,6 +274,7 @@ export const felter = [
 		tolkes_som: 'Duration',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -278,6 +283,7 @@ export const felter = [
 		tolkes_som: 'Duration',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -285,6 +291,7 @@ export const felter = [
 		visningsnavn: 'Aksjonspunkt',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: '5009',
@@ -690,6 +697,7 @@ export const felter = [
 		tolkes_som: 'Timestamp',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -726,6 +734,7 @@ export const felter = [
 		visningsnavn: 'Aktivt aksjonspunkt',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: '5009',
@@ -1131,6 +1140,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1139,6 +1149,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1147,6 +1158,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1155,6 +1167,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1163,6 +1176,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1171,6 +1185,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1179,6 +1194,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1187,6 +1203,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1195,6 +1212,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1203,6 +1221,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1210,6 +1229,7 @@ export const felter = [
 		visningsnavn: 'Behandling typekode',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: true,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: 'BT-002',
@@ -1300,6 +1320,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1307,6 +1328,7 @@ export const felter = [
 		visningsnavn: 'Behandlingsstatus',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: true,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: 'AVSLU',
@@ -1348,6 +1370,7 @@ export const felter = [
 		visningsnavn: 'Behandlingssteg',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: 'BERYT',
@@ -1589,6 +1612,7 @@ export const felter = [
 		visningsnavn: 'Fagsystem',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: true,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: 'K9SAK',
@@ -1619,6 +1643,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1627,6 +1652,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1635,6 +1661,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: null,
@@ -1643,6 +1670,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: [],
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -1650,6 +1678,7 @@ export const felter = [
 		visningsnavn: 'Aksjonspunkt som kan løses',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: '5009',
@@ -2059,6 +2088,7 @@ export const felter = [
 		tolkes_som: 'Timestamp',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2067,6 +2097,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: null,
@@ -2075,6 +2106,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: [],
+		kokriterie: true,
 	},
 	{
 		område: null,
@@ -2082,6 +2114,7 @@ export const felter = [
 		visningsnavn: 'Oppgavestatus',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: true,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: 'AAPEN',
@@ -2104,6 +2137,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: [],
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2112,6 +2146,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2120,6 +2155,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2128,6 +2164,7 @@ export const felter = [
 		tolkes_som: 'Timestamp',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2136,6 +2173,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2143,6 +2181,7 @@ export const felter = [
 		visningsnavn: 'Resultattype',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: true,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: 'IKKE_FASTSATT',
@@ -2209,6 +2248,7 @@ export const felter = [
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2217,6 +2257,7 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2225,6 +2266,7 @@ export const felter = [
 		tolkes_som: 'Timestamp',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
+		kokriterie: true,
 	},
 	{
 		område: 'K9',
@@ -2232,6 +2274,7 @@ export const felter = [
 		visningsnavn: 'Ytelsestype',
 		tolkes_som: 'String',
 		verdiforklaringerErUttømmende: true,
+		kokriterie: true,
 		verdiforklaringer: [
 			{
 				verdi: 'PSB',
