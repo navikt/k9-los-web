@@ -11,7 +11,7 @@
 		"esModuleInterop": true,
 		"sourceMap": true,
 		"target": "ES2023",
-		"lib": ["ES2023"],
+		"lib": ["ES2023", "dom"],
 		"jsx": "react-jsx",
 		"typeRoots": ["./node_modules/@types", "./src/@types"],
 		"types": ["vite/client"],

@@ -53,7 +53,7 @@ export default defineConfig({
 		},
 	},
 	build: {
-		outDir: 'dist',
+		outDir: '../../dist/public',
 	},
 	root: 'src/client',
 });
