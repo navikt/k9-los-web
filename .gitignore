@@ -12,8 +12,6 @@
 # testing
 /coverage
 /target/
-**/playwright-report
-**/test-results
 # production
 
 /dist
@@ -29,8 +27,5 @@ npm-debug.log*
 .idea
 .eslintcache
 jest_cache
-/test-results/
-/playwright-report/
-/playwright/.cache/
 
 *storybook.log
