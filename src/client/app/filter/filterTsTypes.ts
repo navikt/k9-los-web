@@ -1,5 +1,3 @@
- 
-
 export type Oppgavefilter = {
 	type: string;
 };
@@ -9,7 +7,7 @@ export type FeltverdiOppgavefilter = Oppgavefilter & {
 	område: string;
 	kode: OppgavefilterKode;
 	operator: string;
-	verdi: string | string[];
+	verdi: (string | null)[];
 };
 
 export type CombineOppgavefilter = Oppgavefilter &
@@ -65,7 +63,7 @@ export type Oppgaverad = {
 export type Verdiforklaring = {
 	verdi: string;
 	visningsnavn: string;
-	sekundærvalg: boolean;
+	sekundærvalg?: boolean;
 };
 
 export enum TolkesSom {
@@ -75,7 +73,8 @@ export enum TolkesSom {
 	Timestamp = 'Timestamp',
 }
 export type Oppgavefelt = {
-	område: string;
+	område: string | null;
+	// eslint-disable-next-line no-use-before-define
 	kode: OppgavefilterKode;
 	visningsnavn: string;
 	kokriterie: boolean;
@@ -93,52 +92,55 @@ export type Oppgavefelt = {
 	- vi noen a kodene til å sette påkrevde felter på toppnivå i kriterier for oppgavekøer.
 	- vi bruker noen av kodene til å vite når vi skal vise aksjonspunktvelgeren når man lager query.
 */
-export enum OppgavefilterKode {
-	AkkumulertVentetidAnnet = 'akkumulertVentetidAnnet',
-	AkkumulertVentetidAnnetIkkeSaksbehandlingstid = 'akkumulertVentetidAnnetIkkeSaksbehandlingstid',
-	AkkumulertVentetidArbeidsgiver = 'akkumulertVentetidArbeidsgiver',
-	AkkumulertVentetidSaksbehandler = 'akkumulertVentetidSaksbehandler',
-	AkkumulertVentetidSøker = 'akkumulertVentetidSøker',
-	AkkumulertVentetidTekniskFeil = 'akkumulertVentetidTekniskFeil',
-	Aksjonspunkt = 'aksjonspunkt',
-	AktivtAksjonspunkt = 'aktivtAksjonspunkt',
-	AktivVentefrist = 'aktivVentefrist',
-	AktivVenteårsak = 'aktivVenteårsak',
-	AnsvarligBeslutter = 'ansvarligBeslutter',
-	AnsvarligSaksbehandler = 'ansvarligSaksbehandler',
-	AvventerAnnet = 'avventerAnnet',
-	AvventerAnnetIkkeSaksbehandlingstid = 'avventerAnnetIkkeSaksbehandlingstid',
-	AvventerArbeidsgiver = 'avventerArbeidsgiver',
-	AvventerSaksbehandler = 'avventerSaksbehandler',
-	AvventerSøker = 'avventerSøker',
-	AvventerTekniskFeil = 'avventerTekniskFeil',
-	BehandlendeEnhet = 'behandlendeEnhet',
-	Behandlingsstatus = 'behandlingsstatus',
-	Behandlingssteg = 'behandlingssteg',
-	BehandlingTypekode = 'behandlingTypekode',
-	BehandlingUuid = 'behandlingUuid',
-	Beskyttelse = 'beskyttelse',
-	EgenAnsatt = 'egenAnsatt',
-	Personbeskyttelse = 'personbeskyttelse',
-	Fagsystem = 'fagsystem',
-	FraEndringsdialog = 'fraEndringsdialog',
-	Hastesak = 'hastesak',
-	HelautomatiskBehandlet = 'helautomatiskBehandlet',
-	Kildeområde = 'kildeområde',
-	LiggerHosBeslutter = 'liggerHosBeslutter',
-	LøsbartAksjonspunkt = 'løsbartAksjonspunkt',
-	MottattDato = 'mottattDato',
-	NyeKrav = 'nyeKrav',
-	Oppgaveområde = 'oppgaveområde',
-	Oppgavesaksbehandlingstid = 'oppgavesaksbehandlingstid',
-	Oppgavestatus = 'oppgavestatus',
-	Oppgavetype = 'oppgavetype',
-	PåklagdBehandlingUuid = 'påklagdBehandlingUuid',
-	RegistrertDato = 'registrertDato',
-	Resultattype = 'resultattype',
-	Saksnummer = 'saksnummer',
-	TidSidenMottattDato = 'tidSidenMottattDato',
-	Totrinnskontroll = 'totrinnskontroll',
-	Vedtaksdato = 'vedtaksdato',
-	Ytelsestype = 'ytelsestype',
-}
+export type OppgavefilterKode =
+	| 'Antall'
+	| 'akkumulertVentetidAnnet'
+	| 'akkumulertVentetidAnnetIkkeSaksbehandlingstid'
+	| 'akkumulertVentetidArbeidsgiver'
+	| 'akkumulertVentetidSaksbehandler'
+	| 'akkumulertVentetidSøker'
+	| 'akkumulertVentetidTekniskFeil'
+	| 'aksjonspunkt'
+	| 'aktivtAksjonspunkt'
+	| 'aktivVentefrist'
+	| 'aktivVenteårsak'
+	| 'aktorId'
+	| 'ansvarligBeslutter'
+	| 'ansvarligSaksbehandler'
+	| 'avventerAnnet'
+	| 'avventerAnnetIkkeSaksbehandlingstid'
+	| 'avventerArbeidsgiver'
+	| 'avventerSaksbehandler'
+	| 'avventerSøker'
+	| 'avventerTekniskFeil'
+	| 'behandlendeEnhet'
+	| 'behandlingsstatus'
+	| 'behandlingssteg'
+	| 'behandlingTypekode'
+	| 'behandlingUuid'
+	| 'beskyttelse'
+	| 'egenAnsatt'
+	| 'personbeskyttelse'
+	| 'fagsystem'
+	| 'fraEndringsdialog'
+	| 'hastesak'
+	| 'helautomatiskBehandlet'
+	| 'kildeområde'
+	| 'liggerHosBeslutter'
+	| 'løsbartAksjonspunkt'
+	| 'mottattDato'
+	| 'nyeKrav'
+	| 'oppgaveområde'
+	| 'oppgavesaksbehandlingstid'
+	| 'oppgavestatus'
+	| 'oppgavetype'
+	| 'pleietrengendeAktorId'
+	| 'påklagdBehandlingUuid'
+	| 'relatertPartAktorId'
+	| 'registrertDato'
+	| 'resultattype'
+	| 'saksnummer'
+	| 'tidSidenMottattDato'
+	| 'totrinnskontroll'
+	| 'vedtaksdato'
+	| 'ytelsestype';

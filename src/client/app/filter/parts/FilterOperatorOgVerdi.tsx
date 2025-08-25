@@ -7,7 +7,7 @@ import { FeltverdiOppgavefilter, Oppgavefelt, TolkesSom } from 'filter/filterTsT
 import { aksjonspunktKoder } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
 import { calculateDays, mapBooleanToStringArray, mapStringToBooleanArray } from 'filter/utils';
-import * as styles from '../filterIndex.css';
+import * as styles from '../filterIndex.module.css';
 import SearchDropdownMedPredefinerteVerdier from './SearchDropdownMedPredefinerteVerdier';
 
 const useChangeValue = (oppgavefilter, updateQuery) => (value) => {

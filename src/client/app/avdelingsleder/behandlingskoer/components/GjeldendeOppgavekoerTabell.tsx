@@ -15,7 +15,7 @@ import TableRow from 'sharedComponents/TableRow';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { Oppgaveko } from '../oppgavekoTsType';
 import SletteOppgavekoModal from './SletteOppgavekoModal';
-import * as styles from './gjeldendeOppgavekoerTabell.css';
+import * as styles from './gjeldendeOppgavekoerTabell.module.css';
 
 const headerTextCodes = [
 	'GjeldendeOppgavekoerTabell.Listenavn',

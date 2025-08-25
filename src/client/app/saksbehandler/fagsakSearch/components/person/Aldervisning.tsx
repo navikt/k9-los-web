@@ -1,8 +1,7 @@
-import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { BodyShort } from '@navikt/ds-react';
 import DateLabel from 'sharedComponents/DateLabel';
-import * as styles from './aldervisning.css';
+import * as styles from './aldervisning.module.css';
 
 interface AlderVisningProps {
 	doedsdato?: string;

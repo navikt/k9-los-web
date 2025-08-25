@@ -17,7 +17,7 @@ import Image from 'sharedComponents/Image';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { parseQueryString } from 'utils/urlUtils';
-import * as styles from './avdelingslederIndex.css';
+import * as styles from './avdelingslederIndex.module.css';
 import AvdelingslederPanels from './avdelingslederPanels';
 import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
 import BehandlingskoerIndex from './behandlingskoerV3/BehandlingskoerIndex';

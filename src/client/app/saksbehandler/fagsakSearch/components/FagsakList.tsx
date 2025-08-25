@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import NavFrontendChevron from 'nav-frontend-chevron';
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
@@ -11,7 +11,7 @@ import TableColumn from 'sharedComponents/TableColumn';
 import TableRow from 'sharedComponents/TableRow';
 import { getYearFromString } from 'utils/dateUtils';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
-import * as styles from './fagsakList.css';
+import * as styles from './fagsakList.module.css';
 
 const headerTextCodes = [
 	'EMPTY_1',

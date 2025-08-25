@@ -2,7 +2,7 @@ import React from 'react';
 import { Combobox, ComboboxInput } from '@reach/combobox';
 import { MagnifyingGlassIcon } from '@navikt/aksel-icons';
 import { BodyShort, Label } from '@navikt/ds-react';
-import * as styles from './searchWithDropdown.css';
+import * as styles from './searchWithDropdown.module.css';
 
 interface SearchFormProps {
 	label: string;

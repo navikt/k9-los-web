@@ -1,4 +1,4 @@
-import React, { FunctionComponent, ReactNode, useContext, useEffect } from 'react';
+import { FunctionComponent, ReactNode, useContext, useEffect } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { BodyShort, Button, ReadMore, Select, Skeleton } from '@navikt/ds-react';
@@ -19,7 +19,7 @@ import { Saksbehandler } from '../saksbehandlerTsType';
 import { erKoV3, getKoId } from '../utils';
 import OldOppsummeringAvKø from './OldOppsummeringAvKø';
 import OppsummeringAvKø from './OppusmmeringAvKø';
-import * as styles from './oppgavekoVelgerForm.css';
+import * as styles from './oppgavekoVelgerForm.module.css';
 
 interface OwnProps {
 	plukkNyOppgave: () => void;

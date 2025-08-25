@@ -1,5 +1,4 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-
 /* eslint-disable no-param-reassign */
 import React, { RefAttributes } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -13,7 +12,7 @@ import DateLabel from 'sharedComponents/DateLabel';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { getDateAndTime } from 'utils/dateUtils';
 import OppgaveHandlingerMenu from '../menu/OppgaveHandlingerMenu';
-import * as styles from './oppgaverTabell.css';
+import * as styles from './oppgaverTabell.module.css';
 
 // Update the path as necessary
 

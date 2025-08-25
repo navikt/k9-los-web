@@ -8,7 +8,7 @@ import OppgaveV3 from 'types/OppgaveV3';
 import FlyttReservasjonerModal from './FlyttReservasjonerModal';
 import MenuButton from './MenuButton';
 import OpphevReservasjonerModal from './OpphevReservasjonerModal';
-import * as styles from './oppgaveHandlingerMenu.css';
+import * as styles from './oppgaveHandlingerMenu.module.css';
 
 const toggleEventListeners = (turnOnEventListeners, handleOutsideClick) => {
 	if (turnOnEventListeners) {
