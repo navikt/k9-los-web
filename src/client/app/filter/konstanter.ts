@@ -1,7 +1,3 @@
-import { OppgavefilterKode } from './filterTsTypes';
+import { OppgavefilterKode } from 'filter/filterTsTypes.ts';
 
-export const aksjonspunktKoder = [
-	OppgavefilterKode.Aksjonspunkt,
-	OppgavefilterKode.LøsbartAksjonspunkt,
-	OppgavefilterKode.AktivtAksjonspunkt,
-];
+export const aksjonspunktKoder: OppgavefilterKode[] = ['aksjonspunkt', 'løsbartAksjonspunkt', 'aktivtAksjonspunkt'];

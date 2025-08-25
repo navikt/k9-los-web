@@ -11,7 +11,7 @@ import {
 } from '@navikt/ds-react';
 import AksjonspunktVelger from 'avdelingsleder/behandlingskoerV3/components/AksjonspunktVelger';
 import { FilterContext } from 'filter/FilterContext';
-import { FeltverdiOppgavefilter, Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
+import { FeltverdiOppgavefilter, Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
 import { aksjonspunktKoder } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS, calculateDays, mapBooleanToStringArray, mapStringToBooleanArray } from 'filter/utils';
@@ -59,8 +59,8 @@ const KriterieVerdi = ({
 		handleChangeValue(newDate);
 	};
 	const initialDate =
-		oppgavefilter.verdi && dayjs(new Date(oppgavefilter.verdi as string)).isValid()
-			? new Date(oppgavefilter.verdi as string)
+		oppgavefilter.verdi && dayjs(new Date(oppgavefilter.verdi[0])).isValid()
+			? new Date(oppgavefilter.verdi[0])
 			: undefined;
 	const { datepickerProps, inputProps } = useDatepicker({
 		fromDate: new Date('23 2017'),
@@ -112,13 +112,13 @@ const KriterieVerdi = ({
 		);
 	}
 
-	if (feltdefinisjon?.kode === OppgavefilterKode.Personbeskyttelse) {
+	if (feltdefinisjon?.kode === 'personbeskyttelse') {
 		return (
 			<Select
 				label="Personbeskyttelse"
 				hideLabel
 				size="small"
-				value={oppgavefilter.verdi as string}
+				value={oppgavefilter.verdi[0]}
 				onChange={(e) => handleChangeValue(e.target.value)}
 				error={errorMessage}
 				readOnly={readOnly}
@@ -179,7 +179,7 @@ const KriterieVerdi = ({
 				error={errorMessage}
 			>
 				<Checkbox value="ja">Ja</Checkbox>
-				{feltdefinisjon.kode !== OppgavefilterKode.Hastesak ? <Checkbox value="nei">Nei</Checkbox> : null}
+				{feltdefinisjon.kode !== 'hastesak' ? <Checkbox value="nei">Nei</Checkbox> : null}
 			</CheckboxGroup>
 		);
 	}
@@ -224,7 +224,7 @@ const KriterieVerdi = ({
 			size="small"
 			hideLabel
 			error={errorMessage}
-			value={oppgavefilter.verdi as string}
+			value={oppgavefilter.verdi.join(' ')}
 			onChange={(e) => handleChangeValue(e.target.value)}
 		/>
 	);

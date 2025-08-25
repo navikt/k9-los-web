@@ -64,7 +64,7 @@ const ErrorMessagePanel: FunctionComponent<OwnProps & WrappedComponentProps> = (
 	return (
 		<div className={styles.container}>
 			{feilmeldinger.length !== 0 &&
-				feilmeldinger.map((message) => <BodyShort>{`${decodeHtmlEntity(message)} `}</BodyShort>)}
+				feilmeldinger.map((message) => <BodyShort key={message}>{`${decodeHtmlEntity(message)} `}</BodyShort>)}
 
 			<div className={styles.lukkContainer}>
 				<Button

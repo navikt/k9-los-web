@@ -1,8 +1,5 @@
-/* eslint-disable camelcase */
-
-/* eslint-disable react/jsx-pascal-case */
 import React, { useContext, useEffect, useState } from 'react';
-import { BodyLong, Button, Checkbox, Label, UNSAFE_Combobox } from '@navikt/ds-react';
+import { BodyLong, Button, Checkbox, UNSAFE_Combobox as Combobox, Label } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter, OppgaveQuery, Oppgavefelt, OppgavefilterKode } from 'filter/filterTsTypes';
@@ -33,7 +30,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, køvisning, paakrevde
 
 	// TODO: fjern når de er fjernet i backend
 	const kriterierUtenEgenAnsattOgAdressebeskyttelse = felter.filter(
-		(v) => v.kode !== OppgavefilterKode.Beskyttelse && v.kode !== OppgavefilterKode.EgenAnsatt,
+		(v) => v.kode !== 'beskyttelse' && v.kode !== 'egenAnsatt',
 	);
 
 	const kriterierSomKanVelges = paakrevdeKoder.length
@@ -105,7 +102,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, køvisning, paakrevde
            border-top: 2px solid black; 
         }`}
 				</style>
-				<UNSAFE_Combobox
+				<Combobox
 					label="Velg kriterie:"
 					size="small"
 					value={fritekst}
