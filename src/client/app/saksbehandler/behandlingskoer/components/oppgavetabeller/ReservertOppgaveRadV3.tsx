@@ -16,7 +16,7 @@ import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import OppgaveV3 from 'types/OppgaveV3';
 import { getDateAndTime } from 'utils/dateUtils';
 import ReservasjonMeny from '../menu/ReservasjonMeny';
-import * as styles from './oppgaverTabell.css';
+import * as styles from './oppgaverTabell.module.css';
 
 // Update the path as necessary
 

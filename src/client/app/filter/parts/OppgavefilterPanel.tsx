@@ -1,15 +1,15 @@
 /* eslint-disable no-use-before-define */
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Label, Panel, ToggleGroup } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import { addFilter, addGruppe, removeFilter, updateFilter } from 'filter/queryUtils';
-import * as styles from '../filterIndex.css';
+import * as styles from '../filterIndex.module.css';
 import { CombineOppgavefilter, FeltverdiOppgavefilter, OppgaveQuery, OppgavefilterKode } from '../filterTsTypes';
 import FeltverdiOppgavefilterPanel from './FeltverdiOppgavefilterPanel/FeltverdiOppgavefilterPanel';
 import Kriterie from './Kriterie';
 import VelgKriterie from './VelgKriterie';
-import * as filterGruppeStyles from './filterGruppe.css';
+import * as filterGruppeStyles from './filterGruppe.module.css';
 
 interface OppgavefilterPanelProps {
 	oppgavefilter: FeltverdiOppgavefilter | CombineOppgavefilter;

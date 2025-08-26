@@ -15,7 +15,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
 import KriterierType from '../../../../types/KriterierType';
 import DatoSorteringValg from './DatoSorteringValg';
-import * as styles from './utvalgskriterierForOppgavekoForm.css';
+import * as styles from './utvalgskriterierForOppgavekoForm.module.css';
 
 interface OwnProps {
 	intl: any;

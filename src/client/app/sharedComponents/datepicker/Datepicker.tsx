@@ -4,7 +4,7 @@ import { Input } from 'nav-frontend-skjema';
 import { DDMMYYYY_DATE_FORMAT } from 'utils/formats';
 import CalendarOverlay from './CalendarOverlay';
 import CalendarToggleButton from './CalendarToggleButton';
-import * as styles from './datepicker.css';
+import * as styles from './datepicker.module.css';
 
 interface DatepickerProps {
 	label?: React.ReactNode;

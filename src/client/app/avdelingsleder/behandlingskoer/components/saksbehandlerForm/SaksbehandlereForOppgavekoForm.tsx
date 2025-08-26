@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { Form } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
 import { Column, Row } from 'nav-frontend-grid';
@@ -8,7 +8,7 @@ import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import { CheckboxField } from 'form/FinalFields';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { Oppgaveko } from '../../oppgavekoTsType';
-import * as styles from './saksbehandlereForOppgavekoForm.css';
+import * as styles from './saksbehandlereForOppgavekoForm.module.css';
 
 interface OwnProps {
 	valgtOppgaveko: Oppgaveko;

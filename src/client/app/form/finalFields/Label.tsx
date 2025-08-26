@@ -2,7 +2,7 @@ import React, { Component, ReactNode } from 'react';
 import { WrappedComponentProps, injectIntl } from 'react-intl';
 import classnames from 'classnames/bind';
 import { Detail } from '@navikt/ds-react';
-import * as styles from './label.css';
+import * as styles from './label.module.css';
 
 const classNames = classnames.bind(styles);
 

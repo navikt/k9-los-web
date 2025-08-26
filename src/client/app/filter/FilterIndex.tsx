@@ -11,7 +11,7 @@ import { post } from 'utils/axios';
 import { AntallOppgaver } from './AntallOppgaver';
 import { FilterContext } from './FilterContext';
 import OppgaveQueryModel from './OppgaveQueryModel';
-import * as styles from './filterIndex.css';
+import * as styles from './filterIndex.module.css';
 import { OppgaveQuery, OppgavefilterKode, Oppgaverad } from './filterTsTypes';
 import OppgaveQueryResultat from './parts/OppgaveQueryResultat';
 import OppgaveSelectFelter from './parts/OppgaveSelectFelter';

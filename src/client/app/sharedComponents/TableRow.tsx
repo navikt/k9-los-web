@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames/bind';
-import * as styles from './tableRow.css';
+import * as styles from './tableRow.module.css';
 
 const classNames = classnames.bind(styles);
 
