@@ -43,6 +43,7 @@ export default defineConfig({
 	},
 	server: {
 		port: 8031,
+		host: 'localhost',
 		proxy: {
 			'/api/k9-los-api': {
 				target: 'http://localhost:8020',
