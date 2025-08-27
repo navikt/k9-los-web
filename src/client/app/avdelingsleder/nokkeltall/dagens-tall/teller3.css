@@ -1,51 +1,142 @@
 .frame {
-	background-color: #fff;
-	box-shadow: 0 0 5px 1px #0033;
+	background-color: #ffffff;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
 	color: #262626;
 	font-family: 'Source Sans Pro', Arial, sans-serif;
-	height: 160px;
-	justify-content: center;
+	padding: 24px;
+	transition: box-shadow 0.2s ease;
+	max-width: 500px;
 	margin-right: 32px;
-	text-align: center;
 }
+
+.frame:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
 .container {
 	display: flex;
 	justify-content: center;
+	align-items: stretch;
+	gap: 24px;
+	margin-bottom: 20px;
 }
+
 .tallramme {
-	width: 120px;
-	align-content: flex-end;
-}
-.beskrivelse {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
 	align-items: center;
-	font-size: 16px;
-	font-style: normal;
-	font-weight: normal;
-	margin-top: 10px;
+	min-width: 100px;
+	position: relative;
 }
+
+/* Skillelinje mellom tallrammene - bruker pseudo-element */
+.tallramme:not(:last-child)::after {
+	content: '';
+	position: absolute;
+	right: -12px;
+	top: 50%;
+	transform: translateY(-50%);
+	height: 80%;
+	width: 1px;
+	background: linear-gradient(to bottom, transparent, #e0e0e0, transparent);
+}
+
+.beskrivelse {
+	font-size: 14px;
+	font-weight: 500;
+	color: #666666;
+	margin: 0 0 12px 0;
+	line-height: 1.4;
+	text-align: center;
+	min-height: 40px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.field,
+.coloredField {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 80px;
+	height: 56px;
+	border-radius: 8px;
+	transition: all 0.2s ease;
+}
+
+.field {
+	background-color: #f8f9fa;
+	border: 2px solid #e9ecef;
+}
+
 .coloredField {
 	background-color: #cde7d8;
-	height: 50px;
-	text-align: center;
-	width: 75px;
+	border: 2px solid #a8d4bd;
 }
-.field {
-	height: 50px;
-	text-align: center;
-	width: 75px;
-}
-.forklaring {
-	font-size: 16px;
-	font-style: normal;
-	font-weight: 600;
-	line-height: 10px;
-}
-.vl {
-	border: 1px solid #a0a0a0;
-	height: 97px;
-	margin: 13px 15px 0;
-}
+
 .number {
-	font-size: 25px;
-	padding-top: 7px;
+	font-size: 28px;
+	font-weight: 600;
+	margin: 0;
+	color: #1a1a1a;
+}
+
+.coloredField .number {
+	color: #2d6a4f;
+}
+
+.forklaring {
+	text-align: center;
+	padding-top: 16px;
+	border-top: 1px solid #e9ecef;
+}
+
+.forklaring p {
+	font-size: 15px;
+	font-weight: 600;
+	color: #495057;
+	margin: 0;
+	letter-spacing: 0.3px;
+}
+
+/* Responsivt design */
+@media (max-width: 480px) {
+	.frame {
+		padding: 20px;
+		margin-right: 16px;
+	}
+
+	.container {
+		gap: 16px;
+	}
+
+	.tallramme {
+		min-width: 80px;
+	}
+
+	.tallramme:not(:last-child)::after {
+		right: -8px;
+	}
+
+	.field,
+	.coloredField {
+		width: 70px;
+		height: 48px;
+	}
+
+	.number {
+		font-size: 24px;
+	}
+
+	.beskrivelse {
+		font-size: 13px;
+		min-height: 36px;
+	}
+
+	.forklaring p {
+		font-size: 14px;
+	}
 }

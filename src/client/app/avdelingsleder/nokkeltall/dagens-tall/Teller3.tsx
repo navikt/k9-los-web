@@ -16,14 +16,12 @@ const Teller: FunctionComponent<OwnProps> = ({ forklaring, venstreTall, hoyreTal
 					<p className={styles.number}>{venstreTall}</p>
 				</div>
 			</div>
-			<div className={styles.vl}> </div>
 			<div className={styles.tallramme}>
 				<p className={styles.beskrivelse}>Ferdigstilt manuelt</p>
 				<div className={styles.coloredField}>
 					<p className={styles.number}>{hoyreTall}</p>
 				</div>
 			</div>
-			<div className={styles.vl}> </div>
 			<div className={styles.tallramme}>
 				<p className={styles.beskrivelse}>Ferdigstilt automatisk</p>
 				<div className={styles.coloredField}>
