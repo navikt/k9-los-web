@@ -180,8 +180,10 @@ export const useHentDagensTall = () =>
 				undergruppe: string;
 				nyeIDag: number;
 				ferdigstilteIDag: number;
+				ferdigstilteHelautomatiskIDag?: number;
 				nyeSiste7Dager: number;
 				ferdigstilteSiste7Dager: number;
+				ferdigstilteHelautomatiskSiste7Dager?: number;
 			},
 		];
 	}>({
