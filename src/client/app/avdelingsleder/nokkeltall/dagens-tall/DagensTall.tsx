@@ -41,7 +41,7 @@ export default function DagensTall() {
 							<ToggleGroup.Item value="SISTE_7" label="Siste 7 dager" />
 						</ToggleGroup>
 					</HStack>
-					<HGrid gap="2" columns={3}>
+					<HGrid gap="space-24" columns={{ lg: 2, xl: 3 }}>
 						{data.tall
 							.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe)
 							.map((value) => {
