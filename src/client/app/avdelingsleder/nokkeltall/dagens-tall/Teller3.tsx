@@ -14,18 +14,16 @@ const Teller: FunctionComponent<OwnProps> = ({ forklaring, inngang, manuelleFerd
 	const totaltFerdigstilt = manuelleFerdigstilt + automatiskeFerdigstilt;
 
 	// Generer nedbrytning tekst basert på hvilke verdier som finnes
-	const lagNedbrytning = () => {
+	const nedbrytningsDeler = (() => {
 		const deler = [];
-		if (manuelleFerdigstilt > 0) {
-			deler.push(<>{manuelleFerdigstilt} manuelt</>);
-		}
-		if (automatiskeFerdigstilt > 0) {
-			deler.push(<>{automatiskeFerdigstilt} automatisk</>);
-		}
+		// if (manuelleFerdigstilt > 0) {
+		deler.push(<>{manuelleFerdigstilt} manuelt</>);
+		// }
+		// if (automatiskeFerdigstilt > 0) {
+		deler.push(<>{automatiskeFerdigstilt} automatisk</>);
+		// }
 		return deler;
-	};
-
-	const nedbrytningsDeler = lagNedbrytning();
+	})();
 
 	return (
 		<div className={styles.ramme}>
