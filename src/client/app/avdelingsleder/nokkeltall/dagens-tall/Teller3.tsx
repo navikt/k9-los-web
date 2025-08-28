@@ -1,6 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { RobotSmileIcon } from '@navikt/aksel-icons';
-import { FigureIcon } from '@navikt/aksel-icons';
 import * as styles from './teller3.css';
 
 interface OwnProps {
@@ -13,15 +11,11 @@ interface OwnProps {
 const Teller: FunctionComponent<OwnProps> = ({ forklaring, inngang, manuelleFerdigstilt, automatiskeFerdigstilt }) => {
 	const totaltFerdigstilt = manuelleFerdigstilt + automatiskeFerdigstilt;
 
-	// Generer nedbrytning tekst basert på hvilke verdier som finnes
 	const nedbrytningsDeler = (() => {
 		const deler = [];
-		// if (manuelleFerdigstilt > 0) {
+		// Kan eventuelt sjekke antallet, og kun vise de som er > 0
 		deler.push(<>{manuelleFerdigstilt} manuelt</>);
-		// }
-		// if (automatiskeFerdigstilt > 0) {
 		deler.push(<>{automatiskeFerdigstilt} automatisk</>);
-		// }
 		return deler;
 	})();
 

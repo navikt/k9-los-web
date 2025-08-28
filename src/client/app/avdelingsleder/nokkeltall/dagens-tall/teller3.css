@@ -39,17 +39,6 @@
 	background-color: #cde7d8;
 }
 
-/*.tallramme::after {*/
-/*	content: '';*/
-/*	position: absolute;*/
-/*	right: -12px;*/
-/*	top: 50%;*/
-/*	transform: translateY(-50%);*/
-/*	height: 100%;*/
-/*	width: 1px;*/
-/*	background: #e0e0e0;*/
-/*}*/
-
 .beskrivelse {
 	font-size: 15px;
 	font-weight: 500;
