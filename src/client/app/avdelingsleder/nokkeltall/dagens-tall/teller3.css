@@ -1,14 +1,17 @@
-.frame {
+.ramme {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
 	background-color: #ffffff;
 	border-radius: 5px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
 	color: #262626;
 	font-family: 'Source Sans Pro', Arial, sans-serif;
 	transition: box-shadow 0.2s ease;
-	width: 400px;
+	width: 290px;
 }
 
-.frame:hover {
+.ramme:hover {
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
@@ -29,8 +32,16 @@
 	position: relative;
 }
 
-/* Skillelinje mellom tallrammene */
-.tallramme:not(:last-child)::after {
+.bredTallramme {
+	flex: 1.4; /* Litt bredere enn standard tallramme for å gi plass til nedbrytning */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-width: 120px;
+	position: relative;
+}
+
+.tallramme::after {
 	content: '';
 	position: absolute;
 	right: -12px;
@@ -54,34 +65,60 @@
 	justify-content: center;
 }
 
-.field,
-.coloredField {
+.felt,
+.fargetFelt {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 80px;
+	width: 88px; /* Litt bredere for å støtte 4-sifrede tall */
 	height: 56px;
 	border-radius: 5px;
 	transition: all 0.2s ease;
 }
 
-.field {
+.felt {
 	background-color: #f8f9fa;
 }
 
-.coloredField {
+.fargetFelt {
 	background-color: #cde7d8;
 }
 
-.number {
+.tall {
 	font-size: 26px;
 	font-weight: 600;
 	margin: 0;
 	color: #1a1a1a;
+	min-width: 0;
+	text-align: center;
 }
 
-.coloredField .number {
+.fargetFelt .tall {
 	color: #2d6a4f;
+}
+
+.nedbrytning {
+	margin-top: 8px;
+	display: flex;
+	gap: 6px;
+	flex-wrap: wrap;
+	justify-content: center;
+	max-width: 140px; /* Begrens bredden for bedre wrapping */
+}
+
+.nedbrytningsElement {
+	font-size: 12px;
+	font-weight: 500;
+	color: #2d6a4f;
+	background-color: rgba(205, 231, 216, 0.4);
+	padding: 3px 6px;
+	border-radius: 3px;
+	white-space: nowrap;
+	transition: background-color 0.2s ease;
+}
+
+.nedbrytningsElement:hover {
+	background-color: rgba(205, 231, 216, 0.6);
 }
 
 .forklaring {

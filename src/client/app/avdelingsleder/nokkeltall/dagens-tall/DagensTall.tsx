@@ -41,7 +41,7 @@ export default function DagensTall() {
 							<ToggleGroup.Item value="SISTE_7" label="Siste 7 dager" />
 						</ToggleGroup>
 					</HStack>
-					<HGrid gap="space-24" columns={{ lg: 2, xl: 3 }}>
+					<HGrid gap="space-24" columns={{ md: 2, lg: 3, xl: 4 }}>
 						{data.tall
 							.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe)
 							.map((value) => {
@@ -55,9 +55,9 @@ export default function DagensTall() {
 									<Teller3
 										key={value.undergruppe}
 										forklaring={data.undergrupper.find(({ kode }) => kode === value.undergruppe).navn}
-										venstreTall={venstreTall}
-										hoyreTall={høyreTall}
-										hoyreAndreTall={høyreAndreTall}
+										inngang={venstreTall}
+										manuelleFerdigstilt={høyreTall}
+										automatiskeFerdigstilt={høyreAndreTall}
 									/>
 								);
 							})}
