@@ -8,7 +8,7 @@ import Teller3 from './Teller3';
 export default function DagensTall() {
 	const [valgtHovedgruppe, setValgtHovedgruppe] = useState('ALLE');
 	const { data } = useHentDagensTall();
-	const [tidsområde, setTidsområde] = useState('SISTE_7');
+	const [tidsområde, setTidsområde] = useState('I_DAG');
 
 	// Henter alltid fra direkte fra cache, så bruker kort tid på loading
 	if (data === undefined) return null;
