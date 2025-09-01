@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { Box, Detail, HGrid, HStack, Heading, Select, ToggleGroup } from '@navikt/ds-react';
 import { useHentDagensTall } from 'api/queries/avdelingslederQueries';
-import Teller from 'avdelingsleder/nokkeltall/components/dagensTallPanel/Teller';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import Teller3 from './Teller3';
 
 export default function DagensTall() {
 	const [valgtHovedgruppe, setValgtHovedgruppe] = useState('ALLE');
@@ -41,18 +41,23 @@ export default function DagensTall() {
 							<ToggleGroup.Item value="SISTE_7" label="Siste 7 dager" />
 						</ToggleGroup>
 					</HStack>
-					<HGrid gap="2" columns={4}>
+					<HGrid gap="space-24" columns={{ md: 2, lg: 3, xl: 4 }}>
 						{data.tall
 							.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe)
 							.map((value) => {
 								const venstreTall = tidsområde === 'I_DAG' ? value.nyeIDag : value.nyeSiste7Dager;
 								const høyreTall = tidsområde === 'I_DAG' ? value.ferdigstilteIDag : value.ferdigstilteSiste7Dager;
+								const høyreAndreTall =
+									tidsområde === 'I_DAG'
+										? value.ferdigstilteHelautomatiskIDag
+										: value.ferdigstilteHelautomatiskSiste7Dager;
 								return (
-									<Teller
+									<Teller3
 										key={value.undergruppe}
 										forklaring={data.undergrupper.find(({ kode }) => kode === value.undergruppe).navn}
-										venstreTall={venstreTall}
-										hoyreTall={høyreTall}
+										inngang={venstreTall}
+										manuelleFerdigstilt={høyreTall}
+										automatiskeFerdigstilt={høyreAndreTall}
 									/>
 								);
 							})}
