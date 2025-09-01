@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import Panel from 'nav-frontend-paneler';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
@@ -8,7 +8,7 @@ import FeatureSwitch from '../../FeatureSwitch';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
 import FagsakSearchIndex from '../fagsakSearch/FagsakSearchIndex';
 import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
-import * as styles from './saksbehandlerDashboard.css';
+import * as styles from './saksbehandlerDashboard.module.css';
 
 export const SaksbehandlerDashboard: FunctionComponent = () => {
 	const k9sakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.K9SAK_URL);

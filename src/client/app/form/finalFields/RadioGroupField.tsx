@@ -3,7 +3,7 @@ import { Field } from 'react-final-form';
 import classnames from 'classnames/bind';
 import { SkjemaGruppe as NavSkjemaGruppe } from 'nav-frontend-skjema';
 import OptionGrid from './OptionGrid';
-import * as styles from './radioGroupField.css';
+import * as styles from './radioGroupField.module.css';
 import renderNavField from './renderNavField';
 
 const classNames = classnames.bind(styles);

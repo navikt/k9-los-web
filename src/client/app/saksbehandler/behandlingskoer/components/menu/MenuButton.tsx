@@ -1,6 +1,6 @@
 import React from 'react';
 import { Detail } from '@navikt/ds-react';
-import * as styles from './menuButton.css';
+import * as styles from './menuButton.module.css';
 
 interface MenuButtonProps {
 	onClick(...args: unknown[]): unknown;

@@ -1,0 +1,66 @@
+diff --git a/lib/toggle-gruppe-pure.js b/lib/toggle-gruppe-pure.js
+index 393419c900a85e0989641a3e5f2da46a246aa937..b39e2de9347586c5b97565973de2402a7310d1e6 100644
+--- a/lib/toggle-gruppe-pure.js
++++ b/lib/toggle-gruppe-pure.js
+@@ -1,14 +1,14 @@
+ "use strict";
+-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
+     if (k2 === undefined) k2 = k;
+-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+-}) : (function(o, m, k, k2) {
++    Object.defineProperty(o, k2, { enumerable: true, get: function () { return m[k]; } });
++}) : (function (o, m, k, k2) {
+     if (k2 === undefined) k2 = k;
+     o[k2] = m[k];
+ }));
+-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
++var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
+     Object.defineProperty(o, "default", { enumerable: true, value: v });
+-}) : function(o, v) {
++}) : function (o, v) {
+     o["default"] = v;
+ });
+ var __importStar = (this && this.__importStar) || function (mod) {
+@@ -27,7 +27,7 @@ const PT = __importStar(require("prop-types"));
+ const classnames_1 = __importDefault(require("classnames"));
+ const nav_frontend_js_utils_1 = require("nav-frontend-js-utils");
+ const toggle_knapp_pure_1 = __importStar(require("./toggle-knapp-pure"));
+-require("nav-frontend-toggle-style");
++require("nav-frontend-toggle-style/dist/main.css");
+ class ToggleGruppePure extends React.PureComponent {
+     render() {
+         const renderProps = (0, nav_frontend_js_utils_1.omit)(this.props, "className", "children", "kompakt", "toggles", "defaultToggles");
+diff --git a/lib/toggle-knapp-pure.js b/lib/toggle-knapp-pure.js
+index 31bf29fbd18c1e1f06d22a99370e97d7cf15431b..29234be84fe27787fc73f34de2bd7b4148472603 100644
+--- a/lib/toggle-knapp-pure.js
++++ b/lib/toggle-knapp-pure.js
+@@ -1,14 +1,14 @@
+ "use strict";
+-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
++var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
+     if (k2 === undefined) k2 = k;
+-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+-}) : (function(o, m, k, k2) {
++    Object.defineProperty(o, k2, { enumerable: true, get: function () { return m[k]; } });
++}) : (function (o, m, k, k2) {
+     if (k2 === undefined) k2 = k;
+     o[k2] = m[k];
+ }));
+-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
++var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
+     Object.defineProperty(o, "default", { enumerable: true, value: v });
+-}) : function(o, v) {
++}) : function (o, v) {
+     o["default"] = v;
+ });
+ var __importStar = (this && this.__importStar) || function (mod) {
+@@ -27,7 +27,7 @@ const React = __importStar(require("react"));
+ const PT = __importStar(require("prop-types"));
+ const classnames_1 = __importDefault(require("classnames"));
+ const nav_frontend_js_utils_1 = require("nav-frontend-js-utils");
+-require("nav-frontend-toggle-style");
++require("nav-frontend-toggle-style/dist/main.css");
+ const knappCls = (props) => (0, classnames_1.default)("toggleKnapp", {
+     "toggleKnapp--pressed": props.pressed,
+     "toggleKnapp--kompakt": props.kompakt,

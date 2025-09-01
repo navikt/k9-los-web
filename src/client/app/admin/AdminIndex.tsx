@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router';
 import classnames from 'classnames/bind';
@@ -11,7 +11,7 @@ import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import { parseQueryString } from 'utils/urlUtils';
 import AdminPanels from './AdminPanels';
-import * as styles from './adminIndex.css';
+import * as styles from './adminIndex.module.css';
 import AdminDashboard from './components/AdminDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
 import EndreDriftsmeldingerIndex from './driftsmeldinger/EndreDriftsmeldingerIndex';
@@ -36,7 +36,7 @@ const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getDriftsmelding
 		</Heading>
 	),
 	aktiv: avdelingslederPanel === activeAvdelingslederPanel,
-	 
+
 	linkCreator: ({ children, className }) => (
 		<NavLink
 			to={getDriftsmeldingerPanelLocation(avdelingslederPanel)}

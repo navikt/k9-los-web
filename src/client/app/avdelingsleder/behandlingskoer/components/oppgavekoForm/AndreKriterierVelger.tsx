@@ -1,4 +1,4 @@
-import React, { Fragment, FunctionComponent } from 'react';
+import { Fragment, FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { K9LosApiKeys } from 'api/k9LosApi';
 import useKodeverk from 'api/rest-api-hooks/src/global-data/useKodeverk';
@@ -7,7 +7,7 @@ import { CheckboxField, RadioGroupField, RadioOption } from 'form/FinalFields';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import ArrowBox from 'sharedComponents/ArrowBox';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import * as styles from './andreKriterierVelger.css';
+import * as styles from './andreKriterierVelger.module.css';
 
 interface OwnProps {
 	valgtOppgavekoId: string;

@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { useFormik } from 'formik';
 import { Detail, TextField } from '@navikt/ds-react';
 import ArrowBox from 'sharedComponents/ArrowBox';
-import * as styles from './utvalgskriterierForOppgavekoForm.css';
+import * as styles from './utvalgskriterierForOppgavekoForm.module.css';
 
 const validate = (values) => {
 	const errors: {

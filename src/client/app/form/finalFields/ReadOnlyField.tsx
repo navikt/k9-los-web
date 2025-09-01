@@ -1,8 +1,8 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import { PersonPencilIcon } from '@navikt/aksel-icons';
 import { BodyShort } from '@navikt/ds-react';
 import Label, { LabelType } from './Label';
-import * as styles from './readOnlyField.css';
+import * as styles from './readOnlyField.module.css';
 
 const hasValue = (value) => value !== undefined && value !== null && value !== '';
 
@@ -31,6 +31,5 @@ export const ReadOnlyField: FunctionComponent<OwnProps> = ({ label, input, isEdi
 		</div>
 	);
 };
-
 
 export default ReadOnlyField;

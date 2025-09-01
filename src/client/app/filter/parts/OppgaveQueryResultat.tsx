@@ -14,14 +14,11 @@ const OppgaveQueryResultat = ({ felter, oppgaveQuery, oppgaver }: Props) => (
 	<Table>
 		<Table.Header>
 			<Table.Row>
-				{oppgaveQuery.select?.map(
-					(felt) =>
-						felt.kode && (
-							<Table.HeaderCell scope="col" key={felt.id}>
-								{visningsnavnForFelt(felter, felt.område, felt.kode)}
-							</Table.HeaderCell>
-						),
-				)}
+				{oppgaveQuery.select?.map((felt) => (
+					<Table.HeaderCell scope="col" key={felt.kode}>
+						{visningsnavnForFelt(felter, felt.område, felt.kode)}
+					</Table.HeaderCell>
+				))}
 			</Table.Row>
 		</Table.Header>
 		<Table.Body>

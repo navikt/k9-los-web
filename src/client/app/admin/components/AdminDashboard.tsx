@@ -1,5 +1,5 @@
 import React from 'react';
-import * as styles from './adminDashboard.css';
+import * as styles from './adminDashboard.module.css';
 
 interface AdminDashboardProps {
 	children: React.ReactNode;

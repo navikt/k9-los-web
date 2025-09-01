@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Checkbox } from '@navikt/ds-react';
-import * as styles from './selectCheckbox.css';
+import * as styles from './selectCheckbox.module.css';
 
 interface Props {
 	value: string;

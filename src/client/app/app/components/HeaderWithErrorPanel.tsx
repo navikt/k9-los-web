@@ -15,7 +15,7 @@ import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import useRestApi from 'api/rest-api-hooks/src/local-data/useRestApi';
 import { Driftsmelding } from '../../admin/driftsmeldinger/driftsmeldingTsType';
 import ErrorMessagePanel from './ErrorMessagePanel';
-import * as styles from './headerWithErrorPanel.css';
+import * as styles from './headerWithErrorPanel.module.css';
 
 interface OwnProps {
 	queryStrings: {

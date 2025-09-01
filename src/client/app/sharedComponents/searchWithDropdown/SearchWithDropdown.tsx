@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { TrashIcon } from '@navikt/aksel-icons';
-import { Button, ErrorMessage, Label } from '@navikt/ds-react';
+import { ErrorMessage } from '@navikt/ds-react';
 import SearchForm from './SearchForm';
 import { SelectedValues } from './SelectedValues';
 import SuggestionList from './SuggestionList';
-import * as styles from './searchWithDropdown.css';
+import * as styles from './searchWithDropdown.module.css';
 
 interface SuggestionsType {
 	label: string;

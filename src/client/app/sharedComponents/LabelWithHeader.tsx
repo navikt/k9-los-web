@@ -1,6 +1,6 @@
-import React, { FunctionComponent, ReactNode } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 import { BodyShort, Detail } from '@navikt/ds-react';
-import * as styles from './labelWithHeader.css';
+import * as styles from './labelWithHeader.module.css';
 
 interface OwnProps {
 	header: string | ReactNode;
