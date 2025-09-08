@@ -32,7 +32,6 @@
 	align-items: center;
 	min-width: 100px;
 	min-height: 120px;
-	position: relative;
 }
 
 .bredTallramme {
@@ -74,7 +73,7 @@
 	font-size: 26px;
 	font-weight: 600;
 	margin: 0;
-	color: #1a1a1a;
+	color: #495057;
 	min-width: 0;
 	text-align: center;
 }
@@ -98,10 +97,7 @@
 	font-size: 14px;
 	font-weight: 500;
 	color: #2d6a4f;
-	background-color: rgba(205, 231, 216, 0.4);
-	border-radius: 3px;
 	white-space: nowrap;
-	transition: background-color 0.2s ease;
 }
 
 .nedbrytningsElement:hover {
