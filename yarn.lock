@@ -3723,7 +3723,7 @@ __metadata:
     dotenv: "npm:17.2.2"
     express: "npm:4.21.2"
     express-http-proxy: "npm:2.1.1"
-    express-rate-limit: "npm:7.5.1"
+    express-rate-limit: "npm:8.1.0"
     helmet: "npm:8.1.0"
     jose: "npm:5.10.0"
     morgan: "npm:1.10.1"
@@ -10936,12 +10936,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-rate-limit@npm:7.5.1":
-  version: 7.5.1
-  resolution: "express-rate-limit@npm:7.5.1"
+"express-rate-limit@npm:8.1.0":
+  version: 8.1.0
+  resolution: "express-rate-limit@npm:8.1.0"
+  dependencies:
+    ip-address: "npm:10.0.1"
   peerDependencies:
     express: ">= 4.11"
-  checksum: 10/357c3398450144ab7bbce2841d0bf4f93a0f3fd9d1d5ed9a0ee331b557af969cc790941dc37b47f8d9b5672964aa0e31666f770e1f48b334dc7d1e69f6433040
+  checksum: 10/ddd5deb3b66f2b0c39c2188041c7e8951c697b3ec964b987144eb1832f823b683c0d1c8f0a9d00176dd13eccdb492a214e8908ad03467d41ca43e0b492b9738e
   languageName: node
   linkType: hard
 
@@ -12348,6 +12350,13 @@ __metadata:
     "@formatjs/icu-messageformat-parser": "npm:2.11.2"
     tslib: "npm:^2.8.0"
   checksum: 10/c19b77c5e495ce8b0d1aa0d95444bf3a4f73886805f1e08d7159b364abcf2f63686b2ccf202eaafb0e39a0e9fde61848b8dd2db1679efd4f6ec8f6a3d0e77928
+  languageName: node
+  linkType: hard
+
+"ip-address@npm:10.0.1":
+  version: 10.0.1
+  resolution: "ip-address@npm:10.0.1"
+  checksum: 10/09731acda32cd8e14c46830c137e7e5940f47b36d63ffb87c737331270287d631cf25aa95570907a67d3f919fdb25f4470c404eda21e62f22e0a55927f4dd0fb
   languageName: node
   linkType: hard
 
