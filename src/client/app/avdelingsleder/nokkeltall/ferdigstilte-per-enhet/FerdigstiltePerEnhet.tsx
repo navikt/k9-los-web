@@ -48,7 +48,7 @@ export default function FerdigstiltePerEnhet() {
 
 	return (
 		<Box padding="4" borderWidth="1" borderColor="border-default">
-			<Heading size="small">Ferdigstilte per enhet</Heading>
+			<Heading size="small">Ferdigstilte behandlinger og oppgaver per enhet</Heading>
 			<VerticalSpacer eightPx />
 			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
 			{data.oppdatertTidspunkt && (

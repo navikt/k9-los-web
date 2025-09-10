@@ -11,16 +11,11 @@ interface OwnProps {
 const Teller: FunctionComponent<OwnProps> = ({ forklaring, inngang, manuelleFerdigstilt, automatiskeFerdigstilt }) => {
 	const totaltFerdigstilt = manuelleFerdigstilt + automatiskeFerdigstilt;
 
-	const nedbrytningsDeler = (() => {
-		const deler = [];
-		// Kan eventuelt sjekke antallet, og kun vise de som er > 0
-		deler.push(<>{manuelleFerdigstilt} manuelt</>);
-		deler.push(<>{automatiskeFerdigstilt} automatisk</>);
-		return deler;
-	})();
-
 	return (
 		<div className={styles.ramme}>
+			<div className={styles.forklaring}>
+				<p>{forklaring}</p>
+			</div>
 			<div className={styles.container}>
 				<div className={styles.tallramme}>
 					<p className={styles.beskrivelse}>Inngang</p>
@@ -33,19 +28,11 @@ const Teller: FunctionComponent<OwnProps> = ({ forklaring, inngang, manuelleFerd
 					<div className={styles.fargetFelt}>
 						<p className={styles.tall}>{totaltFerdigstilt}</p>
 					</div>
-					{nedbrytningsDeler.length > 0 && (
-						<div className={styles.nedbrytning}>
-							{nedbrytningsDeler.map((del) => (
-								<span key={del} className={styles.nedbrytningsElement}>
-									{del}
-								</span>
-							))}
-						</div>
-					)}
+					<div className={styles.nedbrytning}>
+						<span className={styles.nedbrytningsElement}>{`${manuelleFerdigstilt} manuelt`}</span>
+						<span className={styles.nedbrytningsElement}>{`${automatiskeFerdigstilt} automatisk`}</span>
+					</div>
 				</div>
-			</div>
-			<div className={styles.forklaring}>
-				<p>{forklaring}</p>
 			</div>
 		</div>
 	);

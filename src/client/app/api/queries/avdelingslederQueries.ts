@@ -169,6 +169,23 @@ export const useHentAvdelingslederStatus = () =>
 		refetchInterval: 60000,
 	});
 
+export const useHentAvdelingslederStatusFordeling = () =>
+	useQuery<{
+		oppdatertTidspunkt: string;
+		grupper: { kode: string; navn: string }[];
+		tall: {
+			gruppe: string;
+			antallTotalt: number;
+			antallÅpne: number;
+			antallVenter: number;
+			antallUavklart: number;
+		}[];
+	}>({
+		placeholderData: keepPreviousData,
+		queryKey: [apiPaths.hentAvdelingslederStatusFordeling],
+		refetchInterval: 60000,
+	});
+
 export const useHentDagensTall = () =>
 	useQuery<{
 		oppdatertTidspunkt?: string;

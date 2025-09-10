@@ -1,0 +1,76 @@
+.rammer {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.ramme {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+    color: #262626;
+    transition: box-shadow 0.2s ease;
+    width: 214px;
+    padding: 11px;
+}
+
+.ramme:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+.tallramme {
+    border-radius: 5px;
+    background-color: #f8f9fa;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.hovedtall {
+    line-height: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #495057;
+    font-size: 26px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+}
+
+.nedbrytning {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+}
+
+.nedbrytningElement {
+    line-height: 1;
+    font-size: 13px;
+    color: rgba(73, 80, 87, 0.8);
+    font-weight: 500;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.tallcontainer {
+    flex-grow: 1;
+}
+
+.forklaring {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+
+.forklaringTekst {
+    font-size: 15px;
+    font-weight: 600;
+    color: #495057;
+    margin-right: 4px;
+}
