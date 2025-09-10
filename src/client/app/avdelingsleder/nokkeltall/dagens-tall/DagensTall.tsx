@@ -38,26 +38,53 @@ export default function DagensTall() {
 						</Select>
 						<ToggleGroup value={tidsområde} onChange={(nyttTidsområde) => setTidsområde(nyttTidsområde)}>
 							<ToggleGroup.Item value="I_DAG" label="I dag" />
-							<ToggleGroup.Item value="SISTE_7" label="Siste 7 dager" />
+							<ToggleGroup.Item value="SISTE_UKE" label="Siste uke" />
+							<ToggleGroup.Item value="SISTE_2_UKER" label="Siste 2 uker" />
+							<ToggleGroup.Item value="SISTE_4_UKER" label="Siste 4 uker" />
 						</ToggleGroup>
 					</HStack>
 					<HGrid gap="space-24" columns={{ md: 2, lg: 3, xl: 4 }}>
 						{data.tall
 							.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe)
 							.map((value) => {
-								const venstreTall = tidsområde === 'I_DAG' ? value.nyeIDag : value.nyeSiste7Dager;
-								const høyreTall = tidsområde === 'I_DAG' ? value.ferdigstilteIDag : value.ferdigstilteSiste7Dager;
-								const høyreAndreTall =
-									tidsområde === 'I_DAG'
-										? value.ferdigstilteHelautomatiskIDag
-										: value.ferdigstilteHelautomatiskSiste7Dager;
+								const { inngang, manueltFerdigstilt, automatiskFerdigstilt } = (() => {
+									switch (tidsområde) {
+										case 'I_DAG':
+											return {
+												inngang: value.nyeIDag,
+												manueltFerdigstilt: value.ferdigstilteIDag,
+												automatiskFerdigstilt: value.ferdigstilteHelautomatiskIDag,
+											};
+										case 'SISTE_UKE':
+											return {
+												inngang: value.nyeSiste7Dager,
+												manueltFerdigstilt: value.ferdigstilteSiste7Dager,
+												automatiskFerdigstilt: value.ferdigstilteHelautomatiskSiste7Dager,
+											};
+										case 'SISTE_2_UKER':
+											return {
+												inngang: value.nyeSiste2Uker,
+												manueltFerdigstilt: value.ferdigstilteSiste2Uker,
+												automatiskFerdigstilt: value.ferdigstilteHelautomatiskSiste2Uker,
+											};
+										case 'SISTE_4_UKER':
+											return {
+												inngang: value.nyeSiste4Uker,
+												manueltFerdigstilt: value.ferdigstilteSiste4Uker,
+												automatiskFerdigstilt: value.ferdigstilteHelautomatiskSiste4Uker,
+											};
+										default:
+											throw Error('Ukjent tidsområde');
+									}
+								})();
+
 								return (
 									<Teller3
 										key={value.undergruppe}
 										forklaring={data.undergrupper.find(({ kode }) => kode === value.undergruppe).navn}
-										inngang={venstreTall}
-										manuelleFerdigstilt={høyreTall}
-										automatiskeFerdigstilt={høyreAndreTall}
+										inngang={inngang}
+										manuelleFerdigstilt={manueltFerdigstilt}
+										automatiskeFerdigstilt={automatiskFerdigstilt}
 									/>
 								);
 							})}
