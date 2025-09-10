@@ -24,7 +24,7 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 							<FeatureSwitch
 								flex
 								enabled={<Søkeboks />}
-								disabled={<FagsakSearchIndex k9punsjUrl={k9punsjUrl.verdi} k9sakUrl={k9sakUrl.verdi} />}
+								disabled={<FagsakSearchIndex k9punsjUrl={k9punsjUrl?.verdi} k9sakUrl={k9sakUrl?.verdi} />}
 								switchLabel="Vis ny søkeboks"
 								helpText={
 									<>
@@ -40,7 +40,7 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 						{saksbehandler.finnesISaksbehandlerTabell && (
 							<div>
 								<Panel className={styles.sakslistePanel}>
-									<BehandlingskoerIndex k9sakUrl={k9sakUrl.verdi} k9punsjUrl={k9punsjUrl.verdi} />
+									<BehandlingskoerIndex k9sakUrl={k9sakUrl.verdi} k9punsjUrl={k9punsjUrl?.verdi} />
 								</Panel>
 							</div>
 						)}
