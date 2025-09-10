@@ -34,7 +34,17 @@ function visningsnavn(navn: string) {
 		case 'Unntaksbehandlinger':
 			return <Forklaring tekst={navn} hjelpetekst="Oppgaver med behandlingstype nivå 2: «Unntaksbehandling»." />;
 		case 'Klager':
-			return <Forklaring tekst={navn} hjelpetekst="Oppgaver med behandlingstype nivå 1: «k9klage»." />;
+			return (
+				<Forklaring
+					tekst={navn}
+					hjelpetekst={
+						<>
+							<p>Oppgaver med behandlingstype nivå 1: «k9klage».</p>
+							<p>Merk: oppgaver sendt til Kabal vil vises som uavklarte.</p>
+						</>
+					}
+				/>
+			);
 		case 'Punsj-oppgaver':
 			return <Forklaring tekst={navn} hjelpetekst="Oppgaver med behandlingstype nivå 1: «k9punsj»." />;
 		case 'Førstegangsbehandlinger':
