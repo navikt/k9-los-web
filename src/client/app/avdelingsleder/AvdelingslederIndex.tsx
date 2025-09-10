@@ -11,11 +11,13 @@ import { avdelingslederTilgangTilNyeKoer } from 'app/envVariablesUtils';
 import { getPanelLocationCreator } from 'app/paths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import NokkeltallIndex from 'avdelingsleder/nokkeltall/NokkeltallIndex';
+import Status from 'avdelingsleder/status/Status';
 import { StatusFordeling } from 'avdelingsleder/statusfordeling/StatusFordeling';
 import Image from 'sharedComponents/Image';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { parseQueryString } from 'utils/urlUtils';
+import FeatureSwitch from '../FeatureSwitch';
 import * as styles from './avdelingslederIndex.css';
 import AvdelingslederPanels from './avdelingslederPanels';
 import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
@@ -122,7 +124,19 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 		return (
 			<div className="max-w-[1400px] p-4">
 				<Heading size="large">Avdelingslederpanel</Heading>
-				<StatusFordeling />
+				<VerticalSpacer eightPx />
+				<FeatureSwitch
+					defaultValue={false}
+					enabled={<StatusFordeling />}
+					disabled={<Status />}
+					switchLabel="Vis ny statuslinje"
+					helpText={
+						<>
+							<p>Dette er funksjonalitet under utvikling.</p>
+							<p>Hensikten med den nye statuslinjen er å bedre se fordelingen på oppgavestatus.</p>
+						</>
+					}
+				/>
 				<VerticalSpacer twentyPx />
 				<AvdelingslederDashboard>
 					<div>

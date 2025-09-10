@@ -18,7 +18,7 @@ export default function Status() {
 	const { data, isSuccess } = useHentAvdelingslederStatus();
 	return (
 		<div className={styles.container}>
-			<Heading size="medium">Status</Heading>
+			<Heading size="small">Status</Heading>
 			{isSuccess && (
 				<HStack>
 					{data.map(({ antall, behandlingstype }) => (
