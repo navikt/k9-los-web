@@ -42,13 +42,13 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & WrappedComponentProps> 
 					window.location.assign(getK9punsjRef(k9punsjUrl, oppgave.journalpostId));
 					break;
 				case OppgaveSystem.K9SAK:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId.toString()));
+					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
 					break;
 				case OppgaveSystem.K9TILBAKE:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId.toString()));
+					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
 					break;
 				default:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId.toString()));
+					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
 			}
 		});
 	};

@@ -8,8 +8,8 @@ import OppgaveSystem from '../../types/OppgaveSystem';
 import FagsakSearch from './components/FagsakSearch';
 
 interface OwnProps {
-	k9sakUrl?: string;
-	k9punsjUrl?: string;
+	k9sakUrl: string;
+	k9punsjUrl: string;
 }
 
 /**
@@ -24,24 +24,20 @@ const FagsakSearchIndex: FunctionComponent<OwnProps> = ({ k9sakUrl, k9punsjUrl }
 
 	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
 
-	if (!k9sakUrl || !k9punsjUrl) {
-		return null;
-	}
-
 	const goToFagsak = (oppgave: Oppgave) => {
 		leggTilBehandletOppgave(oppgave.oppgaveNøkkel).finally(() => {
 			switch (oppgave.system) {
 				case OppgaveSystem.K9SAK:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId.toString()));
+					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
 					break;
 				case OppgaveSystem.K9TILBAKE:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId.toString()));
+					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
 					break;
 				case OppgaveSystem.PUNSJ:
 					window.location.assign(getK9punsjRef(k9punsjUrl, oppgave.journalpostId));
 					break;
 				default:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId.toString()));
+					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
 			}
 		});
 	};
