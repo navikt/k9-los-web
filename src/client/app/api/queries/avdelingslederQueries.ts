@@ -195,12 +195,22 @@ export const useHentDagensTall = () =>
 			{
 				hovedgruppe: string;
 				undergruppe: string;
+
 				nyeIDag: number;
 				ferdigstilteIDag: number;
-				ferdigstilteHelautomatiskIDag?: number;
+				ferdigstilteHelautomatiskIDag: number;
+
 				nyeSiste7Dager: number;
 				ferdigstilteSiste7Dager: number;
-				ferdigstilteHelautomatiskSiste7Dager?: number;
+				ferdigstilteHelautomatiskSiste7Dager: number;
+
+				nyeSiste2Uker: number;
+				ferdigstilteSiste2Uker: number;
+				ferdigstilteHelautomatiskSiste2Uker: number;
+
+				nyeSiste4Uker: number;
+				ferdigstilteSiste4Uker: number;
+				ferdigstilteHelautomatiskSiste4Uker: number;
 			},
 		];
 	}>({
