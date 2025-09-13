@@ -3717,7 +3717,7 @@ __metadata:
   resolution: "@k9-los-web/server@workspace:server"
   dependencies:
     "@navikt/oasis": "npm:3.8.0"
-    axios: "npm:1.11.0"
+    axios: "npm:1.12.0"
     connect-timeout: "npm:1.9.1"
     cors: "npm:2.8.5"
     dotenv: "npm:17.2.2"
@@ -7785,14 +7785,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.11.0":
-  version: 1.11.0
-  resolution: "axios@npm:1.11.0"
+"axios@npm:1.12.0":
+  version: 1.12.0
+  resolution: "axios@npm:1.12.0"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.4"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/232df4af7a4e4e07baa84621b9cc4b0c518a757b4eacc7f635c0eb3642cb98dff347326739f24b891b3b4481b7b838c79a3a0c4819c9fbc1fc40232431b9c5dc
+  checksum: 10/6c45e294b6ee72f832dbee94cb3fe7331bf2961874fa6b656d909a93b3574c59281f0c62eb92baf7b3e4f39be71936c9f1fcbbe494c90f7ff4d7cc2d7932f06d
   languageName: node
   linkType: hard
 
@@ -13927,7 +13927,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:8.42.0"
     "@typescript-eslint/parser": "npm:8.42.0"
     autoprefixer: "npm:10.4.21"
-    axios: "npm:1.11.0"
+    axios: "npm:1.12.0"
     babel-eslint: "npm:10.1.0"
     babel-jest: "npm:30.1.2"
     babel-loader: "npm:9.2.1"
