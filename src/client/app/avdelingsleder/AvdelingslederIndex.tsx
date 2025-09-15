@@ -2,21 +2,22 @@ import React, { FunctionComponent } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router';
 import classnames from 'classnames/bind';
-import { Row } from 'nav-frontend-grid';
 import Panel from 'nav-frontend-paneler';
 import Tabs from 'nav-frontend-tabs';
-import { CircleSlashIcon, KeyHorizontalIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
-import { BodyShort, Heading } from '@navikt/ds-react';
+import { BarChartIcon, CircleSlashIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
+import { Heading } from '@navikt/ds-react';
 import useTrackRouteParam from 'app/data/trackRouteParam';
 import { avdelingslederTilgangTilNyeKoer } from 'app/envVariablesUtils';
 import { getPanelLocationCreator } from 'app/paths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import NokkeltallIndex from 'avdelingsleder/nokkeltall/NokkeltallIndex';
 import Status from 'avdelingsleder/status/Status';
+import { StatusFordeling } from 'avdelingsleder/statusfordeling/StatusFordeling';
 import Image from 'sharedComponents/Image';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { parseQueryString } from 'utils/urlUtils';
+import FeatureSwitch from '../FeatureSwitch';
 import * as styles from './avdelingslederIndex.css';
 import AvdelingslederPanels from './avdelingslederPanels';
 import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
@@ -56,7 +57,7 @@ const messageId = {
 const tabStyle = {
 	[AvdelingslederPanels.BEHANDLINGSKOER]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.NOKKELTALL]: [<KeyHorizontalIcon fontSize="1.5rem" />, <KeyHorizontalIcon fontSize="1.5rem" />],
+	[AvdelingslederPanels.NOKKELTALL]: [<BarChartIcon fontSize="1.5rem" />, <BarChartIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.RESERVASJONER]: [<CircleSlashIcon fontSize="1.5rem" />, <CircleSlashIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.SAKSBEHANDLERE]: [<PersonGroupIcon fontSize="1.5rem" />, <PersonGroupIcon fontSize="1.5rem" />],
 };
@@ -121,43 +122,41 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 
 	if (activeAvdelingslederPanel) {
 		return (
-			<div className="max-w-[1400px]">
-				<Row>
-					<BodyShort className={styles.paneltekst}>Avdelingslederpanel</BodyShort>
-				</Row>
-				<Row>
-					<Status />
-				</Row>
+			<div className="max-w-[1400px] p-4">
+				<Heading size="large">Avdelingslederpanel</Heading>
+				<VerticalSpacer eightPx />
+				<FeatureSwitch
+					defaultValue={false}
+					enabled={<StatusFordeling />}
+					disabled={<Status />}
+					switchLabel="Vis ny statuslinje"
+					helpText={
+						<>
+							<p>Dette er funksjonalitet under utvikling.</p>
+							<p>Hensikten med den nye statuslinjen er å bedre se fordelingen på oppgavestatus.</p>
+						</>
+					}
+				/>
 				<VerticalSpacer twentyPx />
-				<Row>
-					<AvdelingslederDashboard>
-						<div>
-							<Tabs
-								tabs={[
+				<AvdelingslederDashboard>
+					<div>
+						<Tabs
+							tabs={[
+								getTab(AvdelingslederPanels.BEHANDLINGSKOER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
+								avdelingslederTilgangTilNyeKoer() &&
 									getTab(
-										AvdelingslederPanels.BEHANDLINGSKOER,
+										AvdelingslederPanels.BEHANDLINGSKOER_V3,
 										activeAvdelingslederPanel,
 										getAvdelingslederPanelLocation,
 									),
-									avdelingslederTilgangTilNyeKoer() &&
-										getTab(
-											AvdelingslederPanels.BEHANDLINGSKOER_V3,
-											activeAvdelingslederPanel,
-											getAvdelingslederPanelLocation,
-										),
-									getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-									getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-									getTab(
-										AvdelingslederPanels.SAKSBEHANDLERE,
-										activeAvdelingslederPanel,
-										getAvdelingslederPanelLocation,
-									),
-								].filter(Boolean)}
-							/>
-							<Panel className={styles.panelPadding}>{renderAvdelingslederPanel(activeAvdelingslederPanel)}</Panel>
-						</div>
-					</AvdelingslederDashboard>
-				</Row>
+								getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
+								getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
+								getTab(AvdelingslederPanels.SAKSBEHANDLERE, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
+							].filter(Boolean)}
+						/>
+						<Panel className={styles.panelPadding}>{renderAvdelingslederPanel(activeAvdelingslederPanel)}</Panel>
+					</div>
+				</AvdelingslederDashboard>
 			</div>
 		);
 	}

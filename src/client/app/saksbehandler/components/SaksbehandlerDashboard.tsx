@@ -23,16 +23,14 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 						<Panel className={styles.sakslistePanel}>
 							<FeatureSwitch
 								flex
+								defaultValue
 								enabled={<Søkeboks />}
 								disabled={<FagsakSearchIndex k9punsjUrl={k9punsjUrl.verdi} k9sakUrl={k9sakUrl.verdi} />}
 								switchLabel="Vis ny søkeboks"
 								helpText={
 									<>
 										<p>Dette er funksjonalitet under utvikling.</p>
-										<p>
-											Ny søkeboks går mot ny kø- og oppgavemodell. Det er ønskelig å teste at søkeresultatet vises
-											riktig, og at søket er raskt nok.
-										</p>
+										<p>Ny søkeboks går mot ny kø- og oppgavemodell.</p>
 									</>
 								}
 							/>
