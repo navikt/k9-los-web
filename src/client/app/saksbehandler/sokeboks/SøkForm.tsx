@@ -3,7 +3,7 @@ import { Search } from '@navikt/ds-react';
 
 export function SøkForm(props: {
 	loading: boolean;
-	utførSøk: (søk: { søkeord: string; oppgavestatus: string[] }) => void;
+	utførSøk: (søk: { søkeord: string }) => void;
 	nullstillSøk: () => void;
 }) {
 	const [søkeord, setSøkeord] = useState('');
@@ -20,7 +20,6 @@ export function SøkForm(props: {
 				e.preventDefault();
 				props.utførSøk({
 					søkeord,
-					oppgavestatus: ['AAPEN', 'VENTER', 'LUKKET'],
 				});
 			}}
 		>

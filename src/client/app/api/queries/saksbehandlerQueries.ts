@@ -133,7 +133,7 @@ export const useOpphevReservasjoner = (onSuccess?: () => void) => {
 
 export const useSøkOppgaveV3 = () =>
 	useMutation({
-		mutationFn: (params: { søkeord: string; oppgavestatus: string[] }): Promise<Søkeresultat> =>
+		mutationFn: (params: { søkeord: string }): Promise<Søkeresultat> =>
 			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
 	});
 
