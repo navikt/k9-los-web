@@ -67,6 +67,12 @@ export function StatusFordeling() {
 												{t.antallVenter > 0 && (
 													<div className={styles.nedbrytningElement}>{`${t.antallVenter} venter`}</div>
 												)}
+												{t.antallVenterKabal > 0 && (
+													<div className={styles.nedbrytningElement}>{`${t.antallVenterKabal} venter Kabal`}</div>
+												)}
+												{t.antallVenterAnnet > 0 && (
+													<div className={styles.nedbrytningElement}>{`${t.antallVenterAnnet} venter annet`}</div>
+												)}
 												{t.antallUavklart > 0 && (
 													<div className={styles.nedbrytningElement}>{`${t.antallUavklart} uavklarte`}</div>
 												)}

@@ -178,6 +178,8 @@ export const useHentAvdelingslederStatusFordeling = () =>
 			antallTotalt: number;
 			antallÅpne: number;
 			antallVenter: number;
+			antallVenterKabal: number;
+			antallVenterAnnet: number;
 			antallUavklart: number;
 		}[];
 	}>({
