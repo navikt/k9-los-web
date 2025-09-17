@@ -9,8 +9,12 @@ export function SøkForm(props: {
 	const [søkeord, setSøkeord] = useState('');
 
 	const endreSøkeord = (ord: string) => {
-		// Fjerner all whitespace fra søkeordet
-		setSøkeord(ord.replace(/\s/g, ''));
+		setSøkeord(
+			ord
+				.replace(/\D*(\d{6})\s*(\d{5})\D*/, '$1$2') // fnr, med mulig mellomrom
+				.replace(/[^a-zA-Z0-9]/g, '') // tar bor alt som ikke er tall eller bokstaver
+				.substring(0, 11), // maks 11 tegn (fnr er lengste mulige input)
+		);
 	};
 
 	return (
@@ -29,7 +33,6 @@ export function SøkForm(props: {
 				hideLabel={false}
 				onChange={endreSøkeord}
 				htmlSize={40}
-				maxLength={11}
 				onClear={props.nullstillSøk}
 				value={søkeord}
 				clearButton
