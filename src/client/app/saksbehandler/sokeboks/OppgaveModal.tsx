@@ -1,6 +1,5 @@
 import React from 'react';
 import { BodyShort, Button, Modal } from '@navikt/ds-react';
-import { K9LosApiKeys } from 'api/k9LosApi';
 import {
 	useEndreReservasjoner,
 	useInnloggetSaksbehandler,
@@ -8,7 +7,6 @@ import {
 	useReserverOppgaveMutation,
 	useSisteOppgaverMutation,
 } from 'api/queries/saksbehandlerQueries';
-import { useRestApiRunner } from 'api/rest-api-hooks';
 import { modalInnhold } from 'saksbehandler/sokeboks/modal-innhold';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
@@ -18,13 +16,9 @@ const åpneOppgave = (oppgave: SøkeboksOppgaveDto) => {
 
 export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolean; closeModal: () => void }) {
 	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
-	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
 	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 	const leggTilBehandletOgÅpneOppgave = () =>
-		Promise.all([
-			leggTilBehandletOppgave(props.oppgave.oppgaveNøkkel),
-			leggTilSisteOppgaver(props.oppgave.oppgaveNøkkel),
-		]).finally(() => åpneOppgave(props.oppgave));
+		leggTilSisteOppgaver(props.oppgave.oppgaveNøkkel).finally(() => åpneOppgave(props.oppgave));
 	const { isPending: isLoadingEndreReservasjoner, mutate: endreReservasjoner } = useEndreReservasjoner(() =>
 		leggTilBehandletOgÅpneOppgave(),
 	);

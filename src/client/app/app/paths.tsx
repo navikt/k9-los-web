@@ -2,8 +2,6 @@ import querystring from 'query-string';
 import { formatQueryString, parseQueryString } from 'utils/urlUtils';
 import { Location } from './locationTsType';
 
-export const AVDELINGSLEDER_PATH = 'avdelingsleder';
-
 const emptyQueryString = (queryString) => queryString === '?' || !queryString;
 
 const updateQueryParams = (queryString, nextParams) => {
@@ -21,20 +19,12 @@ const getLocationWithQueryParams = (location, queryParams) => ({
 
 export const getPanelLocationCreator = (location: Location) => (avdelingslederPanel: string) =>
 	getLocationWithQueryParams(location, { fane: avdelingslederPanel });
-export const getPanelLocationCreatorDriftsmeldinger = (location: Location) => (adminPanel: string) =>
-	getLocationWithQueryParams(location, { fane: adminPanel });
 
-export const getK9sakHref = (k9sakUrl: string, saksnummer: string, behandlingId?: string) => {
-	const reducer = (previousValue, param) => (param.include ? { ...previousValue, ...param.query } : previousValue);
-	const queryParams = [
-		{ include: behandlingId, query: { fakta: 'default' } },
-		{ include: behandlingId, query: { punkt: 'default' } },
-	].reduce(reducer, {});
-
+export const getK9sakHref = (k9sakUrl: string, saksnummer: string, behandlingId?: string | number) => {
 	if (behandlingId) {
 		return querystring.stringifyUrl({
 			url: `${k9sakUrl}/fagsak/${saksnummer}/behandling/${behandlingId}/`,
-			query: queryParams,
+			query: { fakta: 'default', punkt: 'default' },
 		});
 	}
 

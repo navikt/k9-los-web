@@ -64,7 +64,6 @@ export enum K9LosApiKeys {
 	BEHANDLINGSKO_OPPGAVE_ANTALL = 'BEHANDLINGSKO_OPPGAVE_ANTALL',
 	BEHANDLINGSKO_OPPGAVE_ANTALL_V3 = 'BEHANDLINGSKO_OPPGAVE_ANTALL_V3',
 	HENT_NYE_OG_FERDIGSTILTE_OPPGAVER = 'HENT_NYE_OG_FERDIGSTILTE_OPPGAVER',
-	LEGG_TIL_BEHANDLET_OPPGAVE = 'LEGG_TIL_BEHANDLET_OPPGAVE',
 	HENT_ALLE_RESERVASJONER = 'HENT_ALLE_RESERVASJONER',
 	AVDELINGSLEDER_OPPHEVER_RESERVASJON = 'AVDELINGSLEDER_OPPHEVER_RESERVASJON',
 	HENT_BEHANDLINGER_SOM_GÅR_AV_VENT = 'HENT_BEHANDLINGER_SOM_GÅR_AV_VENT',
@@ -106,7 +105,6 @@ export const endpoints = () =>
 		.withGet('/saksbehandler/oppgaver/antall', K9LosApiKeys.BEHANDLINGSKO_OPPGAVE_ANTALL)
 		.withGet('/saksbehandler/oppgaver/antall-oppgaver-i-ko', K9LosApiKeys.BEHANDLINGSKO_OPPGAVE_ANTALL_V3)
 		.withPost('/saksbehandler/oppgaver/reservasjon/endre', K9LosApiKeys.ENDRE_OPPGAVERESERVASJON)
-		.withPost('/saksbehandler/oppgaver/legg-til-behandlet-sak', K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE)
 		/* /api/saksbehandler/nokkeltall */
 		.withGet('/saksbehandler/nokkeltall/nye-og-ferdigstilte-oppgaver', K9LosApiKeys.HENT_NYE_OG_FERDIGSTILTE_OPPGAVER)
 

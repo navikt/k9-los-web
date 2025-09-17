@@ -3,9 +3,7 @@ import { WrappedComponentProps, injectIntl } from 'react-intl';
 import { Loader } from '@navikt/ds-react';
 import { saksbehandlerKanVelgeNyeKoer } from 'app/envVariablesUtils';
 import { getK9punsjRef, getK9sakHref } from 'app/paths';
-import { K9LosApiKeys } from 'api/k9LosApi';
 import { useAlleSaksbehandlerKoerV1, useAlleSaksbehandlerKoerV3 } from 'api/queries/saksbehandlerQueries';
-import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import { OppgavekøV1 } from 'saksbehandler/behandlingskoer/oppgavekoTsType';
 import Oppgave from 'saksbehandler/oppgaveTsType';
@@ -33,24 +31,20 @@ const BehandlingskoerIndex: FunctionComponent<OwnProps & WrappedComponentProps> 
 	const mapKøV3 = (kø: OppgavekøV3): OppgavekøV3MedNavn => ({ ...kø, navn: kø.tittel, id: `${kø.id}__V3` });
 	const oppgavekoer = [...(oppgavekoerV1 || []).map(mapKøV1), ...(oppgavekoerV3 || []).map(mapKøV3)];
 
-	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
-
 	const openFagsak = (oppgave: Oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkel).finally(() => {
-			switch (oppgave.system) {
-				case OppgaveSystem.PUNSJ:
-					window.location.assign(getK9punsjRef(k9punsjUrl, oppgave.journalpostId));
-					break;
-				case OppgaveSystem.K9SAK:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
-					break;
-				case OppgaveSystem.K9TILBAKE:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
-					break;
-				default:
-					window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
-			}
-		});
+		switch (oppgave.system) {
+			case OppgaveSystem.PUNSJ:
+				window.location.assign(getK9punsjRef(k9punsjUrl, oppgave.journalpostId));
+				break;
+			case OppgaveSystem.K9SAK:
+				window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
+				break;
+			case OppgaveSystem.K9TILBAKE:
+				window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
+				break;
+			default:
+				window.location.assign(getK9sakHref(k9sakUrl, oppgave.saksnummer, oppgave.behandlingId));
+		}
 	};
 
 	const openSak = (oppgave: Oppgave) => {

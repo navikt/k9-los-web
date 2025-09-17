@@ -26,7 +26,6 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 	const [loadingOppgaveFraKo, setLoadingOppgaveFraKo] = useState<boolean>(false);
 	const { valgtOppgavekoId, oppgavekoer } = useContext(BehandlingskoerContext);
 	const [visFinnesIngenBehandlingerIKoModal, setVisFinnesIngenBehandlingerIKoModal] = useState<boolean>(false);
-	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
 	const {
 		startRequest: fåOppgaveFraKo,
 		state: restApiState,
@@ -37,9 +36,7 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 	const { mutate } = usePlukkOppgaveMutation((reservasjoner) => {
 		if (reservasjoner.length > 0) {
 			const { oppgaveNøkkelDto, oppgavebehandlingsUrl } = reservasjoner[0];
-			Promise.all([leggTilBehandletOppgave(oppgaveNøkkelDto), leggTilSisteOppgaver(oppgaveNøkkelDto)]).finally(() =>
-				window.location.assign(oppgavebehandlingsUrl),
-			);
+			leggTilSisteOppgaver(oppgaveNøkkelDto).finally(() => window.location.assign(oppgavebehandlingsUrl));
 		} else {
 			setVisFinnesIngenBehandlingerIKoModal(true);
 		}

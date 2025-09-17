@@ -49,7 +49,6 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 		},
 	});
 
-	const { startRequest: leggTilBehandletOppgave } = useRestApiRunner(K9LosApiKeys.LEGG_TIL_BEHANDLET_OPPGAVE);
 	const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Reservasjon[]>(
 		K9LosApiKeys.FORLENG_OPPGAVERESERVASJON,
 	);
@@ -62,10 +61,6 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 		});
 	};
 	const ref = useRef({});
-
-	const goToFagsak = (oppgave: Oppgave) => {
-		leggTilBehandletOppgave(oppgave.oppgaveNøkkel).finally(() => apneOppgave(oppgave));
-	};
 
 	const countReservations = (reservasjon: ReservasjonV3) => {
 		if (reservasjon.reservertOppgaveV1Dto) {
@@ -143,7 +138,7 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 									<ReservertOppgaveRadV1
 										key={reservasjon.reservertOppgaveV1Dto.eksternId}
 										reservasjon={reservasjon}
-										goToFagsak={goToFagsak}
+										goToFagsak={apneOppgave}
 										forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
 										valgtOppgaveId={valgtOppgaveId}
 										setValgtOppgaveId={setValgtOppgaveId}
