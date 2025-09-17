@@ -22,7 +22,7 @@ export default function Status() {
 			{isSuccess && (
 				<HStack>
 					{data.map(({ antall, behandlingstype }) => (
-						<EnkelTeller antall={antall} tekst={visningsnavn(behandlingstype)} />
+						<EnkelTeller key={behandlingstype} antall={antall} tekst={visningsnavn(behandlingstype)} />
 					))}
 				</HStack>
 			)}

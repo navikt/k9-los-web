@@ -23,7 +23,6 @@ const SaksbehandlerRad = ({ saksbehandler }: { saksbehandler: Saksbehandler }) =
 	const [ekspandert, setEkspandert] = useState(false);
 	return (
 		<Table.ExpandableRow
-			key={saksbehandler.epost}
 			content={ekspandert && <SaksbehandlerInfo saksbehandler={saksbehandler} />}
 			onOpenChange={(open) => setEkspandert(open)}
 		>
@@ -60,7 +59,10 @@ const SaksbehandlereTabell: FunctionComponent = () => {
 								<SkeletonRad />
 							</>
 						)}
-						{isSuccess && saksbehandlere.map((saksbehandler) => <SaksbehandlerRad saksbehandler={saksbehandler} />)}
+						{isSuccess &&
+							saksbehandlere.map((saksbehandler) => (
+								<SaksbehandlerRad key={saksbehandler.epost} saksbehandler={saksbehandler} />
+							))}
 					</Table.Body>
 				</Table>
 			</div>

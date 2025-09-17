@@ -200,7 +200,7 @@ const ReservasjonerTabell = () => {
 					</Table.Header>
 					<Table.Body>
 						{reservasjonerSomSkalVises.map(({ reservasjon, id, navn, ytelse, type, reservertTil }) => (
-							<Table.Row key={`${reservasjon.oppgavenøkkel}`}>
+							<Table.Row key={JSON.stringify(reservasjon.oppgavenøkkel)}>
 								<Table.DataCell>
 									<Checkbox
 										hideLabel
