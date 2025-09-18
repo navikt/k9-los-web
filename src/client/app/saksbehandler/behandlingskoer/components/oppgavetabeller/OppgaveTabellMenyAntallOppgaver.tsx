@@ -11,8 +11,8 @@ interface OwnProps {
 }
 
 const OppgaveTabellMenyAntallOppgaver: FunctionComponent<OwnProps> = ({ antallOppgaver, tekstId, hastesak }) => (
-	<div className={classnames(styles.container, { [styles.hastesak]: hastesak && !!antallOppgaver })}>
-		{hastesak && !!antallOppgaver && (
+	<div className={classnames(styles.container, { [styles.hastesak]: hastesak && antallOppgaver > 0 })}>
+		{hastesak && antallOppgaver > 0 && (
 			<ExclamationmarkTriangleFillIcon height="1.5rem" width="1.5rem" className={styles.hastesakIkon} />
 		)}
 		<div className="m-1">

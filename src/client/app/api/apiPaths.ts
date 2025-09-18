@@ -32,8 +32,6 @@ const apiPaths = {
 	hentSaksbehandlereSomSaksbehandler: '/api/k9-los-api/saksbehandler/oppgaver/saksbehandlere',
 	hentSaksbehandlereIKoV3: (id: string) => `/api/k9-los-api/ny-oppgavestyring/ko/${id}/saksbehandlere`,
 	hentTiNesteIKoV3: (id: string) => `/api/k9-los-api/ny-oppgavestyring/ko/${id}/oppgaver`,
-	k9PunsjUrl: '/api/k9-los-api/konfig/k9-punsj-url',
-	k9SakUrl: '/api/k9-los-api/konfig/k9-sak-url',
 	kodeverk: '/api/k9-los-api/kodeverk',
 	kopierOppgaveko: '/api/k9-los-api/ny-oppgavestyring/ko/kopier',
 	legacyOppgaveKoer: '/api/k9-los-api/avdelingsleder/oppgavekoer',
@@ -51,7 +49,6 @@ const apiPaths = {
 	slettOppgaveko: '/api/k9-los-api/ny-oppgavestyring/ko/',
 	slettSaksbehandler: '/api/k9-los-api/avdelingsleder/saksbehandlere/slett',
 	sisteOppgaver: '/api/k9-los-api/ny-oppgavestyring/siste-oppgaver',
-	sok: '/api/k9-los-api/fagsak/sok',
 	sokV3: '/api/k9-los-api/ny-oppgavestyring/sok',
 	validerQuery: '/api/k9-los-api/ny-oppgavestyring/oppgave/validate',
 };
