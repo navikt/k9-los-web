@@ -69,25 +69,19 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 	const queryClient = useQueryClient();
 	const intl = useIntl();
 
-	const { startRequest: fetchAntallOppgaver, data: antallOppgaver } = useRestApiRunner<number>(
-		K9LosApiKeys.BEHANDLINGSKO_OPPGAVE_ANTALL,
-	);
 	const oppgavekoerSortertAlfabetisk = oppgavekoer.sort((a, b) => a.navn.localeCompare(b.navn));
 	const harKoer = !!oppgavekoerSortertAlfabetisk.length;
 	const valgtKoId = getDefaultOppgaveko(oppgavekoerSortertAlfabetisk);
 	const { data: antallIValgtKø, isLoading: isLoadingAntallIValgtKø } = useAntallOppgaverIKoV3UtenReserverte(
 		getKoId(valgtKoId),
 		{
-			enabled: harKoer && valgtKoId && erKoV3(valgtKoId),
+			enabled: harKoer && !!valgtKoId,
 		},
 	);
 
-	const { data: saksbehandlere, startRequest: hentSaksbehandlere } = useRestApiRunner<Saksbehandler[]>(
-		K9LosApiKeys.OPPGAVEKO_SAKSBEHANDLERE,
-	);
 	const { data: saksbehandlereV3 } = useQuery<Saksbehandler[]>({
 		queryKey: [apiPaths.hentSaksbehandlereIKoV3(getKoId(valgtKoId))],
-		enabled: harKoer && valgtKoId && erKoV3(valgtKoId),
+		enabled: harKoer && !!valgtKoId,
 	});
 
 	useEffect(() => {
@@ -95,12 +89,7 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 			const defaultOppgavekoId = getDefaultOppgaveko(oppgavekoerSortertAlfabetisk);
 			if (defaultOppgavekoId) {
 				setValgtOppgavekoId(defaultOppgavekoId);
-				if (!erKoV3(defaultOppgavekoId)) {
-					hentSaksbehandlere({ id: getKoId(defaultOppgavekoId) });
-					fetchAntallOppgaver({ id: getKoId(defaultOppgavekoId) });
-				} else {
-					queryClient.invalidateQueries({ queryKey: [apiPaths.hentSaksbehandlereIKoV3(getKoId(defaultOppgavekoId))] });
-				}
+				queryClient.invalidateQueries({ queryKey: [apiPaths.hentSaksbehandlereIKoV3(getKoId(defaultOppgavekoId))] });
 			}
 		}
 	}, []);
@@ -109,10 +98,6 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 		const koId = event.target.value;
 		setValgtOppgavekoId(koId);
 		setValueInLocalStorage('id', koId);
-		if (!erKoV3(koId)) {
-			hentSaksbehandlere({ id: getKoId(koId) });
-			fetchAntallOppgaver({ id: getKoId(koId) });
-		}
 	};
 
 	if (!harKoer) {
@@ -123,7 +108,7 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 		);
 	}
 
-	const antallIKø = erKoV3(valgtKoId) ? antallIValgtKø?.antallUtenReserverte : antallOppgaver || 0;
+	const antallIKø = antallIValgtKø?.antallUtenReserverte;
 	return (
 		<div className={styles.oppgavevelgerform_container}>
 			<div className="flex">
@@ -145,11 +130,11 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 						<FormattedMessage id="OppgavekoVelgerForm.AntallOppgaver" values={{ antall: antallIKø }} />
 					)}
 					<ReadMore size="small" header="Saksbehandlere i køen">
-						{createTooltip(erKoV3(valgtKoId) ? saksbehandlereV3 : saksbehandlere)}
+						{createTooltip(saksbehandlereV3)}
 					</ReadMore>
 					<VerticalSpacer sixteenPx />
 					<Button
-						id="frode sin knapp"
+						id="plukk-ny-oppgave"
 						className="mt-4 max-w-sm"
 						loading={loadingOppgaveFraKo}
 						disabled={loadingOppgaveFraKo}

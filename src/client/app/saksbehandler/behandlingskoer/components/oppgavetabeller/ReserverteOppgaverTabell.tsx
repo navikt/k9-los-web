@@ -8,46 +8,26 @@ import { K9LosApiKeys } from 'api/k9LosApi';
 import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
 import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
-import merknadType from 'kodeverk/merknadType';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { getHeaderCodes } from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgavetabellerfelles';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
 import * as kopanelStyles from '../oppgavekoPanel.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
-import ReservertOppgaveRadV1 from './ReservertOppgaveRadV1';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
 import * as styles from './oppgaverTabell.css';
 
 interface OwnProps {
-	apneOppgave: (oppgave: Oppgave) => void;
 	gjelderHastesaker?: boolean;
 }
 
-const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gjelderHastesaker }) => {
+const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ gjelderHastesaker }) => {
 	const [valgtOppgaveId, setValgtOppgaveId] = useState<string>();
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
 	const queryClient = useQueryClient();
 
-	const {
-		data: reservasjoner,
-		isLoading,
-		isSuccess,
-		isError,
-	} = useSaksbehandlerReservasjoner({
-		select: (reserverteOppgaverData: ReservasjonV3[]): ReservasjonV3[] => {
-			if (gjelderHastesaker) {
-				return reserverteOppgaverData.filter(
-					(reservasjon) => !!reservasjon?.reservertOppgaveV1Dto?.merknad?.merknadKoder?.includes(merknadType.HASTESAK),
-				);
-			}
-			return reserverteOppgaverData.filter(
-				(reservasjon) => !reservasjon?.reservertOppgaveV1Dto?.merknad?.merknadKoder?.includes(merknadType.HASTESAK),
-			);
-		},
-	});
+	const { data: reservasjoner, isLoading, isSuccess, isError } = useSaksbehandlerReservasjoner();
 
 	const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Reservasjon[]>(
 		K9LosApiKeys.FORLENG_OPPGAVERESERVASJON,
@@ -63,9 +43,6 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 	const ref = useRef({});
 
 	const countReservations = (reservasjon: ReservasjonV3) => {
-		if (reservasjon.reservertOppgaveV1Dto) {
-			return 1;
-		}
 		const v3OppgaverSomSkalVises = reservasjon.reserverteV3Oppgaver?.filter(
 			(v) => v.oppgavestatus === OppgavestatusV3.AAPEN,
 		);
@@ -134,33 +111,20 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ apneOppgave, gj
 						{reservasjoner
 							.sort((a, b) => new Date(a.reservertTil).getTime() - new Date(b.reservertTil).getTime())
 							.map((reservasjon) =>
-								reservasjon.reservertOppgaveV1Dto ? (
-									<ReservertOppgaveRadV1
-										key={reservasjon.reservertOppgaveV1Dto.eksternId}
-										reservasjon={reservasjon}
-										goToFagsak={apneOppgave}
-										forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
-										valgtOppgaveId={valgtOppgaveId}
-										setValgtOppgaveId={setValgtOppgaveId}
-										gjelderHastesaker={gjelderHastesaker}
-										ref={ref}
-									/>
-								) : (
-									reservasjon.reserverteV3Oppgaver
-										?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN)
-										.map((oppgave) => (
-											<ReservertOppgaveRadV3
-												key={oppgave.oppgaveNøkkel.oppgaveEksternId}
-												oppgave={oppgave}
-												reservasjon={reservasjon}
-												forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
-												valgtOppgaveId={valgtOppgaveId}
-												setValgtOppgaveId={setValgtOppgaveId}
-												gjelderHastesaker={gjelderHastesaker}
-												ref={ref}
-											/>
-										))
-								),
+								reservasjon.reserverteV3Oppgaver
+									?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN)
+									.map((oppgave) => (
+										<ReservertOppgaveRadV3
+											key={oppgave.oppgaveNøkkel.oppgaveEksternId}
+											oppgave={oppgave}
+											reservasjon={reservasjon}
+											forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
+											valgtOppgaveId={valgtOppgaveId}
+											setValgtOppgaveId={setValgtOppgaveId}
+											gjelderHastesaker={gjelderHastesaker}
+											ref={ref}
+										/>
+									)),
 							)}
 					</Table.Body>
 				</Table>
