@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import Chevron from 'nav-frontend-chevron';
 import { Table } from '@navikt/ds-react';
 import { OppgaveModal } from 'saksbehandler/sokeboks/OppgaveModal';
@@ -6,9 +6,14 @@ import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dt
 import { HastesakIkon } from 'sharedComponents/HastesakIkon';
 import ModalButton from 'sharedComponents/ModalButton';
 
-export function OppgaveTabellRad(props: { oppgave: SøkeboksOppgaveDto; visHastesakKolonne: boolean }) {
+export function OppgaveTabellRad(props: {
+	oppgave: SøkeboksOppgaveDto;
+	visHastesakKolonne: boolean;
+	setModal: (modal: ReactNode) => void;
+}) {
 	return (
 		<ModalButton
+			setModal={props.setModal}
 			renderButton={({ openModal }) => (
 				<Table.Row key={props.oppgave.oppgaveNøkkel.oppgaveEksternId} onClick={openModal} className="cursor-pointer">
 					{props.visHastesakKolonne && <Table.DataCell>{props.oppgave.hastesak && <HastesakIkon />}</Table.DataCell>}
