@@ -53,14 +53,9 @@ const SaksbehandlerInfo: FunctionComponent<OwnProps> = ({ saksbehandler }) => {
 	return (
 		<div>
 			<div className="flex">
-				<div className="flex-initial w-1/2">
-					<KøListe title="Køer" data={saksbehandler.oppgavekoer.map((kø, index) => ({ id: index, tittel: kø }))} />
-				</div>
-				<div className="flex-initial w-1/2">
-					<KøListe title="Nye køer" data={køerV3} isSuccess={isSuccessKøerV3} isLoading={isLoadingKøerV3} />
-				</div>
+				<KøListe title="Køer" data={køerV3} isSuccess={isSuccessKøerV3} isLoading={isLoadingKøerV3} />
 			</div>
-			{ }
+			{}
 			<Button
 				onClick={() => {
 					setVisSlettModal(true);

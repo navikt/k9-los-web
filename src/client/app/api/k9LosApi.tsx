@@ -159,10 +159,6 @@ export const endpoints = () =>
 
 		.withGet('/avdelingsleder/reservasjoner', K9LosApiKeys.HENT_ALLE_RESERVASJONER)
 
-		/* /api/konfig */
-		.withGet('/konfig/k9-sak-url', K9LosApiKeys.K9SAK_URL)
-		.withGet('/konfig/k9-punsj-url', K9LosApiKeys.PUNSJ_URL)
-
 		/* /api/kodeverk */
 		.withGet('/kodeverk', K9LosApiKeys.KODEVERK)
 

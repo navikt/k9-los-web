@@ -7,7 +7,6 @@ import Tabs from 'nav-frontend-tabs';
 import { BarChartIcon, CircleSlashIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import useTrackRouteParam from 'app/data/trackRouteParam';
-import { avdelingslederTilgangTilNyeKoer } from 'app/envVariablesUtils';
 import { getPanelLocationCreator } from 'app/paths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import NokkeltallIndex from 'avdelingsleder/nokkeltall/NokkeltallIndex';
@@ -20,7 +19,6 @@ import { parseQueryString } from 'utils/urlUtils';
 import FeatureSwitch from '../FeatureSwitch';
 import * as styles from './avdelingslederIndex.css';
 import AvdelingslederPanels from './avdelingslederPanels';
-import EndreBehandlingskoerIndex from './behandlingskoer/EndreBehandlingskoerIndex';
 import BehandlingskoerIndex from './behandlingskoerV3/BehandlingskoerIndex';
 import SaksbehandlereTabell from './bemanning/components/SaksbehandlereTabell';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
@@ -31,8 +29,6 @@ const classNames = classnames.bind(styles);
 
 const renderAvdelingslederPanel = (avdelingslederPanel) => {
 	switch (avdelingslederPanel) {
-		case AvdelingslederPanels.BEHANDLINGSKOER:
-			return <EndreBehandlingskoerIndex />;
 		case AvdelingslederPanels.BEHANDLINGSKOER_V3:
 			return <BehandlingskoerIndex />;
 		case AvdelingslederPanels.NOKKELTALL:
@@ -47,7 +43,6 @@ const renderAvdelingslederPanel = (avdelingslederPanel) => {
 };
 
 const messageId = {
-	[AvdelingslederPanels.BEHANDLINGSKOER]: 'AvdelingslederIndex.Behandlingskoer',
 	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: 'AvdelingslederIndex.Behandlingskoer.V3',
 	[AvdelingslederPanels.NOKKELTALL]: 'AvdelingslederIndex.Nokkeltall',
 	[AvdelingslederPanels.RESERVASJONER]: 'AvdelingslederIndex.Reservasjoner',
@@ -55,7 +50,6 @@ const messageId = {
 };
 
 const tabStyle = {
-	[AvdelingslederPanels.BEHANDLINGSKOER]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.NOKKELTALL]: [<BarChartIcon fontSize="1.5rem" />, <BarChartIcon fontSize="1.5rem" />],
 	[AvdelingslederPanels.RESERVASJONER]: [<CircleSlashIcon fontSize="1.5rem" />, <CircleSlashIcon fontSize="1.5rem" />],
@@ -108,7 +102,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 
 	const getPanelFromUrlOrDefault = (loc) => {
 		const panelFromUrl = parseQueryString(loc.search);
-		return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER;
+		return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER_V3;
 	};
 
 	const { data: innnloggetSaksbehandler } = useInnloggetSaksbehandler();
@@ -142,13 +136,11 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 					<div>
 						<Tabs
 							tabs={[
-								getTab(AvdelingslederPanels.BEHANDLINGSKOER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-								avdelingslederTilgangTilNyeKoer() &&
-									getTab(
-										AvdelingslederPanels.BEHANDLINGSKOER_V3,
-										activeAvdelingslederPanel,
-										getAvdelingslederPanelLocation,
-									),
+								getTab(
+									AvdelingslederPanels.BEHANDLINGSKOER_V3,
+									activeAvdelingslederPanel,
+									getAvdelingslederPanelLocation,
+								),
 								getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
 								getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
 								getTab(AvdelingslederPanels.SAKSBEHANDLERE, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
