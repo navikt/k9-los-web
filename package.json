@@ -109,7 +109,7 @@
 		"@storybook/addon-links": "9.1.4",
 		"@storybook/addon-onboarding": "9.1.4",
 		"@storybook/addon-styling-webpack": "2.0.0",
-		"@storybook/addon-webpack5-compiler-swc": "3.0.0",
+		"@storybook/addon-webpack5-compiler-swc": "4.0.1",
 		"@storybook/blocks": "8.6.14",
 		"@storybook/react": "9.1.4",
 		"@storybook/react-webpack5": "9.1.4",
