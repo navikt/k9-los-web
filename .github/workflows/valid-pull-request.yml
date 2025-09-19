@@ -1,6 +1,8 @@
 name: Valider pull request
 on:
   pull_request:
+    branches-ignore:
+      - slette_V1
     types: [opened, synchronize]
     paths-ignore:
       - '**.md'

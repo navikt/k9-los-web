@@ -1,0 +1,66 @@
+name: Build and deploy slette V1
+on:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - 'CODEOWNERS'
+      - 'LICENCE'
+
+    branches:
+      - slette_V1
+
+jobs:
+  build-and-deploy:
+    name: Build docker image
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+      id-token: write
+      issues: write
+    outputs:
+      image: ${{ steps.docker-push.outputs.image }}
+      image_version: ${{ steps.docker-push.outputs.tag }}
+    steps:
+      - name: Hente kode
+        uses: actions/checkout@v5
+      - name: Sette yarn-config
+        run: |
+          yarn config set npmScopes.navikt.npmRegistryServer "https://npm.pkg.github.com"
+          yarn config set npmScopes.navikt.npmAlwaysAuth true
+          yarn config set npmScopes.navikt.npmAuthToken $NPM_AUTH_TOKEN
+        env:
+          NPM_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Sette opp Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: yarn
+      - name: Installere dependencies
+        run: yarn workspaces focus k9-los-web
+      - name: Tester
+        run: yarn test --maxWorkers=2
+      - name: Bygge kode
+        run: yarn build
+      - name: Opprett release med Sentry
+        run: yarn sentry-release
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        # Installerer dependencies for kun server, da det er det eneste som trenger å være med på docker imaget
+      - name: Installere dependencies for server
+        run: yarn workspaces focus @k9-los-web/server --production
+      - uses: nais/docker-build-push@v0
+        id: docker-push
+        with:
+          tag: 'latest'
+          team: k9saksbehandling
+
+      - name: Deploy k9-los-web til dev
+        uses: nais/deploy/actions/deploy@v2
+        env:
+          PRINT_PAYLOAD: true
+          CLUSTER: dev-gcp
+          IMAGE: ${{ steps.docker-push.outputs.image }}
+          RESOURCE: nais/k9-los-web.yml
+          VARS: nais/dev-gcp.yml
