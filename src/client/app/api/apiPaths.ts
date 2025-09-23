@@ -45,6 +45,7 @@ const apiPaths = {
 	saksbehandler: '/api/k9-los-api/saksbehandler',
 	saksbehandlerNesteOppgaver: (id: string) => `/api/k9-los-api/saksbehandler/oppgaver?id=${id}`,
 	saksbehandlerReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/reserverte',
+	hentAktivReservasjonForOppgave: '/api/k9-los-api/saksbehandler/oppgaver/aktiv-reservasjon',
 	saksbehandlereIOppgaveko: '/api/k9-los-api/saksbehandler/oppgaveko/saksbehandlere',
 	slettOppgaveko: '/api/k9-los-api/ny-oppgavestyring/ko/',
 	slettSaksbehandler: '/api/k9-los-api/avdelingsleder/saksbehandlere/slett',

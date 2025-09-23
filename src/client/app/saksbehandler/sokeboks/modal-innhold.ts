@@ -1,4 +1,5 @@
 import NavAnsatt from 'app/navAnsattTsType';
+import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 import { dateFormat, timeFormat } from 'utils/dateUtils';
 
@@ -10,28 +11,31 @@ export type ModalInnholdRetur = {
 	heading: string;
 };
 
-export function modalInnhold(oppgave: SøkeboksOppgaveDto, innloggetSaksbehandler: NavAnsatt): ModalInnholdRetur {
+export function modalInnhold(
+	oppgave: SøkeboksOppgaveDto,
+	innloggetSaksbehandler: NavAnsatt,
+	reservasjon: ReservasjonV3 | null,
+): ModalInnholdRetur {
 	if (oppgave.status === 'Venter') {
 		let modaltekst: string;
-		if (innloggetSaksbehandler.brukerIdent === oppgave.reservertAvSaksbehandlerIdent) {
+		if (innloggetSaksbehandler.brukerIdent === reservasjon?.reservertAvIdent) {
 			modaltekst = 'Oppgaven er reservert av deg.';
-		} else if (!oppgave.reservertAvSaksbehandlerIdent) {
+		} else if (!reservasjon) {
 			modaltekst = 'Oppgaven er ikke reservert.';
 		} else {
-			const reservertTomFormatert = `${dateFormat(oppgave.reservertTom)} kl. ${timeFormat(oppgave.reservertTom)}`;
-			modaltekst = `Oppgaven er reservert av ${oppgave.reservertAvSaksbehandlerNavn} t.o.m. ${reservertTomFormatert}.`;
+			const reservertTomFormatert = `${dateFormat(reservasjon.reservertTil)} kl. ${timeFormat(reservasjon.reservertTil)}`;
+			modaltekst = `Oppgaven er reservert av ${reservasjon.reservertAvNavn ?? reservasjon.reservertAvEpost} t.o.m. ${reservertTomFormatert}.`;
 		}
 		return {
 			heading: 'Oppgaven er satt på vent',
 			modaltekst,
 			visÅpneOgReserverKnapp: false,
 			visÅpneOgEndreReservasjonKnapp:
-				innloggetSaksbehandler.kanReservere &&
-				oppgave.reservertAvSaksbehandlerIdent !== innloggetSaksbehandler.brukerIdent,
-			visLeggTilbakeIKøKnapp: oppgave.reservertAvSaksbehandlerIdent === innloggetSaksbehandler.brukerIdent,
+				innloggetSaksbehandler.kanReservere && reservasjon?.reservertAvIdent !== innloggetSaksbehandler.brukerIdent,
+			visLeggTilbakeIKøKnapp: reservasjon?.reservertAvIdent === innloggetSaksbehandler.brukerIdent,
 		};
 	}
-	if (innloggetSaksbehandler.brukerIdent === oppgave.reservertAvSaksbehandlerIdent) {
+	if (innloggetSaksbehandler.brukerIdent === reservasjon?.reservertAvIdent) {
 		return {
 			heading: 'Oppgaven er reservert av deg',
 			modaltekst: '',
@@ -40,7 +44,7 @@ export function modalInnhold(oppgave: SøkeboksOppgaveDto, innloggetSaksbehandle
 			visLeggTilbakeIKøKnapp: true,
 		};
 	}
-	if (!oppgave.reservertAvSaksbehandlerIdent) {
+	if (!reservasjon) {
 		return {
 			heading: 'Oppgaven er ikke reservert',
 			modaltekst: '',
@@ -50,10 +54,10 @@ export function modalInnhold(oppgave: SøkeboksOppgaveDto, innloggetSaksbehandle
 		};
 	}
 
-	const reservertTomFormatert = `${dateFormat(oppgave.reservertTom)} kl. ${timeFormat(oppgave.reservertTom)}`;
+	const reservertTomFormatert = `${dateFormat(reservasjon.reservertTil)} kl. ${timeFormat(reservasjon.reservertTil)}`;
 	return {
 		heading: 'En annen saksbehandler arbeider nå med denne oppgaven',
-		modaltekst: `Oppgaven er reservert av ${oppgave.reservertAvSaksbehandlerNavn} t.o.m. ${reservertTomFormatert}.`,
+		modaltekst: `Oppgaven er reservert av ${reservasjon.reservertAvNavn} t.o.m. ${reservertTomFormatert}.`,
 		visÅpneOgReserverKnapp: false,
 		visÅpneOgEndreReservasjonKnapp: innloggetSaksbehandler.kanReservere,
 		visLeggTilbakeIKøKnapp: false,

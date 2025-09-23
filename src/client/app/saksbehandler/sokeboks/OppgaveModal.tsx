@@ -2,6 +2,7 @@ import React from 'react';
 import { BodyShort, Button, Modal } from '@navikt/ds-react';
 import {
 	useEndreReservasjoner,
+	useHentAktivReservasjonForOppgave,
 	useInnloggetSaksbehandler,
 	useOpphevReservasjoner,
 	useReserverOppgaveMutation,
@@ -15,7 +16,10 @@ const åpneOppgave = (oppgave: SøkeboksOppgaveDto) => {
 };
 
 export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolean; closeModal: () => void }) {
-	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
+	const { data: aktivReservasjon, isSuccess: harHentetAktivReservasjon } = useHentAktivReservasjonForOppgave(
+		props.oppgave.oppgaveNøkkel,
+	);
+	const { data: innloggetSaksbehandler, isSuccess: harHentetInnloggetSaksbehandler } = useInnloggetSaksbehandler();
 	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 	const leggTilBehandletOgÅpneOppgave = () =>
 		leggTilSisteOppgaver(props.oppgave.oppgaveNøkkel).finally(() => åpneOppgave(props.oppgave));
@@ -29,8 +33,12 @@ export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolea
 		props.closeModal,
 	);
 
+	if (!harHentetAktivReservasjon || !harHentetInnloggetSaksbehandler) {
+		return null;
+	}
+
 	const { visÅpneOgReserverKnapp, visÅpneOgEndreReservasjonKnapp, visLeggTilbakeIKøKnapp, heading, modaltekst } =
-		modalInnhold(props.oppgave, innloggetSaksbehandler);
+		modalInnhold(props.oppgave, innloggetSaksbehandler, aktivReservasjon);
 
 	return (
 		<Modal open={props.open} onClose={props.closeModal} closeOnBackdropClick header={{ heading }}>
