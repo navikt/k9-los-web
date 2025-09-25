@@ -3,15 +3,14 @@
 import React, { RefAttributes } from 'react';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
+import dayjs from 'dayjs';
 import { ExclamationmarkTriangleFillIcon, MenuHamburgerIcon } from '@navikt/aksel-icons';
 import { Button, Table } from '@navikt/ds-react';
-import { getK9sakHref } from 'app/paths';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
 import { useGlobalStateRestApiData } from 'api/rest-api-hooks';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
-import DateLabel from 'sharedComponents/DateLabel';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import OppgaveV3 from 'types/OppgaveV3';
 import { getDateAndTime } from 'utils/dateUtils';
@@ -57,12 +56,7 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 
 		const tilOppgave = async () => {
 			leggTilSisteOppgaver(oppgave.oppgaveNøkkel).finally(() => {
-				let fallbackUrl = '';
-
-				if (oppgave?.saksnummer) {
-					fallbackUrl = getK9sakHref(k9sakUrl.verdi, oppgave?.saksnummer, oppgave?.oppgaveNøkkel?.oppgaveEksternId);
-				}
-				window.location.assign(oppgave.oppgavebehandlingsUrl || fallbackUrl);
+				window.location.assign(oppgave.oppgavebehandlingsUrl);
 			});
 		};
 		return (
@@ -89,7 +83,7 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 					{oppgave.behandlingstype.navn}
 				</Table.DataCell>
 				<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
-					{(oppgave.opprettetTidspunkt && <DateLabel dateString={oppgave.opprettetTidspunkt} />) || '-'}
+					{(oppgave.opprettetTidspunkt && dayjs(oppgave.opprettetTidspunkt).format('DD.MM.YYYY')) || '-'}
 				</Table.DataCell>
 				<Table.DataCell onClick={tilOppgave} className={`${styles.reservertTil} hover:cursor-pointer`}>
 					<FormattedMessage

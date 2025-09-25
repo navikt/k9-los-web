@@ -19,16 +19,3 @@ const getLocationWithQueryParams = (location, queryParams) => ({
 
 export const getPanelLocationCreator = (location: Location) => (avdelingslederPanel: string) =>
 	getLocationWithQueryParams(location, { fane: avdelingslederPanel });
-
-export const getK9sakHref = (k9sakUrl: string, saksnummer: string, behandlingId?: string | number) => {
-	if (behandlingId) {
-		return querystring.stringifyUrl({
-			url: `${k9sakUrl}/fagsak/${saksnummer}/behandling/${behandlingId}/`,
-			query: { fakta: 'default', punkt: 'default' },
-		});
-	}
-
-	return `${k9sakUrl}/fagsak/${saksnummer}/`;
-};
-
-export const getK9punsjRef = (k9punsjUrl: string, journalpostId: string) => `${k9punsjUrl}/${journalpostId}`;

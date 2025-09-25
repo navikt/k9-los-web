@@ -11,29 +11,22 @@ import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/o
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import RestApiState from '../../../api/rest-api-hooks/src/RestApiState';
-import { erKoV3, getKoId } from '../utils';
+import { getKoId } from '../utils';
 import OppgavekoVelgerForm from './OppgavekoVelgerForm';
 import * as styles from './oppgavekoPanel.css';
-import OppgaverTabell from './oppgavetabeller/OppgaverTabell';
 import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
 
-interface OwnProps {
-	apneOppgave: (oppgave: Oppgave) => void;
-}
-
-const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
+const OppgavekoPanel: FunctionComponent = () => {
 	const [visBehandlingerIKo, setVisBehandlingerIKo] = useState<boolean>(false);
-	const [loadingOppgaveFraKo, setLoadingOppgaveFraKo] = useState<boolean>(false);
 	const { valgtOppgavekoId, oppgavekoer } = useContext(BehandlingskoerContext);
 	const [visFinnesIngenBehandlingerIKoModal, setVisFinnesIngenBehandlingerIKoModal] = useState<boolean>(false);
 	const {
-		startRequest: fåOppgaveFraKo,
 		state: restApiState,
 		error: restApiError,
 		resetRequestData,
 	} = useRestApiRunner<Oppgave>(K9LosApiKeys.FÅ_OPPGAVE_FRA_KO);
 	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
-	const { mutate } = usePlukkOppgaveMutation((reservasjoner) => {
+	const { mutate, isPending: loadingOppgaveFraKo } = usePlukkOppgaveMutation((reservasjoner) => {
 		if (reservasjoner.length > 0) {
 			const { oppgaveNøkkelDto, oppgavebehandlingsUrl } = reservasjoner[0];
 			leggTilSisteOppgaver(oppgaveNøkkelDto).finally(() => window.location.assign(oppgavebehandlingsUrl));
@@ -55,22 +48,6 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 	}, [restApiState, restApiError]);
 
 	const plukkNyOppgave = () => {
-		if (!erKoV3(valgtOppgavekoId)) {
-			setLoadingOppgaveFraKo(true);
-			fåOppgaveFraKo({
-				oppgaveKøId: getKoId(valgtOppgavekoId),
-			})
-				.then((reservertOppgave) => {
-					resetRequestData();
-					setLoadingOppgaveFraKo(false);
-					apneOppgave(reservertOppgave);
-				})
-				.catch(() => {
-					setLoadingOppgaveFraKo(false);
-				});
-			return;
-		}
-
 		mutate({
 			oppgaveKøId: getKoId(valgtOppgavekoId),
 		});
@@ -87,8 +64,7 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 			<OppgavekoVelgerForm plukkNyOppgave={plukkNyOppgave} loadingOppgaveFraKo={loadingOppgaveFraKo} />
 			<VerticalSpacer twentyPx />
 			<div className={styles.behandlingskoerContainer}>
-				<ReserverteOppgaverTabell gjelderHastesaker apneOppgave={apneOppgave} />
-				<ReserverteOppgaverTabell apneOppgave={apneOppgave} />
+				<ReserverteOppgaverTabell />
 			</div>
 			<VerticalSpacer eightPx />
 			{visFinnesIngenBehandlingerIKoModal && (
@@ -119,13 +95,7 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ apneOppgave }) => {
 					</Label>
 				</button>
 
-				{visBehandlingerIKo &&
-					valgtOppgaveko &&
-					(erKoV3(valgtOppgaveko.id) ? (
-						<OppgavetabellV3 køId={valgtOppgavekoId} />
-					) : (
-						<OppgaverTabell valgtKo={valgtOppgaveko} />
-					))}
+				{visBehandlingerIKo && valgtOppgaveko && <OppgavetabellV3 køId={valgtOppgavekoId} />}
 			</div>
 		</div>
 	);
