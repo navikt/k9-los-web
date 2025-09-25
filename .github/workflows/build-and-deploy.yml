@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-deploy:
-    name: Build docker image and create issue
+    name: Build docker image
     runs-on: ubuntu-latest
     permissions:
       actions: read
