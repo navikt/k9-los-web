@@ -5,8 +5,9 @@ export function SøkForm(props: {
 	loading: boolean;
 	utførSøk: (søk: { søkeord: string }) => void;
 	nullstillSøk: () => void;
+	søkeordFraUrl?: string;
 }) {
-	const [søkeord, setSøkeord] = useState('');
+	const [søkeord, setSøkeord] = useState(props.søkeordFraUrl);
 
 	const endreSøkeord = (ord: string) => {
 		setSøkeord(
