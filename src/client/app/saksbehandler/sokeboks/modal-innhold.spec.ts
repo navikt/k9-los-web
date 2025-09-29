@@ -1,39 +1,63 @@
 import NavAnsatt from 'app/navAnsattTsType';
-import { modalInnhold } from 'saksbehandler/sokeboks/modal-innhold';
+import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
+import { modalInnhold as modalInnholdOriginal } from 'saksbehandler/sokeboks/modal-innhold';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
-const innloggetSaksbehandler: NavAnsatt = {
-	navn: 'Sara Saksbehandler',
-	brukerIdent: 'Z123456',
-	kanReservere: true,
-	brukernavn: 'Z123456@nav.no',
-	funksjonellTid: '',
-	kanSaksbehandle: true,
-	kanBehandleKode6: false,
-	kanDrifte: true,
-	kanOppgavestyre: true,
-	finnesISaksbehandlerTabell: true,
-};
+const modalInnhold = (
+	oppgave: Partial<SøkeboksOppgaveDto>,
+	innloggetSaksbehandler: Partial<NavAnsatt>,
+	reservasjon: Partial<ReservasjonV3> | null,
+) => {
+	const defaultSaksbehandler: NavAnsatt = {
+		navn: 'Sara Saksbehandler',
+		brukerIdent: 'Z123456',
+		kanReservere: true,
+		brukernavn: 'Z123456@nav.no',
+		funksjonellTid: '',
+		kanSaksbehandle: true,
+		kanBehandleKode6: false,
+		kanDrifte: true,
+		kanOppgavestyre: true,
+		finnesISaksbehandlerTabell: true,
+	};
 
-const oppgave: SøkeboksOppgaveDto = {
-	navn: 'Ola Oppgave',
-	reservertTom: null,
-	status: 'Åpen',
-	oppgavebehandlingsUrl: '',
-	ytelsestype: '',
-	oppgaveNøkkel: { oppgaveEksternId: '', oppgaveTypeEksternId: '', områdeEksternId: 'K9' },
-	journalpostId: null,
-	opprettetTidspunkt: '',
-	reservertAvSaksbehandlerIdent: null,
-	reservertAvSaksbehandlerNavn: null,
-	reservasjonsnøkkel: '',
-	saksnummer: '',
-	hastesak: false,
+	const defaultOppgave: SøkeboksOppgaveDto = {
+		navn: 'Ola Oppgave',
+		reservertTom: null,
+		status: 'Åpen',
+		oppgavebehandlingsUrl: '',
+		ytelsestype: '',
+		oppgaveNøkkel: { oppgaveEksternId: '', oppgaveTypeEksternId: '', områdeEksternId: 'K9' },
+		journalpostId: null,
+		opprettetTidspunkt: '',
+		reservertAvSaksbehandlerIdent: null,
+		reservertAvSaksbehandlerNavn: null,
+		reservasjonsnøkkel: '',
+		saksnummer: '',
+		hastesak: false,
+		fagsakÅr: null,
+	};
+
+	const defaultReservasjon: ReservasjonV3 = {
+		reserverteV3Oppgaver: [],
+		reservertAvEpost: 'saksbehandler@test.no',
+		reservertAvIdent: 'Z123456',
+		reservertAvNavn: 'Sara Saksbehandler',
+		reservertFra: '2024-09-01T00:00:00.000',
+		reservertTil: '2024-10-01T00:00:00.000',
+		kommentar: '',
+	};
+
+	return modalInnholdOriginal(
+		{ ...defaultOppgave, ...oppgave },
+		{ ...defaultSaksbehandler, ...innloggetSaksbehandler },
+		reservasjon != null ? { ...defaultReservasjon, ...reservasjon } : null,
+	);
 };
 
 describe('Skal lage riktig modalinnhold', () => {
 	test('på vent, ikke reservert', () => {
-		const resultat = modalInnhold({ ...oppgave, status: 'Venter' }, { ...innloggetSaksbehandler, kanReservere: true });
+		const resultat = modalInnhold({ status: 'Venter' }, { kanReservere: true }, null);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er satt på vent',
 			modaltekst: 'Oppgaven er ikke reservert.',
@@ -46,13 +70,14 @@ describe('Skal lage riktig modalinnhold', () => {
 	test('på vent, reservert av en annen', () => {
 		const resultat = modalInnhold(
 			{
-				...oppgave,
-				reservertAvSaksbehandlerIdent: 'M999999',
-				reservertAvSaksbehandlerNavn: 'Super Saksbehandler',
-				reservertTom: '2029-12-31T23:59:59.000',
 				status: 'Venter',
 			},
-			{ ...innloggetSaksbehandler, kanReservere: true },
+			{ kanReservere: true },
+			{
+				reservertAvIdent: 'M999999',
+				reservertAvNavn: 'Super Saksbehandler',
+				reservertTil: '2029-12-31T23:59:59.000',
+			},
 		);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er satt på vent',
@@ -64,10 +89,7 @@ describe('Skal lage riktig modalinnhold', () => {
 	});
 
 	test('ikke reservert, kan reservere selv', () => {
-		const resultat = modalInnhold(
-			{ ...oppgave, reservertTom: null, reservertAvSaksbehandlerIdent: null, reservertAvSaksbehandlerNavn: null },
-			{ ...innloggetSaksbehandler, kanReservere: true },
-		);
+		const resultat = modalInnhold({}, { kanReservere: true }, null);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er ikke reservert',
 			modaltekst: '',
@@ -78,10 +100,7 @@ describe('Skal lage riktig modalinnhold', () => {
 	});
 
 	test('ikke reservert, kan ikke reservere selv', () => {
-		const resultat = modalInnhold(
-			{ ...oppgave, reservertTom: null, reservertAvSaksbehandlerIdent: null, reservertAvSaksbehandlerNavn: null },
-			{ ...innloggetSaksbehandler, kanReservere: false },
-		);
+		const resultat = modalInnhold({}, { kanReservere: false }, null);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er ikke reservert',
 			modaltekst: '',
@@ -93,13 +112,13 @@ describe('Skal lage riktig modalinnhold', () => {
 
 	test('reservert av andre, kan ikke reservere selv', () => {
 		const resultat = modalInnhold(
+			{},
+			{ kanReservere: false },
 			{
-				...oppgave,
-				reservertTom: '2024-10-01T00:00:00.00000',
-				reservertAvSaksbehandlerIdent: 'X654321',
-				reservertAvSaksbehandlerNavn: 'Annen Saksbehandler',
+				reservertTil: '2024-10-01T00:00:00.00000',
+				reservertAvIdent: 'X654321',
+				reservertAvNavn: 'Annen Saksbehandler',
 			},
-			{ ...innloggetSaksbehandler, kanReservere: false },
 		);
 		expect(resultat).toStrictEqual({
 			heading: 'En annen saksbehandler arbeider nå med denne oppgaven',
@@ -112,13 +131,13 @@ describe('Skal lage riktig modalinnhold', () => {
 
 	test('reservert av andre, kan reservere selv', () => {
 		const resultat = modalInnhold(
+			{},
+			{ kanReservere: true },
 			{
-				...oppgave,
-				reservertTom: '2024-10-01T00:00:00.00000',
-				reservertAvSaksbehandlerIdent: 'X654321',
-				reservertAvSaksbehandlerNavn: 'Annen Saksbehandler',
+				reservertTil: '2024-10-01T00:00:00.00000',
+				reservertAvIdent: 'X654321',
+				reservertAvNavn: 'Annen Saksbehandler',
 			},
-			{ ...innloggetSaksbehandler, kanReservere: true },
 		);
 		expect(resultat).toStrictEqual({
 			heading: 'En annen saksbehandler arbeider nå med denne oppgaven',
@@ -131,13 +150,13 @@ describe('Skal lage riktig modalinnhold', () => {
 
 	test('reservert på seg selv', () => {
 		const resultat = modalInnhold(
+			{},
+			{ kanReservere: true },
 			{
-				...oppgave,
-				reservertTom: '2024-10-01T00:00:00.00000',
-				reservertAvSaksbehandlerIdent: 'Z123456',
-				reservertAvSaksbehandlerNavn: 'Sara Saksbehandler',
+				reservertTil: '2024-10-01T00:00:00.00000',
+				reservertAvIdent: 'Z123456',
+				reservertAvNavn: 'Sara Saksbehandler',
 			},
-			{ ...innloggetSaksbehandler, kanReservere: true },
 		);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er reservert av deg',
