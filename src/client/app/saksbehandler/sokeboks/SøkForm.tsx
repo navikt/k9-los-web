@@ -8,8 +8,10 @@ export function SøkForm(props: {
 	søkeordFraUrl?: string;
 }) {
 	const [søkeord, setSøkeord] = useState(props.søkeordFraUrl);
+	const [feilmelding, setFeilmelding] = useState<string>();
 
 	const endreSøkeord = (ord: string) => {
+		setFeilmelding(undefined);
 		setSøkeord(
 			ord
 				.replace(/\D*(\d{6})\s*(\d{5})\D*/, '$1$2') // fnr, med mulig mellomrom
@@ -22,13 +24,19 @@ export function SøkForm(props: {
 		<form
 			role="search"
 			onSubmit={(e) => {
+				setFeilmelding(undefined);
 				e.preventDefault();
-				props.utførSøk({
-					søkeord,
-				});
+				if (søkeord) {
+					props.utførSøk({
+						søkeord,
+					});
+				} else {
+					setFeilmelding('Søkeordet kan ikke være tomt');
+				}
 			}}
 		>
 			<Search
+				error={feilmelding}
 				label="Søk på saksnummer, personnummer eller journalpost-id"
 				variant="primary"
 				hideLabel={false}
