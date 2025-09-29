@@ -1,7 +1,7 @@
 import NavAnsatt from 'app/navAnsattTsType';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
-import { dateFormat, timeFormat } from 'utils/dateUtils';
+import { dateFormat, dateTimeFormat, timeFormat } from 'utils/dateUtils';
 
 export type ModalInnholdRetur = {
 	visÅpneOgReserverKnapp: boolean;
@@ -23,7 +23,7 @@ export function modalInnhold(
 		} else if (!reservasjon) {
 			modaltekst = 'Oppgaven er ikke reservert.';
 		} else {
-			const reservertTomFormatert = `${dateFormat(reservasjon.reservertTil)} kl. ${timeFormat(reservasjon.reservertTil)}`;
+			const reservertTomFormatert = dateTimeFormat(reservasjon.reservertTil);
 			modaltekst = `Oppgaven er reservert av ${reservasjon.reservertAvNavn ?? reservasjon.reservertAvEpost} t.o.m. ${reservertTomFormatert}.`;
 		}
 		return {
@@ -56,7 +56,7 @@ export function modalInnhold(
 
 	const reservertTomFormatert = `${dateFormat(reservasjon.reservertTil)} kl. ${timeFormat(reservasjon.reservertTil)}`;
 	return {
-		heading: 'En annen saksbehandler arbeider nå med denne oppgaven',
+		heading: 'Oppgaven er reservert av en annen saksbehandler',
 		modaltekst: `Oppgaven er reservert av ${reservasjon.reservertAvNavn} t.o.m. ${reservertTomFormatert}.`,
 		visÅpneOgReserverKnapp: false,
 		visÅpneOgEndreReservasjonKnapp: innloggetSaksbehandler.kanReservere,

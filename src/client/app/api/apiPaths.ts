@@ -25,6 +25,7 @@ const apiPaths = {
 	hentOppgaveko: (id: string) => `/api/k9-los-api/ny-oppgavestyring/ko/${id}`,
 	hentOppgavekoer: '/api/k9-los-api/ny-oppgavestyring/ko/',
 	hentOppgaver: '/api/k9-los-api/ny-oppgavestyring/oppgave/query',
+	hentAktivReservasjon: '/api/k9-los-api/saksbehandler/oppgaver/reservasjon/aktiv',
 	hentAntallOppgaver: '/api/k9-los-api/ny-oppgavestyring/oppgave/query/antall',
 	hentOppgaverSomFil: '/api/k9-los-api/ny-oppgavestyring/oppgave/queryToFile',
 	hentSaksbehandlereAvdelingsleder: '/api/k9-los-api/avdelingsleder/saksbehandlere',

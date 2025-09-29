@@ -1,44 +1,17 @@
 import React from 'react';
-import { BodyShort, Button, Modal } from '@navikt/ds-react';
-import {
-	useEndreReservasjoner,
-	useHentAktivReservasjonForOppgave,
-	useInnloggetSaksbehandler,
-	useOpphevReservasjoner,
-	useReserverOppgaveMutation,
-	useSisteOppgaverMutation,
-} from 'api/queries/saksbehandlerQueries';
-import { modalInnhold } from 'saksbehandler/sokeboks/modal-innhold';
+import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
+import { useOppgaveModalViewModel } from 'saksbehandler/sokeboks/oppgave-modal-viewmodel';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
-const åpneOppgave = (oppgave: SøkeboksOppgaveDto) => {
-	window.location.href = oppgave.oppgavebehandlingsUrl;
-};
-
 export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolean; closeModal: () => void }) {
-	const { data: aktivReservasjon, isSuccess: harHentetAktivReservasjon } = useHentAktivReservasjonForOppgave(
-		props.oppgave.oppgaveNøkkel,
-	);
-	const { data: innloggetSaksbehandler, isSuccess: harHentetInnloggetSaksbehandler } = useInnloggetSaksbehandler();
-	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
-	const leggTilBehandletOgÅpneOppgave = () =>
-		leggTilSisteOppgaver(props.oppgave.oppgaveNøkkel).finally(() => åpneOppgave(props.oppgave));
-	const { isPending: isLoadingEndreReservasjoner, mutate: endreReservasjoner } = useEndreReservasjoner(() =>
-		leggTilBehandletOgÅpneOppgave(),
-	);
-	const { mutate: reserverOppgave, isPending: isLoadingReserverOppgave } = useReserverOppgaveMutation(() =>
-		leggTilBehandletOgÅpneOppgave(),
-	);
-	const { mutate: opphevReservasjoner, isPending: isLoadingOpphevReservasjon } = useOpphevReservasjoner(
+	const { harHentetData, heading, modaltekst, feilmelding, knapper } = useOppgaveModalViewModel(
+		props.oppgave,
 		props.closeModal,
 	);
 
-	if (!harHentetAktivReservasjon || !harHentetInnloggetSaksbehandler) {
+	if (!harHentetData) {
 		return null;
 	}
-
-	const { visÅpneOgReserverKnapp, visÅpneOgEndreReservasjonKnapp, visLeggTilbakeIKøKnapp, heading, modaltekst } =
-		modalInnhold(props.oppgave, innloggetSaksbehandler, aktivReservasjon);
 
 	return (
 		<Modal open={props.open} onClose={props.closeModal} closeOnBackdropClick header={{ heading }}>
@@ -47,39 +20,38 @@ export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolea
 				<BodyShort>Hva ønsker du å gjøre med oppgaven?</BodyShort>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button type="button" onClick={leggTilBehandletOgÅpneOppgave}>
+				<Button type="button" onClick={knapper.åpneOppgave.handling}>
 					Åpne oppgave
 				</Button>
-				{visÅpneOgReserverKnapp && (
+				{knapper.reserverOppgave.vis && (
 					<Button
 						type="button"
 						variant="secondary"
-						loading={isLoadingReserverOppgave}
-						onClick={() => reserverOppgave(props.oppgave.oppgaveNøkkel)}
+						loading={knapper.reserverOppgave.loading}
+						disabled={knapper.reserverOppgave.disabled}
+						onClick={knapper.reserverOppgave.handling}
 					>
 						Reserver og åpne oppgave
 					</Button>
 				)}
-				{visÅpneOgEndreReservasjonKnapp && (
+				{knapper.åpneOgEndreReservasjon.vis && (
 					<Button
 						type="button"
 						variant="secondary"
-						loading={isLoadingEndreReservasjoner}
-						onClick={() =>
-							endreReservasjoner([
-								{ oppgaveNøkkel: props.oppgave.oppgaveNøkkel, brukerIdent: innloggetSaksbehandler.brukerIdent },
-							])
-						}
+						loading={knapper.åpneOgEndreReservasjon.loading}
+						disabled={knapper.åpneOgEndreReservasjon.disabled}
+						onClick={knapper.åpneOgEndreReservasjon.handling}
 					>
-						Reserver og åpne oppgave
+						Overta reservasjon og åpne oppgave
 					</Button>
 				)}
-				{visLeggTilbakeIKøKnapp && (
+				{knapper.leggTilbakeIKø.vis && (
 					<Button
 						type="button"
 						variant="secondary"
-						loading={isLoadingOpphevReservasjon}
-						onClick={() => opphevReservasjoner([{ oppgaveNøkkel: props.oppgave.oppgaveNøkkel }])}
+						loading={knapper.leggTilbakeIKø.loading}
+						disabled={knapper.leggTilbakeIKø.disabled}
+						onClick={knapper.leggTilbakeIKø.handling}
 					>
 						Legg tilbake i kø
 					</Button>
@@ -87,6 +59,7 @@ export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolea
 				<Button type="button" variant="tertiary" onClick={props.closeModal}>
 					Avbryt
 				</Button>
+				{feilmelding && <Alert variant="error">{feilmelding}</Alert>}
 			</Modal.Footer>
 		</Modal>
 	);
