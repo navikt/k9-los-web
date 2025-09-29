@@ -121,7 +121,7 @@ describe('Skal lage riktig modalinnhold', () => {
 			},
 		);
 		expect(resultat).toStrictEqual({
-			heading: 'En annen saksbehandler arbeider nå med denne oppgaven',
+			heading: 'Oppgaven er reservert av en annen saksbehandler',
 			modaltekst: 'Oppgaven er reservert av Annen Saksbehandler t.o.m. 01.10.2024 kl. 00:00.',
 			visÅpneOgReserverKnapp: false,
 			visÅpneOgEndreReservasjonKnapp: false,
@@ -140,7 +140,7 @@ describe('Skal lage riktig modalinnhold', () => {
 			},
 		);
 		expect(resultat).toStrictEqual({
-			heading: 'En annen saksbehandler arbeider nå med denne oppgaven',
+			heading: 'Oppgaven er reservert av en annen saksbehandler',
 			modaltekst: 'Oppgaven er reservert av Annen Saksbehandler t.o.m. 01.10.2024 kl. 00:00.',
 			visÅpneOgReserverKnapp: false,
 			visÅpneOgEndreReservasjonKnapp: true,
