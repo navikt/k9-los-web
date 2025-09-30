@@ -11,7 +11,7 @@ import { modalInnhold } from 'saksbehandler/sokeboks/modal-innhold';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 const endreWindowLocationTilFagsystem = (oppgave: SøkeboksOppgaveDto) => {
-	window.location.href = oppgave.oppgavebehandlingsUrl;
+	window.location.assign(oppgave.oppgavebehandlingsUrl);
 };
 
 const harIkkeHentetData = {
@@ -35,10 +35,6 @@ type UseOppgaveModalRetur =
 export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModal: () => void): UseOppgaveModalRetur => {
 	const [feilmelding, setFeilmelding] = useState<string>();
 
-	const { data: innloggetSaksbehandler, isSuccess: harHentetInnloggetSaksbehandler } = useInnloggetSaksbehandler();
-	const { data: aktivReservasjon, isSuccess: harHentetAktivReservasjon } = useHentAktivReservasjonForOppgave(
-		oppgave.oppgaveNøkkel,
-	);
 	const { mutate: leggTilSisteOppgaverMutate, isPending: isPendingLeggTilSisteOppgaver } = useSisteOppgaverMutation();
 	const { mutate: endreReservasjonerMutate, isPending: isPendingEndreReservasjoner } = useEndreReservasjoner();
 	const { mutate: reserverOppgaveMutate, isPending: isPendingReserverOppgave } = useReserverOppgaveMutation();
@@ -50,7 +46,13 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 		isPendingReserverOppgave ||
 		isPendingOpphevReservasjon;
 
-	if (!(harHentetInnloggetSaksbehandler && harHentetAktivReservasjon)) {
+	const { data: innloggetSaksbehandler, isSuccess: harHentetInnloggetSaksbehandler } = useInnloggetSaksbehandler();
+	const { data: aktivReservasjon, isSuccess: harHentetAktivReservasjon } = useHentAktivReservasjonForOppgave(
+		!isPending,
+		oppgave.oppgaveNøkkel,
+	);
+
+	if (!harHentetInnloggetSaksbehandler || !harHentetAktivReservasjon) {
 		return harIkkeHentetData;
 	}
 
@@ -58,10 +60,9 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 		modalInnhold(oppgave, innloggetSaksbehandler, aktivReservasjon);
 
 	const leggTilSisteOppgaverOgÅpneFagsystem = () => {
-		// Åpner oppgave i fagsystem uavhengig av om siste-oppgaver-kallet feiler eller ikke, derfor onSettled
+		// Åpner oppgave i fagsystem uavhengig av om siste-oppgaver-kallet feiler eller ikke, siden dette ikke er kritisk kall, derfor onSettled
 		leggTilSisteOppgaverMutate(oppgave.oppgaveNøkkel, {
 			onSettled: () => {
-				closeModal();
 				endreWindowLocationTilFagsystem(oppgave);
 			},
 		});
@@ -76,7 +77,7 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 			åpneOppgave: {
 				vis: visÅpneOgReserverKnapp,
 				handling: leggTilSisteOppgaverOgÅpneFagsystem,
-				loading: isPendingLeggTilSisteOppgaver,
+				loading: false,
 				disabled: isPending,
 			},
 			åpneOgEndreReservasjon: {
@@ -94,25 +95,15 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 						},
 					);
 				},
-				loading: isPendingEndreReservasjoner || isPendingLeggTilSisteOppgaver,
+				loading: isPendingEndreReservasjoner,
 				disabled: isPending,
 			},
 			reserverOppgave: {
 				vis: visÅpneOgReserverKnapp,
 				handling: () => {
 					reserverOppgaveMutate(oppgave.oppgaveNøkkel, {
-						onSuccess: (data) => {
-							if (data.erReservert) {
-								// Åpner oppgave i fagsystem uavhengig av om siste-oppgaver-kallet feiler eller ikke, derfor onSettled
-								leggTilSisteOppgaverMutate(oppgave.oppgaveNøkkel, {
-									onSettled: () => {
-										endreWindowLocationTilFagsystem(oppgave);
-									},
-								});
-							} else {
-								// Trolig ikke mulig at erReservert er false, så se på om dto skal forenkles
-								setFeilmelding('Reservering av oppgave feilet.');
-							}
+						onSuccess: () => {
+							leggTilSisteOppgaverOgÅpneFagsystem();
 						},
 						onError: () => {
 							setFeilmelding(
@@ -121,7 +112,7 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 						},
 					});
 				},
-				loading: isPendingReserverOppgave || isPendingLeggTilSisteOppgaver,
+				loading: isPendingReserverOppgave,
 				disabled: isPending,
 			},
 			leggTilbakeIKø: {
@@ -136,7 +127,7 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 						},
 					});
 				},
-				loading: isPendingOpphevReservasjon || isPendingLeggTilSisteOppgaver,
+				loading: isPendingOpphevReservasjon,
 				disabled: isPending,
 			},
 		},

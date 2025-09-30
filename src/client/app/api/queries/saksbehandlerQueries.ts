@@ -57,9 +57,11 @@ export const useReserverOppgaveMutation = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] });
-			queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] });
-			queryClient.invalidateQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
+			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
+			return Promise.all([
+				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
+				queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
+			]);
 		},
 		mutationFn: (oppgaveNøkkel: OppgaveNøkkel): Promise<OppgaveStatus> =>
 			axiosInstance.post(apiPaths.reserverOppgave, { oppgaveNøkkel }).then((response) => response.data),
@@ -71,9 +73,11 @@ export const useEndreReservasjoner = () => {
 	return useMutation<null, Error, EndreOppgaveType[]>({
 		mutationFn: (data) => axiosInstance.post(apiPaths.endreReservasjoner, data),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] });
-			queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] });
-			queryClient.invalidateQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
+			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
+			return Promise.all([
+				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
+				queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
+			]);
 		},
 	});
 };
@@ -86,8 +90,11 @@ export const usePlukkOppgaveMutation = (callback?: (oppgave: ReservasjonV3FraKø
 		onSuccess: async (data: ReservasjonV3FraKøDto[]) => {
 			if (callback) callback(data);
 			if (data.length > 0) {
-				await queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] });
-				await queryClient.invalidateQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
+				await Promise.all([
+					queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
+					queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
+					queryClient.invalidateQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] }),
+				]);
 			}
 		},
 	});
@@ -99,25 +106,34 @@ export const useOpphevReservasjoner = () => {
 		mutationFn: (data: Array<{ oppgaveNøkkel: OppgaveNøkkel }>) =>
 			axiosInstance.post(apiPaths.opphevReservasjoner, data),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] });
-			queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] });
-			queryClient.invalidateQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
+			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
+			return Promise.all([
+				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
+				queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
+			]);
 		},
 	});
 };
 
-export const useSøkOppgaveV3 = () =>
-	useMutation({
+export const useSøkOppgaveV3 = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
 		mutationFn: (params: { søkeord: string }): Promise<Søkeresultat> =>
 			axiosInstance.post(apiPaths.sokV3, params).then((response) => response.data),
+		onSuccess: () => queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] }),
 	});
+};
 
-export const useHentAktivReservasjonForOppgave = (params: {
-	oppgaveEksternId: string;
-	oppgaveTypeEksternId: string;
-	områdeEksternId: string;
-}) =>
+export const useHentAktivReservasjonForOppgave = (
+	enabled: boolean,
+	params: {
+		oppgaveEksternId: string;
+		oppgaveTypeEksternId: string;
+		områdeEksternId: string;
+	},
+) =>
 	useQuery<ReservasjonV3 | null>({
+		enabled,
 		queryKey: [apiPaths.hentAktivReservasjonForOppgave, params],
 		queryFn: (): Promise<ReservasjonV3 | null> =>
 			axiosInstance.get(apiPaths.hentAktivReservasjonForOppgave, { params }).then((response) => response.data),

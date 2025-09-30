@@ -14,13 +14,18 @@ export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolea
 	}
 
 	return (
-		<Modal open={props.open} onClose={props.closeModal} closeOnBackdropClick header={{ heading }}>
+		<Modal open={props.open} onClose={() => props.closeModal()} closeOnBackdropClick header={{ heading }}>
 			<Modal.Body>
 				<BodyShort>{modaltekst}</BodyShort>
 				<BodyShort>Hva ønsker du å gjøre med oppgaven?</BodyShort>
 			</Modal.Body>
 			<Modal.Footer>
-				<Button type="button" onClick={knapper.åpneOppgave.handling}>
+				<Button
+					type="button"
+					loading={knapper.åpneOppgave.loading}
+					disabled={knapper.åpneOppgave.disabled}
+					onClick={knapper.åpneOppgave.handling}
+				>
 					Åpne oppgave
 				</Button>
 				{knapper.reserverOppgave.vis && (

@@ -43,8 +43,7 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 		}: OwnProps,
 		ref: React.RefObject<{ [key: string]: HTMLElement | null }>,
 	) => {
-		const k9sakUrl = useGlobalStateRestApiData<{ verdi?: string }>(RestApiGlobalStatePathsKeys.K9SAK_URL);
-		const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
+		const { mutate: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 
 		const toggleMenu = (oppgaveValgt?: OppgaveV3) => {
 			if (oppgaveValgt && (!valgtOppgaveId || valgtOppgaveId !== oppgaveValgt.oppgaveNøkkel.oppgaveEksternId)) {
@@ -54,9 +53,9 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 			}
 		};
 
-		const tilOppgave = async () => {
-			leggTilSisteOppgaver(oppgave.oppgaveNøkkel).finally(() => {
-				window.location.assign(oppgave.oppgavebehandlingsUrl);
+		const tilOppgave = () => {
+			leggTilSisteOppgaver(oppgave.oppgaveNøkkel, {
+				onSettled: () => window.location.assign(oppgave.oppgavebehandlingsUrl),
 			});
 		};
 		return (
