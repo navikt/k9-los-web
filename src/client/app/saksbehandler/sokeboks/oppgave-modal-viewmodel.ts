@@ -14,14 +14,16 @@ const endreWindowLocationTilFagsystem = (oppgave: SøkeboksOppgaveDto) => {
 	window.location.href = oppgave.oppgavebehandlingsUrl;
 };
 
+const harIkkeHentetData = {
+	harHentetData: false,
+	heading: undefined,
+	modaltekst: undefined,
+	feilmelding: undefined,
+	knapper: undefined,
+};
+
 type UseOppgaveModalRetur =
-	| {
-			harHentetData: false;
-			heading: undefined;
-			modaltekst: undefined;
-			feilmelding: undefined;
-			knapper: undefined;
-	  }
+	| typeof harIkkeHentetData
 	| {
 			harHentetData: true;
 			heading: string;
@@ -48,15 +50,8 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 		isPendingReserverOppgave ||
 		isPendingOpphevReservasjon;
 
-	const harHentetData = harHentetInnloggetSaksbehandler && harHentetAktivReservasjon;
-	if (!harHentetData) {
-		return {
-			harHentetData: false,
-			heading: undefined,
-			modaltekst: undefined,
-			feilmelding: undefined,
-			knapper: undefined,
-		};
+	if (!(harHentetInnloggetSaksbehandler && harHentetAktivReservasjon)) {
+		return harIkkeHentetData;
 	}
 
 	const { visÅpneOgReserverKnapp, visÅpneOgEndreReservasjonKnapp, visLeggTilbakeIKøKnapp, heading, modaltekst } =
@@ -66,13 +61,14 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 		// Åpner oppgave i fagsystem uavhengig av om siste-oppgaver-kallet feiler eller ikke, derfor onSettled
 		leggTilSisteOppgaverMutate(oppgave.oppgaveNøkkel, {
 			onSettled: () => {
+				closeModal();
 				endreWindowLocationTilFagsystem(oppgave);
 			},
 		});
 	};
 
 	return {
-		harHentetData,
+		harHentetData: harHentetInnloggetSaksbehandler && harHentetAktivReservasjon,
 		heading,
 		modaltekst,
 		feilmelding,
