@@ -4,7 +4,7 @@ import apiPaths from 'api/apiPaths';
 
 export const unitTestHandlers = [
 	http.get(
-		apiPaths.innloggetBruker,
+		apiPaths.saksbehandler,
 		() =>
 			new Response(
 				JSON.stringify({

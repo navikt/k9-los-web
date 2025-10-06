@@ -70,7 +70,8 @@ export enum K9LosApiKeys {
 
 export const endpoints = () =>
 	new RestApiConfigBuilder('api/k9-los-api')
-		.withGet('/innloggetbruker', K9LosApiKeys.NAV_ANSATT)
+		/* /api/saksbehandler */
+		.withGet('/saksbehandler', K9LosApiKeys.NAV_ANSATT)
 
 		/* /api/driftsmeldinger */
 		.withGet('/driftsmeldinger', K9LosApiKeys.DRIFTSMELDINGER)
@@ -146,7 +147,7 @@ export const endpoints = () =>
 			'/avdelingsleder/nokkeltall/behandlinger-forste-stonadsdag',
 			K9LosApiKeys.HENT_OPPGAVER_PER_FORSTE_STONADSDAG,
 		)
-		.withGet('/saksbehandler/oppgaver/alle-reservasjoner', K9LosApiKeys.HENT_ALLE_RESERVASJONER)
+		.withGet('/avdelingsleder/reservasjoner', K9LosApiKeys.HENT_ALLE_RESERVASJONER)
 
 		/* /api/kodeverk */
 		.withGet('/kodeverk', K9LosApiKeys.KODEVERK)
