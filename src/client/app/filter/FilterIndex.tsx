@@ -29,6 +29,7 @@ interface OwnProps {
 	readOnlyKoder?: OppgavefilterKode[];
 	visningV3?: boolean;
 	køvisning?: boolean;
+	visSortering?: boolean;
 }
 
 const resultatErKunAntall = (oppgaver: Oppgaverad[]) => {
@@ -64,6 +65,7 @@ const FilterIndex = ({
 	tittel,
 	visningV3,
 	køvisning,
+	visSortering,
 	paakrevdeKoder,
 	readOnlyKoder,
 }: OwnProps) => {
@@ -294,11 +296,16 @@ const FilterIndex = ({
 				{!køvisning && <OppgaveSelectFelter />}
 				<div className="mt-auto">
 					{!køvisning && <OppgaveOrderFelter />}
-					{køvisning && (
+					{køvisning && visSortering && (
 						<div className="bg-surface-subtle rounded flex p-5 mt-8">
 							<div className="w-6/12">
 								<EnkelSortering />
 							</div>
+							<AntallOppgaver setQueryError={setQueryErrorMessage} />
+						</div>
+					)}
+					{køvisning && !visSortering && (
+						<div className="bg-surface-subtle rounded flex p-5 mt-8">
 							<AntallOppgaver setQueryError={setQueryErrorMessage} />
 						</div>
 					)}
