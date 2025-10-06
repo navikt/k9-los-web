@@ -22,9 +22,6 @@ export type SøkeboksOppgaveDto = {
 	status: string;
 	oppgavebehandlingsUrl: string | undefined;
 	reservasjonsnøkkel: string;
-	reservertAvSaksbehandlerNavn: string | undefined;
-	reservertAvSaksbehandlerIdent: string | undefined;
-	reservertTom: string | undefined;
 	fagsakÅr: number | undefined;
 };
 

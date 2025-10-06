@@ -23,15 +23,12 @@ const modalInnhold = (
 
 	const defaultOppgave: SøkeboksOppgaveDto = {
 		navn: 'Ola Oppgave',
-		reservertTom: null,
 		status: 'Åpen',
 		oppgavebehandlingsUrl: '',
 		ytelsestype: '',
 		oppgaveNøkkel: { oppgaveEksternId: '', oppgaveTypeEksternId: '', områdeEksternId: 'K9' },
 		journalpostId: null,
 		opprettetTidspunkt: '',
-		reservertAvSaksbehandlerIdent: null,
-		reservertAvSaksbehandlerNavn: null,
 		reservasjonsnøkkel: '',
 		saksnummer: '',
 		hastesak: false,
