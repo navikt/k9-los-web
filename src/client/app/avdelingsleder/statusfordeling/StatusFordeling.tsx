@@ -53,34 +53,26 @@ export function StatusFordeling() {
 						<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
 					</div>
 					<div className={styles.rammer}>
-						{data.tall
-							.filter(({ antallTotalt, gruppe }) => antallTotalt > 0 || gruppe === 'BEHANDLINGER')
-							.map((t) => {
-								const navn = data.grupper.find((g) => g.kode === t.gruppe)?.navn;
-								return (
-									<div className={styles.ramme} key={t.gruppe}>
-										<div className={styles.forklaring}>{visningsnavn(navn)}</div>
-										<div className={styles.tallcontainer}>
-											<div className={styles.hovedtall}>{t.antallTotalt}</div>
-											<div className={styles.nedbrytning}>
-												{t.antallÅpne > 0 && <div className={styles.nedbrytningElement}>{`${t.antallÅpne} åpne`}</div>}
-												{t.antallVenter > 0 && (
-													<div className={styles.nedbrytningElement}>{`${t.antallVenter} venter`}</div>
-												)}
-												{t.antallVenterKabal > 0 && (
-													<div className={styles.nedbrytningElement}>{`${t.antallVenterKabal} venter Kabal`}</div>
-												)}
-												{t.antallVenterAnnet > 0 && (
-													<div className={styles.nedbrytningElement}>{`${t.antallVenterAnnet} venter annet`}</div>
-												)}
-												{t.antallUavklart > 0 && (
-													<div className={styles.nedbrytningElement}>{`${t.antallUavklart} uavklarte`}</div>
-												)}
+						{data.tall.map(({ linjer, tittel, topplinje, bunnlinje }) => (
+							<div className={styles.ramme} key={tittel.kode}>
+								<div className={styles.forklaring}>{visningsnavn(tittel.navn)}</div>
+								<div className={styles.tallcontainer}>
+									<div className={styles.hovedtall}>
+										<b>{topplinje.verdi}</b>&nbsp;<span>{topplinje.visningsnavn}</span>
+									</div>
+									<div className={styles.nedbrytning}>
+										{linjer.map((linje) => (
+											<div className={styles.nedbrytningElement} key={linje.visningsnavn}>
+												{`${linje.verdi} ${linje.visningsnavn}`}
 											</div>
+										))}
+										<div className={styles.nedbrytningElement}>
+											<b>{`${bunnlinje.verdi} ${bunnlinje.visningsnavn}`}</b>
 										</div>
 									</div>
-								);
-							})}
+								</div>
+							</div>
+						))}
 					</div>
 				</>
 			)}
