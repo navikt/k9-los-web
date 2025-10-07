@@ -4303,7 +4303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@open-draft/until@npm:^2.0.0":
+"@open-draft/until@npm:^2.0.0, @open-draft/until@npm:^2.1.0":
   version: 2.1.0
   resolution: "@open-draft/until@npm:2.1.0"
   checksum: 10/622be42950afc8e89715d0fd6d56cbdcd13e36625e23b174bd3d9f06f80e25f9adf75d6698af93bca1e1bf465b9ce00ec05214a12189b671fb9da0f58215b6f4
@@ -13904,7 +13904,7 @@ __metadata:
     lodash: "npm:4.17.21"
     mini-css-extract-plugin: "npm:2.9.4"
     moment: "npm:2.30.1"
-    msw: "npm:2.11.3"
+    msw: "npm:2.11.1"
     nav-frontend-alertstriper: "npm:4.0.2"
     nav-frontend-alertstriper-style: "npm:3.0.2"
     nav-frontend-chevron: "npm:1.0.30"
@@ -14787,15 +14787,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msw@npm:2.11.3":
-  version: 2.11.3
-  resolution: "msw@npm:2.11.3"
+"msw@npm:2.11.1":
+  version: 2.11.1
+  resolution: "msw@npm:2.11.1"
   dependencies:
     "@bundled-es-modules/cookie": "npm:^2.0.1"
     "@bundled-es-modules/statuses": "npm:^1.0.1"
     "@inquirer/confirm": "npm:^5.0.0"
     "@mswjs/interceptors": "npm:^0.39.1"
     "@open-draft/deferred-promise": "npm:^2.2.0"
+    "@open-draft/until": "npm:^2.1.0"
     "@types/cookie": "npm:^0.6.0"
     "@types/statuses": "npm:^2.0.4"
     graphql: "npm:^16.8.1"
@@ -14804,11 +14805,9 @@ __metadata:
     outvariant: "npm:^1.4.3"
     path-to-regexp: "npm:^6.3.0"
     picocolors: "npm:^1.1.1"
-    rettime: "npm:^0.7.0"
     strict-event-emitter: "npm:^0.5.1"
     tough-cookie: "npm:^6.0.0"
     type-fest: "npm:^4.26.1"
-    until-async: "npm:^3.0.2"
     yargs: "npm:^17.7.2"
   peerDependencies:
     typescript: ">= 4.8.x"
@@ -14817,7 +14816,7 @@ __metadata:
       optional: true
   bin:
     msw: cli/index.js
-  checksum: 10/f69452383651af45f4e096fb311d272fca03b5d8930b705bec6fad0a8e06f7dd313857215246216e23f491b7b16a60894e7c14e2be4786f3f1d1eabd480c2a5a
+  checksum: 10/b5ee4942c679c03d0e311b81a0ef01c6971100f8274da37b2675ef9e69190014583d990231c30cfe17b4f6ce5cbe8e4130d1de220689ea4ef3754524606bde61
   languageName: node
   linkType: hard
 
@@ -17610,13 +17609,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rettime@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "rettime@npm:0.7.0"
-  checksum: 10/a8037f2bb4db77ba7a919be008eb8468cd69b23bfc87f5a324919ce441ab5c4560549642e82367bc0cdac01ae2534b680f3abba87e11a13d1123533f17069442
-  languageName: node
-  linkType: hard
-
 "reusify@npm:^1.0.4":
   version: 1.0.4
   resolution: "reusify@npm:1.0.4"
@@ -19577,13 +19569,6 @@ __metadata:
     "@unrs/resolver-binding-win32-x64-msvc":
       optional: true
   checksum: 10/4de653508cbaae47883a896bd5cdfef0e5e87b428d62620d16fd35cd534beaebf08ebf0cf2f8b4922aa947b2fe745180facf6cc3f39ba364f7ce0f974cb06a70
-  languageName: node
-  linkType: hard
-
-"until-async@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "until-async@npm:3.0.2"
-  checksum: 10/7134a00131457f03983a22deb11a726441169bfd38ac963cd9cd0b3057498c4bb94022cbb968f2d5cc60f1a75aa3c141ec403fc52ea5a4732e239aa7ce1f5e73
   languageName: node
   linkType: hard
 
