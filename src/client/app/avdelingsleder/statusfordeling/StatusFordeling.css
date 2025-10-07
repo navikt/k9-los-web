@@ -12,6 +12,7 @@
     justify-content: space-between;
     background-color: #ffffff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+    border-radius: 4px;
     color: #262626;
     transition: box-shadow 0.2s ease;
     width: 214px;
@@ -35,8 +36,7 @@
     margin-top: 10px;
     margin-bottom: 10px;
     color: #495057;
-    font-size: 26px;
-    font-weight: 500;
+    font-size: 22px;
     display: flex;
     justify-content: center;
 }
@@ -56,6 +56,10 @@
     font-weight: 500;
     white-space: nowrap;
     margin: 0;
+}
+
+.bunntall {
+    font-weight: 700;
 }
 
 .tallcontainer {

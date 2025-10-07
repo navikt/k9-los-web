@@ -9,6 +9,7 @@ import {
 import apiPaths from 'api/apiPaths';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
+import { OppgaveQuery } from 'filter/filterTsTypes';
 import { OppgaveKoIdOgTittel, OppgavekøV3, OppgavekøV3Enkel, OppgavekøerV3 } from 'types/OppgavekøV3Type';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
@@ -172,15 +173,11 @@ export const useHentAvdelingslederStatus = () =>
 export const useHentAvdelingslederStatusFordeling = () =>
 	useQuery<{
 		oppdatertTidspunkt: string;
-		grupper: { kode: string; navn: string }[];
 		tall: {
-			gruppe: string;
-			antallTotalt: number;
-			antallÅpne: number;
-			antallVenter: number;
-			antallVenterKabal: number;
-			antallVenterAnnet: number;
-			antallUavklart: number;
+			tittel: { kode: string; navn: string };
+			topplinje: { visningsnavn: string; verdi: number; kildespørring: OppgaveQuery };
+			linjer: { visningsnavn: string; verdi: number; kildespørring: OppgaveQuery }[];
+			bunnlinje: { visningsnavn: string; verdi: number; kildespørring: OppgaveQuery };
 		}[];
 	}>({
 		placeholderData: keepPreviousData,
