@@ -16,18 +16,26 @@ function EndreTittel({ lagretSøk }: { lagretSøk: LagretSøk }) {
 	const [feilmelding, setFeilmelding] = useState('');
 
 	useEffect(() => {
-		if (isError) {
-			setFeilmelding('Noe gikk galt ved lagring av søk. Prøv å oppfrisk siden.');
-		}
-		if (tittel.length === 0) {
-			setFeilmelding('Tittel må være utfylt');
-		}
 		if (tittel !== lagretSøk.tittel) {
 			setVisLagreKnapp(true);
 		} else {
 			setVisLagreKnapp(false);
 		}
-	}, [lagretSøk, tittel, isError]);
+	}, [lagretSøk, tittel]);
+
+	useEffect(() => {
+		if (tittel.length === 0) {
+			setFeilmelding('Tittel må være utfylt');
+		} else {
+			setFeilmelding('');
+		}
+	}, [tittel]);
+
+	useEffect(() => {
+		if (isError) {
+			setFeilmelding('Noe gikk galt ved lagring av søk. Prøv å oppfrisk siden.');
+		}
+	}, [isError]);
 
 	return (
 		<form
