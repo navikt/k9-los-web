@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { FilesIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Heading, TextField, Textarea } from '@navikt/ds-react';
+import { Button, Heading, TextField } from '@navikt/ds-react';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 
 interface FormData {
@@ -41,14 +41,14 @@ export function EndreLagretSøkRadInnhold({ lagretSøk, close }: { lagretSøk: L
 							{...register('tittel', { required: 'Tittel er påkrevd' })}
 							error={errors.tittel?.message}
 						/>
-						<Textarea
-							className="mt-4"
-							label="Beskrivelse"
-							description="Her kan du legge inn en valgfri beskrivelse av hva dette søket inneholder."
-							maxLength={4000}
-							{...register('beskrivelse', { required: undefined })}
-							error={errors.tittel?.message}
-						/>
+						{/* <Textarea */}
+						{/* 	className="mt-4" */}
+						{/* 	label="Beskrivelse" */}
+						{/* 	description="Her kan du legge inn en valgfri beskrivelse av hva dette søket inneholder." */}
+						{/* 	maxLength={4000} */}
+						{/* 	{...register('beskrivelse', { required: undefined })} */}
+						{/* 	error={errors.tittel?.message} */}
+						{/* /> */}
 					</div>
 					<div className="mt-4 flex gap-4">
 						<Button disabled={isSubmitting || !isDirty} type="submit">

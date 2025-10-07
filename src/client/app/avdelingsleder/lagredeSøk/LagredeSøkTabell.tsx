@@ -1,43 +1,116 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { UseQueryResult, useQueries } from '@tanstack/react-query';
-import { PencilIcon } from '@navikt/aksel-icons';
-import { Button, Skeleton, SortState, Table } from '@navikt/ds-react';
+import { FilesIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
+import { Button, Skeleton, SortState, Table, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { LagretSøk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
-import { EndreLagretSøkRadInnhold } from 'avdelingsleder/lagredeSøk/EndreLagretSøkRadInnhold';
 import ModalButton from 'sharedComponents/ModalButton';
 import { momentDateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
-function Rad({ lagretSøk, antallQueryResult }: { lagretSøk: LagretSøk; antallQueryResult: UseQueryResult<number> }) {
-	const [ekspandert, setEkspandert] = useState(false);
+function EndreTittel({ lagretSøk }: { lagretSøk: LagretSøk }) {
+	const { mutate, isPending, isError } = useEndreLagretSøk();
+	const [tittel, setTittel] = useState(lagretSøk.tittel);
+	const [visLagreKnapp, setVisLagreKnapp] = useState(false);
+	const [feilmelding, setFeilmelding] = useState('');
+
+	useEffect(() => {
+		if (isError) {
+			setFeilmelding('Noe gikk galt ved lagring av søk. Prøv å oppfrisk siden.');
+		}
+		if (tittel.length === 0) {
+			setFeilmelding('Tittel må være utfylt');
+		}
+		if (tittel !== lagretSøk.tittel) {
+			setVisLagreKnapp(true);
+		} else {
+			setVisLagreKnapp(false);
+		}
+	}, [lagretSøk, tittel, isError]);
 
 	return (
-		<Table.ExpandableRow
-			key={lagretSøk.id}
-			onOpenChange={(open) => setEkspandert(open)}
-			open={ekspandert}
-			content={<EndreLagretSøkRadInnhold lagretSøk={lagretSøk} close={() => setEkspandert(false)} />}
+		<form
+			className="flex gap-2 items-start"
+			onSubmit={(event) => {
+				event.preventDefault();
+				if (tittel.length > 0) {
+					mutate({ ...lagretSøk, tittel });
+				}
+			}}
 		>
-			<Table.DataCell>{lagretSøk.tittel}</Table.DataCell>
+			<TextField
+				label="Tittel"
+				hideLabel
+				value={tittel}
+				onChange={(event) => setTittel(event.target.value)}
+				error={feilmelding}
+				htmlSize={40}
+			/>
+			<Button
+				variant="secondary"
+				disabled={isPending}
+				style={visLagreKnapp ? {} : { visibility: 'hidden' }}
+				type="submit"
+			>
+				Lagre
+			</Button>
+		</form>
+	);
+}
+
+function Rad({ lagretSøk, antallQueryResult }: { lagretSøk: LagretSøk; antallQueryResult: UseQueryResult<number> }) {
+	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
+	const { mutate: slettLagretSøk } = useSlettLagretSøk();
+
+	return (
+		<Table.Row key={lagretSøk.id}>
+			<Table.DataCell>
+				<EndreTittel lagretSøk={lagretSøk} />
+			</Table.DataCell>
 			<Table.DataCell>
 				{antallQueryResult.isLoading ? <Skeleton variant="text" width={50} /> : (antallQueryResult.data ?? '-')}
 			</Table.DataCell>
 			<Table.DataCell>{momentDateFormat(lagretSøk.sistEndret)}</Table.DataCell>
 			<Table.DataCell>
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button icon={<PencilIcon />} variant="tertiary" size="medium" onClick={openModal}>
-							Endre kriterier
+				<div className="flex gap-4">
+					<ModalButton
+						renderButton={({ openModal }) => (
+							<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
+								Endre kriterier
+							</Button>
+						)}
+						renderModal={({ open, closeModal }) => (
+							<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+						)}
+					/>
+					<div>
+						<Button
+							variant="tertiary"
+							size="small"
+							onClick={() => {
+								kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${lagretSøk.tittel}` });
+							}}
+							icon={<FilesIcon />}
+						>
+							Kopier
 						</Button>
-					)}
-					renderModal={({ open, closeModal }) => (
-						<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-					)}
-				/>
+					</div>
+					<div>
+						<Button
+							variant="tertiary"
+							size="small"
+							onClick={() => {
+								slettLagretSøk(lagretSøk.id);
+							}}
+							icon={<TrashIcon />}
+						>
+							Slett
+						</Button>
+					</div>
+				</div>
 			</Table.DataCell>
-		</Table.ExpandableRow>
+		</Table.Row>
 	);
 }
 
@@ -86,7 +159,6 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		<Table sort={sort} onSortChange={handleSort} size="small">
 			<Table.Header>
 				<Table.Row>
-					<Table.ColumnHeader scope="col" />
 					<Table.ColumnHeader sortable sortKey="tittel" scope="col">
 						Tittel
 					</Table.ColumnHeader>

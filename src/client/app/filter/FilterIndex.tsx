@@ -297,7 +297,7 @@ const FilterIndex = ({
 				<div className="mt-auto">
 					{!køvisning && <OppgaveOrderFelter />}
 					{køvisning && visSortering && (
-						<div className="bg-surface-subtle rounded flex p-5 mt-8">
+						<div className="bg-surface-subtle rounded flex gap-8 p-5 mt-8">
 							<div className="w-6/12">
 								<EnkelSortering />
 							</div>

@@ -39,13 +39,14 @@ export function EndreKriterierLagretSøkModal({
 		[feltdefinisjoner, kode6],
 	);
 	return (
-		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" className="w-[44rem]">
+		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" className="w-[44rem]" width={800}>
 			<Modal.Body>
 				<AppContext.Provider value={overstyrteFeltdefinisjoner}>
 					<FilterIndex
 						tittel="Endre lagret søk"
 						initialQuery={lagretSøk.query}
 						køvisning
+						visningV3
 						avbryt={closeModal}
 						paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
 						readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
