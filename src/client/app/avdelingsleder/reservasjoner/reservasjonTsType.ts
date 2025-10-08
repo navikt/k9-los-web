@@ -16,9 +16,3 @@ type Reservasjon = Readonly<{
 }>;
 
 export default Reservasjon;
-
-// val reservertAvEpost: String,
-// val saksnummer: String,
-// val behandlingType: BehandlingType,
-// val reservertTilTidspunkt: LocalDateTime,
-// val oppgavenøkkel: OppgaveNøkkelDto,
