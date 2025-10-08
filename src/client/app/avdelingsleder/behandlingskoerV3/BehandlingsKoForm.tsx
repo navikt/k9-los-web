@@ -210,7 +210,13 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 				</div>
 			)}
 			{visFilterModal && (
-				<Modal open={visFilterModal} onClose={() => setVisFilterModal(false)} portal width={900}>
+				<Modal
+					open={visFilterModal}
+					onClose={() => setVisFilterModal(false)}
+					portal
+					width={900}
+					aria-label="Kriterier for kø"
+				>
 					<Modal.Body className="flex flex-col min-h-[65rem]">
 						<AppContext.Provider value={overstyrteFeltdefinisjoner}>
 							<FilterIndex
