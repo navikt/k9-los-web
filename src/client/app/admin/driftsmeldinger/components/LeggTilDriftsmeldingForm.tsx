@@ -1,11 +1,8 @@
-import React, { FunctionComponent, useState } from 'react';
-import { Form } from 'react-final-form';
+import React, { FormEvent, FunctionComponent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Button } from '@navikt/ds-react';
+import { Button, TextField } from '@navikt/ds-react';
 import { K9LosApiKeys } from 'api/k9LosApi';
 import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
-import { InputField } from 'form/FinalFields';
-import { hasValidEmailFormat } from 'utils/validation/validators';
 import { Driftsmelding } from '../driftsmeldingTsType';
 
 /**
@@ -17,48 +14,49 @@ interface OwnProps {
 
 export const LeggTilDriftsmeldingForm: FunctionComponent<OwnProps> = ({ hentAlleDriftsmeldinger }) => {
 	const [leggerTilNyDriftsmelding, setLeggerTilNyDriftsmelding] = useState(false);
+	const [melding, setMelding] = useState('');
 
 	const { startRequest: leggTilDriftsmelding } = useRestApiRunner<Driftsmelding>(K9LosApiKeys.LAGRE_DRIFTSMELDING);
 
-	const addDriftsmelding = (melding: string, resetFormValues: () => void) => {
-		if (!melding) {
+	const addDriftsmelding = (nyMelding: string, resetFormValues: () => void) => {
+		if (!nyMelding) {
 			return;
 		}
 		setLeggerTilNyDriftsmelding(true);
-		leggTilDriftsmelding({ driftsmelding: melding })
+		leggTilDriftsmelding({ driftsmelding: nyMelding })
 			.then(() => hentAlleDriftsmeldinger())
 			.then(() => setLeggerTilNyDriftsmelding(false));
 		resetFormValues();
 	};
 
+	const handleSubmit = (event: FormEvent) => {
+		event.preventDefault();
+		addDriftsmelding(melding, () => setMelding(''));
+	};
+
 	return (
-		<Form
-			onSubmit={() => undefined}
-			render={({ submitting, form, values }) => (
+		<form onSubmit={handleSubmit}>
+			<div className="flex gap-6 relative">
+				<TextField
+					name="melding"
+					className="min-w-64"
+					label={<FormattedMessage id="LeggTilDriftsmeldingForm.LeggTil" />}
+					size="medium"
+					value={melding}
+					onChange={(e) => setMelding(e.target.value)}
+				/>
 				<div>
-					<div className="flex gap-6 relative">
-						<InputField
-							name="melding"
-							className="min-w-64"
-							label={<FormattedMessage id="LeggTilDriftsmeldingForm.LeggTil" />}
-							bredde="L"
-							validate={[hasValidEmailFormat]}
-						/>
-						<div>
-							<Button
-								className="absolute bottom-0 h-[42px]"
-								loading={submitting}
-								disabled={submitting || leggerTilNyDriftsmelding}
-								tabIndex={0}
-								onClick={() => addDriftsmelding(values.melding, form.reset)}
-							>
-								<FormattedMessage id="LeggTilDriftsmeldingForm.Legg_Til" />
-							</Button>
-						</div>
-					</div>
+					<Button
+						className="absolute bottom-0 h-[42px]"
+						loading={leggerTilNyDriftsmelding}
+						disabled={leggerTilNyDriftsmelding}
+						type="submit"
+					>
+						<FormattedMessage id="LeggTilDriftsmeldingForm.Legg_Til" />
+					</Button>
 				</div>
-			)}
-		/>
+			</div>
+		</form>
 	);
 };
 
