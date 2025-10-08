@@ -222,6 +222,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 								readOnlyKoder={kø.skjermet ? [OppgavefilterKode.Personbeskyttelse] : []}
 								visningV3
 								køvisning
+								visSortering
 							/>
 						</AppContext.Provider>
 					</Modal.Body>

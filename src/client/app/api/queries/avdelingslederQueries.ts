@@ -228,3 +228,105 @@ export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; 
 		queryKey: [apiPaths.hentFerdigstiltePerEnhet, gruppe, uker],
 		refetchInterval: 60000,
 	});
+
+export interface LagretSøk {
+	id: number;
+	tittel: string;
+	beskrivelse: string;
+	query: OppgaveQuery;
+	lagetAv: number;
+	versjon: number;
+	sistEndret: string;
+}
+
+interface OpprettLagretSøkRequest {
+	tittel: string;
+}
+
+interface EndreLagretSøkRequest {
+	id: number;
+	tittel: string;
+	beskrivelse: string;
+	query: OppgaveQuery;
+	versjon: number;
+}
+
+export const useHentLagredeSøk = (
+	options?: Omit<UseQueryOptions<LagretSøk[], DefaultError, LagretSøk[]>, 'queryKey'>,
+) =>
+	useQuery<LagretSøk[], DefaultError, LagretSøk[]>({
+		queryKey: [apiPaths.hentLagredeSøk],
+		...options,
+	});
+
+export const useOpprettLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: OpprettLagretSøkRequest) =>
+			axiosInstance.post(apiPaths.opprettLagretSøk, data).then((res) => res.data),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useEndreLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: EndreLagretSøkRequest) =>
+			axiosInstance.put(apiPaths.endreLagretSøk(data.id.toString()), data).then((res) => res.data),
+		onSuccess: ({ id }) =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: [apiPaths.hentLagredeSøk] }),
+				queryClient.invalidateQueries({ queryKey: [apiPaths.hentAntallLagretSøk(id.toString())] }),
+			]).then(() => {
+				if (callback) callback();
+			}),
+	});
+};
+
+export const useKopierLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: { id: number; tittel: string }) =>
+			axiosInstance.post(apiPaths.kopierLagretSøk(data.id.toString()), { tittel: data.tittel }),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useSlettLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (id: number) => axiosInstance.delete(apiPaths.slettLagretSøk(id.toString())),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useHentAntallLagretSøk = (id: number) =>
+	useQuery<number, DefaultError, number>({
+		queryKey: [apiPaths.hentAntallLagretSøk(id.toString())],
+		queryFn: () => axiosInstance.get(apiPaths.hentAntallLagretSøk(id.toString())).then((response) => response.data),
+	});

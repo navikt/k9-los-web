@@ -30,7 +30,7 @@ export const AntallOppgaver = ({ setQueryError }: OwnProps) => {
 		mutate({ url: apiPaths.hentAntallOppgaver, body: oppgaveQuery });
 	};
 	return (
-		<div className="flex flex-col m-auto">
+		<div className="flex flex-col">
 			<Label size="small">
 				Antall oppgaver: {isPending ? <Skeleton className="inline-block w-12" /> : antallOppgaver}
 			</Label>
