@@ -3,9 +3,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { BodyShort, Button, ReadMore, Select, Skeleton } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { K9LosApiKeys } from 'api/k9LosApi';
 import { useAntallOppgaverIKoV3UtenReserverte } from 'api/queries/saksbehandlerQueries';
-import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import { OppgavekøV1 } from 'saksbehandler/behandlingskoer/oppgavekoTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -16,8 +14,7 @@ import {
 	setValueInLocalStorage,
 } from 'utils/localStorageHelper';
 import { Saksbehandler } from '../saksbehandlerTsType';
-import { erKoV3, getKoId } from '../utils';
-import OldOppsummeringAvKø from './OldOppsummeringAvKø';
+import { getKoId } from '../utils';
 import OppsummeringAvKø from './OppusmmeringAvKø';
 import * as styles from './oppgavekoVelgerForm.css';
 
@@ -144,7 +141,6 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 					</Button>
 				</div>
 				{valgtOppgavekoId && <OppsummeringAvKø oppgavekø={getValgtOppgaveko(oppgavekoer, valgtOppgavekoId)} />}
-				{valgtOppgavekoId && <OldOppsummeringAvKø oppgaveko={getValgtOppgaveko(oppgavekoer, valgtOppgavekoId)} />}
 			</div>
 		</div>
 	);
