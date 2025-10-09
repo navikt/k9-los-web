@@ -80,7 +80,7 @@
 		"react-dom": "19.2.0",
 		"react-hook-form": "7.64.0",
 		"react-idle-timer": "5.7.2",
-		"react-intl": "7.1.13",
+		"react-intl": "7.1.14",
 		"react-modal": "3.16.3",
 		"react-router": "7.9.3",
 		"tailwindcss": "3.4.18",
