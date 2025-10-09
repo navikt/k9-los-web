@@ -4,7 +4,18 @@ import { Button, Label, TextField } from '@navikt/ds-react';
 import { PlusIcon } from '@navikt/ft-plattform-komponenter';
 import { useHentSaksbehandlereAvdelingsleder, useLeggTilSaksbehandler } from 'api/queries/avdelingslederQueries';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { hasValidEmailFormat } from 'utils/validation/validators';
+
+// Flyttet fra tidligere fil validators.js
+const invalidEmailMessage = () => [{ id: 'ValidationMessage.InvalidEmail' }];
+const isEmpty = (text) => text === null || text === undefined || text.toString().trim().length === 0;
+const emailPattern =
+	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const hasValidEmailFormat = (text) => {
+	if (isEmpty(text) || !emailPattern.test(text)) {
+		return invalidEmailMessage();
+	}
+	return null;
+};
 
 // Skrevet om for å unngå final form, og har fortsatt med konsepter derfra
 export const LeggTilSaksbehandlerForm: FunctionComponent = () => {
