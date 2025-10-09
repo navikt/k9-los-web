@@ -19,14 +19,12 @@ export function LagredeSøk() {
 							Lagrede søk er personlige, og de vil ikke være synlige for andre. Man kan kun se antall oppgaver i et
 							lagret søk. Reserverte oppgaver telles med i antallet.
 						</p>
-						<p>
-							Muligheter for videre utvikling, som prioriteres etter behov:
-							<ul className="list-disc">
-								<li>Dele lagrede søk med andre.</li>
-								<li>Bruke lagrede søk som utgangspunkt for uttrekk av data.</li>
-								<li>Lagring av historikk, slik at man for eksempel kan få antallet av et søk kjørt hver uke.</li>
-							</ul>
-						</p>
+						<p className="mb-0">Muligheter for videre utvikling, som prioriteres etter behov:</p>
+						<ul className="mt-0.5">
+							<li>Dele lagrede søk med andre.</li>
+							<li>Bruke lagrede søk som utgangspunkt for uttrekk av data.</li>
+							<li>Lagring av historikk, slik at man for eksempel kan få antallet av et søk kjørt hver uke.</li>
+						</ul>
 					</HelpText>
 				</Heading>
 				<ModalButton
