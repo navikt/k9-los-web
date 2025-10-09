@@ -1,16 +1,12 @@
-import React, { FunctionComponent, useContext, useEffect, useState } from 'react';
+import React, { FunctionComponent, useContext, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import NavFrontendChevron from 'nav-frontend-chevron';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Label, Modal } from '@navikt/ds-react';
-import { K9LosApiKeys } from 'api/k9LosApi';
 import { usePlukkOppgaveMutation, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
-import { useRestApiRunner } from 'api/rest-api-hooks';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/oppgavetabeller/ReserverteOppgaverTabell';
-import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import RestApiState from '../../../api/rest-api-hooks/src/RestApiState';
 import { getKoId } from '../utils';
 import OppgavekoVelgerForm from './OppgavekoVelgerForm';
 import * as styles from './oppgavekoPanel.css';
@@ -20,11 +16,6 @@ const OppgavekoPanel: FunctionComponent = () => {
 	const [visBehandlingerIKo, setVisBehandlingerIKo] = useState<boolean>(false);
 	const { valgtOppgavekoId, oppgavekoer } = useContext(BehandlingskoerContext);
 	const [visFinnesIngenBehandlingerIKoModal, setVisFinnesIngenBehandlingerIKoModal] = useState<boolean>(false);
-	const {
-		state: restApiState,
-		error: restApiError,
-		resetRequestData,
-	} = useRestApiRunner<Oppgave>(K9LosApiKeys.FÅ_OPPGAVE_FRA_KO);
 	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 	const { mutate, isPending: loadingOppgaveFraKo } = usePlukkOppgaveMutation((reservasjoner) => {
 		if (reservasjoner.length > 0) {
@@ -34,18 +25,6 @@ const OppgavekoPanel: FunctionComponent = () => {
 			setVisFinnesIngenBehandlingerIKoModal(true);
 		}
 	});
-
-	useEffect(() => {
-		if (
-			restApiState &&
-			restApiState === RestApiState.ERROR &&
-			restApiError &&
-			restApiError.toString().includes('404')
-		) {
-			setVisFinnesIngenBehandlingerIKoModal(true);
-			resetRequestData();
-		}
-	}, [restApiState, restApiError]);
 
 	const plukkNyOppgave = () => {
 		mutate({
