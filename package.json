@@ -24,7 +24,6 @@
 		"@navikt/ft-form-hooks": "^6.3.13",
 		"@navikt/ft-form-validators": "^3.2.5",
 		"@navikt/ft-plattform-komponenter": "^7.2.13",
-		"@popperjs/core": "2.11.8",
 		"@reach/combobox": "0.18.0",
 		"@sentry/browser": "10.17.0",
 		"@sentry/cli": "2.56.0",
@@ -83,7 +82,6 @@
 		"react-idle-timer": "5.7.2",
 		"react-intl": "7.1.13",
 		"react-modal": "3.16.3",
-		"react-popper": "2.3.0",
 		"react-router": "7.9.3",
 		"tailwindcss": "3.4.18",
 		"uuid": "13.0.0"

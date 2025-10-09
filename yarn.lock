@@ -4565,13 +4565,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:2.11.8":
-  version: 2.11.8
-  resolution: "@popperjs/core@npm:2.11.8"
-  checksum: 10/ddd16090cde777aaf102940f05d0274602079a95ad9805bd20bc55dcc7c3a2ba1b99dd5c73e5cc2753c3d31250ca52a67d58059459d7d27debb983a9f552936c
-  languageName: node
-  linkType: hard
-
 "@portabletext/react@npm:^3.2.0":
   version: 3.2.0
   resolution: "@portabletext/react@npm:3.2.0"
@@ -13815,7 +13808,6 @@ __metadata:
     "@navikt/ft-form-validators": "npm:^3.2.5"
     "@navikt/ft-plattform-komponenter": "npm:^7.2.13"
     "@playwright/test": "npm:1.56.0"
-    "@popperjs/core": "npm:2.11.8"
     "@reach/combobox": "npm:0.18.0"
     "@sentry/browser": "npm:10.17.0"
     "@sentry/cli": "npm:2.56.0"
@@ -13944,7 +13936,6 @@ __metadata:
     react-idle-timer: "npm:5.7.2"
     react-intl: "npm:7.1.13"
     react-modal: "npm:3.16.3"
-    react-popper: "npm:2.3.0"
     react-router: "npm:7.9.3"
     storybook: "npm:9.1.10"
     tailwindcss: "npm:3.4.18"
@@ -16972,13 +16963,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-fast-compare@npm:^3.0.1":
-  version: 3.2.2
-  resolution: "react-fast-compare@npm:3.2.2"
-  checksum: 10/a6826180ba75cefba1c8d3ac539735f9b627ca05d3d307fe155487f5d0228d376dac6c9708d04a283a7b9f9aee599b637446635b79c8c8753d0b4eece56c125c
-  languageName: node
-  linkType: hard
-
 "react-hook-form@npm:7.58.1":
   version: 7.58.1
   resolution: "react-hook-form@npm:7.58.1"
@@ -17115,20 +17099,6 @@ __metadata:
     react: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19
     react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18 || ^19
   checksum: 10/2882ced4ede7af4c1e8bab5b556b61c05525639200e3d332b001c7a97b9e9e0db9129fc9d93761b32c8351a3a474490904584bac9e5a84f068596c620d22a209
-  languageName: node
-  linkType: hard
-
-"react-popper@npm:2.3.0":
-  version: 2.3.0
-  resolution: "react-popper@npm:2.3.0"
-  dependencies:
-    react-fast-compare: "npm:^3.0.1"
-    warning: "npm:^4.0.2"
-  peerDependencies:
-    "@popperjs/core": ^2.0.0
-    react: ^16.8.0 || ^17 || ^18
-    react-dom: ^16.8.0 || ^17 || ^18
-  checksum: 10/2afc495479ae4b9e67f9a1642debd7121947fe71a00c5b326301adb8288a18dca53ebd836fe9c3b7a4e2feb838df0abe8e044eb278e89b1c5d50978b0b93d0ac
   languageName: node
   linkType: hard
 
@@ -19670,7 +19640,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"warning@npm:^4.0.2, warning@npm:^4.0.3":
+"warning@npm:^4.0.3":
   version: 4.0.3
   resolution: "warning@npm:4.0.3"
   dependencies:
