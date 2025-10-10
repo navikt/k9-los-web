@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router';
 import classnames from 'classnames/bind';
 import Panel from 'nav-frontend-paneler';
@@ -45,12 +44,12 @@ const renderAvdelingslederPanel = (avdelingslederPanel) => {
 	}
 };
 
-const messageId = {
-	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: 'AvdelingslederIndex.Behandlingskoer.V3',
-	[AvdelingslederPanels.LAGREDE_SØK]: 'AvdelingslederIndex.LagredeSøk',
-	[AvdelingslederPanels.NOKKELTALL]: 'AvdelingslederIndex.Nokkeltall',
-	[AvdelingslederPanels.RESERVASJONER]: 'AvdelingslederIndex.Reservasjoner',
-	[AvdelingslederPanels.SAKSBEHANDLERE]: 'AvdelingslederIndex.Saksbehandlere',
+const tabLabels = {
+	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: 'Oppgavekøer',
+	[AvdelingslederPanels.LAGREDE_SØK]: 'Lagrede søk',
+	[AvdelingslederPanels.NOKKELTALL]: 'Nøkkeltall',
+	[AvdelingslederPanels.RESERVASJONER]: 'Reservasjoner',
+	[AvdelingslederPanels.SAKSBEHANDLERE]: 'Saksbehandlere',
 };
 
 const tabStyle = {
@@ -79,9 +78,7 @@ const getTab = (
 		label: (
 			<div className={styles.tabLabel}>
 				{typeof icon === 'string' ? <Image className={styles.tabIcon} src={icon} /> : icon}
-				<Heading size="small">
-					<FormattedMessage id={messageId[avdelingslederPanel]} />
-				</Heading>
+				<Heading size="small">{tabLabels[avdelingslederPanel]}</Heading>
 			</div>
 		),
 		aktiv: isActive,
