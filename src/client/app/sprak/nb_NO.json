@@ -1,76 +1,10 @@
 {
 	"AdminIndex.Driftsmeldinger": "Driftsmeldinger",
 
-	"AndreKriterierVelger.TilBeslutter": "Til beslutter",
-	"AndreKriterierVelger.RegistrerPapirsoknad": "Registrer papirsøknad",
-	"AndreKriterierVelger.AndreKriterier": "Andre kriterier",
-	"AndreKriterierVelger.TaMed": "Ta med i køen",
-	"AndreKriterierVelger.Fjern": "Fjern fra køen",
-
-	"BehandlingPollingTimoutModal.TimeoutMelding": "Din økt er gått ut på tid, trykk Fortsett",
-	"BehandlingPollingTimoutModal.Oppfrisk": "Fortsett",
-
-	"BeholdningHistorikkPanel.Beholdning": "Beholdning per dato",
-
-	"Calendar.Day.0": "søndag",
-	"Calendar.Day.1": "mandag",
-	"Calendar.Day.2": "tirsdag",
-	"Calendar.Day.3": "onsdag",
-	"Calendar.Day.4": "torsdag",
-	"Calendar.Day.5": "fredag",
-	"Calendar.Day.6": "lørdag",
-
-	"Calendar.Day.Short.0": "søn",
-	"Calendar.Day.Short.1": "man",
-	"Calendar.Day.Short.2": "tir",
-	"Calendar.Day.Short.3": "ons",
-	"Calendar.Day.Short.4": "tor",
-	"Calendar.Day.Short.5": "fre",
-	"Calendar.Day.Short.6": "lør",
-
-	"Calendar.Month.0": "Januar",
-	"Calendar.Month.1": "Februar",
-	"Calendar.Month.2": "Mars",
-	"Calendar.Month.3": "April",
-	"Calendar.Month.4": "Mai",
-	"Calendar.Month.5": "Juni",
-	"Calendar.Month.6": "Juli",
-	"Calendar.Month.7": "August",
-	"Calendar.Month.8": "September",
-	"Calendar.Month.9": "Oktober",
-	"Calendar.Month.10": "November",
-	"Calendar.Month.11": "Desember",
-
 	"DriftsmeldingerTabell.IngenDriftsmeldinger": "Ingen driftsmeldinger",
 	"DriftsmeldingerTabell.Dato": "{date} - {time}",
 
-	"EndreOppgavekoerPanel.KnyttetMotSaksbehandlere": "Oppgavekøen benyttes av disse saksbehandlerne",
-	"EndreOppgavekoerPanel.Saksbehandlere": "Tilknyttede saksbehandlere",
-	"BehandlingstypeVelger.Behandlingstype": "Behandlingstype",
-
 	"ErrorMessagePanel.Close": "Lukk",
-
-	"FagsakList.Saksnummer": "Saksnummer/Journalpost-ID",
-	"FagsakList.Stonadstype": "Stønadstype",
-	"FagsakList.Behandlingstype": "Behandlingstype",
-	"FagsakList.Status": "Status",
-	"FagsakList.BarnFodt": "Barnet er født",
-	"FagsakList.Navn": "Navn",
-	"FagsakList.Fagsystem": "Fagsystem",
-
-	"FagsakSearch.ZeroSearchResults": "Søket ga ingen treff",
-	"FagsakSearch.IkkeTilgang": "Du har ikke tilgang til å slå opp denne personen",
-	"FagsakSearch.FlereApneBehandlinger": "Velg oppgaven du ønsker å åpne/reservere.",
-
-	"FagsakYtelseTypeVelger.Stonadstype": "Stønadstype",
-	"FagsakYtelseTypeVelger.Alle": "Alle",
-	"FagsakYtelseTypeVelger.Omsorgsdager": "Omsorgsdager",
-
-	"FerdigstiltePanel.AntallFerdigstilte": "Antall ferdigstilte oppgaver",
-
-	"SkjermetVelger.Skjermet": "Gjelder køen egne ansatte eller kode 7?",
-
-	"FerdigstilteHistorikkPanel.Ferdigstilte": "Historikk over ferdigstilte oppgaver",
 
 	"FlyttReservasjonerModal.Tittel": "Endre 1 reservasjon",
 	"FlyttReservasjonerModal.Tittel.Flertall": "Endre {antall} reservasjoner",
@@ -82,26 +16,6 @@
 	"FlyttReservasjonerModal.Avbryt": "Avbryt",
 	"FlyttReservasjonerModal.FlyttTilSaksbehandler": "Flytt til saksbehandler",
 
-	"FordelingAvBehandlingstypePanel.Fordeling": "Antall åpne oppgave",
-	"FordelingAvBehandlingstypePanel.Alle": "Alle ytelser",
-
-	"FordelingAvBehandlingstypeGraf.TilBehandling": "Til behandling",
-	"FordelingAvBehandlingstypeGraf.TilBeslutter": "Til beslutter",
-	"FordelingAvBehandlingstypeGraf.TotaltAntall": "Totalt antall: {antall}",
-	"FordelingAvBehandlingstypeGraf.Antall": "Antall: {antall}",
-
-	"GjeldendeOppgavekoerTabell.GjeldendeLister": "Gjeldende opppgavekøer",
-	"GjeldendeOppgavekoerTabell.IngenLister": "Ingen oppgavekøer er laget",
-	"GjeldendeOppgavekoerTabell.Listenavn": "Navn",
-	"GjeldendeOppgavekoerTabell.SistEndret": "Sist endret",
-	"GjeldendeOppgavekoerTabell.Behandlingtype": "Behandling",
-	"GjeldendeOppgavekoerTabell.Stonadstype": "Stønad",
-	"GjeldendeOppgavekoerTabell.Alle": "Alle",
-	"GjeldendeOppgavekoerTabell.Ingen": " ",
-	"GjeldendeOppgavekoerTabell.AntallSaksbehandlere": "Saksbehandlere",
-	"GjeldendeOppgavekoerTabell.AntallBehandlinger": "Antall oppgaver (med reserverte)",
-	"GjeldendeOppgavekoerTabell.OppgaverTotalt": "Antall åpne oppgaver totalt",
-
 	"Header.K9Los": "Pleiepenger og omsorgspenger",
 	"Header.NavAnsatt": "NAV-ansatt",
 	"Header.Rettskilde": "Rettskildene",
@@ -109,8 +23,6 @@
 	"Header.Enhet": "Enhet ",
 
 	"IkkeTilgangTilAvdelingslederPanel.HarIkkeTilgang": "Du har ikke tilgang til å bruke dette programmet",
-
-	"IkkeTilgangTilKode6AvdelingPanel.HarIkkeTilgang": "Du har ikke tilgang til denne avdelingen",
 
 	"LeggTilSaksbehandlerForm.LeggTil": "Legg til saksbehandler",
 	"LeggTilSaksbehandlerForm.Epost": "E-post adresse",
@@ -133,46 +45,8 @@
 	"LeggTilDriftsmeldingForm.FinnesAllerede": "Meldingen finnes allerede i listen",
 	"LeggTilDriftsmeldingForm.FinnesIkke": "Kan ikke finne bruker",
 
-	"ManueltPaVentPanel.FireSisteUker": "4 uker frem",
-	"ManueltPaVentPanel.AtteSisteUker": "8 uker frem",
-	"ManueltPaVentPanel.SattPaVent": "Antall oppgaver satt på vent manuelt",
-	"ManueltPaVentPanel.Alle": "Alle",
-
-	"Malform.Bokmal": "Bokmål",
-	"Malform.Nynorsk": "Nynorsk",
-	"Malform.Engelsk": "Engelsk",
-
-	"ManueltPaVentGraf.Antall": "Antall: {antall}",
-
 	"MissingPage.PageIsMissing": "Denne siden finnes ikke. Hvis du mener dette er en feil, vennligst meld fra i porten.",
 	"MissingPage.Home": "Gå til forsiden",
-
-	"MottattPanel.MottattRefusjonskrav": "Mottatt refusjonskrav",
-
-	"NyeHistorikkPanel.Nye": "Historikk over nye oppgaver",
-
-	"InngangOgFerdigstiltePanel.Header": "Dagens tall",
-	"InngangOgFerdigstiltePanel.IngenTall": "Ingen data for øyeblikket",
-
-	"NyeOgFerdigstilteOppgaverForIdagGraf.Ferdigstilte": "Ferdigstilte",
-	"NyeOgFerdigstilteOppgaverForIdagGraf.FerdigstilteMine": "Mine",
-	"NyeOgFerdigstilteOppgaverForIdagGraf.Nye": "Nye",
-	"NyeOgFerdigstilteOppgaverForIdagGraf.FerdigstiltAntall": "Antall ferdigstilte: {antall}",
-	"NyeOgFerdigstilteOppgaverForIdagGraf.MineAntall": "Antall mine: {antall}",
-	"NyeOgFerdigstilteOppgaverForIdagGraf.NyeAntall": "Antall nye: {antall}",
-	"NyeOgFerdigstilteOppgaverForIdagGraf.Førstegangsbehandling": "Førstegangsbeh.",
-
-	"NyeOgFerdigstilteOppgaverForIdagPanel.NyeOgFerdigstilte": "Alle nye og ferdigstilte oppgaver",
-	"NyeOgFerdigstilteOppgaverForIdagPanel.IDag": "I dag",
-
-	"NyeOgFerdigstilteOppgaverForSisteSyvGraf.Ferdigstilte": "Ferdigstilte",
-	"NyeOgFerdigstilteOppgaverForSisteSyvGraf.FerdigstilteMine": "Mine",
-	"NyeOgFerdigstilteOppgaverForSisteSyvGraf.Nye": "Nye",
-	"NyeOgFerdigstilteOppgaverForSisteSyvGraf.FerdigstiltAntall": "Ferdigstilte: {antall}",
-	"NyeOgFerdigstilteOppgaverForSisteSyvGraf.NyeAntall": "Nye: {antall}",
-	"NyeOgFerdigstilteOppgaverForSisteSyvGraf.FerdigstiltMineAntall": "Mine: {antall}",
-
-	"NyeOgFerdigstilteOppgaverForSisteSyvPanel.SisteSyv": "Siste 7 dager",
 
 	"OppgaverTabell.DineNesteSaker": "Neste oppgaver",
 	"OppgaverTabell.DineNesteSakerAntall": "{antall} i køen",
@@ -196,43 +70,17 @@
 	"OppgaverTabell.BegrunnelseForMerknad": "Begrunnelse for merknad",
 	"OppgaverTabell.OverfortReservasjonTooltip": "Overført reservasjon {dato} - {tid} fra {uid} {navn}{br}{br}{beskrivelse}",
 
-	"OkAvbrytModal.Ok": "OK",
-	"OkAvbrytModal.Avbryt": "Avbryt",
-
 	"OppgaveHandlingerMenu.LeggTilbake": "Legg oppgave{br}tilbake i felles kø",
 	"OppgaveHandlingerMenu.ForlengReservasjon": "Forleng din reservasjon av{br}oppgaven med 24 timer",
 	"OppgaveHandlingerMenu.EndreReservasjon": "Reserver oppgaven med dato",
 	"OppgaveHandlingerMenu.ReservertTil": "{b}Reservert til {date} - {time}{b}",
 	"OppgaveHandlingerMenu.FlyttReservasjon": "Endre og/eller flytte reservasjon",
 
-	"OppgaverPerForsteStonadsdagGraf.DagensDato": "Dagens{br}dato",
-
-	"OppgaverPerForsteStonadsdagPanel.FordeltPaForsteStonadsdag": "Antall førstegangsbehandlinger fordelt på første stønadsdag",
-
-	"OppgaveReservasjonForlengetModal.Reservert": "Oppgaven er reservert på deg t.o.m. {date} - {time}.",
-	"OppgaveReservasjonForlengetModal.Ok": "OK",
-
-	"OppgaveReservasjonEndringDatoModal.Header": "Velg dato som reservasjonen avsluttes",
-	"OppgaveReservasjonEndringDatoModal.Ok": "OK",
-	"OppgaveReservasjonEndringDatoModal.Avbryt": "Avbryt",
-
 	"OpphevReservasjonModal.Tittel": "Oppheve reservasjon?",
 	"OpphevReservasjonModal.TekstEntall": "Er du sikker på at du vil oppheve reservasjonen?",
 	"OpphevReservasjonModal.TekstFlertall": "Er du sikker på at du vil oppheve {antall} reservasjoner?",
 	"OpphevReservasjonModal.Ok": "OK",
 	"OpphevReservasjonModal.Avbryt": "Avbryt",
-
-	"Person.Age": "{age} år",
-	"Person.ImageText": "Personinformasjon",
-	"Person.Woman": "Kvinne",
-	"Person.Man": "Mann",
-	"Person.ManglerDodsdato": "Dødsdato mangler",
-	"Person.UkjentNavn": "Ukjent navn på forelder",
-	"Person.HarIkkeNorskFnrEllerDnr": "Har ikke norsk f.nr. eller d-nr.",
-
-	"ProduksjonPaneler.AvdelingensProduksjon": "Avdelingens produksjon",
-
-	"Rest.ErrorMessage.Timeout": "Serverkall har gått ut på tid: {location}",
 
 	"ReservasjonerTabell.Navn": "Navn",
 	"ReservasjonerTabell.Saksnr": "Saksnummer",
@@ -262,42 +110,9 @@
 
 	"OppgavekoPanel.StartBehandling": "Oppgavekøer",
 
-	"SistBehandledeSaker.SistBehandledeSaker": "Dine siste oppgaver",
-
-	"SistBehandledeSaker.IngenBehandlinger": "Ingen oppgaver",
-	"SistBehandledeSaker.Behandling": "Oppgave {index}",
-
-	"SorteringVelger.Sortering": "Sortering",
-	"FiltreringsVelger.Filtrering": "Filtrering",
-	"SorteringVelger.FiltrerPaHeltall": "Ta kun med oppgaver mellom",
-	"SorteringVelger.Valuta": "kr",
-	"SorteringVelger.FiltrerPaTidsintervall": "Ta kun med oppgaver med dato",
-	"SorteringVelger.Fom": "F.o.m.",
-	"SorteringVelger.Tom": "T.o.m.",
-	"SorteringVelger.DagerMedBindestrek": "dager frem -",
-	"SorteringVelger.Bindestrek": "-",
-	"SorteringVelger.Dager": "dager frem",
-	"SorteringVelger.DynamiskPeriode": "Dynamisk periode",
-	"SorteringVelger.Fra": "Fra",
-	"SorteringVelger.Til": "Til",
-
 	"SletteSaksbehandlerModal.SletteSaksbehandler": "Er du sikker på at du vil slette {saksbehandlerNavn}?",
 	"SletteSaksbehandlerModal.Ja": "Slett saksbehandleren",
 	"SletteSaksbehandlerModal.Nei": "Avbryt",
-
-	"TilBehandlingPanel.TilBehandling": "Antall til behandling",
-	"Historikk.ToSisteUker": "2 siste uker",
-	"Historikk.FireSisteUker": "4 siste uker",
-
-	"BehandlingerGårAvVent.Tittel": "Oppgaver som går av vent",
-	"BehandlingerGårAvVent.Hjelptekst": "Grafen viser en prognose av antall oppgaver som går av vent frem i tid.",
-	"BehandlingerGårAvVent.ToNesteUker": "Neste 2 uker",
-	"BehandlingerGårAvVent.FireNesteUker": "Neste 4 uker",
-	"BehandlingerGårAvVent.VelgFagytelseType": "Velg ytelsetype",
-
-	"BehandlingerGårAvVentÅrsaker.Tittel": "Oppgaver som går av vent - årsaker",
-
-	"AksjonspunkterPerEnhet.Tittel": "Aksjonspunkter løst per enhet",
 
 	"OppgavekoVelgerForm.Oppgaveko": "Velg oppgavekø",
 	"OppgavekoVelgerForm.AntallOppgaver": "Antall i kø: {antall}",
@@ -315,40 +130,7 @@
 	"OppgavekoVelgerForm.SorteringsinfoFom": "{navn}{br}Fra og med: {fomDato}",
 	"OppgavekoVelgerForm.SorteringsinfoTom": "{navn}{br}Til og med: {tomDato}",
 
-	"UtvalgskriterierForOppgavekoForm.Utvalgskriterier": "Utvalgskriterier",
-	"UtvalgskriterierForOppgavekoForm.Navn": "Navn",
-	"UtvalgskriterierForOppgavekoForm.AntallSaker": "Antall Oppgaver",
-	"UtvalgskriterierForOppgavekoForm.NyListe": "Ny oppgavekø",
-	"UtvalgskriterierForOppgavekoForm.OmKoen": "Om køen",
-	"UtvalgskriterierForOppgavekoForm.Kriterier": "Andre kriterier",
-	"UtvalgskriterierForOppgavekoForm.Saksbehandlere": "Saksbehandlere",
-	"UtvalgskriterierForOppgavekoForm.Merknader": "Merknader",
-	"UtvalgskriterierForOppgavekoForm.NyeSøknadsperioder": "Nye søknadsperioder",
-
-	"ValidationMessage.NotEmpty": "Feltet må fylles ut",
-	"ValidationMessage.MinLength": "Du må skrive minst {length} tegn",
-	"ValidationMessage.MaxLength": "Du kan skrive maksimalt {length} tegn",
-	"ValidationMessage.MinValue": "Feltet må være større eller lik {length}",
-	"ValidationMessage.MaxValue": "Feltet må være mindre eller lik {length}",
-	"ValidationMessage.InvalidDate": "Dato må skrives slik : dd.mm.åååå",
-	"ValidationMessage.DateNotBeforeOrEqual": "Dato må være før eller lik {limit}",
-	"ValidationMessage.DateNotAfterOrEqual": "Dato må være etter eller lik {limit}",
-	"ValidationMessage.DateRangesOverlapping": "Perioder kan ikke overlappe i tid",
-	"ValidationMessage.InvalidInteger": "Tallet kan ikke ha desimaler",
-	"ValidationMessage.InvalidDatesInPeriod": "Periode må skrives slik : dd.mm.åååå - dd.mm.åååå",
-	"ValidationMessage.InvalidPeriod": "Startdato må være før eller lik sluttdato",
-	"ValidationMessage.InvalidNumber": "Feltet kan kun inneholde tall",
-	"ValidationMessage.InvalidPeriodRange": "Periode er utenfor opptjeningsperioden",
-	"ValidationMessage.Registrering.TerminEllerFoedselMessage": "Fyll ut informasjon om termindato eller fødseldato",
-	"ValidationMessage.Registrering.MaVelgeTillegg": "Velg minst en",
-	"ValidationMessage.InvalidFodselsnummerFormat": "Feltet må være et fødselsnummer (11 siffer)",
-	"ValidationMessage.InvalidFodselsnummer": "Ugyldig fødselsnummer",
 	"ValidationMessage.InvalidEmail": "Ugyldig e-post adresse",
-	"ValidationMessage.InvalidText": "Feltet inneholder ugyldige tegn: {text}",
-	"ValidationMessage.InvalidValue": "Feltet inneholder en ugyldig verdi: {value}",
-	"ValidationMessage.ArrayMinLength": "Listen må ha lengde størren enn: {length}",
-	"ValidationMessage.InvalidSaksnummerOrFodselsnummerFormat": "Ugyldig saksnummer, journalpostID eller fødselsnummer",
-	"ValidationMessage.InvalidSaksnummerFormat": "Ugyldig saksnummer eller journalpostID",
 
 	"Rest.ErrorMessage.General": "Noe feilet. Feilen kan være forbigående. Prøv og behandle saken litt senere. Om feilen oppstår igjen meld den inn via porten.",
 	"Rest.ErrorMessage.DownTime": "Saksbehandlingsløsningen venter på et annet system som har nedetid nå. Du trenger ikke melde inn en feil, men prøv igjen {date} kl. {time}.\n{message}",
