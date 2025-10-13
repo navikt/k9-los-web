@@ -10,8 +10,6 @@
 	"repository": "https://github.com/navikt/k9-los-web",
 	"license": "MIT",
 	"dependencies": {
-		"@formatjs/intl-datetimeformat": "6.18.1",
-		"@formatjs/intl-numberformat": "8.15.5",
 		"@grafana/faro-web-sdk": "1.19.0",
 		"@grafana/faro-web-tracing": "1.19.0",
 		"@navikt/aksel-icons": "7.32.0",

@@ -3109,18 +3109,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@formatjs/intl-datetimeformat@npm:6.18.1":
-  version: 6.18.1
-  resolution: "@formatjs/intl-datetimeformat@npm:6.18.1"
-  dependencies:
-    "@formatjs/ecma402-abstract": "npm:2.3.5"
-    "@formatjs/intl-localematcher": "npm:0.6.2"
-    decimal.js: "npm:^10.4.3"
-    tslib: "npm:^2.8.0"
-  checksum: 10/66938778ecf37472a7e2f1d9349b0ac249fcbd5d684ae5614dea07287876182429980ba2fe3671224f981065baf017ac955f4b3c1f3c924c89bf2ec82dd1acd8
-  languageName: node
-  linkType: hard
-
 "@formatjs/intl-displaynames@npm:6.6.8":
   version: 6.6.8
   resolution: "@formatjs/intl-displaynames@npm:6.6.8"
@@ -3167,18 +3155,6 @@ __metadata:
   dependencies:
     tslib: "npm:^2.8.0"
   checksum: 10/eb12a7f5367bbecdfafc20d7f005559ce840f420e970f425c5213d35e94e86dfe75bde03464971a26494bf8427d4961269db22ecad2834f2a19d888b5d9cc064
-  languageName: node
-  linkType: hard
-
-"@formatjs/intl-numberformat@npm:8.15.5":
-  version: 8.15.5
-  resolution: "@formatjs/intl-numberformat@npm:8.15.5"
-  dependencies:
-    "@formatjs/ecma402-abstract": "npm:2.3.5"
-    "@formatjs/intl-localematcher": "npm:0.6.2"
-    decimal.js: "npm:^10.4.3"
-    tslib: "npm:^2.8.0"
-  checksum: 10/3440371a43c54cdd2aa3714cb518ad22e491dd19fbc0c046e712dde078d3f6ed709474376863d64d2bddb506957d1cf265d440f6723b88211044a7b56186e550
   languageName: node
   linkType: hard
 
@@ -13768,8 +13744,6 @@ __metadata:
     "@eslint/compat": "npm:1.4.0"
     "@eslint/eslintrc": "npm:^3.3.1"
     "@eslint/js": "npm:9.37.0"
-    "@formatjs/intl-datetimeformat": "npm:6.18.1"
-    "@formatjs/intl-numberformat": "npm:8.15.5"
     "@grafana/faro-web-sdk": "npm:1.19.0"
     "@grafana/faro-web-tracing": "npm:1.19.0"
     "@navikt/aksel-icons": "npm:7.32.0"
