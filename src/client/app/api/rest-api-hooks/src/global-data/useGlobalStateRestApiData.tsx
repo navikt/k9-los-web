@@ -1,14 +1,21 @@
-import { useContext } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
-import { RestApiStateContext } from '../RestApiContext';
+import apiPaths from 'api/apiPaths';
 
 /**
  * Hook som bruker respons som allerede er hentet fra backend. For å kunne bruke denne
- * må @see useGlobalStateRestApi først brukes for å hente data fra backend
+ * må kodeverk først være hentet via Tanstack Query (f.eks. i AppConfigResolver)
  */
 function useGlobalStateRestApiData<T>(key: RestApiGlobalStatePathsKeys): T {
-	const state = useContext(RestApiStateContext);
-	return state[key];
+	const queryClient = useQueryClient();
+
+	// Map RestApiGlobalStatePathsKeys til faktiske API paths
+	const apiPathMap = {
+		[RestApiGlobalStatePathsKeys.KODEVERK]: apiPaths.kodeverk,
+	};
+
+	const apiPath = apiPathMap[key];
+	return queryClient.getQueryData<T>([apiPath]);
 }
 
 export default useGlobalStateRestApiData;

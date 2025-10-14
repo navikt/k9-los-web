@@ -1,9 +1,8 @@
 import React, { FunctionComponent, ReactElement, useEffect } from 'react';
 import useRestApiErrorDispatcher from 'api/error/useRestApiErrorDispatcher';
-import { RestApiGlobalStatePathsKeys, k9LosApi } from 'api/k9LosApi';
+import { k9LosApi } from 'api/k9LosApi';
+import { useKodeverk } from 'api/queries/kodeverkQueries';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import { useGlobalStateRestApi } from 'api/rest-api-hooks';
-import RestApiState from 'api/rest-api-hooks/src/RestApiState';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 
 interface OwnProps {
@@ -22,12 +21,11 @@ const AppConfigResolver: FunctionComponent<OwnProps> = ({ children }) => {
 		isLoading: isLoadingSaksbehandler,
 	} = useInnloggetSaksbehandler();
 
-	const { state: stateKodeverk } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.KODEVERK, undefined, {
-		suspendRequest: !harHentetInnloggetSaksbehandler,
-		updateTriggers: [innloggetSaksbehandler],
+	const { isLoading: isLoadingKodeverk } = useKodeverk({
+		enabled: harHentetInnloggetSaksbehandler,
 	});
 
-	if (isLoadingSaksbehandler || [stateKodeverk].some((v) => v === RestApiState.LOADING)) {
+	if (isLoadingSaksbehandler || isLoadingKodeverk) {
 		return <LoadingPanel />;
 	}
 
