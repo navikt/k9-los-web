@@ -5,10 +5,9 @@ import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import { ArrowUndoIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, Loader, Search, SortState, Table } from '@navikt/ds-react';
-import { RestApiGlobalStatePathsKeys } from 'api/k9LosApi';
 import { useAvdelingslederReservasjoner } from 'api/queries/avdelingslederQueries';
+import { useKodeverk } from 'api/queries/kodeverkQueries';
 import ReservasjonerBolkButtons from 'avdelingsleder/reservasjoner/components/ReservasjonerBolkButtons';
-import AlleKodeverk from 'kodeverk/alleKodeverkTsType';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonerModal';
 import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
@@ -17,7 +16,6 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { getDateAndTime } from 'utils/dateUtils';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
-import useGlobalStateRestApiData from '../../../api/rest-api-hooks/src/global-data/useGlobalStateRestApiData';
 import Reservasjon from '../reservasjonTsType';
 import * as styles from './reservasjonerTabell.css';
 
@@ -74,6 +72,7 @@ const ReservasjonerTabell = () => {
 	};
 
 	const { data: reservasjoner, isLoading, isSuccess } = useAvdelingslederReservasjoner();
+	const { data: alleKodeverk } = useKodeverk();
 
 	useEffect(() => {
 		if (reservasjoner) {
@@ -81,8 +80,6 @@ const ReservasjonerTabell = () => {
 			setValgteReservasjoner([]);
 		}
 	}, [reservasjoner]);
-
-	const alleKodeverk: AlleKodeverk = useGlobalStateRestApiData(RestApiGlobalStatePathsKeys.KODEVERK);
 
 	const mapTilTableData = (reservasjon: Reservasjon): ReservasjonTableData => ({
 		reservasjon,
