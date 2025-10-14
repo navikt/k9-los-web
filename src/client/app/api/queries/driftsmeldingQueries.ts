@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
-import { Driftsmelding } from 'admin/driftsmeldinger/driftsmeldingTsType';
 import { axiosInstance } from 'utils/reactQueryConfig';
+import { Driftsmelding } from '../../admin/driftsmeldinger/driftsmeldingTsType';
 
 export const useHentDriftsmeldinger = () =>
 	useQuery<Driftsmelding[], unknown, Driftsmelding[]>({

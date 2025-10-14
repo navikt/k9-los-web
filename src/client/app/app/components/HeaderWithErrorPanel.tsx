@@ -10,10 +10,8 @@ import ErrorFormatter from 'app/feilhandtering/ErrorFormatter';
 import { RETTSKILDE_URL, SHAREPOINT_URL } from 'api/eksterneLenker';
 import useRestApiError from 'api/error/useRestApiError';
 import useRestApiErrorDispatcher from 'api/error/useRestApiErrorDispatcher';
-import { K9LosApiKeys } from 'api/k9LosApi';
+import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import useRestApi from 'api/rest-api-hooks/src/local-data/useRestApi';
-import { Driftsmelding } from '../../admin/driftsmeldinger/driftsmeldingTsType';
 import ErrorMessagePanel from './ErrorMessagePanel';
 import * as styles from './headerWithErrorPanel.css';
 
@@ -72,7 +70,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({ queryStrings, crash
 	const intl = useIntl();
 
 	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
-	const { data: driftsmeldinger = [] } = useRestApi<Driftsmelding[]>(K9LosApiKeys.DRIFTSMELDINGER);
+	const { data: driftsmeldinger = [] } = useHentDriftsmeldinger();
 
 	const errorMessages = useRestApiError() || [];
 
