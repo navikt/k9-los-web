@@ -14,13 +14,13 @@ import AdminPanels from './AdminPanels';
 import * as styles from './adminIndex.css';
 import AdminDashboard from './components/AdminDashboard';
 import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
-import EndreDriftsmeldingerIndex from './driftsmeldinger/EndreDriftsmeldingerIndex';
+import DriftsmeldingerPanel from './driftsmeldinger/DriftsmeldingerPanel';
 
 const classNames = classnames.bind(styles);
 
 const renderPanel = (avdelingslederPanel) => {
 	if (avdelingslederPanel === AdminPanels.DRIFTSMELDINGER) {
-		return <EndreDriftsmeldingerIndex />;
+		return <DriftsmeldingerPanel />;
 	}
 	return null;
 };
@@ -36,7 +36,7 @@ const getTab = (avdelingslederPanel, activeAvdelingslederPanel, getDriftsmelding
 		</Heading>
 	),
 	aktiv: avdelingslederPanel === activeAvdelingslederPanel,
-	 
+
 	linkCreator: ({ children, className }) => (
 		<NavLink
 			to={getDriftsmeldingerPanelLocation(avdelingslederPanel)}
