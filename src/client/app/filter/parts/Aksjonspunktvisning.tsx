@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useKodeverk } from 'api/rest-api-hooks';
+import { useKodeverk } from 'api/queries/kodeverkQueries';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
@@ -11,7 +11,8 @@ interface Props {
 }
 
 export const Aksjonspunktvisning = ({ oppgavefilter }: Props) => {
-	const oppgavekoder = useKodeverk(kodeverkTyper.OPPGAVE_KODE);
+	const { data: alleKodeverk } = useKodeverk();
+	const oppgavekoder = alleKodeverk?.[kodeverkTyper.OPPGAVE_KODE] || [];
 	const { updateQuery } = useContext(FilterContext);
 	const formaterteOppgavekoder = oppgavekoder
 		.map((oppgavekode) => ({
