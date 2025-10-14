@@ -6,6 +6,7 @@ const apiPaths = {
 		`/api/k9-los-api/ny-oppgavestyring/ko/${id}/antall-uten-reserverte`,
 	avdelinglederReservasjoner: '/api/k9-los-api/avdelingsleder/reservasjoner',
 	endreReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/reservasjon/endre',
+	forlengOppgavereservasjon: '/api/k9-los-api/saksbehandler/oppgaver/forleng',
 	opphevReservasjoner: '/api/k9-los-api/saksbehandler/oppgaver/opphev',
 	behandlede: '/api/k9-los-api/saksbehandler/oppgaver/behandlede',
 	dagensTall: '/api/k9-los-api/avdelingsleder/nokkeltall/dagens-tall',
