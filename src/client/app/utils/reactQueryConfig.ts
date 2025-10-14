@@ -1,6 +1,6 @@
 import { QueryClientConfig } from '@tanstack/react-query';
 import axios from 'axios';
-import { callId } from 'api/rest-api/src/axios/axiosHttpClientApi';
+import { callId } from 'utils/call-id';
 
 const axiosConfig = {
 	headers: {

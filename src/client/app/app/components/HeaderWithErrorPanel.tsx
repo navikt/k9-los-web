@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 import { MenuGridIcon } from '@navikt/aksel-icons';
@@ -6,13 +6,9 @@ import { ActionMenu, Dropdown, InternalHeader, Spacer } from '@navikt/ds-react';
 import Endringslogg from '@navikt/familie-endringslogg';
 import { Header } from '@navikt/ft-plattform-komponenter';
 import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
-import ErrorFormatter from 'app/feilhandtering/ErrorFormatter';
 import { RETTSKILDE_URL, SHAREPOINT_URL } from 'api/eksterneLenker';
-import useRestApiError from 'api/error/useRestApiError';
-import useRestApiErrorDispatcher from 'api/error/useRestApiErrorDispatcher';
 import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import ErrorMessagePanel from './ErrorMessagePanel';
 import * as styles from './headerWithErrorPanel.css';
 
 interface OwnProps {
@@ -63,7 +59,7 @@ const useOutsideClickEvent = (
  * Denne viser lenke tilbake til hovedsiden, nettside-navnet og NAV-ansatt navn.
  * I tillegg vil den vise potensielle feilmeldinger i ErrorMessagePanel.
  */
-const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({ queryStrings, crashMessage }) => {
+const HeaderWithErrorPanel: FunctionComponent<OwnProps> = () => {
 	const [erLenkePanelApent, setLenkePanelApent] = useState(false);
 	const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 	const navigate = useNavigate();
@@ -72,13 +68,6 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({ queryStrings, crash
 	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
 	const { data: driftsmeldinger = [] } = useHentDriftsmeldinger();
 
-	const errorMessages = useRestApiError() || [];
-
-	const formaterteFeilmeldinger = useMemo(
-		() => new ErrorFormatter().format(errorMessages, crashMessage),
-		[errorMessages],
-	);
-	const { removeErrorMessage } = useRestApiErrorDispatcher();
 	const wrapperRef = useOutsideClickEvent(
 		erLenkePanelApent,
 		erAvdelingerPanelApent,
@@ -189,11 +178,6 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = ({ queryStrings, crash
 				</Header>
 			</div>
 			<DriftsmeldingPanel driftsmeldinger={driftsmeldinger} />
-			<ErrorMessagePanel
-				errorMessages={formaterteFeilmeldinger}
-				queryStrings={queryStrings}
-				removeErrorMessages={removeErrorMessage}
-			/>
 		</header>
 	);
 };
