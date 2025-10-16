@@ -79,7 +79,7 @@
 		"@storybook/addon-essentials": "8.6.14",
 		"@storybook/addon-interactions": "8.6.14",
 		"@storybook/addon-links": "9.1.10",
-		"@storybook/addon-onboarding": "9.1.10",
+		"@storybook/addon-onboarding": "9.1.12",
 		"@storybook/addon-styling-webpack": "2.0.0",
 		"@storybook/addon-webpack5-compiler-swc": "4.0.1",
 		"@storybook/blocks": "8.6.14",
