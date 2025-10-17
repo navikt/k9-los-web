@@ -1,13 +1,8 @@
 import React, { FunctionComponent, useRef, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { useQueryClient } from '@tanstack/react-query';
 import NavFrontendChevron from 'nav-frontend-chevron';
 import { BodyShort, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react';
-import apiPaths from 'api/apiPaths';
-import { K9LosApiKeys } from 'api/k9LosApi';
-import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
-import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
-import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
+import { useForlengOppgavereservasjon, useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { getHeaderCodes } from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgavetabellerfelles';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -25,21 +20,14 @@ interface OwnProps {
 const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ gjelderHastesaker }) => {
 	const [valgtOppgaveId, setValgtOppgaveId] = useState<string>();
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
-	const queryClient = useQueryClient();
 
 	const { data: reservasjoner, isLoading, isSuccess, isError } = useSaksbehandlerReservasjoner();
+	const { mutate: forlengOppgaveReservasjonMutation } = useForlengOppgavereservasjon();
 
-	const { startRequest: forlengOppgavereservasjon } = useRestApiRunner<Reservasjon[]>(
-		K9LosApiKeys.FORLENG_OPPGAVERESERVASJON,
-	);
-
-	const forlengOppgaveReservasjonFn = (oppgaveNøkkel: OppgaveNøkkel) => {
-		forlengOppgavereservasjon({ oppgaveNøkkel }).then(() => {
-			queryClient.invalidateQueries({
-				queryKey: [apiPaths.saksbehandlerReservasjoner],
-			});
-		});
+	const forlengOppgaveReservasjon = (oppgaveNøkkel: OppgaveNøkkel) => {
+		forlengOppgaveReservasjonMutation({ oppgaveNøkkel });
 	};
+
 	const ref = useRef({});
 
 	const countReservations = (reservasjon: ReservasjonV3) => {
@@ -118,7 +106,7 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ gjelderHastesak
 											key={oppgave.oppgaveNøkkel.oppgaveEksternId}
 											oppgave={oppgave}
 											reservasjon={reservasjon}
-											forlengOppgaveReservasjonFn={forlengOppgaveReservasjonFn}
+											forlengOppgaveReservasjonFn={forlengOppgaveReservasjon}
 											valgtOppgaveId={valgtOppgaveId}
 											setValgtOppgaveId={setValgtOppgaveId}
 											gjelderHastesaker={gjelderHastesaker}

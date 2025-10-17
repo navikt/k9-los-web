@@ -53,14 +53,11 @@ const AppIndex: FunctionComponent = () => {
 		setCrashMessage(error);
 	};
 
-	const location = useLocation();
-	const queryStrings = parseQueryString(location.search);
-
 	return (
 		<ErrorBoundary errorMessageCallback={addErrorMessageAndSetAsCrashed}>
 			<AppConfigResolver>
 				<LanguageProvider>
-					<HeaderWithErrorPanel queryStrings={queryStrings} crashMessage={crashMessage} />
+					<HeaderWithErrorPanel />
 					{sessionHarUtlopt && (
 						<Modal
 							className="min-w-[500px]"

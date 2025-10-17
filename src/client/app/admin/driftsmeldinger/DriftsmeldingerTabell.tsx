@@ -2,21 +2,19 @@ import React, { FunctionComponent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, Label } from '@navikt/ds-react';
-import { K9LosApiKeys } from 'api/k9LosApi';
-import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
+import { useSlettDriftsmelding, useToggleDriftsmelding } from 'api/queries/driftsmeldingQueries';
 import Table from 'sharedComponents/Table';
 import TableColumn from 'sharedComponents/TableColumn';
 import TableRow from 'sharedComponents/TableRow';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getDateAndTime } from 'utils/dateUtils';
-import { Driftsmelding } from '../driftsmeldingTsType';
 import SletteDriftsmeldingerModal from './SletteDriftsmeldingerModal';
+import { Driftsmelding } from './driftsmeldingTsType';
 
 const headerTextCodes = ['DriftsmeldingTabell.Tekst', 'DriftsmeldingTabell.Aktiv', 'DriftsmeldingTabell.Dato'];
 
 interface OwnProps {
 	driftsmeldinger: Driftsmelding[];
-	hentAlleDriftsmeldinger: () => void;
 }
 
 const boldChunks = (...chunks) => <b>{chunks}</b>;
@@ -24,12 +22,12 @@ const boldChunks = (...chunks) => <b>{chunks}</b>;
 /**
  * DriftsmeldingerTabell
  */
-const DriftsmeldingerTabell: FunctionComponent<OwnProps> = ({ driftsmeldinger, hentAlleDriftsmeldinger }) => {
+const DriftsmeldingerTabell: FunctionComponent<OwnProps> = ({ driftsmeldinger }) => {
 	const [showSlettModal, setShowSlettModal] = useState(false);
 	const [valgtDriftsmelding, setValgtDriftsmelding] = useState<Driftsmelding>(undefined);
 
-	const { startRequest: fjernDriftsmelding } = useRestApiRunner<Driftsmelding>(K9LosApiKeys.SLETT_DRIFTSMELDING);
-	const { startRequest: switchDriftsmelding } = useRestApiRunner<Driftsmelding>(K9LosApiKeys.TOGGLE_DRIFTSMELDING);
+	const { mutate: slettDriftsmeldingMutation } = useSlettDriftsmelding();
+	const { mutate: toggleDriftsmeldingMutation } = useToggleDriftsmelding();
 
 	const showSletteDriftsmeldingModal = (driftsmelding: Driftsmelding) => {
 		setShowSlettModal(true);
@@ -42,7 +40,7 @@ const DriftsmeldingerTabell: FunctionComponent<OwnProps> = ({ driftsmeldinger, h
 	};
 
 	const slettDriftsmelding = (dm: Driftsmelding) => {
-		fjernDriftsmelding({ id: dm.id }).then(() => hentAlleDriftsmeldinger());
+		slettDriftsmeldingMutation({ id: dm.id });
 		closeSletteModal();
 	};
 	const sorterteDriftsmeldinger = driftsmeldinger.sort((d1, d2) => d1.dato.localeCompare(d2.dato));
@@ -73,11 +71,7 @@ const DriftsmeldingerTabell: FunctionComponent<OwnProps> = ({ driftsmeldinger, h
 										hideLabel
 										size="small"
 										checked={driftsmelding.aktiv}
-										onChange={(e) =>
-											switchDriftsmelding({ id: driftsmelding.id, aktiv: e.target.checked }).then(() =>
-												hentAlleDriftsmeldinger(),
-											)
-										}
+										onChange={(e) => toggleDriftsmeldingMutation({ id: driftsmelding.id, aktiv: e.target.checked })}
 										name="aktiv"
 									>
 										Toggle driftsmelding

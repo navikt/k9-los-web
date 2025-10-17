@@ -1,31 +1,20 @@
 import React, { FunctionComponent } from 'react';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import { Column, Row } from 'nav-frontend-grid';
 import { Heading } from '@navikt/ds-react';
 import { WarningIcon } from '@navikt/ft-plattform-komponenter';
-import { DD_MM_HHMM } from 'utils/formats';
-import { Driftsmelding } from '../../admin/driftsmeldinger/driftsmeldingTsType';
+import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
 import * as styles from './driftsmeldingPanel.css';
 
-interface OwnProps {
-	driftsmeldinger: Driftsmelding[];
-}
-
-/**
- * DriftsmeldingPanel
- *
- * Presentasjonskomponent. Definerer hvordan driftsmeldinger vises.
- */
-const DriftsmeldingPanel: FunctionComponent<OwnProps> = ({ driftsmeldinger }) => {
-	if (
-		driftsmeldinger === undefined ||
-		driftsmeldinger.length === 0 ||
-		driftsmeldinger.filter((message) => message.aktiv).length === 0
-	) {
+const DriftsmeldingPanel: FunctionComponent = () => {
+	const { data, isSuccess } = useHentDriftsmeldinger();
+	if (!isSuccess) {
 		return null;
 	}
-
-	const aktiveDriftsmeldinger = driftsmeldinger.filter((message) => message.aktiv);
+	const aktiveDriftsmeldinger = data.filter((message) => message.aktiv);
+	if (aktiveDriftsmeldinger.length === 0) {
+		return null;
+	}
 
 	return (
 		<div className={styles.container}>
@@ -34,7 +23,7 @@ const DriftsmeldingPanel: FunctionComponent<OwnProps> = ({ driftsmeldinger }) =>
 					<Column xs="11" className={styles.column}>
 						<WarningIcon />
 						<Heading size="small">
-							{`${message.melding}. (Registrert ${moment(message.aktivert).format(DD_MM_HHMM)})`}
+							{`${message.melding}. (Registrert ${dayjs(message.aktivert).format('DD.MM HH:mm')})`}
 						</Heading>
 					</Column>
 				</Row>

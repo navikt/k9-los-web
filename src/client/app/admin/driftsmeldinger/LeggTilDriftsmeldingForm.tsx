@@ -1,32 +1,29 @@
 import React, { FormEvent, FunctionComponent, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Button, TextField } from '@navikt/ds-react';
-import { K9LosApiKeys } from 'api/k9LosApi';
-import useRestApiRunner from 'api/rest-api-hooks/src/local-data/useRestApiRunner';
-import { Driftsmelding } from '../driftsmeldingTsType';
+import { useLagreDriftsmelding } from 'api/queries/driftsmeldingQueries';
 
 /**
  * LeggTilDriftsmeldingForm
  */
-interface OwnProps {
-	hentAlleDriftsmeldinger: () => void;
-}
 
-export const LeggTilDriftsmeldingForm: FunctionComponent<OwnProps> = ({ hentAlleDriftsmeldinger }) => {
-	const [leggerTilNyDriftsmelding, setLeggerTilNyDriftsmelding] = useState(false);
+export const LeggTilDriftsmeldingForm: FunctionComponent = () => {
 	const [melding, setMelding] = useState('');
 
-	const { startRequest: leggTilDriftsmelding } = useRestApiRunner<Driftsmelding>(K9LosApiKeys.LAGRE_DRIFTSMELDING);
+	const { mutate: lagreDriftsmelding, isPending } = useLagreDriftsmelding();
 
 	const addDriftsmelding = (nyMelding: string, resetFormValues: () => void) => {
 		if (!nyMelding) {
 			return;
 		}
-		setLeggerTilNyDriftsmelding(true);
-		leggTilDriftsmelding({ driftsmelding: nyMelding })
-			.then(() => hentAlleDriftsmeldinger())
-			.then(() => setLeggerTilNyDriftsmelding(false));
-		resetFormValues();
+		lagreDriftsmelding(
+			{ driftsmelding: nyMelding },
+			{
+				onSuccess: () => {
+					resetFormValues();
+				},
+			},
+		);
 	};
 
 	const handleSubmit = (event: FormEvent) => {
@@ -48,8 +45,8 @@ export const LeggTilDriftsmeldingForm: FunctionComponent<OwnProps> = ({ hentAlle
 				<div>
 					<Button
 						className="absolute bottom-0 h-[42px]"
-						loading={leggerTilNyDriftsmelding}
-						disabled={leggerTilNyDriftsmelding}
+						loading={isPending}
+						disabled={isPending}
 						type="submit"
 					>
 						<FormattedMessage id="LeggTilDriftsmeldingForm.Legg_Til" />

@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
-import { Modal, Button } from '@navikt/ds-react';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
-import { Driftsmelding } from '../driftsmeldingTsType';
+import { Button, Modal } from '@navikt/ds-react';
+import { Driftsmelding } from './driftsmeldingTsType';
 
 type TsProps = Readonly<{
 	valgtDriftsmelding: Driftsmelding;
@@ -19,25 +19,25 @@ const SletteDriftsmeldingModal: FunctionComponent<TsProps> = ({
 	closeSletteModal,
 	fjernDriftsmelding,
 }: TsProps) => (
-		<Modal
-			open
-			onClose={closeSletteModal}
-			header={{
-				heading: 'Slette driftmelding',
-				closeButton: false,
-				icon: <ExclamationmarkTriangleIcon />,
-			}}
-		>
-			<Modal.Body>Ønsker du å slette driftmelding?</Modal.Body>
-			<Modal.Footer>
-				<Button variant="primary" onClick={() => fjernDriftsmelding(valgtDriftsmelding)} autoFocus>
-					Ja
-				</Button>
-				<Button variant="secondary" onClick={closeSletteModal}>
-					Nei
-				</Button>
-			</Modal.Footer>
-		</Modal>
-	);
+	<Modal
+		open
+		onClose={closeSletteModal}
+		header={{
+			heading: 'Slette driftmelding',
+			closeButton: false,
+			icon: <ExclamationmarkTriangleIcon />,
+		}}
+	>
+		<Modal.Body>Ønsker du å slette driftmelding?</Modal.Body>
+		<Modal.Footer>
+			<Button variant="primary" onClick={() => fjernDriftsmelding(valgtDriftsmelding)} autoFocus>
+				Ja
+			</Button>
+			<Button variant="secondary" onClick={closeSletteModal}>
+				Nei
+			</Button>
+		</Modal.Footer>
+	</Modal>
+);
 
 export default SletteDriftsmeldingModal;

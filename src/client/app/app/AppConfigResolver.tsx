@@ -1,9 +1,6 @@
-import React, { FunctionComponent, ReactElement, useEffect } from 'react';
-import useRestApiErrorDispatcher from 'api/error/useRestApiErrorDispatcher';
-import { RestApiGlobalStatePathsKeys, k9LosApi } from 'api/k9LosApi';
+import React, { FunctionComponent, ReactElement } from 'react';
+import { useKodeverk } from 'api/queries/kodeverkQueries';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import { useGlobalStateRestApi } from 'api/rest-api-hooks';
-import RestApiState from 'api/rest-api-hooks/src/RestApiState';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 
 interface OwnProps {
@@ -11,23 +8,13 @@ interface OwnProps {
 }
 
 const AppConfigResolver: FunctionComponent<OwnProps> = ({ children }) => {
-	const { addErrorMessage } = useRestApiErrorDispatcher();
-	useEffect(() => {
-		k9LosApi().setAddErrorMessageHandler(addErrorMessage);
-	}, []);
+	const { isSuccess: harHentetInnloggetSaksbehandler, isLoading: isLoadingSaksbehandler } = useInnloggetSaksbehandler();
 
-	const {
-		data: innloggetSaksbehandler,
-		isSuccess: harHentetInnloggetSaksbehandler,
-		isLoading: isLoadingSaksbehandler,
-	} = useInnloggetSaksbehandler();
-
-	const { state: stateKodeverk } = useGlobalStateRestApi(RestApiGlobalStatePathsKeys.KODEVERK, undefined, {
-		suspendRequest: !harHentetInnloggetSaksbehandler,
-		updateTriggers: [innloggetSaksbehandler],
+	const { isLoading: isLoadingKodeverk } = useKodeverk({
+		enabled: harHentetInnloggetSaksbehandler,
 	});
 
-	if (isLoadingSaksbehandler || [stateKodeverk].some((v) => v === RestApiState.LOADING)) {
+	if (isLoadingSaksbehandler || isLoadingKodeverk) {
 		return <LoadingPanel />;
 	}
 

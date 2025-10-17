@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import useKodeverk from 'api/rest-api-hooks/src/global-data/useKodeverk';
+import { useKodeverk } from 'api/queries/kodeverkQueries';
 import SearchDropdownMedPredefinerteVerdier, {
 	SearchDropdownPredefinerteVerdierProps,
 } from 'filter/parts/SearchDropdownMedPredefinerteVerdier';
@@ -8,7 +8,8 @@ import kodeverkTyper from 'kodeverk/kodeverkTyper';
 const AksjonspunktVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown }) => {
-	const oppgavekoder = useKodeverk(kodeverkTyper.OPPGAVE_KODE);
+	const { data: alleKodeverk } = useKodeverk();
+	const oppgavekoder = alleKodeverk?.[kodeverkTyper.OPPGAVE_KODE] || [];
 	const formaterteOppgavekoder = oppgavekoder
 		.map((oppgavekode) => ({
 			value: oppgavekode.kode,

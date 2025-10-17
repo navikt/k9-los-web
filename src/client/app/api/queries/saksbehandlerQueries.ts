@@ -115,6 +115,18 @@ export const useOpphevReservasjoner = () => {
 	});
 };
 
+export const useForlengOppgavereservasjon = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (data: { oppgaveNøkkel: OppgaveNøkkel }) => axiosInstance.post(apiPaths.forlengOppgavereservasjon, data),
+		onSuccess: () =>
+			Promise.all([
+				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
+				queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
+			]),
+	});
+};
+
 export const useSøkOppgaveV3 = () => {
 	const queryClient = useQueryClient();
 	return useMutation({

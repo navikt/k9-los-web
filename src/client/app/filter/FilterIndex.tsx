@@ -4,9 +4,8 @@ import { ArrowCirclepathIcon, DownloadIcon, MagnifyingGlassIcon, PlusCircleIcon 
 import { Alert, BodyShort, Button, Heading, Loader, ReadMore, Select, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import apiPaths from 'api/apiPaths';
-import { K9LosApiKeys, k9LosApi } from 'api/k9LosApi';
 import { useAlleKoer, useKo } from 'api/queries/avdelingslederQueries';
-import { REQUEST_POLLING_CANCELLED } from 'api/rest-api';
+import { useLastNedOppgaverSomFil, useSøkOppgaver } from 'api/queries/oppgaveQueries';
 import { post } from 'utils/axios';
 import { AntallOppgaver } from './AntallOppgaver';
 import { FilterContext } from './FilterContext';
@@ -72,8 +71,6 @@ const FilterIndex = ({
 	const [queryErrorMessage, setQueryErrorMessage] = useState(null);
 	const [queryErrors, setQueryErrors] = useState([]);
 	const [shouldRevalidate, setShouldRevalidate] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [loadingDownload, setLoadingDownload] = useState(false);
 	const [koId, setKoId] = useState(null);
 	const [isValidating, setIsValidating] = useState(false);
 	const [oppgaveQuery, setOppgaveQuery] = useState(
@@ -101,6 +98,9 @@ const FilterIndex = ({
 	const [oppgaver, setOppgaver] = useState<Oppgaverad[]>(null);
 	const [antallTreff, setAntallTreff] = useState('0');
 	const [prevOppgaveQuery, setPrevOppgaveQuery] = useState({});
+
+	const { mutate: søkOppgaver, isPending: isSøkPending } = useSøkOppgaver();
+	const { mutate: lastNedOppgaverSomFil, isPending: isDownloadPending } = useLastNedOppgaverSomFil();
 
 	const nullstillTreff = () => {
 		setAntallTreff('0');
@@ -173,55 +173,27 @@ const FilterIndex = ({
 			return oppgaverader;
 		}
 
-		if (loading) {
-			return;
-		}
-
-		setLoading(true);
-
-		k9LosApi()
-			.startRequest(K9LosApiKeys.OPPGAVE_QUERY, oppgaveQuery)
-			.then((dataRes) => {
-				if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
-					setOppgaver(updateIdentities(dataRes.payload));
-					setQueryErrorMessage(null);
-					setLoading(false);
-				} else {
-					setOppgaver([]);
-					setQueryErrorMessage('Klarte ikke å kjøre søk grunnet tidsavbrudd.');
-					setLoading(false);
-				}
-			})
-			.catch(() => {
+		søkOppgaver(oppgaveQuery, {
+			onSuccess: (data) => {
+				setOppgaver(updateIdentities(data));
+				setQueryErrorMessage(null);
+			},
+			onError: () => {
 				setOppgaver([]);
 				setQueryErrorMessage('Klarte ikke å kjøre søk grunnet ukjent feil.');
-				setLoading(false);
-			});
+			},
+		});
 	};
 
-	const executeOppgavesøkToFile = async () => {
-		if (loadingDownload) {
-			return;
-		}
-
-		setLoadingDownload(true);
-
-		try {
-			const dataRes = await k9LosApi().startRequest(
-				K9LosApiKeys.OPPGAVE_QUERY_TO_FILE,
-				new OppgaveQueryModel(oppgaveQuery).updateLimit(-1).toOppgaveQuery(),
-			);
-
-			if (dataRes.payload !== REQUEST_POLLING_CANCELLED) {
+	const executeOppgavesøkToFile = () => {
+		lastNedOppgaverSomFil(new OppgaveQueryModel(oppgaveQuery).updateLimit(-1).toOppgaveQuery(), {
+			onSuccess: () => {
 				setQueryErrorMessage(null);
-			} else {
-				setQueryErrorMessage('Klarte ikke å kjøre søk grunnet tidsavbrudd.');
-			}
-		} catch {
-			setQueryErrorMessage('Klarte ikke å kjøre søk grunnet ukjent feil.');
-		} finally {
-			setLoadingDownload(false);
-		}
+			},
+			onError: () => {
+				setQueryErrorMessage('Klarte ikke å kjøre søk grunnet ukjent feil.');
+			},
+		});
 	};
 
 	const oppdaterLimit = (limit) => {
@@ -317,10 +289,10 @@ const FilterIndex = ({
 					<div className={styles.filterButtonGroup}>
 						{lagre && (
 							<div className="ml-auto">
-								<Button className="mr-2" variant="secondary" onClick={avbryt} disabled={isValidating || loading}>
+								<Button className="mr-2" variant="secondary" onClick={avbryt} disabled={isValidating || isSøkPending}>
 									Avbryt
 								</Button>
-								<Button onClick={validerOgLagre} loading={isValidating || loading} disabled={isValidating || loading}>
+								<Button onClick={validerOgLagre} loading={isValidating || isSøkPending} disabled={isValidating || isSøkPending}>
 									Lagre
 								</Button>
 							</div>
@@ -332,7 +304,7 @@ const FilterIndex = ({
 								variant={lagre ? 'tertiary' : 'primary'}
 								icon={<MagnifyingGlassIcon />}
 								onClick={executeOppgavesøk}
-								loading={loading}
+								loading={isSøkPending}
 							>
 								Søk
 							</Button>
@@ -340,7 +312,7 @@ const FilterIndex = ({
 								variant="secondary"
 								icon={<DownloadIcon />}
 								onClick={executeOppgavesøkToFile}
-								loading={loadingDownload}
+								loading={isDownloadPending}
 							>
 								Last ned CSV
 							</Button>
@@ -373,7 +345,7 @@ const FilterIndex = ({
 									icon={<ArrowCirclepathIcon />}
 									size="small"
 									onClick={executeOppgavesøk}
-									loading={loading}
+									loading={isSøkPending}
 								>
 									Søk på nytt
 								</Button>
