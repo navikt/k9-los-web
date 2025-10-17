@@ -5,22 +5,17 @@ import { renderWithAllProviders } from '../../../../../setup/testHelpers/testUti
 import { unitTestHandlers } from '../../../mocks/unitTestHandlers';
 import HeaderWithErrorPanel from './HeaderWithErrorPanel';
 
-const crashMessage = 'CrashMessage';
-
 const server = setupServer(...unitTestHandlers);
 describe('<HeaderWithErrorPanel>', () => {
 	beforeAll(() => server.listen());
 	afterEach(() => server.resetHandlers());
 	afterAll(() => server.close());
-	// spyr ut errors om manglende tekster fordi setup-test-env.js mocker ut react-intl
 	it('skal vise lenker for rettskilde i header men ingen avdelinger når det ikke er noen', async () => {
 		act(() => {
-			renderWithAllProviders(
-				<HeaderWithErrorPanel queryStrings={{}} crashMessage={crashMessage} />,
-			);
+			renderWithAllProviders(<HeaderWithErrorPanel />);
 		});
 		await waitFor(() => {
-			expect(screen.getByText(crashMessage)).toBeVisible();
+			expect(screen.getByText('Z123456')).toBeVisible();
 		});
 	});
 });

@@ -1,23 +1,12 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
-import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router';
 import { MenuGridIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Dropdown, InternalHeader, Spacer } from '@navikt/ds-react';
 import Endringslogg from '@navikt/familie-endringslogg';
 import { Header } from '@navikt/ft-plattform-komponenter';
 import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
-import { RETTSKILDE_URL, SHAREPOINT_URL } from 'api/eksterneLenker';
-import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import * as styles from './headerWithErrorPanel.css';
-
-interface OwnProps {
-	queryStrings: {
-		errormessage?: string;
-		errorcode?: string;
-	};
-	crashMessage?: string;
-}
 
 const isDev = !window.location.hostname.includes('intern.nav.no');
 
@@ -59,14 +48,12 @@ const useOutsideClickEvent = (
  * Denne viser lenke tilbake til hovedsiden, nettside-navnet og NAV-ansatt navn.
  * I tillegg vil den vise potensielle feilmeldinger i ErrorMessagePanel.
  */
-const HeaderWithErrorPanel: FunctionComponent<OwnProps> = () => {
+const HeaderWithErrorPanel: FunctionComponent = () => {
 	const [erLenkePanelApent, setLenkePanelApent] = useState(false);
 	const [erAvdelingerPanelApent, setAvdelingerPanelApent] = useState(false);
 	const navigate = useNavigate();
-	const intl = useIntl();
 
 	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
-	const { data: driftsmeldinger = [] } = useHentDriftsmeldinger();
 
 	const wrapperRef = useOutsideClickEvent(
 		erLenkePanelApent,
@@ -95,36 +82,21 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = () => {
 		}, 1000);
 	};
 
-	const visAvdelingslederKnapp = (): boolean => {
-		if (!innloggetSaksbehandler?.kanOppgavestyre) {
-			return false;
-		}
-		if (innloggetSaksbehandler?.kanOppgavestyre && window.location.href.includes('avdelingsleder')) {
-			return false;
-		}
-		return true;
-	};
+	const visAvdelingslederKnapp =
+		innloggetSaksbehandler?.kanOppgavestyre && !window.location.href.includes('avdelingsleder');
 
-	const visAdminKnapp = (): boolean => {
-		if (!innloggetSaksbehandler?.kanDrifte) {
-			return false;
-		}
-		if (innloggetSaksbehandler?.kanDrifte && window.location.href.includes('admin')) {
-			return false;
-		}
-		return true;
-	};
+	const visDriftsmeldingerKnapp = innloggetSaksbehandler?.kanDrifte && !window.location.href.includes('admin');
 
 	return (
 		<header ref={fixedHeaderRef} className={`${styles.container} ${isDev ? styles.containerDev : ''}`}>
 			<div ref={wrapperRef}>
-				<Header title={intl.formatMessage({ id: 'Header.K9Los' })} changeLocation={goToHomepage}>
-					{visAdminKnapp() && (
+				<Header title="Pleiepenger og omsorgspenger" changeLocation={goToHomepage}>
+					{visDriftsmeldingerKnapp && (
 						<button type="button" className={styles.knapp} onClick={goTilDriftsmeldingerPanel}>
 							Driftsmeldinger
 						</button>
 					)}
-					{visAvdelingslederKnapp() && (
+					{visAvdelingslederKnapp && (
 						<button type="button" className={styles.knapp} onClick={goTilAvdelingslederPanel}>
 							Avdelingslederpanel
 						</button>
@@ -155,12 +127,16 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = () => {
 						<ActionMenu.Content>
 							<ActionMenu.Group label="Systemer og oppslagsverk">
 								<ActionMenu.Item>
-									<a href={RETTSKILDE_URL} target="_blank" rel="noopener noreferrer">
+									<a href="https://lovdata.no/pro/sso/login/nav" target="_blank" rel="noopener noreferrer">
 										Rettskilde
 									</a>
 								</ActionMenu.Item>
 								<ActionMenu.Item>
-									<a href={SHAREPOINT_URL} target="_blank" rel="noopener noreferrer">
+									<a
+										href="https://navno.sharepoint.com/sites/44/NAYSykdomifamilien/SitePages/Hjem.aspx"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
 										Sharepoint
 									</a>
 								</ActionMenu.Item>
@@ -177,7 +153,7 @@ const HeaderWithErrorPanel: FunctionComponent<OwnProps> = () => {
 					)}
 				</Header>
 			</div>
-			<DriftsmeldingPanel driftsmeldinger={driftsmeldinger} />
+			<DriftsmeldingPanel />
 		</header>
 	);
 };
