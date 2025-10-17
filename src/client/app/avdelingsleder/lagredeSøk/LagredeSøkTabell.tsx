@@ -6,7 +6,7 @@ import apiPaths from 'api/apiPaths';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import ModalButton from 'sharedComponents/ModalButton';
-import { momentDateFormat } from 'utils/dateUtils';
+import { dateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 function EndreTittel({ lagretSøk }: { lagretSøk: LagretSøk }) {
@@ -79,7 +79,7 @@ function Rad({ lagretSøk, antallQueryResult }: { lagretSøk: LagretSøk; antall
 			<Table.DataCell>
 				{antallQueryResult.isLoading ? <Skeleton variant="text" width={50} /> : (antallQueryResult.data ?? '-')}
 			</Table.DataCell>
-			<Table.DataCell>{momentDateFormat(lagretSøk.sistEndret)}</Table.DataCell>
+			<Table.DataCell>{dateFormat(lagretSøk.sistEndret)}</Table.DataCell>
 			<Table.DataCell>
 				<div className="flex gap-4">
 					<ModalButton

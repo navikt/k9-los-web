@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
-import moment from 'moment/moment';
-import { DDMMYYYY_DATE_FORMAT, HHMM_TIME_FORMAT, ISO_DATE_FORMAT } from 'utils/formats';
+import isoWeek from 'dayjs/plugin/isoWeek';
+
+const ISO_DATE_FORMAT = 'YYYY-MM-DD';
+const DDMMYYYY_DATE_FORMAT = 'DD.MM.YYYY';
+const HHMM_TIME_FORMAT = 'HH:mm';
+
+dayjs.extend(isoWeek);
 
 export const TIDENES_ENDE = '9999-12-31';
 
@@ -42,8 +47,8 @@ export const calcDaysAndWeeksWithWeekends = (fraDatoPeriode, tilDatoPeriode) => 
 	if (tilDatoPeriode === TIDENES_ENDE) {
 		return checkDays(undefined, undefined);
 	}
-	const fraDato = moment(fraDatoPeriode, ISO_DATE_FORMAT);
-	const tilDato = moment(tilDatoPeriode, ISO_DATE_FORMAT);
+	const fraDato = dayjs(fraDatoPeriode, ISO_DATE_FORMAT);
+	const tilDato = dayjs(tilDatoPeriode, ISO_DATE_FORMAT);
 
 	// Vi legger til én dag for å få med startdato i perioden
 	const duration = tilDato.diff(fraDato, 'days') + 1;
@@ -59,10 +64,10 @@ export const calcDaysAndWeeks = (fraDatoPeriode, tilDatoPeriode) => {
 		return checkDays(undefined, undefined);
 	}
 
-	const fraDato = moment(fraDatoPeriode, ISO_DATE_FORMAT);
-	const tilDato = moment(tilDatoPeriode, ISO_DATE_FORMAT);
+	const fraDato = dayjs(fraDatoPeriode, ISO_DATE_FORMAT);
+	const tilDato = dayjs(tilDatoPeriode, ISO_DATE_FORMAT);
 	let count = tilDato.diff(fraDato, 'days');
-	let date = moment(fraDatoPeriode, ISO_DATE_FORMAT);
+	let date = dayjs(fraDatoPeriode, ISO_DATE_FORMAT);
 	let numOfDays = date.isoWeekday() !== 6 && date.isoWeekday() !== 7 ? 1 : 0;
 
 	while (count > 0) {
@@ -81,30 +86,6 @@ export const calcDaysAndWeeks = (fraDatoPeriode, tilDatoPeriode) => {
 	return checkDays(weeks, days);
 };
 
-export const calcDaysWithoutWeekends = (fraDatoPeriode, tilDatoPeriode) => {
-	if (tilDatoPeriode === TIDENES_ENDE) {
-		return checkDays(undefined, undefined);
-	}
-	const fraDato = moment(fraDatoPeriode, ISO_DATE_FORMAT);
-	const tilDato = moment(tilDatoPeriode, ISO_DATE_FORMAT);
-
-	let count = tilDato.diff(fraDato, 'days');
-	let date = moment(fraDatoPeriode, ISO_DATE_FORMAT);
-	let numOfDays = date.isoWeekday() !== 6 && date.isoWeekday() !== 7 ? 1 : 0;
-
-	while (count > 0) {
-		date = date.add(1, 'days');
-
-		if (date.isoWeekday() !== 6 && date.isoWeekday() !== 7) {
-			numOfDays += 1;
-		}
-
-		count -= 1;
-	}
-
-	return numOfDays;
-};
-
 export const splitWeeksAndDays = (weeks, days) => {
 	const returnArray = [];
 	const allDays = weeks ? weeks * 5 + days : days;
@@ -116,9 +97,9 @@ export const splitWeeksAndDays = (weeks, days) => {
 	return returnArray;
 };
 
-export const momentDateFormat = (date) => moment(date).format(DDMMYYYY_DATE_FORMAT);
+export const momentDateFormat = (date) => dayjs(date).format(DDMMYYYY_DATE_FORMAT);
 
-export const timeFormat = (date) => moment(date).format(HHMM_TIME_FORMAT);
+export const timeFormat = (date) => dayjs(date).format(HHMM_TIME_FORMAT);
 
 export const dateFormat = (date: Date | string): string => dayjs(date).format(DDMMYYYY_DATE_FORMAT);
 
@@ -129,56 +110,27 @@ export const dateTimeFormat = (date: Date | string): string =>
 export const addDaysToDate = (dateString, nrOfDays) =>
 	dateString === TIDENES_ENDE
 		? dateString
-		: moment(dateString, ISO_DATE_FORMAT).add(nrOfDays, 'days').format(ISO_DATE_FORMAT);
+		: dayjs(dateString, ISO_DATE_FORMAT).add(nrOfDays, 'days').format(ISO_DATE_FORMAT);
 
 export const findDifferenceInMonthsAndDays = (fomDate, tomDate) => {
-	const fDate = moment(fomDate, ISO_DATE_FORMAT, true);
-	const tDate = moment(tomDate, ISO_DATE_FORMAT, true).add(1, 'days');
+	const fDate = dayjs(fomDate, ISO_DATE_FORMAT, true);
+	const tDate = dayjs(tomDate, ISO_DATE_FORMAT, true).add(1, 'days');
 	if (!fDate.isValid() || !tDate.isValid() || fDate.isAfter(tDate)) {
 		return undefined;
 	}
 
 	const months = tDate.diff(fDate, 'months');
-	fDate.add(months, 'months');
+	const updatedFDate = fDate.add(months, 'months');
 
 	return {
 		months,
-		days: tDate.diff(fDate, 'days'),
-	};
-};
-
-export const findDifferenceInHoursAndMinutes = (fomDateTime, tomDateTime) => {
-	const fDate = moment(fomDateTime);
-	const tDate = moment(tomDateTime);
-	if (!fDate.isValid() || !tDate.isValid() || fDate.isAfter(tDate)) {
-		return undefined;
-	}
-
-	const hours = tDate.diff(fDate, 'hours');
-	fDate.add(hours, 'hours');
-
-	return {
-		hours,
-		minutes: tDate.diff(fDate, 'minutes'),
+		days: tDate.diff(updatedFDate, 'days'),
 	};
 };
 
 export const getDateAndTime = (tidspunkt): { date: string; time: string } => {
-	const dateTime = moment(tidspunkt);
+	const dateTime = dayjs(tidspunkt);
 	const date = dateTime.format(DDMMYYYY_DATE_FORMAT);
 	const time = dateTime.format(HHMM_TIME_FORMAT);
 	return { date, time };
-};
-
-export const getDate = (tidspunkt) => {
-	const dateTime = moment(tidspunkt);
-	return dateTime.format(DDMMYYYY_DATE_FORMAT);
-};
-export const getTime = (tidspunkt) => {
-	const dateTime = moment(tidspunkt);
-	return dateTime.format(HHMM_TIME_FORMAT);
-};
-export const getYearFromString = (dato) => {
-	const dateTime = moment(dato);
-	return dateTime.year();
 };

@@ -13833,7 +13833,6 @@ __metadata:
     lint-staged: "npm:16.2.3"
     lodash: "npm:4.17.21"
     mini-css-extract-plugin: "npm:2.9.4"
-    moment: "npm:2.30.1"
     msw: "npm:2.11.1"
     nav-frontend-chevron: "npm:1.0.30"
     nav-frontend-chevron-style: "npm:1.0.4"
@@ -14643,13 +14642,6 @@ __metadata:
   version: 1.0.3
   resolution: "module-details-from-path@npm:1.0.3"
   checksum: 10/f93226e9154fc8cb91f4609b639167ec7ad9155b30be4924d9717656648a3ae5f181d4e2338434d4c5afc7b5f4c10dd3b64109e5b89a4be70b20a25ba3573d54
-  languageName: node
-  linkType: hard
-
-"moment@npm:2.30.1":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
   linkType: hard
 
