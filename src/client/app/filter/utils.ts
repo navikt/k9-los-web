@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Oppgavefelt, Oppgaverad, TolkesSom } from './filterTsTypes';
+import { Oppgavefelt, TolkesSom } from './filterTsTypes';
 
 export const OPERATORS = {
 	// Eksakt lik
@@ -27,19 +27,10 @@ export function feltverdiKey(item) {
 }
 
 export const operatorsFraTolkesSom = (tolkesSom: string, antallVerdiforklaringer = 0) => {
-	// Boolean -> in
-	// Hvis String uten verdiforklaringer -> equals
-	// Hvis String med mindre enn 4 verdiforklaringer -> IN
-	// Hvis String med 4 eller flere verdiforklaringer -> IN, NOT_IN
-	// Timestamp alltid LESS_THAN_OR_EQUALS, GREATER_THAN_OR_EQUALS
-	// Duration alltid LESS_THAN_OR_EQUALS, GREATER_THAN_OR_EQUALS
 	switch (tolkesSom) {
 		case TolkesSom.String:
 			if (antallVerdiforklaringer === 0) {
-				return [OPERATORS.EQUALS];
-			}
-			if (antallVerdiforklaringer < 4) {
-				return [OPERATORS.IN];
+				return [OPERATORS.EQUALS, OPERATORS.NOT_EQUALS];
 			}
 			return [OPERATORS.IN, OPERATORS.NOT_IN];
 		case TolkesSom.Boolean:
@@ -47,6 +38,15 @@ export const operatorsFraTolkesSom = (tolkesSom: string, antallVerdiforklaringer
 		case TolkesSom.Duration:
 		case TolkesSom.Timestamp:
 			return [OPERATORS.LESS_THAN_OR_EQUALS, OPERATORS.GREATER_THAN_OR_EQUALS, OPERATORS.INTERVAL];
+		case TolkesSom.Integer:
+			return [
+				OPERATORS.EQUALS,
+				OPERATORS.NOT_EQUALS,
+				OPERATORS.LESS_THAN,
+				OPERATORS.LESS_THAN_OR_EQUALS,
+				OPERATORS.GREATER_THAN,
+				OPERATORS.GREATER_THAN_OR_EQUALS,
+			];
 		default:
 			return Object.values(OPERATORS);
 	}
@@ -102,20 +102,4 @@ export const calculateDays = (verdi: string[]): number | undefined => {
 		return Number.isNaN(days) ? acc : acc + days;
 	}, 0);
 	return totalDays;
-};
-
-export const resultatErKunAntall = (oppgaver: Oppgaverad[]) => {
-	if (oppgaver.length === 1) {
-		if (oppgaver[0].felter.length === 1 && oppgaver[0].felter[0].kode === 'Antall') {
-			return true;
-		}
-	}
-	return false;
-};
-export const antallTreffOppgaver = (oppgaver: Oppgaverad[]) => {
-	if (resultatErKunAntall(oppgaver)) {
-		return oppgaver[0].felter[0].verdi as string;
-	}
-
-	return String(oppgaver.length);
 };

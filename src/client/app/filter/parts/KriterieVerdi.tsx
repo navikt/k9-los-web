@@ -138,7 +138,7 @@ const KriterieVerdi = ({
 				label="Antall dager"
 				size="small"
 				hideLabel
-				value={calculateDays(oppgavefilter.verdi)}
+				value={calculateDays(oppgavefilter.verdi as string[])}
 				onChange={handleDaysChange}
 				error={errorMessage}
 				type="number"
@@ -188,7 +188,7 @@ const KriterieVerdi = ({
 		feltdefinisjon?.tolkes_som === TolkesSom.String &&
 		Array.isArray(feltdefinisjon.verdiforklaringer) &&
 		feltdefinisjon.verdiforklaringer.length &&
-		feltdefinisjon.verdiforklaringer.length < 4
+		feltdefinisjon.verdiforklaringer.length < 0
 	) {
 		return (
 			<CheckboxGroup
@@ -213,7 +213,7 @@ const KriterieVerdi = ({
 		feltdefinisjon?.tolkes_som === TolkesSom.String &&
 		Array.isArray(feltdefinisjon.verdiforklaringer) &&
 		feltdefinisjon.verdiforklaringer.length &&
-		feltdefinisjon.verdiforklaringer.length > 3
+		feltdefinisjon.verdiforklaringer.length > 0
 	) {
 		return <MultiSelectKriterie feltdefinisjon={feltdefinisjon} oppgavefilter={oppgavefilter} error={errorMessage} />;
 	}

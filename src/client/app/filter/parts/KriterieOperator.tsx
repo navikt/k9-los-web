@@ -20,7 +20,7 @@ function KriterieOperator({ oppgavefilter, readOnly }: { oppgavefilter: Feltverd
 
 	const operatorDisplayMap = {
 		[OPERATORS.EQUALS]: 'Er lik',
-		[OPERATORS.NOT_EQUALS]: 'Er IKKE lik',
+		[OPERATORS.NOT_EQUALS]: 'Er ikke lik',
 		[OPERATORS.IN]: 'Inkluder',
 		[OPERATORS.NOT_IN]: 'Ekskluder',
 		[OPERATORS.LESS_THAN]: 'Mindre enn (<)',
