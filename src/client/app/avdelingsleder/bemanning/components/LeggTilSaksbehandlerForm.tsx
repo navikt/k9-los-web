@@ -1,27 +1,18 @@
 import React, { FunctionComponent, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { Button, Label, TextField } from '@navikt/ds-react';
 import { PlusIcon } from '@navikt/ft-plattform-komponenter';
 import { useHentSaksbehandlereAvdelingsleder, useLeggTilSaksbehandler } from 'api/queries/avdelingslederQueries';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 // Flyttet fra tidligere fil validators.js
-const invalidEmailMessage = () => [{ id: 'ValidationMessage.InvalidEmail' }];
-const isEmpty = (text) => text === null || text === undefined || text.toString().trim().length === 0;
+const isEmpty = (text: string) => text === null || text === undefined || text.toString().trim().length === 0;
 const emailPattern =
-	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-const hasValidEmailFormat = (text) => {
-	if (isEmpty(text) || !emailPattern.test(text)) {
-		return invalidEmailMessage();
-	}
-	return null;
-};
+	/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-// Skrevet om for å unngå final form, og har fortsatt med konsepter derfra
 export const LeggTilSaksbehandlerForm: FunctionComponent = () => {
 	const [epost, setEpost] = useState('');
 	const [touched, setTouched] = useState(false);
-	const [validationErrors, setValidationErrors] = useState<any[] | undefined>(undefined);
+	const [feilmelding, setFeilmelding] = useState<string>();
 	const [finnesAllerede, setFinnesAllerede] = useState(false);
 
 	const {
@@ -32,9 +23,14 @@ export const LeggTilSaksbehandlerForm: FunctionComponent = () => {
 	const { mutate: leggTilSaksbehandler, isPending: isLoadingLeggTil } = useLeggTilSaksbehandler();
 
 	const validate = (value: string) => {
-		const errs = hasValidEmailFormat ? hasValidEmailFormat(value) : undefined;
-		setValidationErrors(errs && errs.length ? errs : undefined);
-		return errs;
+		let nyFeilmelding: string;
+		if (isEmpty(value) || !emailPattern.test(value)) {
+			nyFeilmelding = 'Ugyldig e-post adresse';
+		} else {
+			nyFeilmelding = undefined;
+		}
+		setFeilmelding(nyFeilmelding);
+		return nyFeilmelding;
 	};
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,13 +48,13 @@ export const LeggTilSaksbehandlerForm: FunctionComponent = () => {
 	const resetForm = () => {
 		setEpost('');
 		setTouched(false);
-		setValidationErrors(undefined);
+		setFeilmelding(undefined);
 		setFinnesAllerede(false);
 	};
 
 	const onAdd = () => {
-		const errs = validate(epost);
-		if (errs && errs.length) {
+		const harFeilmelding = validate(epost) !== undefined;
+		if (harFeilmelding) {
 			setTouched(true);
 			return;
 		}
@@ -77,14 +73,11 @@ export const LeggTilSaksbehandlerForm: FunctionComponent = () => {
 	};
 
 	const errorNode =
-		(touched && finnesAllerede && <FormattedMessage id="LeggTilSaksbehandlerForm.FinnesAllerede" />) ||
-		(touched && validationErrors && validationErrors[0]?.id && <FormattedMessage id={validationErrors[0].id} />);
+		(touched && finnesAllerede && 'E-post adressen finnes allerede i listen') || (touched && feilmelding);
 
 	return (
 		<div>
-			<Label>
-				<FormattedMessage id="LeggTilSaksbehandlerForm.LeggTil" />
-			</Label>
+			<Label>Legg til saksbehandler</Label>
 			<VerticalSpacer eightPx />
 			<div className="flex flex-row">
 				<TextField
@@ -106,7 +99,7 @@ export const LeggTilSaksbehandlerForm: FunctionComponent = () => {
 					onClick={onAdd}
 					icon={<PlusIcon />}
 				>
-					<FormattedMessage id="LeggTilSaksbehandlerForm.LeggTil" />
+					Legg til saksbehandler
 				</Button>
 			</div>
 		</div>
