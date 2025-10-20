@@ -1,5 +1,4 @@
 import React, { FormEvent, FunctionComponent, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { Button, TextField } from '@navikt/ds-react';
 import { useLagreDriftsmelding } from 'api/queries/driftsmeldingQueries';
 
@@ -37,7 +36,7 @@ export const LeggTilDriftsmeldingForm: FunctionComponent = () => {
 				<TextField
 					name="melding"
 					className="min-w-64"
-					label={<FormattedMessage id="LeggTilDriftsmeldingForm.LeggTil" />}
+					label="Legg til driftsmelding"
 					size="medium"
 					value={melding}
 					onChange={(e) => setMelding(e.target.value)}
@@ -49,7 +48,7 @@ export const LeggTilDriftsmeldingForm: FunctionComponent = () => {
 						disabled={isPending}
 						type="submit"
 					>
-						<FormattedMessage id="LeggTilDriftsmeldingForm.Legg_Til" />
+						Legg til
 					</Button>
 				</div>
 			</div>

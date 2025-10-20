@@ -1,9 +1,4 @@
 {
-	"AdminIndex.Driftsmeldinger": "Driftsmeldinger",
-
-	"DriftsmeldingerTabell.IngenDriftsmeldinger": "Ingen driftsmeldinger",
-	"DriftsmeldingerTabell.Dato": "{date} - {time}",
-
 	"ErrorMessagePanel.Close": "Lukk",
 
 	"FlyttReservasjonerModal.Tittel": "Endre 1 reservasjon",
@@ -15,27 +10,6 @@
 	"FlyttReservasjonerModal.Ok": "Lagre",
 	"FlyttReservasjonerModal.Avbryt": "Avbryt",
 	"FlyttReservasjonerModal.FlyttTilSaksbehandler": "Flytt til saksbehandler",
-
-	"LeggTilSaksbehandlerForm.LeggTil": "Legg til saksbehandler",
-	"LeggTilSaksbehandlerForm.Epost": "E-post adresse",
-	"LeggTilSaksbehandlerForm.Sok": "Legg til",
-	"LeggTilSaksbehandlerForm.LeggTilIListen": "Legg til i listen",
-	"LeggTilSaksbehandlerForm.Nullstill": "Nullstill",
-	"LeggTilSaksbehandlerForm.FinnesAllerede": "E-post adressen finnes allerede i listen",
-	"LeggTilSaksbehandlerForm.FinnesIkke": "Kan ikke finne bruker",
-
-	"LeggTilDriftsmeldingForm.LeggTil": "Legg til driftsmelding",
-	"LeggTilDriftsmeldingForm.Melding": "Melding",
-	"DriftsmeldingTabell.Tekst": "Melding",
-	"DriftsmeldingTabell.Dato": "Dato",
-	"DriftsmeldingTabell.Aktiv": "Aktiv",
-	"DriftsmeldingerTabell.Driftsmeldinger": " ",
-	"LeggTilDriftsmeldingForm.Aktiv": "Aktiv",
-	"LeggTilDriftsmeldingForm.Legg_Til": "Legg til",
-	"LeggTilDriftsmeldingForm.LeggTilIListen": "Legg til i listen",
-	"LeggTilDriftsmeldingForm.Nullstill": "Nullstill",
-	"LeggTilDriftsmeldingForm.FinnesAllerede": "Meldingen finnes allerede i listen",
-	"LeggTilDriftsmeldingForm.FinnesIkke": "Kan ikke finne bruker",
 
 	"MissingPage.PageIsMissing": "Denne siden finnes ikke. Hvis du mener dette er en feil, vennligst meld fra i porten.",
 	"MissingPage.Home": "Gå til forsiden",

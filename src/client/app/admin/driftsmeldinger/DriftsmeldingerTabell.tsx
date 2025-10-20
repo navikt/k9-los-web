@@ -1,23 +1,15 @@
 import React, { FunctionComponent, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, Label } from '@navikt/ds-react';
+import { BodyShort, Button, Checkbox, Heading, Table } from '@navikt/ds-react';
 import { useSlettDriftsmelding, useToggleDriftsmelding } from 'api/queries/driftsmeldingQueries';
-import Table from 'sharedComponents/Table';
-import TableColumn from 'sharedComponents/TableColumn';
-import TableRow from 'sharedComponents/TableRow';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { getDateAndTime } from 'utils/dateUtils';
+import { dateTimeFormat } from 'utils/dateUtils';
 import SletteDriftsmeldingerModal from './SletteDriftsmeldingerModal';
 import { Driftsmelding } from './driftsmeldingTsType';
-
-const headerTextCodes = ['DriftsmeldingTabell.Tekst', 'DriftsmeldingTabell.Aktiv', 'DriftsmeldingTabell.Dato'];
 
 interface OwnProps {
 	driftsmeldinger: Driftsmelding[];
 }
-
-const boldChunks = (...chunks) => <b>{chunks}</b>;
 
 /**
  * DriftsmeldingerTabell
@@ -47,57 +39,58 @@ const DriftsmeldingerTabell: FunctionComponent<OwnProps> = ({ driftsmeldinger })
 
 	return (
 		<>
-			<Label>
-				<FormattedMessage id="DriftsmeldingerTabell.Driftsmeldinger" />
-			</Label>
+			<Heading size="small">Driftsmeldinger</Heading>
 			{sorterteDriftsmeldinger.length === 0 && (
 				<>
 					<VerticalSpacer eightPx />
-					<BodyShort size="small">
-						<FormattedMessage id="DriftsmeldingerTabell.IngenDriftsmeldinger" />
-					</BodyShort>
+					<BodyShort size="small">Ingen driftsmeldinger</BodyShort>
 					<VerticalSpacer eightPx />
 				</>
 			)}
 			{sorterteDriftsmeldinger.length > 0 && (
-				<Table headerTextCodes={headerTextCodes} noHover>
-					{sorterteDriftsmeldinger.map((driftsmelding) => (
-						<TableRow key={driftsmelding.id}>
-							<TableColumn>{driftsmelding.melding}</TableColumn>
-							<TableColumn>
-								<div>
-									<Checkbox
-										className="p-0 mt-[-4px]"
-										hideLabel
-										size="small"
-										checked={driftsmelding.aktiv}
-										onChange={(e) => toggleDriftsmeldingMutation({ id: driftsmelding.id, aktiv: e.target.checked })}
-										name="aktiv"
-									>
-										Toggle driftsmelding
-									</Checkbox>
-								</div>
-							</TableColumn>
-							<TableColumn>
-								<FormattedMessage
-									id="DriftsmeldingerTabell.Dato"
-									values={{
-										...getDateAndTime(driftsmelding.dato),
-										b: boldChunks,
-									}}
-								/>
-							</TableColumn>
-							<TableColumn>
-								<Button
-									className="p-0"
-									icon={<TrashIcon />}
-									variant="tertiary"
-									onClick={() => showSletteDriftsmeldingModal(driftsmelding)}
-									tabIndex={0}
-								/>
-							</TableColumn>
-						</TableRow>
-					))}
+				<Table>
+					<Table.Header>
+						<Table.Row>
+							<Table.HeaderCell>Melding</Table.HeaderCell>
+							<Table.HeaderCell>Aktiv</Table.HeaderCell>
+							<Table.HeaderCell>Dato</Table.HeaderCell>
+							<Table.HeaderCell />
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{sorterteDriftsmeldinger.map((driftsmelding) => {
+							const datoOgTid = dateTimeFormat(driftsmelding.dato);
+							return (
+								<Table.Row key={driftsmelding.id}>
+									<Table.DataCell>{driftsmelding.melding}</Table.DataCell>
+									<Table.DataCell>
+										<div>
+											<Checkbox
+												className="p-0 mt-[-4px]"
+												hideLabel
+												size="small"
+												checked={driftsmelding.aktiv}
+												onChange={(e) => toggleDriftsmeldingMutation({ id: driftsmelding.id, aktiv: e.target.checked })}
+												name="aktiv"
+											>
+												Toggle driftsmelding
+											</Checkbox>
+										</div>
+									</Table.DataCell>
+									<Table.DataCell>{datoOgTid}</Table.DataCell>
+									<Table.DataCell>
+										<Button
+											className="p-0"
+											icon={<TrashIcon />}
+											variant="tertiary"
+											onClick={() => showSletteDriftsmeldingModal(driftsmelding)}
+											tabIndex={0}
+										/>
+									</Table.DataCell>
+								</Table.Row>
+							);
+						})}
+					</Table.Body>
 				</Table>
 			)}
 			{showSlettModal && (
