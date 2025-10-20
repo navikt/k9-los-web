@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import { ArrowUndoIcon, PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, Loader, Search, SortState, Table } from '@navikt/ds-react';
+import { BodyShort, Button, Checkbox, ErrorMessage, Loader, Search, SortState, Table } from '@navikt/ds-react';
 import { useAvdelingslederReservasjoner } from 'api/queries/avdelingslederQueries';
 import { useKodeverk } from 'api/queries/kodeverkQueries';
 import ReservasjonerBolkButtons from 'avdelingsleder/reservasjoner/components/ReservasjonerBolkButtons';
@@ -17,7 +17,7 @@ import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { getDateAndTime } from 'utils/dateUtils';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
 import Reservasjon from '../reservasjonTsType';
-import * as styles from './reservasjonerTabell.css';
+import * as styles from './AvdelingslederReservasjonerTabell.css';
 
 type ReservasjonTableData = {
 	reservasjon: Reservasjon;
@@ -51,7 +51,7 @@ const sorter = (reservasjonerListe: ReservasjonTableData[], newSort: Reservasjon
 		return 1;
 	});
 
-const ReservasjonerTabell = () => {
+const AvdelingslederReservasjonerTabell = () => {
 	const [reservasjonerSomSkalVises, setReservasjonerSomSkalVises] = useState<ReservasjonTableData[]>([]);
 	const [finnesSokResultat, setFinnesSokResultat] = useState(true);
 	const [valgteReservasjoner, setValgteReservasjoner] = useState<
@@ -71,8 +71,13 @@ const ReservasjonerTabell = () => {
 		setReservasjonerSomSkalVises(sorter(reservasjonerSomSkalVises, newSort));
 	};
 
-	const { data: reservasjoner, isLoading, isSuccess } = useAvdelingslederReservasjoner();
-	const { data: alleKodeverk } = useKodeverk();
+	const {
+		data: reservasjoner,
+		isLoading: isLoadingReservasjoner,
+		isSuccess: isSuccessReservasjoner,
+		isError: isErrorReservasjoner,
+	} = useAvdelingslederReservasjoner();
+	const { data: alleKodeverk, isError: isErrorKodeverk, isLoading: isLoadingKodeverk } = useKodeverk();
 
 	useEffect(() => {
 		if (reservasjoner) {
@@ -109,13 +114,17 @@ const ReservasjonerTabell = () => {
 	};
 	const debounceFn = useCallback(_.debounce(sokEtterReservasjon, 300), [reservasjoner]);
 
+	if (isErrorReservasjoner || isErrorKodeverk) {
+		return <ErrorMessage>Noe gikk galt ved henting av reservasjoner</ErrorMessage>;
+	}
+
 	return (
 		<>
 			<div className={styles.titelContainer}>
 				<div className="flex flex-col justify-between">
 					<b>
 						<FormattedMessage id="ReservasjonerTabell.Reservasjoner" />
-						{reservasjoner?.length > 0 && isSuccess && ` (${reservasjoner.length} stk)`}
+						{reservasjoner?.length > 0 && isSuccessReservasjoner && ` (${reservasjoner.length} stk)`}
 					</b>
 					{/* Hvis mer enn 50 antas litt scrolling, så det kan være kjekt å ha knappene på toppen i tillegg til i bunn */}
 					{valgteReservasjoner.length > 50 && <ReservasjonerBolkButtons valgteReservasjoner={valgteReservasjoner} />}
@@ -131,8 +140,8 @@ const ReservasjonerTabell = () => {
 				</div>
 			</div>
 			<VerticalSpacer sixteenPx />
-			{isLoading && <Loader size="2xlarge" className={styles.spinner} />}
-			{reservasjoner?.length > 0 && isSuccess && !finnesSokResultat && (
+			{(isLoadingReservasjoner || isLoadingKodeverk) && <Loader size="2xlarge" className={styles.spinner} />}
+			{reservasjoner?.length > 0 && isSuccessReservasjoner && !finnesSokResultat && (
 				<>
 					<VerticalSpacer eightPx />
 					<BodyShort size="small">
@@ -141,7 +150,7 @@ const ReservasjonerTabell = () => {
 					<VerticalSpacer eightPx />
 				</>
 			)}
-			{reservasjoner?.length === 0 && isSuccess && (
+			{reservasjoner?.length === 0 && isSuccessReservasjoner && (
 				<>
 					<VerticalSpacer eightPx />
 					<BodyShort size="small">
@@ -291,4 +300,4 @@ const ReservasjonerTabell = () => {
 	);
 };
 
-export default ReservasjonerTabell;
+export default AvdelingslederReservasjonerTabell;

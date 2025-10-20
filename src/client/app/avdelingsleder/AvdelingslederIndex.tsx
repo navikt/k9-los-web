@@ -10,6 +10,7 @@ import { getPanelLocationCreator } from 'app/paths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import { LagredeSøk } from 'avdelingsleder/lagredeSøk/LagredeSøk';
 import NokkeltallIndex from 'avdelingsleder/nokkeltall/NokkeltallIndex';
+import AvdelingslederReservasjonerTabell from 'avdelingsleder/reservasjoner/components/AvdelingslederReservasjonerTabell';
 import Status from 'avdelingsleder/status/Status';
 import { StatusFordeling } from 'avdelingsleder/statusfordeling/StatusFordeling';
 import Image from 'sharedComponents/Image';
@@ -22,8 +23,7 @@ import AvdelingslederPanels from './avdelingslederPanels';
 import BehandlingskoerIndex from './behandlingskoerV3/BehandlingskoerIndex';
 import SaksbehandlereTabell from './bemanning/components/SaksbehandlereTabell';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
-import IkkeTilgangTilAvdelingslederPanel from './components/IkkeTilgangTilAvdelingslederPanel';
-import ReservasjonerTabell from './reservasjoner/components/ReservasjonerTabellV1';
+import IkkeTilgang from './components/IkkeTilgang';
 
 const classNames = classnames.bind(styles);
 
@@ -36,7 +36,7 @@ const renderAvdelingslederPanel = (avdelingslederPanel) => {
 		case AvdelingslederPanels.NOKKELTALL:
 			return <NokkeltallIndex />;
 		case AvdelingslederPanels.RESERVASJONER:
-			return <ReservasjonerTabell />;
+			return <AvdelingslederReservasjonerTabell />;
 		case AvdelingslederPanels.SAKSBEHANDLERE:
 			return <SaksbehandlereTabell />;
 		default:
@@ -113,7 +113,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 	const activeAvdelingslederPanel = activeAvdelingslederPanelTemp || getPanelFromUrlOrDefault(location);
 
 	if (!innnloggetSaksbehandler.kanOppgavestyre) {
-		return <IkkeTilgangTilAvdelingslederPanel />;
+		return <IkkeTilgang />;
 	}
 
 	if (activeAvdelingslederPanel) {

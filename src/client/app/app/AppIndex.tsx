@@ -1,14 +1,12 @@
 import React, { FunctionComponent, useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
-import { useLocation } from 'react-router';
 import { getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk';
 import { TracingInstrumentation } from '@grafana/faro-web-tracing';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
-import { parseQueryString } from 'utils/urlUtils';
 import '../../styles/global.css';
-import AppConfigResolver from './AppConfigResolver';
 import ErrorBoundary from './ErrorBoundary';
+import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
 import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
@@ -55,7 +53,7 @@ const AppIndex: FunctionComponent = () => {
 
 	return (
 		<ErrorBoundary errorMessageCallback={addErrorMessageAndSetAsCrashed}>
-			<AppConfigResolver>
+			<InnloggetSaksbehandlerResolver>
 				<LanguageProvider>
 					<HeaderWithErrorPanel />
 					{sessionHarUtlopt && (
@@ -75,7 +73,7 @@ const AppIndex: FunctionComponent = () => {
 					)}
 					{!crashMessage && <Home />}
 				</LanguageProvider>
-			</AppConfigResolver>
+			</InnloggetSaksbehandlerResolver>
 		</ErrorBoundary>
 	);
 };

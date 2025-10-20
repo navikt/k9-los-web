@@ -1,5 +1,3 @@
- 
-
 export type Oppgavefilter = {
 	type: string;
 };
@@ -73,6 +71,7 @@ export enum TolkesSom {
 	Duration = 'Duration',
 	Boolean = 'boolean',
 	Timestamp = 'Timestamp',
+	Integer = 'Integer',
 }
 export type Oppgavefelt = {
 	område: string;
