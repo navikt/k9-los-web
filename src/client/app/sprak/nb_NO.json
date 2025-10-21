@@ -7,10 +7,8 @@
 	"FlyttReservasjonerModal.FlyttReservasjonText.Description": "Behold eksisterende dato ved å la feltet stå tomt",
 	"FlyttReservasjonerModal.Ok": "Lagre",
 	"FlyttReservasjonerModal.Avbryt": "Avbryt",
-	"FlyttReservasjonerModal.FlyttTilSaksbehandler": "Flytt til saksbehandler",
 
 	"OppgaverTabell.DineNesteSaker": "Neste oppgaver",
-	"OppgaverTabell.DineNesteSakerAntall": "{antall} i køen",
 	"OppgaverTabell.ReserverteOppgaver": "Reserverte oppgaver",
 	"OppgaverTabell.ReserverteHastesaker": "Reserverte hastesaker",
 	"OppgaverTabell.IngenReserverteOppgaver": "Det er ingen reserverte oppgaver",
@@ -20,21 +18,15 @@
 
 	"OppgaverTabell.IngenOppgaver": "Det er ingen flere oppgaver i køen som kan plukkes",
 	"OppgaverTabell.KunneIkkeHenteOppgaver": "Noe gikk galt og vi kunne ikke hente de neste oppgavene i køen",
-	"OppgaverTabell.IngenTilgang": "Du har ikke tilgang til oppgavene i denne køen",
 	"OppgaverTabell.Soker": "Søker",
 	"OppgaverTabell.Behandlingstype": "Behandlingstype",
 	"OppgaverTabell.Id": "Id",
 	"OppgaverTabell.BehandlingOpprettet": "Oppgave opprettet",
 	"OppgaverTabell.Reservasjon": "Reservasjon",
 	"OppgaverTabell.OppgaveHandlinger": "Handlinger på oppgave",
-	"OppgaverTabell.OverfortReservasjon": "Overført reservasjon",
-	"OppgaverTabell.BegrunnelseForMerknad": "Begrunnelse for merknad",
-	"OppgaverTabell.OverfortReservasjonTooltip": "Overført reservasjon {dato} - {tid} fra {uid} {navn}{br}{br}{beskrivelse}",
 
 	"OppgaveHandlingerMenu.LeggTilbake": "Legg oppgave{br}tilbake i felles kø",
 	"OppgaveHandlingerMenu.ForlengReservasjon": "Forleng din reservasjon av{br}oppgaven med 24 timer",
-	"OppgaveHandlingerMenu.EndreReservasjon": "Reserver oppgaven med dato",
-	"OppgaveHandlingerMenu.ReservertTil": "{b}Reservert til {date} - {time}{b}",
 	"OppgaveHandlingerMenu.FlyttReservasjon": "Endre og/eller flytte reservasjon",
 
 	"OpphevReservasjonModal.Tittel": "Oppheve reservasjon?",
@@ -43,35 +35,10 @@
 	"OpphevReservasjonModal.Ok": "OK",
 	"OpphevReservasjonModal.Avbryt": "Avbryt",
 
-	"ReservasjonerTabell.Navn": "Navn",
-	"ReservasjonerTabell.Saksnr": "Saksnummer",
-	"ReservasjonerTabell.BehandlingType": "Type",
-	"ReservasjonerTabell.ReservertTil": "Reservert til",
-	"ReservasjonerTabell.ReservertTilFormat": "{time} - {date}",
-	"ReservasjonerTabell.Endre": "Endre",
-	"ReservasjonerTabell.Flytt": "Flytt",
-	"ReservasjonerTabell.Slett": "Slett",
-	"ReservasjonerTabell.Reservasjoner": "Alle reservasjoner",
-	"ReservasjonerTabell.IngenReservasjoner": "Ingen reservasjoner funnet",
-	"ReservasjonerTabell.IngenMatchandeReservasjoner": "Ingen reservasjoner som matcher søk.",
-	"ReservasjonerTabell.LeggTilbake": "Legg oppgave tilbake i felles kø",
 	"ReservasjonerTabell.LeggTilbakeBolk": "Legg oppgaver tilbake i felles kø",
-	"ReservasjonerTabell.EndreReservasjon": "Reserver oppgave med dato",
 	"ReservasjonerTabell.FlyttReservasjon": "Flytt reservasjonen til annen saksbehandler",
-	"ReservasjonerTabell.FlyttReservasjonBolk": "Flytt reservasjonene til annen saksbehandler",
 
 	"SaksbehandlereForOppgavekoForm.Saksbehandlere": "Saksbehandlere",
-	"SaksbehandlereForOppgavekoForm.IngenSaksbehandlere": "Ingen saksbehandlere",
 
-	"SaksbehandlereTabell.Navn": "Navn",
-	"SaksbehandlereTabell.Brukerident": "Brukerident",
-	"SaksbehandlereTabell.Epost": "E-post adresse",
-	"SaksbehandlereTabell.Saksbehandlere": "Saksbehandlere",
-	"SaksbehandlereTabell.IngenSaksbehandlere": "Ingen saksbehandlere lagt til",
-
-	"OppgavekoPanel.StartBehandling": "Oppgavekøer",
-
-	"SletteSaksbehandlerModal.SletteSaksbehandler": "Er du sikker på at du vil slette {saksbehandlerNavn}?",
-	"SletteSaksbehandlerModal.Ja": "Slett saksbehandleren",
-	"SletteSaksbehandlerModal.Nei": "Avbryt"
+	"OppgavekoPanel.StartBehandling": "Oppgavekøer"
 }
