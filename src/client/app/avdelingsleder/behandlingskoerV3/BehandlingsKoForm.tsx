@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormattedMessage } from 'react-intl';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Alert, Button, ErrorMessage, Heading, Label, Modal } from '@navikt/ds-react';
 import { Form, InputField, TextAreaField } from '@navikt/ft-form-hooks';
@@ -132,7 +131,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 					</Heading>
 					{alleSaksbehandlere.length === 0 && (
 						<>
-							<FormattedMessage id="SaksbehandlereForOppgavekoForm.IngenSaksbehandlere" />
+							Ingen saksbehandlere
 							{formMethods.getFieldState('saksbehandlere')?.error?.message && (
 								<ErrorMessage>{formMethods.getFieldState('saksbehandlere')?.error?.message}</ErrorMessage>
 							)}

@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import dayjs from 'dayjs';
 import { BodyShort, ErrorMessage, Loader, Table } from '@navikt/ds-react';
 import { useNesteOppgaverFraKø } from 'api/queries/saksbehandlerQueries';
@@ -16,7 +15,7 @@ export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 	if (error) {
 		return (
 			<ErrorMessage>
-				<FormattedMessage id="OppgaverTabell.KunneIkkeHenteOppgaver" />
+				Noe gikk galt og vi kunne ikke hente de neste oppgavene i køen
 			</ErrorMessage>
 		);
 	}
@@ -26,7 +25,7 @@ export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 			<>
 				<VerticalSpacer eightPx />
 				<BodyShort size="small">
-					<FormattedMessage id="OppgaverTabell.IngenOppgaver" />
+					Det er ingen flere oppgaver i køen som kan plukkes
 				</BodyShort>
 			</>
 		);

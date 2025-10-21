@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { RefAttributes } from 'react';
-import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import dayjs from 'dayjs';
 import { ExclamationmarkTriangleFillIcon, MenuHamburgerIcon } from '@navikt/aksel-icons';
@@ -83,14 +82,8 @@ const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forw
 					{(oppgave.opprettetTidspunkt && dayjs(oppgave.opprettetTidspunkt).format('DD.MM.YYYY')) || '-'}
 				</Table.DataCell>
 				<Table.DataCell onClick={tilOppgave} className={`${styles.reservertTil} hover:cursor-pointer`}>
-					<FormattedMessage
-						id="OppgaveHandlingerMenu.ReservertTil"
-						values={{
-							...getDateAndTime(reservasjon.reservertTil),
-							// eslint-disable-next-line react/no-unstable-nested-components
-							b: (...chunks) => <b>{chunks}</b>,
-						}}
-					/>
+					Reservert til {getDateAndTime(reservasjon.reservertTil).date} -{' '}
+					{getDateAndTime(reservasjon.reservertTil).time}
 				</Table.DataCell>
 				<Table.DataCell>
 					<KommentarMedMerknad reservasjon={reservasjon} />

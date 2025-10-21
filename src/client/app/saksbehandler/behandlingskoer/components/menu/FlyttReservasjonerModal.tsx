@@ -3,7 +3,6 @@
 /* eslint-disable react/jsx-pascal-case */
 import React, { FunctionComponent, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useIntl } from 'react-intl';
 import dayjs from 'dayjs';
 import { Button, ErrorMessage, Modal, Skeleton, UNSAFE_Combobox } from '@navikt/ds-react';
 import { Datepicker, Form, TextAreaField } from '@navikt/ft-form-hooks';
@@ -54,7 +53,6 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 			closeModal();
 		}
 	}, [isSuccess]);
-	const intl = useIntl();
 	const { data: saksbehandlere, isLoading, error } = useGetAlleSaksbehandlere({ placeholderData: [] });
 	const uniqueSaksbehandlere = Array.from(new Set(saksbehandlere.map((a) => a.brukerIdent))).map((brukerIdent) =>
 		saksbehandlere.find((a) => a.brukerIdent === brukerIdent),
@@ -104,8 +102,8 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 			header={{
 				heading:
 					reservasjoner.length === 1
-						? intl.formatMessage({ id: 'FlyttReservasjonerModal.Tittel' })
-						: intl.formatMessage({ id: 'FlyttReservasjonerModal.Tittel.Flertall' }, { antall: reservasjoner.length }),
+						? 'Endre 1 reservasjon'
+						: `Endre ${reservasjoner.length} reservasjoner`,
 			}}
 			className="min-w-[500px]"
 		>
@@ -144,12 +142,12 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 						<Datepicker
 							label={
 								reservasjoner.length === 1
-									? intl.formatMessage({ id: 'FlyttReservasjonerModal.FlyttReservasjonText' })
-									: intl.formatMessage({ id: 'FlyttReservasjonerModal.FlyttReservasjonText.Flertall' })
+									? 'Velg dato som reservasjonen avsluttes'
+									: 'Velg dato som reservasjonene avsluttes'
 							}
 							description={
 								reservasjoner.length > 1 &&
-								intl.formatMessage({ id: 'FlyttReservasjonerModal.FlyttReservasjonText.Description' })
+								'Behold eksisterende dato ved å la feltet stå tomt'
 							}
 							name="reserverTil"
 							validate={[dateAfterOrEqualToToday]}
@@ -158,17 +156,17 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 					{!harFlereReservasjoner(reservasjoner) && (
 						<TextAreaField
 							className="mt-8"
-							label={intl.formatMessage({ id: 'FlyttReservasjonerModal.Begrunn' })}
+							label="Begrunn endring av reservasjon"
 							name="begrunnelse"
 							validate={[required, minLength(3), maxLength(1500), hasValidText]}
 						/>
 					)}
 					<div className="flex flex-row-reverse gap-4 mt-8">
 						<Button variant="primary" type="submit">
-							{intl.formatMessage({ id: 'FlyttReservasjonerModal.Ok' })}
+							Lagre
 						</Button>
 						<Button variant="secondary" type="reset" onClick={closeModal}>
-							{intl.formatMessage({ id: 'FlyttReservasjonerModal.Avbryt' })}
+							Avbryt
 						</Button>
 					</div>
 				</Form>

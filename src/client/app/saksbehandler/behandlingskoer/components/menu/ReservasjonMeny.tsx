@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import Oppgave from 'saksbehandler/oppgaveTsType';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -96,13 +95,22 @@ const ReservasjonMeny: React.FC<OwnProps> = ({
 			<div className={styles.containerMenu} ref={node}>
 				<VerticalSpacer eightPx />
 				<MenuButton onClick={showBegrunnelseModal} ref={menuButtonRef}>
-					<FormattedMessage id="OppgaveHandlingerMenu.LeggTilbake" values={{ br: <br /> }} />
+					<>
+						Legg oppgave
+						<br />
+						tilbake i felles kø
+					</>
 				</MenuButton>
 				<MenuButton onClick={forlengReserverasjon}>
-					<FormattedMessage id="OppgaveHandlingerMenu.ForlengReservasjon" values={{ br: <br /> }} />
+					<>
+						Forleng din reservasjon av
+						<br />
+						oppgaven med 24 timer
+					</>
 				</MenuButton>
 				<MenuButton onClick={showFlytteModal}>
-					<FormattedMessage id="OppgaveHandlingerMenu.FlyttReservasjon" values={{ br: <br /> }} />
+					{/* eslint-disable-next-line react/jsx-no-useless-fragment */}
+					<>Endre og/eller flytte reservasjon</>
 				</MenuButton>
 			</div>
 			{showOpphevReservasjonModal && (

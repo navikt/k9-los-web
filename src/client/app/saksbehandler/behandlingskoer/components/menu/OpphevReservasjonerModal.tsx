@@ -1,5 +1,4 @@
 import React, { FunctionComponent } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { useOpphevReservasjoner } from 'api/queries/saksbehandlerQueries';
 import { Button, Modal } from '@navikt/ds-react';
@@ -12,7 +11,6 @@ type OwnProps = Readonly<{
 
 export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, closeModal, oppgaveNøkler }) => {
 	const { mutate: opphevReservasjoner } = useOpphevReservasjoner();
-	const intl = useIntl();
 
 	const antall = oppgaveNøkler.length;
 
@@ -20,16 +18,15 @@ export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, cl
 		<Modal
 			open={open}
 			header={{
-				heading: intl.formatMessage({ id: 'OpphevReservasjonModal.Tittel' }),
+				heading: 'Oppheve reservasjon?',
 			}}
 			onClose={closeModal}
 		>
 			<Modal.Body>
-				{antall > 1 ? (
-					<FormattedMessage id="OpphevReservasjonModal.TekstFlertall" values={{ antall }} />
-				) : (
-					<FormattedMessage id="OpphevReservasjonModal.TekstEntall" />
-				)}
+				{antall > 1
+					? `Er du sikker på at du vil oppheve ${antall} reservasjoner?`
+					: 'Er du sikker på at du vil oppheve reservasjonen?'
+				}
 			</Modal.Body>
 			<Modal.Footer>
 				<Button
@@ -42,10 +39,10 @@ export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, cl
 						)
 					}
 				>
-					{intl.formatMessage({ id: 'OpphevReservasjonModal.Ok' })}
+					OK
 				</Button>
 				<Button variant="secondary" type="button" onClick={closeModal}>
-					{intl.formatMessage({ id: 'OpphevReservasjonModal.Avbryt' })}
+					Avbryt
 				</Button>
 			</Modal.Footer>
 		</Modal>

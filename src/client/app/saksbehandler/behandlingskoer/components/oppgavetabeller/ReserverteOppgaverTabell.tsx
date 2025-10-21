@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useRef, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import NavFrontendChevron from 'nav-frontend-chevron';
 import { BodyShort, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react';
 import { useForlengOppgavereservasjon, useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
@@ -52,17 +51,15 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ gjelderHastesak
 			>
 				<NavFrontendChevron type={visReservasjoner ? 'ned' : 'høyre'} className={kopanelStyles.chevron} />
 				<Label>
-					<FormattedMessage
-						id={gjelderHastesaker ? 'OppgaverTabell.ReserverteHastesaker' : 'OppgaverTabell.ReserverteOppgaver'}
-					/>
+					{gjelderHastesaker ? 'Reserverte hastesaker' : 'Reserverte oppgaver'}
 				</Label>
 				{isSuccess && (
 					<OppgaveTabellMenyAntallOppgaver
 						antallOppgaver={antallReservasjoner}
-						tekstId={
+						tekst={
 							gjelderHastesaker
-								? 'OppgaverTabell.ReserverteHastesakerAntall'
-								: 'OppgaverTabell.ReserverteOppgaverAntall'
+								? `${antallReservasjoner} hastesaker`
+								: `${antallReservasjoner} reserverte`
 						}
 						hastesak={gjelderHastesaker}
 					/>
@@ -74,11 +71,7 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ gjelderHastesak
 				<>
 					<VerticalSpacer eightPx />
 					<BodyShort size="small">
-						{!gjelderHastesaker ? (
-							<FormattedMessage id="OppgaverTabell.IngenReserverteOppgaver" />
-						) : (
-							<FormattedMessage id="OppgaverTabell.IngenReserverteHastesaker" />
-						)}
+						{!gjelderHastesaker ? 'Det er ingen reserverte oppgaver' : 'Det er ingen reserverte hastesaker'}
 					</BodyShort>
 				</>
 			)}
@@ -90,7 +83,7 @@ const ReserverteOppgaverTabell: FunctionComponent<OwnProps> = ({ gjelderHastesak
 								.filter(Boolean)
 								.map((header) => (
 									<Table.HeaderCell key={header}>
-										{!header.includes('EMPTY') ? <FormattedMessage id={header} /> : ''}
+										{!header.includes('EMPTY') ? header : ''}
 									</Table.HeaderCell>
 								))}
 						</Table.Row>

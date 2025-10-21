@@ -1,6 +1,5 @@
 import ModalButton from 'sharedComponents/ModalButton';
 import { Button } from '@navikt/ds-react';
-import { FormattedMessage } from 'react-intl';
 import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
 import React from 'react';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
@@ -15,7 +14,7 @@ const ReservasjonerBolkButtons = ({ valgteReservasjoner }: Props) => (
 		<ModalButton
 			renderButton={({ openModal }) => (
 				<Button onClick={openModal} variant="secondary" size="small">
-					<FormattedMessage id="ReservasjonerTabell.LeggTilbakeBolk" values={{ antall: valgteReservasjoner.length }} />
+					Legg oppgaver tilbake i felles kø
 				</Button>
 			)}
 			renderModal={({ closeModal, open }) => (
@@ -29,10 +28,7 @@ const ReservasjonerBolkButtons = ({ valgteReservasjoner }: Props) => (
 		<ModalButton
 			renderButton={({ openModal }) => (
 				<Button onClick={openModal} variant="secondary" size="small">
-					<FormattedMessage
-						id="ReservasjonerTabell.FlyttReservasjonBolk"
-						values={{ antall: valgteReservasjoner.length }}
-					/>
+					Flytt reservasjonen til annen saksbehandler
 				</Button>
 			)}
 			renderModal={({ closeModal, open }) => (

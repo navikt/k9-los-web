@@ -1,5 +1,4 @@
 import React, { FunctionComponent, useContext, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import NavFrontendChevron from 'nav-frontend-chevron';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Label, Modal } from '@navikt/ds-react';
@@ -37,7 +36,7 @@ const OppgavekoPanel: FunctionComponent = () => {
 	return (
 		<div className={styles.container}>
 			<Heading size="small">
-				<FormattedMessage id="OppgavekoPanel.StartBehandling" />
+				Oppgavekøer
 			</Heading>
 			<VerticalSpacer sixteenPx />
 			<OppgavekoVelgerForm plukkNyOppgave={plukkNyOppgave} loadingOppgaveFraKo={loadingOppgaveFraKo} />
@@ -70,7 +69,7 @@ const OppgavekoPanel: FunctionComponent = () => {
 				>
 					<NavFrontendChevron type={visBehandlingerIKo ? 'ned' : 'høyre'} className={styles.chevron} />
 					<Label>
-						<FormattedMessage id="OppgaverTabell.DineNesteSaker" />
+						Neste oppgaver
 					</Label>
 				</button>
 
