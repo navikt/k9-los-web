@@ -3,7 +3,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import _ from 'lodash';
 import { ArrowUndoIcon, PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, ErrorMessage, Loader, Search, SortState, Table } from '@navikt/ds-react';
+import { BodyShort, Button, Checkbox, ErrorMessage, Heading, Loader, Search, SortState, Table } from '@navikt/ds-react';
 import { useAvdelingslederReservasjoner } from 'api/queries/avdelingslederQueries';
 import { useKodeverk } from 'api/queries/kodeverkQueries';
 import ReservasjonerBolkButtons from 'avdelingsleder/reservasjoner/components/ReservasjonerBolkButtons';
@@ -121,10 +121,10 @@ const AvdelingslederReservasjonerTabell = () => {
 		<>
 			<div className={styles.titelContainer}>
 				<div className="flex flex-col justify-between">
-					<b>
+					<Heading size="small">
 						Alle reservasjoner
 						{reservasjoner?.length > 0 && isSuccessReservasjoner && ` (${reservasjoner.length} stk)`}
-					</b>
+					</Heading>
 					{/* Hvis mer enn 50 antas litt scrolling, så det kan være kjekt å ha knappene på toppen i tillegg til i bunn */}
 					{valgteReservasjoner.length > 50 && <ReservasjonerBolkButtons valgteReservasjoner={valgteReservasjoner} />}
 				</div>
@@ -143,18 +143,14 @@ const AvdelingslederReservasjonerTabell = () => {
 			{reservasjoner?.length > 0 && isSuccessReservasjoner && !finnesSokResultat && (
 				<>
 					<VerticalSpacer eightPx />
-					<BodyShort size="small">
-						Ingen reservasjoner som matcher søk.
-					</BodyShort>
+					<BodyShort size="small">Ingen reservasjoner som matcher søk.</BodyShort>
 					<VerticalSpacer eightPx />
 				</>
 			)}
 			{reservasjoner?.length === 0 && isSuccessReservasjoner && (
 				<>
 					<VerticalSpacer eightPx />
-					<BodyShort size="small">
-						Ingen reservasjoner funnet
-					</BodyShort>
+					<BodyShort size="small">Ingen reservasjoner funnet</BodyShort>
 					<VerticalSpacer eightPx />
 				</>
 			)}
