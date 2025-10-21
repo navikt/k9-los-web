@@ -1,6 +1,4 @@
 {
-	"ErrorMessagePanel.Close": "Lukk",
-
 	"FlyttReservasjonerModal.Tittel": "Endre 1 reservasjon",
 	"FlyttReservasjonerModal.Tittel.Flertall": "Endre {antall} reservasjoner",
 	"FlyttReservasjonerModal.Begrunn": "Begrunn endring av reservasjon",
@@ -10,9 +8,6 @@
 	"FlyttReservasjonerModal.Ok": "Lagre",
 	"FlyttReservasjonerModal.Avbryt": "Avbryt",
 	"FlyttReservasjonerModal.FlyttTilSaksbehandler": "Flytt til saksbehandler",
-
-	"MissingPage.PageIsMissing": "Denne siden finnes ikke. Hvis du mener dette er en feil, vennligst meld fra i porten.",
-	"MissingPage.Home": "Gå til forsiden",
 
 	"OppgaverTabell.DineNesteSaker": "Neste oppgaver",
 	"OppgaverTabell.DineNesteSakerAntall": "{antall} i køen",
@@ -78,29 +73,5 @@
 
 	"SletteSaksbehandlerModal.SletteSaksbehandler": "Er du sikker på at du vil slette {saksbehandlerNavn}?",
 	"SletteSaksbehandlerModal.Ja": "Slett saksbehandleren",
-	"SletteSaksbehandlerModal.Nei": "Avbryt",
-
-	"OppgavekoVelgerForm.Oppgaveko": "Velg oppgavekø",
-	"OppgavekoVelgerForm.AntallOppgaver": "Antall i kø: {antall}",
-	"OppgavekoVelgerForm.Utvalgskriterier": "Utvalgskriterier",
-	"OppgavekoVelgerForm.Stonadstype": "Stønadstype",
-	"OppgavekoVelgerForm.Behandlingstype": "Behandlingstype",
-	"OppgavekoVelgerForm.Sortering": "Sortering",
-	"OppgavekoVelgerForm.Alle": "Alle",
-	"OppgavekoVelgerForm.AndreKriterier": "Andre filter",
-	"OppgavekoVelgerForm.Uten": "Uten: {kriterie}",
-	"OppgavekoVelgerForm.Saksbehandlere": "Saksbehandlere tilknyttet denne køen",
-	"OppgavekoVelgerForm.PlukkNyOppgave": "Gi meg neste oppgave i køen",
-	"OppgavekoVelgerForm.SaksbehandlerToolip": "Andre saksbehandlere på denne køen:",
-	"OppgavekoVelgerForm.Sorteringsinfo": "{navn}{br}Gjeldende intervall:{br}{fomDato} - {tomDato}",
-	"OppgavekoVelgerForm.SorteringsinfoFom": "{navn}{br}Fra og med: {fomDato}",
-	"OppgavekoVelgerForm.SorteringsinfoTom": "{navn}{br}Til og med: {tomDato}",
-
-	"ValidationMessage.InvalidEmail": "Ugyldig e-post adresse",
-
-	"Rest.ErrorMessage.General": "Noe feilet. Feilen kan være forbigående. Prøv og behandle saken litt senere. Om feilen oppstår igjen meld den inn via porten.",
-	"Rest.ErrorMessage.DownTime": "Saksbehandlingsløsningen venter på et annet system som har nedetid nå. Du trenger ikke melde inn en feil, men prøv igjen {date} kl. {time}.\n{message}",
-	"Rest.ErrorMessage.PollingTimeout": "Serverkall har gått ut på tid: {location}",
-	"Rest.ErrorMessage.GatewayTimeoutOrNotFound": "Får ikke kontakt med {contextPath} ({location})",
-	"Rest.ErrorMessage.Forbidden": "Du har ikke tilgang. Dette kan skyldes at du mangler rettigheter eller at sesjonen din har utløpt. Oppdater siden for å fornye sesjonen"
+	"SletteSaksbehandlerModal.Nei": "Avbryt"
 }
