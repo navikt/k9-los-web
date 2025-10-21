@@ -32,7 +32,7 @@ const NyKøModal = ({ vis, lukk, onSuccessCallback }: OwnProps) => {
 	if (!vis) return null;
 
 	return (
-		<Modal className="w-[44rem]" open={vis} onClose={lukk} portal>
+		<Modal className="w-[44rem]" open={vis} onClose={lukk} portal aria-label="Opprett ny oppgavekø">
 			<Modal.Body>
 				<Heading size="medium">Ny oppgavekø</Heading>
 				<Form
@@ -51,7 +51,7 @@ const NyKøModal = ({ vis, lukk, onSuccessCallback }: OwnProps) => {
 						<Button variant="secondary" type="button" onClick={lukk}>
 							Avbryt
 						</Button>
-						<Button loading={mutation.isLoading}>Opprett kø</Button>
+						<Button loading={mutation.isPending}>Opprett kø</Button>
 					</div>
 				</Form>
 			</Modal.Body>

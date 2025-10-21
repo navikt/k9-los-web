@@ -1,11 +1,10 @@
 /* eslint-disable camelcase */
-
 /* eslint-disable react/jsx-pascal-case */
 import React, { FunctionComponent, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { Button, ErrorMessage, Modal, Skeleton, UNSAFE_Combobox } from '@navikt/ds-react';
-import { Datepicker, Form, TextAreaField } from '@navikt/ft-form-hooks';
+import { Datepicker, Form, InputField } from '@navikt/ft-form-hooks';
 import { dateAfterOrEqualToToday, hasValidText, maxLength, minLength, required } from '@navikt/ft-form-validators';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
@@ -46,13 +45,7 @@ const initialValues = (reservasjoner: FlyttReservasjonType[]) => {
  * Presentasjonskomponent. Modal som lar en søke opp en saksbehandler som saken skal flyttes til. En kan også begrunne hvorfor saken skal flyttes.
  */
 export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, closeModal, reservasjoner }) => {
-	const { mutate: flyttReservasjoner, isSuccess } = useEndreReservasjoner();
-
-	useEffect(() => {
-		if (isSuccess) {
-			closeModal();
-		}
-	}, [isSuccess]);
+	const { mutate: flyttReservasjoner, isPending } = useEndreReservasjoner(closeModal);
 	const { data: saksbehandlere, isLoading, error } = useGetAlleSaksbehandlere({ placeholderData: [] });
 	const uniqueSaksbehandlere = Array.from(new Set(saksbehandlere.map((a) => a.brukerIdent))).map((brukerIdent) =>
 		saksbehandlere.find((a) => a.brukerIdent === brukerIdent),
@@ -82,17 +75,16 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 					reserverTil,
 				},
 			]);
-			return;
+		} else {
+			flyttReservasjoner(
+				reservasjoner.map((v) => ({
+					oppgaveNøkkel: v.oppgaveNøkkel,
+					begrunnelse: v.begrunnelse,
+					brukerIdent,
+					reserverTil,
+				})),
+			);
 		}
-
-		flyttReservasjoner(
-			reservasjoner.map((v) => ({
-				oppgaveNøkkel: v.oppgaveNøkkel,
-				begrunnelse: v.begrunnelse,
-				brukerIdent,
-				reserverTil,
-			})),
-		);
 	};
 
 	return (
@@ -100,19 +92,16 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 			open={open}
 			onClose={closeModal}
 			header={{
-				heading:
-					reservasjoner.length === 1
-						? 'Endre 1 reservasjon'
-						: `Endre ${reservasjoner.length} reservasjoner`,
+				heading: reservasjoner.length === 1 ? 'Endre 1 reservasjon' : `Endre ${reservasjoner.length} reservasjoner`,
 			}}
 			className="min-w-[500px]"
 		>
-			<Modal.Body>
-				<Form
-					formMethods={formMethods}
-					onSubmit={(values) => onSubmit(values.reservertAvIdent, values.begrunnelse, values.reserverTil)}
-					className="p-2"
-				>
+			<Form
+				formMethods={formMethods}
+				onSubmit={(values) => onSubmit(values.reservertAvIdent, values.begrunnelse, values.reserverTil)}
+				className="p-2"
+			>
+				<Modal.Body>
 					{isLoading && <Skeleton height={80} />}
 					{(error || !saksbehandlere) && <ErrorMessage>Noe gikk galt ved henting av saksbehandlere</ErrorMessage>}
 					{saksbehandlere.length > 0 && (
@@ -145,32 +134,29 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 									? 'Velg dato som reservasjonen avsluttes'
 									: 'Velg dato som reservasjonene avsluttes'
 							}
-							description={
-								reservasjoner.length > 1 &&
-								'Behold eksisterende dato ved å la feltet stå tomt'
-							}
+							description={reservasjoner.length > 1 && 'Behold eksisterende dato ved å la feltet stå tomt'}
 							name="reserverTil"
 							validate={[dateAfterOrEqualToToday]}
 						/>
 					</div>
 					{!harFlereReservasjoner(reservasjoner) && (
-						<TextAreaField
+						<InputField
 							className="mt-8"
 							label="Begrunn endring av reservasjon"
 							name="begrunnelse"
 							validate={[required, minLength(3), maxLength(1500), hasValidText]}
 						/>
 					)}
-					<div className="flex flex-row-reverse gap-4 mt-8">
-						<Button variant="primary" type="submit">
-							Lagre
-						</Button>
-						<Button variant="secondary" type="reset" onClick={closeModal}>
-							Avbryt
-						</Button>
-					</div>
-				</Form>
-			</Modal.Body>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="primary" type="submit" disabled={isPending}>
+						Lagre
+					</Button>
+					<Button variant="secondary" type="button" onClick={closeModal}>
+						Avbryt
+					</Button>
+				</Modal.Footer>
+			</Form>
 		</Modal>
 	);
 };

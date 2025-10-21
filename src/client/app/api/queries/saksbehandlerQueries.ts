@@ -68,7 +68,7 @@ export const useReserverOppgaveMutation = () => {
 	});
 };
 
-export const useEndreReservasjoner = () => {
+export const useEndreReservasjoner = (onSuccces?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation<null, Error, EndreOppgaveType[]>({
 		mutationFn: (data) => axiosInstance.post(apiPaths.endreReservasjoner, data),
@@ -77,7 +77,7 @@ export const useEndreReservasjoner = () => {
 			return Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
 				queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
-			]);
+			]).then(onSuccces);
 		},
 	});
 };
@@ -118,7 +118,8 @@ export const useOpphevReservasjoner = () => {
 export const useForlengOppgavereservasjon = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: { oppgaveNøkkel: OppgaveNøkkel }) => axiosInstance.post(apiPaths.forlengOppgavereservasjon, data),
+		mutationFn: (data: { oppgaveNøkkel: OppgaveNøkkel }) =>
+			axiosInstance.post(apiPaths.forlengOppgavereservasjon, data),
 		onSuccess: () =>
 			Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),

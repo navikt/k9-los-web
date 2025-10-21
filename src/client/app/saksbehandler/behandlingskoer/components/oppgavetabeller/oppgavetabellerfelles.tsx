@@ -6,5 +6,4 @@ export const getHeaderCodes = (medReservasjoner?: boolean, erHastesaker?: boolea
 	'Oppgave opprettet',
 	medReservasjoner ? 'Reservasjon' : 'EMPTY_3',
 	'EMPTY_2',
-	'EMPTY_4',
 ];
