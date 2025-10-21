@@ -2,7 +2,7 @@ import { FunctionComponent, ReactElement } from 'react';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 
 interface OwnProps {
-	children: ReactElement;
+	children: ReactElement | ReactElement[];
 }
 
 const InnloggetSaksbehandlerResolver: FunctionComponent<OwnProps> = ({ children }) => {

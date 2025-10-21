@@ -1,12 +1,11 @@
 import React, { FunctionComponent, useMemo, useState } from 'react';
-import { WrappedComponentProps, injectIntl } from 'react-intl';
 import { Loader } from '@navikt/ds-react';
 import { useAlleSaksbehandlerKoerV3 } from 'api/queries/saksbehandlerQueries';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import { OppgavekøV3, OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import OppgavekoPanel from './components/OppgavekoPanel';
 
-const BehandlingskoerIndex: FunctionComponent<WrappedComponentProps> = () => {
+const BehandlingskoerIndex: FunctionComponent = () => {
 	const [valgtOppgavekoId, setValgtOppgavekoId] = useState('');
 	const { data: oppgavekoerV3, isLoading } = useAlleSaksbehandlerKoerV3();
 
@@ -33,4 +32,4 @@ const BehandlingskoerIndex: FunctionComponent<WrappedComponentProps> = () => {
 	);
 };
 
-export default injectIntl(BehandlingskoerIndex);
+export default BehandlingskoerIndex;

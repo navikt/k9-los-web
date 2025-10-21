@@ -1,7 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React, { useCallback, useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 import { ArrowUndoIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, ErrorMessage, Loader, Search, SortState, Table } from '@navikt/ds-react';
@@ -123,7 +122,7 @@ const AvdelingslederReservasjonerTabell = () => {
 			<div className={styles.titelContainer}>
 				<div className="flex flex-col justify-between">
 					<b>
-						<FormattedMessage id="ReservasjonerTabell.Reservasjoner" />
+						Alle reservasjoner
 						{reservasjoner?.length > 0 && isSuccessReservasjoner && ` (${reservasjoner.length} stk)`}
 					</b>
 					{/* Hvis mer enn 50 antas litt scrolling, så det kan være kjekt å ha knappene på toppen i tillegg til i bunn */}
@@ -145,7 +144,7 @@ const AvdelingslederReservasjonerTabell = () => {
 				<>
 					<VerticalSpacer eightPx />
 					<BodyShort size="small">
-						<FormattedMessage id="ReservasjonerTabell.IngenMatchandeReservasjoner" />
+						Ingen reservasjoner som matcher søk.
 					</BodyShort>
 					<VerticalSpacer eightPx />
 				</>
@@ -154,7 +153,7 @@ const AvdelingslederReservasjonerTabell = () => {
 				<>
 					<VerticalSpacer eightPx />
 					<BodyShort size="small">
-						<FormattedMessage id="ReservasjonerTabell.IngenReservasjoner" />
+						Ingen reservasjoner funnet
 					</BodyShort>
 					<VerticalSpacer eightPx />
 				</>

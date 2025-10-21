@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
 import { Button, ErrorMessage, Heading, Modal } from '@navikt/ds-react';
 import { CheckboxField, Form, InputField } from '@navikt/ft-form-hooks';
 import { minLength, required } from '@navikt/ft-form-validators';
 import { useKopierKøMutation } from 'api/queries/avdelingslederQueries';
+import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
 
 interface Props {
 	lukk: () => void;
@@ -45,7 +45,7 @@ const KopierKøModal: React.FC<Props> = ({ lukk, eksisterendeKø }) => {
 		mutate(payload);
 	};
 	return (
-		<Modal className="w-2/6" onClose={onClose} open portal>
+		<Modal className="w-2/6" onClose={onClose} open portal aria-label="Kopier oppgavekø">
 			<Modal.Body>
 				<Form formMethods={formMethods} onSubmit={onSubmit}>
 					<Heading spacing level="1" size="medium">

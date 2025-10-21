@@ -7,7 +7,6 @@ import { Button, Modal } from '@navikt/ds-react';
 import '../../styles/global.css';
 import ErrorBoundary from './ErrorBoundary';
 import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
-import LanguageProvider from './LanguageProvider';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
 
@@ -54,25 +53,23 @@ const AppIndex: FunctionComponent = () => {
 	return (
 		<ErrorBoundary errorMessageCallback={addErrorMessageAndSetAsCrashed}>
 			<InnloggetSaksbehandlerResolver>
-				<LanguageProvider>
-					<HeaderWithErrorPanel />
-					{sessionHarUtlopt && (
-						<Modal
-							className="min-w-[500px]"
-							open
-							onClose={() => window.location.reload()}
-							header={{ heading: 'Sesjonen er utløpt', icon: <ExclamationmarkTriangleIcon />, closeButton: false }}
-						>
-							<Modal.Body>
-								Økten din har utløpt etter en periode med inaktivitet. Vennligst logg inn på nytt for å fortsette.
-							</Modal.Body>
-							<Modal.Footer>
-								<Button onClick={() => window.location.reload()}>Logg inn på nytt</Button>
-							</Modal.Footer>
-						</Modal>
-					)}
-					{!crashMessage && <Home />}
-				</LanguageProvider>
+				<HeaderWithErrorPanel />
+				{sessionHarUtlopt && (
+					<Modal
+						className="min-w-[500px]"
+						open
+						onClose={() => window.location.reload()}
+						header={{ heading: 'Sesjonen er utløpt', icon: <ExclamationmarkTriangleIcon />, closeButton: false }}
+					>
+						<Modal.Body>
+							Økten din har utløpt etter en periode med inaktivitet. Vennligst logg inn på nytt for å fortsette.
+						</Modal.Body>
+						<Modal.Footer>
+							<Button onClick={() => window.location.reload()}>Logg inn på nytt</Button>
+						</Modal.Footer>
+					</Modal>
+				)}
+				{!crashMessage && <Home />}
 			</InnloggetSaksbehandlerResolver>
 		</ErrorBoundary>
 	);

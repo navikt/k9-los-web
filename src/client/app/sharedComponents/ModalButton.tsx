@@ -17,16 +17,16 @@ const ModalButton: FunctionComponent<Props> = (props: Props) => {
 	useEffect(() => {
 		if (props.setModal) {
 			const modal = open ? props.renderModal({ open, closeModal: () => setOpen(false) }) : null;
-			props.setModal(modal);
+			props.setModal(modal as ReactNode);
 		}
 	}, [open]);
 
 	const button = props.renderButton({ openModal: () => setOpen(true) }) as ReactNode;
 	const modal = open
-		? props.renderModal({
+		? (props.renderModal({
 				open,
 				closeModal: () => setOpen(false),
-			})
+			}) as ReactNode)
 		: null;
 
 	return (
