@@ -1,136 +1,113 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-import React, { RefAttributes } from 'react';
-import classNames from 'classnames';
+import React, { ReactNode, useState } from 'react';
 import dayjs from 'dayjs';
-import { ExclamationmarkTriangleFillIcon, MenuHamburgerIcon } from '@navikt/aksel-icons';
+import { MenuHamburgerIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button, Table } from '@navikt/ds-react';
 import { useForlengOppgavereservasjon, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonerModal';
 import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
-import ModalButton from 'sharedComponents/ModalButton';
 import OppgaveV3 from 'types/OppgaveV3';
-import { getDateAndTime } from 'utils/dateUtils';
+import { dateTimeFormat } from 'utils/dateUtils';
 import * as styles from './oppgaverTabell.css';
-
-// Update the path as necessary
 
 interface OwnProps {
 	oppgave: OppgaveV3;
 	reservasjon: ReservasjonV3;
-	gjelderHastesaker: boolean;
 }
 
 type Props = OwnProps;
 
-const ReservertOppgaveRadV3: React.ForwardRefExoticComponent<Props> = React.forwardRef(
-	({ oppgave, reservasjon, gjelderHastesaker }: OwnProps) => {
-		const [modal, setModal] = React.useState<React.ReactNode>(null);
-		const { mutate: leggTilSisteOppgaver } = useSisteOppgaverMutation();
-		const { mutate: forlengOppgaveReservasjon } = useForlengOppgavereservasjon();
+const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({ oppgave, reservasjon }) => {
+	const [modal, setModal] = useState<ReactNode>(null);
 
-		const tilOppgave = () => {
-			leggTilSisteOppgaver(oppgave.oppgaveNøkkel, {
-				onSettled: () => window.location.assign(oppgave.oppgavebehandlingsUrl),
-			});
-		};
-		return (
-			<Table.Row
-				key={oppgave.oppgaveNøkkel.oppgaveEksternId}
-				className={classNames(styles.isUnderBehandling, { [styles.hastesak]: gjelderHastesaker })}
-				onKeyDown={tilOppgave}
-			>
-				{gjelderHastesaker && (
-					<Table.DataCell onClick={tilOppgave} className={`${styles.hastesakTd} hover:cursor-pointer`}>
-						<ExclamationmarkTriangleFillIcon height="1.5rem" width="1.5rem" className={styles.hastesakIkon} />
-					</Table.DataCell>
-				)}
-				<Table.DataCell
-					onClick={tilOppgave}
-					className={`${gjelderHastesaker ? '' : styles.soekerPadding} hover:cursor-pointer`}
-				>
-					{oppgave.søkersNavn ? `${oppgave.søkersNavn} ${oppgave.søkersPersonnr}` : '<navn>'}
-				</Table.DataCell>
-				<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
-					{oppgave.saksnummer || oppgave.journalpostId}
-				</Table.DataCell>
-				<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
-					{oppgave.behandlingstype.navn}
-				</Table.DataCell>
-				<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
-					{(oppgave.opprettetTidspunkt && dayjs(oppgave.opprettetTidspunkt).format('DD.MM.YYYY')) || '-'}
-				</Table.DataCell>
-				<Table.DataCell onClick={tilOppgave} className={`${styles.reservertTil} hover:cursor-pointer`}>
-					Reservert til {getDateAndTime(reservasjon.reservertTil).date} -{' '}
-					{getDateAndTime(reservasjon.reservertTil).time}
-				</Table.DataCell>
-				<Table.DataCell>
-					<div className="flex justify-center gap-12">
-						<KommentarMedMerknad reservasjon={reservasjon} />
-						<ActionMenu>
-							{modal}
-							<ActionMenu.Trigger>
-								<Button
-									variant="tertiary"
-									className="p-1"
-									icon={<MenuHamburgerIcon title="Handlinger på oppgave" />}
-									size="medium"
-								/>
-							</ActionMenu.Trigger>
-							<ActionMenu.Content>
-								<ActionMenu.Group aria-label="">
-									<ModalButton
-										setModal={setModal}
-										renderButton={({ openModal }) => (
-											<ActionMenu.Item onSelect={openModal}>
-												Legg oppgave <br />
-												tilbake i felles kø
-											</ActionMenu.Item>
-										)}
-										renderModal={({ open, closeModal }) => (
-											<OpphevReservasjonerModal
-												oppgaveNøkler={[oppgave.oppgaveNøkkel]}
-												open={open}
-												closeModal={closeModal}
-											/>
-										)}
-									/>
-									<ActionMenu.Divider />
-									<ActionMenu.Item onSelect={() => forlengOppgaveReservasjon({ oppgaveNøkkel: oppgave.oppgaveNøkkel })}>
-										Forleng din reservasjon av
-										<br /> oppgaven med 24 timer
-									</ActionMenu.Item>
-									<ActionMenu.Divider />
-									<ModalButton
-										setModal={setModal}
-										renderButton={({ openModal }) => (
-											<ActionMenu.Item onSelect={openModal}>Endre og/eller flytte reservasjon</ActionMenu.Item>
-										)}
-										renderModal={({ open, closeModal }) => (
-											<FlyttReservasjonerModal
-												reservasjoner={[
-													{
-														oppgaveNøkkel: oppgave.oppgaveNøkkel,
-														begrunnelse: reservasjon.kommentar,
-														reserverTil: reservasjon.reservertTil,
-														reservertAvIdent: reservasjon.reservertAvIdent,
-													},
-												]}
-												open={open}
-												closeModal={closeModal}
-											/>
-										)}
-									/>
-								</ActionMenu.Group>
-							</ActionMenu.Content>
-						</ActionMenu>
-					</div>
-				</Table.DataCell>
-			</Table.Row>
+	const { mutate: leggTilSisteOppgaver } = useSisteOppgaverMutation();
+	const { mutate: forlengOppgaveReservasjonMutate, isPending: forlengOppgaveReservasjonIsPending } =
+		useForlengOppgavereservasjon();
+
+	const tilOppgave = () => {
+		leggTilSisteOppgaver(oppgave.oppgaveNøkkel, {
+			onSettled: () => window.location.assign(oppgave.oppgavebehandlingsUrl),
+		});
+	};
+
+	const openEndreModal = () => {
+		setModal(
+			<FlyttReservasjonerModal
+				open
+				closeModal={() => setModal(null)}
+				reservasjoner={[
+					{
+						oppgaveNøkkel: oppgave.oppgaveNøkkel,
+						begrunnelse: reservasjon.kommentar,
+						reserverTil: reservasjon.reservertTil,
+						reservertAvIdent: reservasjon.reservertAvIdent,
+					},
+				]}
+			/>,
 		);
-	},
-);
+	};
+
+	const forlengOppgaveReservasjon = () => {
+		forlengOppgaveReservasjonMutate({ oppgaveNøkkel: oppgave.oppgaveNøkkel });
+	};
+
+	const openOpphevModal = () => {
+		setModal(
+			<OpphevReservasjonerModal open closeModal={() => setModal(null)} oppgaveNøkler={[oppgave.oppgaveNøkkel]} />,
+		);
+	};
+
+	return (
+		<Table.Row key={oppgave.oppgaveNøkkel.oppgaveEksternId} className={styles.isUnderBehandling}>
+			<Table.DataCell onClick={tilOppgave} className={styles.soekerPadding}>
+				{oppgave.søkersNavn ? `${oppgave.søkersNavn} ${oppgave.søkersPersonnr}` : '<navn>'}
+			</Table.DataCell>
+			<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
+				{oppgave.saksnummer || oppgave.journalpostId}
+			</Table.DataCell>
+			<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
+				{oppgave.behandlingstype.navn}
+			</Table.DataCell>
+			<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
+				{(oppgave.opprettetTidspunkt && dayjs(oppgave.opprettetTidspunkt).format('DD.MM.YYYY')) || '-'}
+			</Table.DataCell>
+			<Table.DataCell onClick={tilOppgave} className={`${styles.reservertTil} hover:cursor-pointer`}>
+				Reservert til {dateTimeFormat(reservasjon.reservertTil)}
+			</Table.DataCell>
+			<Table.DataCell>
+				{modal}
+				<div className="flex justify-end gap-8">
+					<KommentarMedMerknad reservasjon={reservasjon} />
+					<ActionMenu>
+						<ActionMenu.Trigger>
+							<Button
+								variant="tertiary"
+								className="p-1 mr-4"
+								icon={<MenuHamburgerIcon title="Handlinger på oppgave" />}
+								size="medium"
+							/>
+						</ActionMenu.Trigger>
+						<ActionMenu.Content>
+							<ActionMenu.Group aria-label="">
+								<ActionMenu.Item onSelect={openOpphevModal}>
+									Legg oppgave <br />
+									tilbake i felles kø
+								</ActionMenu.Item>
+								<ActionMenu.Divider />
+								<ActionMenu.Item onSelect={forlengOppgaveReservasjon} disabled={forlengOppgaveReservasjonIsPending}>
+									Forleng din reservasjon av
+									<br /> oppgaven med 24 timer
+								</ActionMenu.Item>
+								<ActionMenu.Divider />
+								<ActionMenu.Item onSelect={openEndreModal}>Endre og/eller flytte reservasjon</ActionMenu.Item>
+							</ActionMenu.Group>
+						</ActionMenu.Content>
+					</ActionMenu>
+				</div>
+			</Table.DataCell>
+		</Table.Row>
+	);
+};
 
 export default ReservertOppgaveRadV3;

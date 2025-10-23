@@ -4,7 +4,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { Button, ErrorMessage, Modal, Skeleton, UNSAFE_Combobox } from '@navikt/ds-react';
-import { Datepicker, Form, InputField } from '@navikt/ft-form-hooks';
+import { Datepicker, Form, TextAreaField } from '@navikt/ft-form-hooks';
 import { dateAfterOrEqualToToday, hasValidText, maxLength, minLength, required } from '@navikt/ft-form-validators';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
@@ -88,18 +88,19 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 	};
 
 	return (
-		<Modal
-			open={open}
-			onClose={closeModal}
-			header={{
-				heading: reservasjoner.length === 1 ? 'Endre 1 reservasjon' : `Endre ${reservasjoner.length} reservasjoner`,
+		<Form
+			formMethods={formMethods}
+			onSubmit={(values) => {
+				onSubmit(values.reservertAvIdent, values.begrunnelse, values.reserverTil);
 			}}
-			className="min-w-[500px]"
 		>
-			<Form
-				formMethods={formMethods}
-				onSubmit={(values) => onSubmit(values.reservertAvIdent, values.begrunnelse, values.reserverTil)}
-				className="p-2"
+			<Modal
+				open={open}
+				onClose={closeModal}
+				header={{
+					heading: reservasjoner.length === 1 ? 'Endre reservasjon' : `Endre ${reservasjoner.length} reservasjoner`,
+				}}
+				className="min-w-[500px]"
 			>
 				<Modal.Body>
 					{isLoading && <Skeleton height={80} />}
@@ -140,7 +141,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 						/>
 					</div>
 					{!harFlereReservasjoner(reservasjoner) && (
-						<InputField
+						<TextAreaField
 							className="mt-8"
 							label="Begrunn endring av reservasjon"
 							name="begrunnelse"
@@ -149,15 +150,15 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 					)}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant="primary" type="submit" disabled={isPending}>
+					<Button variant="primary" disabled={isPending} type="submit">
 						Lagre
 					</Button>
 					<Button variant="secondary" type="button" onClick={closeModal}>
 						Avbryt
 					</Button>
 				</Modal.Footer>
-			</Form>
-		</Modal>
+			</Modal>
+		</Form>
 	);
 };
 

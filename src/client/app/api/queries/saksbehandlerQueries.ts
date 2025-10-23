@@ -72,12 +72,13 @@ export const useEndreReservasjoner = (onSuccces?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation<null, Error, EndreOppgaveType[]>({
 		mutationFn: (data) => axiosInstance.post(apiPaths.endreReservasjoner, data),
-		onSuccess: () => {
+		onSuccess: async () => {
 			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
-			return Promise.all([
+			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
 				queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
-			]).then(onSuccces);
+			]);
+			if (onSuccces) onSuccces();
 		},
 	});
 };
