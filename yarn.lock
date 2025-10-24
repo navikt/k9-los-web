@@ -4912,18 +4912,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-links@npm:9.1.10":
-  version: 9.1.10
-  resolution: "@storybook/addon-links@npm:9.1.10"
+"@storybook/addon-links@npm:9.1.15":
+  version: 9.1.15
+  resolution: "@storybook/addon-links@npm:9.1.15"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
-    storybook: ^9.1.10
+    storybook: ^9.1.15
   peerDependenciesMeta:
     react:
       optional: true
-  checksum: 10/ea89195b4af30f939672391a99b59d8b4c48eed846419610d499af34a84c7cbbba8485d28573b90d610455386c2a8ee0bcf2a1402018052900e305579d1bb1d7
+  checksum: 10/028840645225363bcc81d9f8b8d7e8666b62863f37b23cf47b80e6d76fd841f033a4e0c0d2123b07b11016a9697400f8eda2271bedcea16da76e3e6301c56fc2
   languageName: node
   linkType: hard
 
@@ -13571,7 +13571,7 @@ __metadata:
     "@sentry/react": "npm:10.17.0"
     "@storybook/addon-essentials": "npm:8.6.14"
     "@storybook/addon-interactions": "npm:8.6.14"
-    "@storybook/addon-links": "npm:9.1.10"
+    "@storybook/addon-links": "npm:9.1.15"
     "@storybook/addon-onboarding": "npm:9.1.10"
     "@storybook/addon-styling-webpack": "npm:2.0.0"
     "@storybook/addon-webpack5-compiler-swc": "npm:4.0.1"
