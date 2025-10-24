@@ -142,7 +142,7 @@
 		"postcss-loader": "8.2.0",
 		"prettier": "3.6.2",
 		"prop-types": "15.8.1",
-		"storybook": "9.1.10",
+		"storybook": "9.1.15",
 		"terser-webpack-plugin": "5.3.14",
 		"thread-loader": "4.0.4",
 		"typescript": "5.9.3",
