@@ -46,7 +46,6 @@ export function EndreKriterierLagretSøkModal({
 						tittel="Endre lagret søk"
 						initialQuery={lagretSøk.query}
 						køvisning
-						visningV3
 						avbryt={closeModal}
 						paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
 						readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}

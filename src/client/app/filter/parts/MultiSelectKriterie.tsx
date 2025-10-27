@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-pascal-case */
-
 /* eslint-disable camelcase */
 import React, { useContext, useEffect, useState } from 'react';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
@@ -19,7 +18,8 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error }: Props) =>
 	const [selectedChildIndex, setSelectedChildIndex] = useState(undefined);
 	const [options, setOptions] = useState([]);
 	const { updateQuery } = useContext(FilterContext);
-	const selectedOptions = oppgavefilter.verdi?.map((v) => {
+	const verdier = oppgavefilter.verdi as string[];
+	const selectedOptions = verdier?.map((v) => {
 		const option = feltdefinisjon.verdiforklaringer.find((verdiforklaring) => verdiforklaring.verdi === v);
 		return { value: option.verdi, label: option.visningsnavn };
 	});
@@ -62,7 +62,7 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error }: Props) =>
 		if (isSelected) {
 			updateQuery([updateFilter(oppgavefilter.id, { verdi: [...(oppgavefilter?.verdi || []), verdi] })]);
 		} else {
-			updateQuery([updateFilter(oppgavefilter.id, { verdi: oppgavefilter.verdi?.filter((o) => o !== verdi) })]);
+			updateQuery([updateFilter(oppgavefilter.id, { verdi: verdier?.filter((o) => o !== verdi) })]);
 		}
 	};
 	return (

@@ -26,7 +26,6 @@ interface OwnProps {
 	tittel: string;
 	paakrevdeKoder?: OppgavefilterKode[];
 	readOnlyKoder?: OppgavefilterKode[];
-	visningV3?: boolean;
 	køvisning?: boolean;
 	visSortering?: boolean;
 }
@@ -62,7 +61,6 @@ const FilterIndex = ({
 	lagre,
 	avbryt,
 	tittel,
-	visningV3,
 	køvisning,
 	visSortering,
 	paakrevdeKoder,
@@ -247,7 +245,6 @@ const FilterIndex = ({
 							key={item.id}
 							køvisning={køvisning}
 							oppgavefilter={item}
-							visningV3={visningV3}
 							addGruppeOperation={addGruppe(oppgaveQuery.id)}
 							paakrevdeKoder={paakrevdeKoder}
 							readOnlyKoder={readOnlyKoder}
@@ -292,7 +289,11 @@ const FilterIndex = ({
 								<Button className="mr-2" variant="secondary" onClick={avbryt} disabled={isValidating || isSøkPending}>
 									Avbryt
 								</Button>
-								<Button onClick={validerOgLagre} loading={isValidating || isSøkPending} disabled={isValidating || isSøkPending}>
+								<Button
+									onClick={validerOgLagre}
+									loading={isValidating || isSøkPending}
+									disabled={isValidating || isSøkPending}
+								>
 									Lagre
 								</Button>
 							</div>

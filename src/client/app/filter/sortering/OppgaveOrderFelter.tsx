@@ -31,7 +31,7 @@ const OppgaveOrderFelter = () => {
 	const handleUpdateDirection = (feltId, direction) => {
 		updateQuery([
 			updateSortering(feltId, {
-				økende: direction,
+				økende: Boolean(direction),
 			}),
 		]);
 	};
@@ -56,7 +56,7 @@ const OppgaveOrderFelter = () => {
 					<Select
 						label=""
 						className={styles.orderDirection}
-						value={felt.økende}
+						value={felt.økende.toString()}
 						onChange={(event) => handleUpdateDirection(felt.id, event.target.value)}
 					>
 						<option key="true" value="true">

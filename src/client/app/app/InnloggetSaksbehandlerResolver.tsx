@@ -1,4 +1,5 @@
 import { FunctionComponent, ReactElement } from 'react';
+import { useKodeverk } from 'api/queries/kodeverkQueries';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 
 interface OwnProps {
@@ -7,8 +8,9 @@ interface OwnProps {
 
 const InnloggetSaksbehandlerResolver: FunctionComponent<OwnProps> = ({ children }) => {
 	const { isLoading } = useInnloggetSaksbehandler();
+	const { isLoading: isLoadingKodeverk } = useKodeverk();
 
-	if (isLoading) {
+	if (isLoading || isLoadingKodeverk) {
 		return null;
 	}
 

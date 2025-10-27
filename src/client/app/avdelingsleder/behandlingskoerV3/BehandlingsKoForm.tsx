@@ -225,7 +225,6 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 								tittel="Kriterier for kø"
 								paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
 								readOnlyKoder={kø.skjermet ? [OppgavefilterKode.Personbeskyttelse] : []}
-								visningV3
 								køvisning
 								visSortering
 							/>

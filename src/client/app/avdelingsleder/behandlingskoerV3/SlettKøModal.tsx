@@ -11,7 +11,7 @@ interface OwnProps {
 const SlettKøModal = ({ lukk, id, køTittel }: OwnProps) => {
 	const { mutate, isPending, isError } = useSlettKøMutation(lukk);
 	return (
-		<Modal open onClose={lukk} portal>
+		<Modal open onClose={lukk} portal aria-label="Slett oppgavekø">
 			<Modal.Body>
 				<Heading size="medium">Slett kø</Heading>
 				<BodyShort>{`Er du sikker på at du vil slette ${køTittel}?`}</BodyShort>

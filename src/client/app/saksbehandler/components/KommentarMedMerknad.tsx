@@ -16,12 +16,12 @@ const KommentarMedMerknad = ({ reservasjon }: { reservasjon: ReservasjonV3 }) =>
 	return (
 		<>
 			<Button
+				className="p-1"
 				icon={<ChatElipsisIcon />}
 				variant="tertiary"
-				className="p-0"
 				ref={ref}
-				onMouseEnter={() => setShowTooltip(true)}
-				onMouseLeave={() => setShowTooltip(false)}
+				onClick={() => setShowTooltip(!showTooltip)}
+				size="medium"
 			/>
 			<Popover open={showTooltip} onClose={() => setShowTooltip(false)} anchorEl={ref.current}>
 				<Popover.Content>
