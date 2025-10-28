@@ -7,7 +7,7 @@ import { required } from '@navikt/ft-form-validators';
 import AppContext from 'app/AppContext';
 import { useHentSaksbehandlereAvdelingsleder, useKo, useOppdaterKøMutation } from 'api/queries/avdelingslederQueries';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
-import FilterIndex from 'filter/FilterIndex';
+import KøKriterieEditor from 'filter/KøKriterieEditor';
 import { OppgaveQuery, OppgavefilterKode } from 'filter/filterTsTypes';
 import SearchWithDropdown from 'sharedComponents/searchWithDropdown/SearchWithDropdown';
 import { OppgavekøV3 } from 'types/OppgavekøV3Type';
@@ -218,14 +218,13 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 				>
 					<Modal.Body className="flex flex-col min-h-[65rem]">
 						<AppContext.Provider value={overstyrteFeltdefinisjoner}>
-							<FilterIndex
+							<KøKriterieEditor
 								initialQuery={formMethods.watch(fieldnames.OPPGAVE_QUERY)}
 								lagre={lagreIModal}
 								avbryt={() => setVisFilterModal(false)}
 								tittel="Kriterier for kø"
 								paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
 								readOnlyKoder={kø.skjermet ? [OppgavefilterKode.Personbeskyttelse] : []}
-								køvisning
 								visSortering
 							/>
 						</AppContext.Provider>

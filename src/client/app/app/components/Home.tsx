@@ -46,7 +46,7 @@ const Home: FunctionComponent = () => {
 		<div className="mt-5">
 			<AppContext.Provider value={contextValues}>
 				<SentryRoutes>
-					<Route path="/filter" element={<FilterIndex tittel="Søk på oppgaver" visSortering />} />
+					<Route path="/filter" element={<FilterIndex />} />
 					<Route path="/" element={<SaksbehandlerIndex />} />
 					<Route path="/avdelingsleder" element={<AvdelingslederIndex />} />
 					<Route path="/admin" element={<AdminIndex />} />

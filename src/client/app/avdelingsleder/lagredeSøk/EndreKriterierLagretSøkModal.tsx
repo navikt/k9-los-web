@@ -2,7 +2,7 @@ import React, { useContext, useMemo } from 'react';
 import { Modal } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
-import FilterIndex from 'filter/FilterIndex';
+import KøKriterieEditor from 'filter/KøKriterieEditor';
 import { FeltverdiOppgavefilter, OppgavefilterKode } from 'filter/filterTsTypes';
 import { RenderModalProps } from 'sharedComponents/ModalButton';
 
@@ -42,10 +42,9 @@ export function EndreKriterierLagretSøkModal({
 		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" className="w-[44rem]" width={800}>
 			<Modal.Body>
 				<AppContext.Provider value={overstyrteFeltdefinisjoner}>
-					<FilterIndex
+					<KøKriterieEditor
 						tittel="Endre lagret søk"
 						initialQuery={lagretSøk.query}
-						køvisning
 						avbryt={closeModal}
 						paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
 						readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
