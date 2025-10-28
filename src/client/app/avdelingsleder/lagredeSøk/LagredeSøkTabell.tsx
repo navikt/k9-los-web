@@ -9,19 +9,16 @@ import ModalButton from 'sharedComponents/ModalButton';
 import { dateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
-function EndreTittel({ lagretSøk }: { lagretSøk: LagretSøk }) {
-	const { mutate, isPending, isError } = useEndreLagretSøk();
+function EndreTittel({
+	lagretSøk,
+	ikkeIEndreModusLenger,
+}: {
+	lagretSøk: LagretSøk;
+	ikkeIEndreModusLenger: () => void;
+}) {
+	const { mutate, isPending, isError } = useEndreLagretSøk(ikkeIEndreModusLenger);
 	const [tittel, setTittel] = useState(lagretSøk.tittel);
-	const [visLagreKnapp, setVisLagreKnapp] = useState(false);
 	const [feilmelding, setFeilmelding] = useState('');
-
-	useEffect(() => {
-		if (tittel !== lagretSøk.tittel) {
-			setVisLagreKnapp(true);
-		} else {
-			setVisLagreKnapp(false);
-		}
-	}, [lagretSøk, tittel]);
 
 	useEffect(() => {
 		if (tittel.length === 0) {
@@ -54,79 +51,26 @@ function EndreTittel({ lagretSøk }: { lagretSøk: LagretSøk }) {
 				onChange={(event) => setTittel(event.target.value)}
 				error={feilmelding}
 				htmlSize={40}
+				autoFocus
 			/>
-			<Button
-				variant="secondary"
-				disabled={isPending}
-				style={visLagreKnapp ? {} : { visibility: 'hidden' }}
-				type="submit"
-			>
+			<Button variant="secondary" disabled={isPending} type="submit">
 				Lagre
+			</Button>
+			<Button variant="tertiary" disabled={isPending} type="button" onClick={ikkeIEndreModusLenger}>
+				Avbryt
 			</Button>
 		</form>
 	);
 }
 
-function Rad({ lagretSøk, antallQueryResult }: { lagretSøk: LagretSøk; antallQueryResult: UseQueryResult<number> }) {
-	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
-	const { mutate: slettLagretSøk } = useSlettLagretSøk();
-
-	return (
-		<Table.Row key={lagretSøk.id}>
-			<Table.DataCell>
-				<EndreTittel lagretSøk={lagretSøk} />
-			</Table.DataCell>
-			<Table.DataCell>
-				{antallQueryResult.isLoading ? <Skeleton variant="text" width={50} /> : (antallQueryResult.data ?? '-')}
-			</Table.DataCell>
-			<Table.DataCell>{dateFormat(lagretSøk.sistEndret)}</Table.DataCell>
-			<Table.DataCell>
-				<div className="flex gap-4">
-					<ModalButton
-						renderButton={({ openModal }) => (
-							<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
-								Endre kriterier
-							</Button>
-						)}
-						renderModal={({ open, closeModal }) => (
-							<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-						)}
-					/>
-					<div>
-						<Button
-							variant="tertiary"
-							size="small"
-							onClick={() => {
-								kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${lagretSøk.tittel}` });
-							}}
-							icon={<FilesIcon />}
-						>
-							Kopier
-						</Button>
-					</div>
-					<div>
-						<Button
-							variant="tertiary"
-							size="small"
-							onClick={() => {
-								slettLagretSøk(lagretSøk.id);
-							}}
-							icon={<TrashIcon />}
-						>
-							Slett
-						</Button>
-					</div>
-				</div>
-			</Table.DataCell>
-		</Table.Row>
-	);
-}
-
 export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
+	const [endres, setEndres] = useState<number>();
 	const [sort, setSort] = useState<SortState | undefined>({
 		orderBy: 'tittel',
 		direction: 'ascending',
 	});
+	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
+	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 
 	const antallQueries = useQueries({
 		queries: props.lagredeSøk.map((søk) => ({
@@ -164,7 +108,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 	});
 
 	return (
-		<Table sort={sort} onSortChange={handleSort} size="small">
+		<Table sort={sort} onSortChange={handleSort} size="medium">
 			<Table.Header>
 				<Table.Row>
 					<Table.ColumnHeader sortable sortKey="tittel" scope="col">
@@ -181,11 +125,72 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 			</Table.Header>
 			<Table.Body>
 				{sorterteLagredeSøk.map((lagretSøk) => (
-					<Rad
-						lagretSøk={lagretSøk}
-						key={lagretSøk.id}
-						antallQueryResult={antallQueries[props.lagredeSøk.indexOf(lagretSøk)]}
-					/>
+					<Table.Row key={lagretSøk.id}>
+						<Table.DataCell>
+							{endres === lagretSøk.id ? (
+								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndres(undefined)} />
+							) : (
+								<div className="flex items-center gap-2">
+									<span>{lagretSøk.tittel}</span>
+									{endres === undefined && (
+										<Button
+											title="Endre tittel"
+											size="small"
+											variant="tertiary"
+											icon={<PencilIcon />}
+											onClick={() => setEndres(lagretSøk.id)}
+										/>
+									)}
+								</div>
+							)}
+						</Table.DataCell>
+						<Table.DataCell>
+							{antallQueries[props.lagredeSøk.indexOf(lagretSøk)].isLoading ? (
+								<Skeleton variant="text" width={50} />
+							) : (
+								(antallQueries[props.lagredeSøk.indexOf(lagretSøk)].data ?? '-')
+							)}
+						</Table.DataCell>
+						<Table.DataCell>{dateFormat(lagretSøk.sistEndret)}</Table.DataCell>
+						<Table.DataCell>
+							<div className="flex gap-4">
+								<ModalButton
+									renderButton={({ openModal }) => (
+										<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
+											Endre kriterier
+										</Button>
+									)}
+									renderModal={({ open, closeModal }) => (
+										<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+									)}
+								/>
+								<div>
+									<Button
+										variant="tertiary"
+										size="small"
+										onClick={() => {
+											kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${lagretSøk.tittel}` });
+										}}
+										icon={<FilesIcon />}
+									>
+										Kopier
+									</Button>
+								</div>
+								<div>
+									<Button
+										variant="tertiary"
+										size="small"
+										onClick={() => {
+											slettLagretSøk(lagretSøk.id);
+										}}
+										icon={<TrashIcon />}
+									>
+										Slett
+									</Button>
+								</div>
+							</div>
+						</Table.DataCell>
+					</Table.Row>
 				))}
 			</Table.Body>
 		</Table>
