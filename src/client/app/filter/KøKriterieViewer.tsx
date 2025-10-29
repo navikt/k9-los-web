@@ -3,17 +3,15 @@ import { Heading } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from './FilterContext';
 import OppgaveQueryModel from './OppgaveQueryModel';
-import { OppgaveQuery, OppgavefilterKode } from './filterTsTypes';
+import { OppgaveQuery } from './filterTsTypes';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
-import { addGruppe } from './queryUtils';
 
 interface OwnProps {
 	query: OppgaveQuery;
 	tittel: string;
-	paakrevdeKoder?: OppgavefilterKode[];
 }
 
-const KøKriterieViewer = ({ query, tittel, paakrevdeKoder }: OwnProps) => {
+const KøKriterieViewer = ({ query, tittel }: OwnProps) => {
 	const oppgaveQuery = useMemo(() => new OppgaveQueryModel(query).toOppgaveQuery(), [query]);
 
 	const { felter } = React.useContext(AppContext);
@@ -21,9 +19,7 @@ const KøKriterieViewer = ({ query, tittel, paakrevdeKoder }: OwnProps) => {
 	const filterContextValues = useMemo(
 		() => ({
 			oppgaveQuery,
-			updateQuery: () => {
-				// No-op in read-only mode
-			},
+			updateQuery: () => {},
 			errors: [],
 			readOnly: true,
 		}),
@@ -42,13 +38,7 @@ const KøKriterieViewer = ({ query, tittel, paakrevdeKoder }: OwnProps) => {
 				</Heading>
 				<div className="flex flex-col gap-4">
 					{oppgaveQuery.filtere.map((item) => (
-						<OppgavefilterPanel
-							key={item.id}
-							køvisning
-							oppgavefilter={item}
-							addGruppeOperation={addGruppe(oppgaveQuery.id)}
-							paakrevdeKoder={paakrevdeKoder}
-						/>
+						<OppgavefilterPanel key={item.id} køvisning oppgavefilter={item} />
 					))}
 				</div>
 			</div>

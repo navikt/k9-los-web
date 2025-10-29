@@ -37,16 +37,25 @@ function KriterieOperator({ oppgavefilter, readOnly }: { oppgavefilter: Feltverd
 		[JSON.stringify(kriterieDefinisjon)],
 	);
 
+	// I readOnly modus: vis alltid operatoren selv om den ikke er i listen
+	const operatorsToShow = useMemo(() => {
+		if (readOnly && oppgavefilter.operator && !operators.includes(oppgavefilter.operator)) {
+			return [...operators, oppgavefilter.operator];
+		}
+		return operators;
+	}, [operators, oppgavefilter.operator, readOnly]);
+
 	useEffect(() => {
-		if (operators.length && !operators.includes(oppgavefilter.operator)) {
+		if (!readOnly && operators.length && !operators.includes(oppgavefilter.operator)) {
 			updateQuery([
 				updateFilter(oppgavefilter.id, {
 					operator: operators[0],
 				}),
 			]);
 		}
-	}, [JSON.stringify(operators), JSON.stringify(kriterieDefinisjon)]);
-	if (operators.length <= 1) {
+	}, [JSON.stringify(operators), JSON.stringify(kriterieDefinisjon), readOnly]);
+
+	if (operatorsToShow.length <= 1) {
 		return null;
 	}
 
@@ -70,7 +79,7 @@ function KriterieOperator({ oppgavefilter, readOnly }: { oppgavefilter: Feltverd
 				onChange={handleChangeOperator}
 				readOnly={readOnly}
 			>
-				{operators.map((operator) => (
+				{operatorsToShow.map((operator) => (
 					<option key={operator} value={operator}>
 						{operatorDisplayMap[operator]}
 					</option>
