@@ -25,6 +25,8 @@ const OppgavefilterPanel = ({
 	paakrevdeKoder,
 	readOnlyKoder = [],
 }: OppgavefilterPanelProps) => {
+	const { readOnly: contextReadOnly } = useContext(FilterContext);
+
 	if (oppgavefilter.type === 'feltverdi' && 'kode' in oppgavefilter && oppgavefilter.kode === null) {
 		return (
 			<VelgKriterie
@@ -41,7 +43,7 @@ const OppgavefilterPanel = ({
 			<Kriterie
 				oppgavefilter={oppgavefilter}
 				paakrevdeKoder={paakrevdeKoder}
-				readOnly={readOnlyKoder.includes(oppgavefilter.kode)}
+				readOnly={contextReadOnly || readOnlyKoder.includes(oppgavefilter.kode)}
 			/>
 		);
 	}
@@ -57,7 +59,7 @@ interface FilterGruppeProps {
 	køvisning: boolean;
 }
 const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
-	const { updateQuery } = useContext(FilterContext);
+	const { updateQuery, readOnly } = useContext(FilterContext);
 	const handleToggle = (value: string) => {
 		updateQuery([updateFilter(oppgavefilter.id, { combineOperator: value })]);
 	};
@@ -68,18 +70,24 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 					<Label className="mr-2 self-center" size="small">
 						Gruppe:
 					</Label>
-					<ToggleGroup onChange={handleToggle} size="small" value={oppgavefilter.combineOperator}>
-						<ToggleGroup.Item value="AND">Og</ToggleGroup.Item>
-						<ToggleGroup.Item value="OR">Eller</ToggleGroup.Item>
-					</ToggleGroup>
+					{readOnly ? (
+						<span className="self-center text-sm">{oppgavefilter.combineOperator === 'AND' ? 'Og' : 'Eller'}</span>
+					) : (
+						<ToggleGroup onChange={handleToggle} size="small" value={oppgavefilter.combineOperator}>
+							<ToggleGroup.Item value="AND">Og</ToggleGroup.Item>
+							<ToggleGroup.Item value="OR">Eller</ToggleGroup.Item>
+						</ToggleGroup>
+					)}
 				</div>
-				<Button
-					icon={<TrashIcon height="1.5rem" width="1.5rem" />}
-					size="small"
-					variant="tertiary"
-					className="ml-auto"
-					onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}
-				/>
+				{!readOnly && (
+					<Button
+						icon={<TrashIcon height="1.5rem" width="1.5rem" />}
+						size="small"
+						variant="tertiary"
+						className="ml-auto"
+						onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}
+					/>
+				)}
 			</div>
 			<div className="flex flex-col gap-4">
 				{oppgavefilter.filtere.map((item) => (
@@ -91,15 +99,17 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 					/>
 				))}
 			</div>
-			<Button
-				className="mt-4 mb-13"
-				icon={<PlusCircleIcon aria-hidden />}
-				variant="tertiary"
-				size="small"
-				onClick={() => updateQuery([addFilter(oppgavefilter.id)])}
-			>
-				Legg til nytt kriterie
-			</Button>
+			{!readOnly && (
+				<Button
+					className="mt-4 mb-13"
+					icon={<PlusCircleIcon aria-hidden />}
+					variant="tertiary"
+					size="small"
+					onClick={() => updateQuery([addFilter(oppgavefilter.id)])}
+				>
+					Legg til nytt kriterie
+				</Button>
+			)}
 		</div>
 	);
 };

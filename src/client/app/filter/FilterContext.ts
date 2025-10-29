@@ -6,6 +6,7 @@ export type FilterContextType = {
 	oppgaveQuery: OppgaveQuery;
 	updateQuery: (operations: Array<QueryFunction>) => void;
 	errors: { id: string; felt: string; message: string }[];
+	readOnly?: boolean;
 };
 
 export const FilterContext = React.createContext<FilterContextType>(null);

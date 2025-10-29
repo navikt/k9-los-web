@@ -10,9 +10,10 @@ interface Props {
 	feltdefinisjon?: Oppgavefelt;
 	oppgavefilter: FeltverdiOppgavefilter;
 	error?: string;
+	readOnly?: boolean;
 }
 
-const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error }: Props) => {
+const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }: Props) => {
 	const [value, setValue] = useState('');
 	const [visSekundærvalg, setVisSekundærvalg] = useState(false);
 	const [selectedChildIndex, setSelectedChildIndex] = useState(undefined);
@@ -88,6 +89,7 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error }: Props) =>
 				selectedOptions={selectedOptions || []}
 				value={value}
 				error={error}
+				readOnly={readOnly}
 			/>
 		</div>
 	);

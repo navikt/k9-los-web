@@ -43,15 +43,17 @@ const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnl
 						</div>
 					</div>
 				)}
-				<div>
-					<Button
-						className={`ml-auto ${kriterieErPåkrevd ? 'invisible' : ''}`}
-						icon={<TrashIcon />}
-						size="small"
-						variant="tertiary"
-						onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}
-					/>
-				</div>
+				{!readOnly && (
+					<div>
+						<Button
+							className={`ml-auto ${kriterieErPåkrevd ? 'invisible' : ''}`}
+							icon={<TrashIcon />}
+							size="small"
+							variant="tertiary"
+							onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}
+						/>
+					</div>
+				)}
 			</div>
 			{feltdefinisjon && erAksjonspunktFelt(feltdefinisjon) && <Aksjonspunktvisning oppgavefilter={oppgavefilter} />}
 		</div>

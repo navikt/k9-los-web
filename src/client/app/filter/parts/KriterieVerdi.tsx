@@ -144,6 +144,7 @@ const KriterieVerdi = ({
 				type="number"
 				placeholder="Antall dager"
 				min="0"
+				readOnly={readOnly}
 			/>
 		);
 	}
@@ -177,6 +178,7 @@ const KriterieVerdi = ({
 				onChange={handleChangeBoolean}
 				value={mapBooleanToStringArray((oppgavefilter.verdi as string[]) || [])}
 				error={errorMessage}
+				readOnly={readOnly}
 			>
 				<Checkbox value="ja">Ja</Checkbox>
 				{feltdefinisjon.kode !== OppgavefilterKode.Hastesak ? <Checkbox value="nei">Nei</Checkbox> : null}
@@ -199,6 +201,7 @@ const KriterieVerdi = ({
 				onChange={handleChangeValue}
 				value={oppgavefilter.verdi as string[]}
 				error={errorMessage}
+				readOnly={readOnly}
 			>
 				{feltdefinisjon.verdiforklaringer.map((verdiforklaring) => (
 					<Checkbox key={verdiforklaring.visningsnavn} value={verdiforklaring.verdi}>
@@ -215,7 +218,14 @@ const KriterieVerdi = ({
 		feltdefinisjon.verdiforklaringer.length &&
 		feltdefinisjon.verdiforklaringer.length > 0
 	) {
-		return <MultiSelectKriterie feltdefinisjon={feltdefinisjon} oppgavefilter={oppgavefilter} error={errorMessage} />;
+		return (
+			<MultiSelectKriterie
+				feltdefinisjon={feltdefinisjon}
+				oppgavefilter={oppgavefilter}
+				error={errorMessage}
+				readOnly={readOnly}
+			/>
+		);
 	}
 
 	return (

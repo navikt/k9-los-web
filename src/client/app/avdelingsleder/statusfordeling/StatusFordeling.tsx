@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react';
 import dayjs from 'dayjs';
 import { Detail, Heading, HelpText } from '@navikt/ds-react';
 import { useHentAvdelingslederStatusFordeling } from 'api/queries/avdelingslederQueries';
+import KøKriterieViewer from 'filter/KøKriterieViewer';
+import { OppgaveQuery } from 'filter/filterTsTypes';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import * as styles from './StatusFordeling.css';
 
@@ -14,7 +16,7 @@ function Forklaring({ tekst, hjelpetekst }: { tekst: string; hjelpetekst: ReactN
 	);
 }
 
-function visningsnavn(navn: string) {
+function visningsnavn(navn: string, query?: OppgaveQuery) {
 	switch (navn) {
 		case 'Behandlinger':
 			return <Forklaring tekst={navn} hjelpetekst={<>Alle oppgaver ekskludert behandlingstype nivå 1: «k9punsj».</>} />;
@@ -55,7 +57,7 @@ export function StatusFordeling() {
 					<div className={styles.rammer}>
 						{data.tall.map(({ linjer, tittel, topplinje, bunnlinje }) => (
 							<div className={styles.ramme} key={tittel.kode}>
-								<div className={styles.forklaring}>{visningsnavn(tittel.navn)}</div>
+								<div className={styles.forklaring}>{visningsnavn(tittel.navn, topplinje.kildespørring)}</div>
 								<div className={styles.tallcontainer}>
 									<div className={styles.hovedtall}>
 										<b>{topplinje.verdi}</b>&nbsp;<span>{topplinje.visningsnavn}</span>
