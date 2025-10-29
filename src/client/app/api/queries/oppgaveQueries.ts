@@ -38,3 +38,23 @@ export const useLastNedOppgaverSomFil = () =>
 			return response.data;
 		},
 	});
+
+/**
+ * Mutation for å validere en OppgaveQuery.
+ * Returnerer boolean som indikerer om querien er gyldig.
+ */
+export const useValiderOppgaveQuery = () =>
+	useMutation<boolean, Error, OppgaveQuery>({
+		mutationFn: (oppgaveQuery: OppgaveQuery) =>
+			axiosInstance.post(apiPaths.validerQuery, oppgaveQuery).then((response) => response.data),
+	});
+
+/**
+ * Mutation for å hente antall oppgaver basert på en OppgaveQuery.
+ * Returnerer antallet som number.
+ */
+export const useHentAntallOppgaver = () =>
+	useMutation<number, Error, OppgaveQuery>({
+		mutationFn: (oppgaveQuery: OppgaveQuery) =>
+			axiosInstance.post(apiPaths.hentAntallOppgaver, oppgaveQuery).then((response) => response.data),
+	});

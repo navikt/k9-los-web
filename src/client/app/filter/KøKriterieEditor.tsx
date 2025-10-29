@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { Alert, Button, Heading } from '@navikt/ds-react';
+import { ArrowsCirclepathIcon, PlusCircleIcon } from '@navikt/aksel-icons';
+import { Alert, Button, Heading, Label, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import apiPaths from 'api/apiPaths';
-import { post } from 'utils/axios';
-import { AntallOppgaver } from './AntallOppgaver';
+import { useHentAntallOppgaver, useValiderOppgaveQuery } from 'api/queries/oppgaveQueries';
 import { FilterContext } from './FilterContext';
 import OppgaveQueryModel from './OppgaveQueryModel';
 import * as styles from './filterIndex.css';
@@ -35,10 +33,14 @@ const KøKriterieEditor = ({
 	const [queryErrorMessage, setQueryErrorMessage] = useState(null);
 	const [queryErrors, setQueryErrors] = useState([]);
 	const [shouldRevalidate, setShouldRevalidate] = useState(false);
-	const [isValidating, setIsValidating] = useState(false);
 	const [oppgaveQuery, setOppgaveQuery] = useState(
 		initialQuery ? new OppgaveQueryModel(initialQuery).toOppgaveQuery() : new OppgaveQueryModel().toOppgaveQuery(),
 	);
+	const [antallOppgaver, setAntallOppgaver] = useState<number>();
+
+	const { isPending: validerIsPending, mutate: validerMutate } = useValiderOppgaveQuery();
+
+	const { mutate: hentAntallMutate, isPending: hentAntallIsPending } = useHentAntallOppgaver();
 
 	useEffect(() => {
 		if (oppgaveQuery && shouldRevalidate) {
@@ -58,33 +60,51 @@ const KøKriterieEditor = ({
 
 	const { felter } = React.useContext(AppContext);
 
-	const validateOppgaveQuery = async (isValidatingFunc: (validating: boolean) => void): Promise<boolean> => {
-		isValidatingFunc(true);
-		return post(apiPaths.validerQuery, oppgaveQuery)
-			.then((data: boolean) => {
-				isValidatingFunc(false);
-				return data;
-			})
-			.catch(() => {
-				isValidatingFunc(false);
-				return false;
-			});
+	const validerQuery = (feilmelding: string, onSuccess: () => void) => {
+		validerMutate(oppgaveQuery, {
+			onSuccess: (valideringOK) => {
+				const model = new OppgaveQueryModel(oppgaveQuery);
+				model.validate();
+				const errors = model.getErrors();
+
+				if (valideringOK && errors.length === 0) {
+					setQueryErrorMessage(null);
+					setQueryErrors([]);
+					onSuccess();
+				} else {
+					setAntallOppgaver(undefined);
+					setShouldRevalidate(true);
+					setQueryErrors(errors);
+					setQueryErrorMessage(feilmelding);
+				}
+			},
+			onError: () => {
+				setAntallOppgaver(undefined);
+				setShouldRevalidate(true);
+				setQueryErrorMessage(feilmelding);
+			},
+		});
 	};
 
-	const validerOgLagre = async () => {
-		const valideringOK = await validateOppgaveQuery(setIsValidating);
-		const model = new OppgaveQueryModel(oppgaveQuery);
-		model.validate();
-		const errors = model.getErrors();
-		if (valideringOK && errors.length === 0) {
-			setQueryErrorMessage(null);
-			setQueryErrors([]);
+	const hentAntall = () => {
+		validerQuery('Kriteriene er ikke gyldige. Kan ikke hente antall oppgaver.', () => {
+			hentAntallMutate(oppgaveQuery, {
+				onSuccess: (respons) => {
+					if (respons !== undefined) {
+						setAntallOppgaver(respons);
+					}
+				},
+				onError: () => {
+					setQueryErrorMessage('Noe gikk galt ved henting av antall oppgaver. Prøv igjen senere.');
+				},
+			});
+		});
+	};
+
+	const validerOgLagre = () => {
+		validerQuery('Kriteriene er ikke gyldige. Kriterier for kø kan ikke lagres.', () => {
 			lagre(oppgaveQuery);
-			return;
-		}
-		setShouldRevalidate(true);
-		setQueryErrors(errors);
-		setQueryErrorMessage('Kriteriene er ikke gyldige. Kriterier for kø kan ikke lagres.');
+		});
 	};
 
 	const filterContextValues = useMemo(
@@ -136,7 +156,22 @@ const KøKriterieEditor = ({
 								<EnkelSortering />
 							</div>
 						)}
-						<AntallOppgaver setQueryError={setQueryErrorMessage} />
+						<div className="flex flex-col">
+							<Label size="small">
+								Antall oppgaver:{' '}
+								{validerIsPending || hentAntallIsPending ? <Skeleton className="inline-block w-12" /> : antallOppgaver}
+							</Label>
+							<Button
+								variant="tertiary"
+								icon={<ArrowsCirclepathIcon aria-hidden />}
+								size="small"
+								onClick={hentAntall}
+								loading={validerIsPending || hentAntallIsPending}
+								disabled={validerIsPending || hentAntallIsPending}
+							>
+								Oppdater antall
+							</Button>
+						</div>
 					</div>
 					{queryErrorMessage && (
 						<Alert variant="error" className="my-4">
@@ -145,10 +180,10 @@ const KøKriterieEditor = ({
 					)}
 					<div className={styles.filterButtonGroup}>
 						<div className="ml-auto">
-							<Button className="mr-2" variant="secondary" onClick={avbryt} disabled={isValidating}>
+							<Button className="mr-2" variant="secondary" onClick={avbryt} disabled={validerIsPending}>
 								Avbryt
 							</Button>
-							<Button onClick={validerOgLagre} loading={isValidating} disabled={isValidating}>
+							<Button onClick={validerOgLagre} loading={validerIsPending} disabled={validerIsPending}>
 								Lagre
 							</Button>
 						</div>
