@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { UseQueryResult, useQueries } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 import { FilesIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton, SortState, Table, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
@@ -51,6 +51,7 @@ function EndreTittel({
 				onChange={(event) => setTittel(event.target.value)}
 				error={feilmelding}
 				htmlSize={40}
+				maxLength={100}
 				autoFocus
 			/>
 			<Button variant="secondary" disabled={isPending} type="submit">
@@ -157,7 +158,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 								<ModalButton
 									renderButton={({ openModal }) => (
 										<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
-											Endre kriterier
+											Endre&nbsp;kriterier
 										</Button>
 									)}
 									renderModal={({ open, closeModal }) => (
