@@ -1,45 +1,68 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { Detail, Heading, HelpText } from '@navikt/ds-react';
+import { InformationIcon } from '@navikt/aksel-icons';
+import { Alert, BodyShort, Detail, Heading, Popover } from '@navikt/ds-react';
 import { useHentAvdelingslederStatusFordeling } from 'api/queries/avdelingslederQueries';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { OppgaveQuery } from 'filter/filterTsTypes';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import * as styles from './StatusFordeling.css';
 
-function Forklaring({ tekst, hjelpetekst }: { tekst: string; hjelpetekst: ReactNode }) {
+function KildeViewer({
+	tittel,
+	linje,
+	children,
+}: {
+	tittel: string;
+	linje: { visningsnavn: string; verdi: number; kildespørring: OppgaveQuery };
+	children: ReactNode | ReactNode[];
+}) {
+	const [openPopover, setOpenPopover] = useState(false);
+	const href = useRef<HTMLDivElement>(null);
 	return (
-		<>
-			<div className={styles.forklaringTekst}>{tekst}</div>
-			<HelpText>{hjelpetekst}</HelpText>
-		</>
+		<div>
+			{/* Vurder annet html-element */}
+			<div
+				onKeyUp={(event) => {
+					if (event.key === 'Enter') {
+						setOpenPopover(!openPopover);
+					}
+				}}
+				role="button"
+				tabIndex={0}
+				ref={href}
+				className="flex items-center gap-1"
+				onClick={() => setOpenPopover(!openPopover)}
+			>
+				<div
+					className={
+						openPopover
+							? 'underline decoration-dashed cursor-pointer'
+							: 'hover:underline hover:decoration-dashed hover:cursor-pointer'
+					}
+				>
+					{children}
+				</div>
+			</div>
+			<Popover anchorEl={href.current} open={openPopover} onClose={() => setOpenPopover(false)}>
+				<div className="max-w-screen-md">
+					<div className="p-4">
+						<BodyShort>
+							Antallet{' '}
+							<b>
+								{linje.verdi} {linje.visningsnavn}
+							</b>{' '}
+							i gruppe <b>{tittel}</b> er funnet ved søk med kriteriene under. Dersom du ønsker å finne disse oppgavene
+							kan du opprette et lagret søk eller en oppgavekø, og sette tilsvarende kriterier som under.
+						</BodyShort>
+						<VerticalSpacer sixteenPx />
+						<BodyShort>Du kan ikke endre kriteriene her.</BodyShort>
+					</div>
+					<KøKriterieViewer query={linje.kildespørring} tittel="Kriterier" />
+				</div>
+			</Popover>
+		</div>
 	);
-}
-
-function visningsnavn(navn: string, query?: OppgaveQuery) {
-	switch (navn) {
-		case 'Behandlinger':
-			return <Forklaring tekst={navn} hjelpetekst={<>Alle oppgaver ekskludert behandlingstype nivå 1: «k9punsj».</>} />;
-		case 'Feilutbetalinger':
-			return <Forklaring tekst={navn} hjelpetekst="Oppgaver med behandlingstype nivå 1: «k9tilbake»." />;
-		case 'Revurderinger':
-			return (
-				<Forklaring
-					tekst={navn}
-					hjelpetekst="Oppgaver med behandlingstype nivå 2: «Revurdering», «Tilbakekreving revurdering»."
-				/>
-			);
-		case 'Unntaksbehandlinger':
-			return <Forklaring tekst={navn} hjelpetekst="Oppgaver med behandlingstype nivå 2: «Unntaksbehandling»." />;
-		case 'Klager':
-			return <Forklaring tekst={navn} hjelpetekst={<>Oppgaver med behandlingstype nivå 1: «k9klage».</>} />;
-		case 'Punsj-oppgaver':
-			return <Forklaring tekst={navn} hjelpetekst="Oppgaver med behandlingstype nivå 1: «k9punsj»." />;
-		case 'Førstegangsbehandlinger':
-			return <Forklaring tekst={navn} hjelpetekst="Oppgaver med behandlingstype nivå 2: «Førstegangsbehandling»." />;
-		default:
-			return navn;
-	}
 }
 
 export function StatusFordeling() {
@@ -57,20 +80,28 @@ export function StatusFordeling() {
 					<div className={styles.rammer}>
 						{data.tall.map(({ linjer, tittel, topplinje, bunnlinje }) => (
 							<div className={styles.ramme} key={tittel.kode}>
-								<div className={styles.forklaring}>{visningsnavn(tittel.navn, topplinje.kildespørring)}</div>
+								<div className={styles.forklaring}>
+									<div className={styles.forklaringTekst}>{tittel.navn}</div>
+								</div>
 								<div className={styles.tallcontainer}>
 									<div className={styles.hovedtall}>
-										<b>{topplinje.verdi}</b>&nbsp;<span>{topplinje.visningsnavn}</span>
+										<KildeViewer tittel={tittel.navn} linje={topplinje}>
+											{`${topplinje.verdi} ${topplinje.visningsnavn}`}
+										</KildeViewer>
 									</div>
 									<div className={styles.nedbrytning}>
 										{linjer.map((linje) => (
-											<div className={styles.nedbrytningElement} key={linje.visningsnavn}>
-												{`${linje.verdi} ${linje.visningsnavn}`}
-											</div>
+											<KildeViewer key={linje.visningsnavn} tittel={tittel.navn} linje={linje}>
+												<div className={styles.nedbrytningElement} key={linje.visningsnavn}>
+													{`${linje.verdi} ${linje.visningsnavn}`}
+												</div>
+											</KildeViewer>
 										))}
-										<div className={styles.nedbrytningElement}>
-											<b>{`${bunnlinje.verdi} ${bunnlinje.visningsnavn}`}</b>
-										</div>
+										<KildeViewer tittel={tittel.navn} linje={bunnlinje}>
+											<div className={styles.nedbrytningElement}>
+												<b>{`${bunnlinje.verdi} ${bunnlinje.visningsnavn}`}</b>
+											</div>
+										</KildeViewer>
 									</div>
 								</div>
 							</div>
