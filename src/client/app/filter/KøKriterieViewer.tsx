@@ -32,8 +32,8 @@ const KøKriterieViewer = ({ query, tittel }: OwnProps) => {
 
 	return (
 		<FilterContext.Provider value={filterContextValues}>
-			<div className="mt-3 p-4 rounded-lg flex flex-col flex-grow">
-				<Heading size="small" spacing className="mt-3">
+			<div className="mt-0 p-4 rounded-lg flex flex-col flex-grow">
+				<Heading size="small" spacing className="mt-0">
 					{tittel}
 				</Heading>
 				<div className="flex flex-col gap-4">

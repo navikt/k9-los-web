@@ -15,7 +15,7 @@
     border-radius: 4px;
     color: #262626;
     transition: box-shadow 0.2s ease;
-    width: 214px;
+    width: 211px;
     padding: 11px;
 }
 
@@ -77,4 +77,9 @@
     font-weight: 600;
     color: #495057;
     margin-right: 4px;
+}
+
+.tekst {
+    cursor: pointer;
+    text-decoration: #495057 dotted 2px;
 }
