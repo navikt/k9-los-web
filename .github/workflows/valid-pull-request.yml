@@ -62,10 +62,11 @@ jobs:
       id-token: write
       contents: read
       packages: read
-    uses: navikt/sif-gha-workflows/.github/workflows/verdikjede-test-v2.yml@main
+    uses: navikt/sif-gha-workflows/.github/workflows/verdikjede-test-v2.yml@playwright-speedup
     if: ${{github.actor != 'dependabot[bot]'}}
     with:
       suites: 'frontend-los'
       tag: ${{ needs.build-and-test.outputs.image_version }}
       image_version: ${{ needs.build-and-test.outputs.image_version }}
       override_image_artifact_name: ${{ needs.build-and-test.outputs.image_artifact_name }}
+      k9-verdikjede-sha: 'playwright-container'
