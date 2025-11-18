@@ -43,7 +43,7 @@ export function EndreKriterierLagretSøkModal({
 			<Modal.Body>
 				<AppContext.Provider value={overstyrteFeltdefinisjoner}>
 					<KøKriterieEditor
-						tittel="Endre lagret søk"
+						tittel="Kriterier for lagret søk"
 						initialQuery={lagretSøk.query}
 						avbryt={closeModal}
 						paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
