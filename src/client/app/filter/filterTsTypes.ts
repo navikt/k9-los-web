@@ -7,7 +7,7 @@ export type FeltverdiOppgavefilter = Oppgavefilter & {
 	område: string;
 	kode: OppgavefilterKode;
 	operator: string;
-	verdi: string | string[];
+	verdi: string[];
 };
 
 export type CombineOppgavefilter = Oppgavefilter &

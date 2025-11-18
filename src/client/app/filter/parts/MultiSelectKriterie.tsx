@@ -19,7 +19,7 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 	const [selectedChildIndex, setSelectedChildIndex] = useState(undefined);
 	const [options, setOptions] = useState([]);
 	const { updateQuery } = useContext(FilterContext);
-	const verdier = oppgavefilter.verdi as string[];
+	const verdier = oppgavefilter.verdi;
 	const selectedOptions = verdier?.map((v) => {
 		const option = feltdefinisjon.verdiforklaringer.find((verdiforklaring) => verdiforklaring.verdi === v);
 		return { value: option.verdi, label: option.visningsnavn };

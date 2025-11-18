@@ -15,6 +15,7 @@ import { FeltverdiOppgavefilter, Oppgavefelt, OppgavefilterKode, TolkesSom } fro
 import { aksjonspunktKoder } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS, calculateDays, mapBooleanToStringArray, mapStringToBooleanArray } from 'filter/utils';
+import { enkeltverdi } from 'utils/enkeltverdi';
 import * as styles from '../filterIndex.css';
 import MultiSelectKriterie from './MultiSelectKriterie';
 
@@ -59,8 +60,8 @@ const KriterieVerdi = ({
 		handleChangeValue(newDate);
 	};
 	const initialDate =
-		oppgavefilter.verdi && dayjs(new Date(oppgavefilter.verdi as string)).isValid()
-			? new Date(oppgavefilter.verdi as string)
+		oppgavefilter.verdi && dayjs(new Date(enkeltverdi(oppgavefilter.verdi))).isValid()
+			? new Date(enkeltverdi(oppgavefilter.verdi))
 			: undefined;
 	const { datepickerProps, inputProps } = useDatepicker({
 		fromDate: new Date('23 2017'),
@@ -118,7 +119,7 @@ const KriterieVerdi = ({
 				label="Personbeskyttelse"
 				hideLabel
 				size="small"
-				value={oppgavefilter.verdi as string}
+				value={enkeltverdi(oppgavefilter.verdi)}
 				onChange={(e) => handleChangeValue(e.target.value)}
 				error={errorMessage}
 				readOnly={readOnly}
@@ -138,7 +139,7 @@ const KriterieVerdi = ({
 				label="Antall dager"
 				size="small"
 				hideLabel
-				value={calculateDays(oppgavefilter.verdi as string[])}
+				value={calculateDays(oppgavefilter.verdi)}
 				onChange={handleDaysChange}
 				error={errorMessage}
 				type="number"
@@ -176,7 +177,7 @@ const KriterieVerdi = ({
 				hideLegend
 				legend={feltdefinisjon.visningsnavn}
 				onChange={handleChangeBoolean}
-				value={mapBooleanToStringArray((oppgavefilter.verdi as string[]) || [])}
+				value={mapBooleanToStringArray(oppgavefilter.verdi || [])}
 				error={errorMessage}
 				readOnly={readOnly}
 			>
@@ -199,7 +200,7 @@ const KriterieVerdi = ({
 				hideLegend
 				legend={feltdefinisjon.visningsnavn}
 				onChange={handleChangeValue}
-				value={oppgavefilter.verdi as string[]}
+				value={oppgavefilter.verdi}
 				error={errorMessage}
 				readOnly={readOnly}
 			>
@@ -234,7 +235,7 @@ const KriterieVerdi = ({
 			size="small"
 			hideLabel
 			error={errorMessage}
-			value={oppgavefilter.verdi as string}
+			value={enkeltverdi(oppgavefilter.verdi)}
 			onChange={(e) => handleChangeValue(e.target.value)}
 		/>
 	);

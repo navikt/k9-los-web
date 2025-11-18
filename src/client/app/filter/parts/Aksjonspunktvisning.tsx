@@ -22,7 +22,7 @@ export const Aksjonspunktvisning = ({ oppgavefilter }: Props) => {
 		}))
 		.sort((a, b) => Number(a.value) - Number(b.value));
 
-	const valgteAksjonspunkter = (oppgavefilter.verdi as string[]) || [];
+	const valgteAksjonspunkter = oppgavefilter.verdi || [];
 	const values = valgteAksjonspunkter.map((value) => {
 		const aksjonspunkt = formaterteOppgavekoder.find((ap) => ap.value === value);
 		return {
