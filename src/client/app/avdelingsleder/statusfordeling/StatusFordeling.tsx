@@ -1,7 +1,6 @@
 import React, { ReactNode, useRef, useState } from 'react';
 import dayjs from 'dayjs';
-import { InformationIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Detail, Heading, Popover } from '@navikt/ds-react';
+import { BodyShort, Detail, Heading, Popover } from '@navikt/ds-react';
 import { useHentAvdelingslederStatusFordeling } from 'api/queries/avdelingslederQueries';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { OppgaveQuery } from 'filter/filterTsTypes';
@@ -45,21 +44,23 @@ function KildeViewer({
 				</div>
 			</div>
 			<Popover anchorEl={href.current} open={openPopover} onClose={() => setOpenPopover(false)}>
-				<div className="max-w-screen-md">
-					<div className="p-4">
-						<BodyShort>
-							Antallet{' '}
-							<b>
-								{linje.verdi} {linje.visningsnavn}
-							</b>{' '}
-							i gruppe <b>{tittel}</b> er funnet ved søk med kriteriene under. Dersom du ønsker å finne disse oppgavene
-							kan du opprette et lagret søk eller en oppgavekø, og sette tilsvarende kriterier som under.
-						</BodyShort>
-						<VerticalSpacer sixteenPx />
-						<BodyShort>Du kan ikke endre kriteriene her.</BodyShort>
+				{openPopover && (
+					<div className="max-w-screen-md">
+						<div className="p-4">
+							<BodyShort>
+								Antallet{' '}
+								<b>
+									{linje.verdi} {linje.visningsnavn}
+								</b>{' '}
+								i gruppe <b>{tittel}</b> er funnet ved søk med kriteriene under. Dersom du ønsker å finne disse
+								oppgavene kan du opprette et lagret søk eller en oppgavekø, og sette tilsvarende kriterier som under.
+							</BodyShort>
+							<VerticalSpacer sixteenPx />
+							<BodyShort>Du kan ikke endre kriteriene her.</BodyShort>
+						</div>
+						<KøKriterieViewer query={linje.kildespørring} tittel="Kriterier" />
 					</div>
-					<KøKriterieViewer query={linje.kildespørring} tittel="Kriterier" />
-				</div>
+				)}
 			</Popover>
 		</div>
 	);
