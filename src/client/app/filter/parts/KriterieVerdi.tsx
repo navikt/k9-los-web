@@ -164,7 +164,14 @@ const KriterieVerdi = ({
 	if (feltdefinisjon?.tolkes_som === TolkesSom.Timestamp) {
 		return (
 			<DatePicker {...datepickerProps}>
-				<DatePicker.Input {...inputProps} size="small" error={errorMessage} label="Velg dato" hideLabel />
+				<DatePicker.Input
+					{...inputProps}
+					size="small"
+					error={errorMessage}
+					label="Velg dato"
+					readOnly={readOnly}
+					hideLabel
+				/>
 			</DatePicker>
 		);
 	}

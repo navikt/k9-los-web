@@ -93,16 +93,15 @@
 	margin: 10px;
 }
 
-.nedbrytningsElement {
+.nedbrytning > div {
+	line-height: 1;
+}
+
+.nedbrytning span {
 	font-size: 13px;
-	line-height: 1.2;
 	font-weight: 500;
 	color: #2d6a4f;
 	white-space: nowrap;
-}
-
-.nedbrytningsElement:hover {
-	background-color: rgba(205, 231, 216, 0.6);
 }
 
 .forklaring {
