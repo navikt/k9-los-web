@@ -110,7 +110,7 @@ jobs:
       contents: write
     if: github.ref_name == 'master'
     environment: prod-gcp:k9saksbehandling
-    needs: [build-and-deploy, compare-url-prod]
+    needs: [build-and-deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
