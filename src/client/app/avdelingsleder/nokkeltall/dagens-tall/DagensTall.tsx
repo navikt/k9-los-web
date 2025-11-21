@@ -45,19 +45,11 @@ export default function DagensTall() {
 						{data.tall
 							.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe)
 							.map((value) => {
-								const venstreTall = tidsområde === 'I_DAG' ? value.nyeIDag : value.nyeSiste7Dager;
-								const høyreTall = tidsområde === 'I_DAG' ? value.ferdigstilteIDag : value.ferdigstilteSiste7Dager;
-								const høyreAndreTall =
-									tidsområde === 'I_DAG'
-										? value.ferdigstilteHelautomatiskIDag
-										: value.ferdigstilteHelautomatiskSiste7Dager;
 								return (
 									<Teller3
 										key={value.undergruppe}
 										forklaring={data.undergrupper.find(({ kode }) => kode === value.undergruppe).navn}
-										inngang={venstreTall}
-										manuelleFerdigstilt={høyreTall}
-										automatiskeFerdigstilt={høyreAndreTall}
+										tall={tidsområde === 'I_DAG' ? value.idag : value.siste7Dager}
 									/>
 								);
 							})}

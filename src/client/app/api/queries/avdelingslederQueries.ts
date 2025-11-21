@@ -185,6 +185,13 @@ export const useHentAvdelingslederStatusFordeling = () =>
 		refetchInterval: 60000,
 	});
 
+type DagensTallLinje = { visningsnavn: string; verdi: number; kildespørring: OppgaveQuery };
+
+export type DagensTallHovedtallOgLinjer = {
+	hovedtall: DagensTallLinje;
+	linjer: DagensTallLinje[];
+};
+
 export const useHentDagensTall = () =>
 	useQuery<{
 		oppdatertTidspunkt?: string;
@@ -194,12 +201,8 @@ export const useHentDagensTall = () =>
 			{
 				hovedgruppe: string;
 				undergruppe: string;
-				nyeIDag: number;
-				ferdigstilteIDag: number;
-				ferdigstilteHelautomatiskIDag?: number;
-				nyeSiste7Dager: number;
-				ferdigstilteSiste7Dager: number;
-				ferdigstilteHelautomatiskSiste7Dager?: number;
+				idag: [DagensTallHovedtallOgLinjer, DagensTallHovedtallOgLinjer];
+				siste7Dager: [DagensTallHovedtallOgLinjer, DagensTallHovedtallOgLinjer];
 			},
 		];
 	}>({
