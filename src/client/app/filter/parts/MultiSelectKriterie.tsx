@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 import React, { useContext, useEffect, useState } from 'react';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
+import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
@@ -17,11 +18,14 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 	const [value, setValue] = useState('');
 	const [visSekundærvalg, setVisSekundærvalg] = useState(false);
 	const [selectedChildIndex, setSelectedChildIndex] = useState(undefined);
-	const [options, setOptions] = useState([]);
+	const [options, setOptions] = useState<ComboboxOption[]>([]);
 	const { updateQuery } = useContext(FilterContext);
 	const verdier = oppgavefilter.verdi;
 	const selectedOptions = verdier?.map((v) => {
 		const option = feltdefinisjon.verdiforklaringer.find((verdiforklaring) => verdiforklaring.verdi === v);
+		if (!option) {
+			return { value: v, label: v };
+		}
 		return { value: option.verdi, label: option.visningsnavn };
 	});
 
@@ -46,7 +50,12 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 		const filteredOptions = feltdefinisjon.verdiforklaringer
 			?.filter((v) => !v.sekundærvalg)
 			?.map((v) => ({ value: v.verdi, label: v.visningsnavn }));
-		return [...filteredOptions, harSekundærvalg ? '--- Vis alle ---' : false].filter(Boolean);
+
+		if (harSekundærvalg) {
+			return [...filteredOptions, { value: '--- Vis alle ---', label: '--- Vis alle ---' }];
+		}
+
+		return filteredOptions;
 	};
 
 	useEffect(() => {
