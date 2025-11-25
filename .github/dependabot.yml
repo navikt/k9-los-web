@@ -9,6 +9,8 @@ updates:
     directory: '/'
     schedule:
       interval: daily
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 30
     registries:
       - npm-github
@@ -42,14 +44,14 @@ updates:
         patterns:
           - '@navikt/ft-*'
   - package-ecosystem: github-actions
-    directory: "/"
+    directory: '/'
     schedule:
       interval: daily
     groups:
       github:
         patterns:
-          - "*"
+          - '*'
   - package-ecosystem: docker
-    directory: "/"
+    directory: '/'
     schedule:
       interval: daily
