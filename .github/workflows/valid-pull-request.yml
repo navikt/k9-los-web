@@ -24,7 +24,7 @@ jobs:
 
     steps:
       - name: Hente kode
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Sette yarn-config
         run: |
           yarn config set npmScopes.navikt.npmRegistryServer "https://npm.pkg.github.com"
@@ -33,7 +33,7 @@ jobs:
         env:
           NPM_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Sette opp Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22.x
           cache: yarn
