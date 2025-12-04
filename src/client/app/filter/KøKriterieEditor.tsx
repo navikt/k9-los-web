@@ -8,6 +8,7 @@ import OppgaveQueryModel from './OppgaveQueryModel';
 import * as styles from './filterIndex.css';
 import { OppgaveQuery, OppgavefilterKode } from './filterTsTypes';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
+import OppgaveSelectFelter from './parts/OppgaveSelectFelter';
 import { QueryFunction, addFilter, addGruppe, applyFunctions } from './queryUtils';
 import EnkelSortering from './sortering/EnkelSortering';
 
@@ -19,6 +20,7 @@ interface OwnProps {
 	paakrevdeKoder?: OppgavefilterKode[];
 	readOnlyKoder?: OppgavefilterKode[];
 	visSortering?: boolean;
+	visSelectFelter?: boolean;
 }
 
 const KøKriterieEditor = ({
@@ -27,6 +29,7 @@ const KøKriterieEditor = ({
 	avbryt,
 	tittel,
 	visSortering,
+	visSelectFelter,
 	paakrevdeKoder,
 	readOnlyKoder,
 }: OwnProps) => {
@@ -149,6 +152,14 @@ const KøKriterieEditor = ({
 						Legg til nytt kriterie
 					</Button>
 				</div>
+				{visSelectFelter && (
+					<div className="mt-8">
+						<Heading size="xsmall" spacing>
+							Felter som skal vises i søkeresultat
+						</Heading>
+						<OppgaveSelectFelter />
+					</div>
+				)}
 				<div className="mt-auto">
 					<div className="bg-surface-subtle rounded flex gap-8 p-5 mt-8">
 						{visSortering && (

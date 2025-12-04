@@ -51,6 +51,8 @@ export function EndreKriterierLagretSøkModal({
 						lagre={(oppgaveQuery) => {
 							endreLagretSøk({ ...lagretSøk, query: oppgaveQuery });
 						}}
+						visSortering
+						visSelectFelter
 					/>
 				</AppContext.Provider>
 			</Modal.Body>
