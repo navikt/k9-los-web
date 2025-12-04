@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { DownloadIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Heading, Skeleton, Table } from '@navikt/ds-react';
+import { DownloadIcon, PlayIcon } from '@navikt/aksel-icons';
+import { Alert, BodyShort, Button, Heading, Modal, Skeleton, Table } from '@navikt/ds-react';
+import { WarningIcon } from '@navikt/ft-plattform-komponenter';
 import apiPaths from 'api/apiPaths';
 import { Uttrekk, UttrekkStatus, useHentUttrekkForLagretSøk } from 'api/queries/avdelingslederQueries';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
-import { dateFormat } from 'utils/dateUtils';
+import { dateTimeFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 interface UttrekkForLagretSøkProps {
@@ -79,31 +80,34 @@ function UttrekkRad({ uttrekk, lagretSøkTittel }: { uttrekk: Uttrekk; lagretSø
 
 	return (
 		<Table.Row>
-			<Table.DataCell>{uttrekk.typeKjøring}</Table.DataCell>
 			<Table.DataCell>
-				<span className={`px-2 py-1 rounded text-sm bg-${getStatusVariant(uttrekk.status)}-100`}>
-					{getStatusText(uttrekk.status)}
-				</span>
+				{/* <span className={`px-2 py-1 rounded text-sm bg-${getStatusVariant(uttrekk.status)}-100`}> */}
+				{/* 	{getStatusText(uttrekk.status)} */}
+				{/* </span> */}
+				{getStatusText(uttrekk.status)}
 			</Table.DataCell>
 			<Table.DataCell>{uttrekk.antall !== null ? uttrekk.antall : '-'}</Table.DataCell>
-			<Table.DataCell>{dateFormat(uttrekk.opprettetTidspunkt)}</Table.DataCell>
-			<Table.DataCell>{uttrekk.fullførtTidspunkt ? dateFormat(uttrekk.fullførtTidspunkt) : '-'}</Table.DataCell>
+			<Table.DataCell>{dateTimeFormat(uttrekk.opprettetTidspunkt)}</Table.DataCell>
+			<Table.DataCell>{uttrekk.fullførtTidspunkt ? dateTimeFormat(uttrekk.fullførtTidspunkt) : '-'}</Table.DataCell>
 			<Table.DataCell>
 				{kanLasteNed && (
-					<Button
-						size="small"
-						variant="tertiary"
-						icon={<DownloadIcon />}
-						onClick={lastNedCsv}
-						loading={lasterNed}
-					>
+					<Button size="small" variant="tertiary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
 						Last ned CSV
 					</Button>
 				)}
 				{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
-					<BodyShort size="small" className="text-red-600">
-						{uttrekk.feilmelding}
-					</BodyShort>
+					<ModalButton
+						renderButton={() => (
+							<Button icon={<WarningIcon />} size="small">
+								Vis feilmelding
+							</Button>
+						)}
+						renderModal={({ open, closeModal }) => (
+							<Modal header={{ heading: 'Feil ved kjøring av uttrekk' }} open={open} onClose={closeModal}>
+								Feilmelding: <pre>{uttrekk.feilmelding}</pre>
+							</Modal>
+						)}
+					/>
 				)}
 			</Table.DataCell>
 		</Table.Row>
@@ -127,8 +131,8 @@ export function UttrekkForLagretSøk({ lagretSøkId, lagretSøkTittel }: Uttrekk
 				<Heading size="small">Uttrekk</Heading>
 				<ModalButton
 					renderButton={({ openModal }) => (
-						<Button icon={<DownloadIcon />} variant="primary" size="small" onClick={openModal}>
-							Opprett nytt uttrekk
+						<Button icon={<PlayIcon />} variant="primary" size="small" onClick={openModal}>
+							Gjør et nytt uttrekk
 						</Button>
 					)}
 					renderModal={({ open, closeModal }) => (
@@ -148,7 +152,6 @@ export function UttrekkForLagretSøk({ lagretSøkId, lagretSøkTittel }: Uttrekk
 				<Table size="small">
 					<Table.Header>
 						<Table.Row>
-							<Table.ColumnHeader scope="col">Type</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col">Antall</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col">Opprettet</Table.ColumnHeader>
