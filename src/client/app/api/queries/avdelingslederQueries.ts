@@ -353,6 +353,7 @@ export interface Uttrekk {
 	lagretSøkId: number;
 	kjøreplan: string | null;
 	typeKjøring: TypeKjøring;
+	antall: number | null;
 	feilmelding: string | null;
 	startetTidspunkt: string | null;
 	fullførtTidspunkt: string | null;

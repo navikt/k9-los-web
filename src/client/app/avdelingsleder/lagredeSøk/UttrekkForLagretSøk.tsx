@@ -71,6 +71,12 @@ function UttrekkRad({ uttrekk, lagretSøkTittel }: { uttrekk: Uttrekk; lagretSø
 		}
 	};
 
+	const kanLasteNed =
+		uttrekk.status === UttrekkStatus.FULLFØRT &&
+		uttrekk.typeKjøring === 'OPPGAVER' &&
+		uttrekk.antall !== null &&
+		uttrekk.antall > 0;
+
 	return (
 		<Table.Row>
 			<Table.DataCell>{uttrekk.typeKjøring}</Table.DataCell>
@@ -79,10 +85,11 @@ function UttrekkRad({ uttrekk, lagretSøkTittel }: { uttrekk: Uttrekk; lagretSø
 					{getStatusText(uttrekk.status)}
 				</span>
 			</Table.DataCell>
+			<Table.DataCell>{uttrekk.antall !== null ? uttrekk.antall : '-'}</Table.DataCell>
 			<Table.DataCell>{dateFormat(uttrekk.opprettetTidspunkt)}</Table.DataCell>
 			<Table.DataCell>{uttrekk.fullførtTidspunkt ? dateFormat(uttrekk.fullførtTidspunkt) : '-'}</Table.DataCell>
 			<Table.DataCell>
-				{uttrekk.status === UttrekkStatus.FULLFØRT && (
+				{kanLasteNed && (
 					<Button
 						size="small"
 						variant="tertiary"
@@ -143,6 +150,7 @@ export function UttrekkForLagretSøk({ lagretSøkId, lagretSøkTittel }: Uttrekk
 						<Table.Row>
 							<Table.ColumnHeader scope="col">Type</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
+							<Table.ColumnHeader scope="col">Antall</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col">Opprettet</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col">Fullført</Table.ColumnHeader>
 							<Table.ColumnHeader scope="col">Handlinger</Table.ColumnHeader>
