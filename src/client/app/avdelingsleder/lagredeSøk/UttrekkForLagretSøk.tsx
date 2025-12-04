@@ -5,6 +5,7 @@ import {
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
 	PlayIcon,
+	StopIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Heading, Loader, Modal, Skeleton } from '@navikt/ds-react';
@@ -15,6 +16,7 @@ import {
 	UttrekkStatus,
 	useHentUttrekkForLagretSøk,
 	useSlettUttrekk,
+	useStoppUttrekk,
 } from 'api/queries/avdelingslederQueries';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
@@ -35,6 +37,8 @@ function getStatusText(status: UttrekkStatus): string {
 			return 'Fullført';
 		case UttrekkStatus.FEILET:
 			return 'Feilet';
+		case UttrekkStatus.STOPPET:
+			return 'Stoppet';
 		default:
 			return status;
 	}
@@ -50,6 +54,8 @@ function getStatusColor(status: UttrekkStatus): string {
 			return 'bg-green-100 text-green-800 border-green-300';
 		case UttrekkStatus.FEILET:
 			return 'bg-red-100 text-red-800 border-red-300';
+		case UttrekkStatus.STOPPET:
+			return 'bg-gray-100 text-gray-800 border-gray-300';
 		default:
 			return 'bg-gray-100 text-gray-800 border-gray-300';
 	}
@@ -65,6 +71,8 @@ function getStatusIcon(status: UttrekkStatus) {
 			return <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />;
 		case UttrekkStatus.FEILET:
 			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
+		case UttrekkStatus.STOPPET:
+			return <StopIcon aria-hidden fontSize="1.5rem" />;
 		default:
 			return null;
 	}
@@ -97,6 +105,7 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 	const [lasterNed, setLasterNed] = useState(false);
 	const [currentTime, setCurrentTime] = useState(Date.now());
 	const { mutate: slettUttrekk } = useSlettUttrekk();
+	const { mutate: stoppUttrekk } = useStoppUttrekk();
 
 	// Oppdater currentTime hvert sekund for aktive uttrekk
 	useEffect(() => {
@@ -140,6 +149,7 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 		uttrekk.antall !== null &&
 		uttrekk.antall > 0;
 
+	const kanStoppe = uttrekk.status === UttrekkStatus.KJØRER;
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 
 	const kjøretid = calculateDuration(
@@ -180,6 +190,17 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 					{kanLasteNed && (
 						<Button size="small" variant="secondary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
 							Last ned CSV
+						</Button>
+					)}
+					{kanStoppe && (
+						<Button
+							size="small"
+							variant="secondary"
+							icon={<StopIcon />}
+							onClick={() => stoppUttrekk(uttrekk)}
+							title="Stopp uttrekk"
+						>
+							Stopp
 						</Button>
 					)}
 					{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (

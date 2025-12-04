@@ -339,6 +339,7 @@ export enum UttrekkStatus {
 	KJØRER = 'KJØRER',
 	FULLFØRT = 'FULLFØRT',
 	FEILET = 'FEILET',
+	STOPPET = 'STOPPET',
 }
 
 export enum TypeKjøring {
@@ -401,6 +402,22 @@ export const useSlettUttrekk = (callback?: () => void) => {
 
 	return useMutation({
 		mutationFn: (uttrekk: Uttrekk) => axiosInstance.delete(apiPaths.slettUttrekk(uttrekk.id.toString())),
+		onSuccess: (_, uttrekk) =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentUttrekkForLagretSøk(uttrekk.lagretSøkId.toString())],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useStoppUttrekk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (uttrekk: Uttrekk) => axiosInstance.post(apiPaths.stoppUttrekk(uttrekk.id.toString())),
 		onSuccess: (_, uttrekk) =>
 			queryClient
 				.invalidateQueries({
