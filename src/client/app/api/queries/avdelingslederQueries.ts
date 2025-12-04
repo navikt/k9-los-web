@@ -370,6 +370,13 @@ export const useHentUttrekkForLagretSøk = (lagretSokId: number) =>
 		queryKey: [apiPaths.hentUttrekkForLagretSøk(lagretSokId.toString())],
 		queryFn: () =>
 			axiosInstance.get(apiPaths.hentUttrekkForLagretSøk(lagretSokId.toString())).then((response) => response.data),
+		refetchInterval: (query) => {
+			// Refetch hvert 1. sekund hvis det finnes uttrekk med status OPPRETTET eller KJØRER
+			const harAktiveUttrekk = query.state.data?.some(
+				(uttrekk) => uttrekk.status === UttrekkStatus.OPPRETTET || uttrekk.status === UttrekkStatus.KJØRER,
+			);
+			return harAktiveUttrekk ? 1000 : false;
+		},
 	});
 
 export const useOpprettUttrekk = (callback?: () => void) => {
@@ -382,6 +389,22 @@ export const useOpprettUttrekk = (callback?: () => void) => {
 			queryClient
 				.invalidateQueries({
 					queryKey: [apiPaths.hentUttrekkForLagretSøk(variables.lagretSokId.toString())],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useSlettUttrekk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (uttrekk: Uttrekk) => axiosInstance.delete(apiPaths.slettUttrekk(uttrekk.id.toString())),
+		onSuccess: (_, uttrekk) =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentUttrekkForLagretSøk(uttrekk.lagretSøkId.toString())],
 				})
 				.then(() => {
 					if (callback) callback();

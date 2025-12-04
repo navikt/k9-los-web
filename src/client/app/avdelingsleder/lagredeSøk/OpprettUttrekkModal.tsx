@@ -56,21 +56,20 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 			</Modal.Header>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Body>
-					<BodyShort spacing>
-						{harSelectFelter
-							? 'Uttrekket vil inneholde følgende felter:'
-							: 'Ingen felter er valgt. Uttrekket vil derfor kun hente antallet oppgaver.'}
-					</BodyShort>
-
 					{harSelectFelter ? (
-						<List>
-							{selectFelterMedNavn.map((felt) => (
-								<List.Item key={felt.id}>{felt.visningsnavn}</List.Item>
-							))}
-						</List>
+						<>
+							<BodyShort>Uttrekket vil inneholde følgende felter:</BodyShort>
+							<List>
+								{selectFelterMedNavn.map((felt) => (
+									<List.Item key={felt.id}>{felt.visningsnavn}</List.Item>
+								))}
+							</List>
+						</>
 					) : (
-						<Alert variant="warning" size="small">
-							Ingen felter er valgt for uttrekk. Uttrekket vil kun inneholde antall oppgaver som matcher søket.
+						<Alert variant="warning">
+							Ingen felter er valgt for uttrekk. Uttrekket vil kun inneholde antall oppgaver som matcher søket. For å
+							sette felter gå til &#34;Endre kriterier&#34; og legg til felter under &#34;Felter som skal vises i
+							søkeresultat&#34;.
 						</Alert>
 					)}
 
