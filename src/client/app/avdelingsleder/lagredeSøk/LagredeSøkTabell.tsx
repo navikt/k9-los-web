@@ -134,7 +134,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 						open={ekspandertRad === lagretSøk.id}
 						onOpenChange={() => setEkspandertRad(ekspandertRad === lagretSøk.id ? undefined : lagretSøk.id)}
 						togglePlacement="left"
-						content={<UttrekkForLagretSøk lagretSøkId={lagretSøk.id} lagretSøkTittel={lagretSøk.tittel} />}
+						content={<UttrekkForLagretSøk lagretSøk={lagretSøk} />}
 					>
 						<Table.DataCell>
 							{endres === lagretSøk.id ? (

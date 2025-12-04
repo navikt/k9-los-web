@@ -3,15 +3,14 @@ import { DownloadIcon, PlayIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Heading, Modal, Skeleton, Table } from '@navikt/ds-react';
 import { WarningIcon } from '@navikt/ft-plattform-komponenter';
 import apiPaths from 'api/apiPaths';
-import { Uttrekk, UttrekkStatus, useHentUttrekkForLagretSøk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, Uttrekk, UttrekkStatus, useHentUttrekkForLagretSøk } from 'api/queries/avdelingslederQueries';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
 import { dateTimeFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 interface UttrekkForLagretSøkProps {
-	lagretSøkId: number;
-	lagretSøkTittel: string;
+	lagretSøk: LagretSøk;
 }
 
 function getStatusText(status: UttrekkStatus): string {
@@ -29,22 +28,7 @@ function getStatusText(status: UttrekkStatus): string {
 	}
 }
 
-function getStatusVariant(status: UttrekkStatus): 'success' | 'warning' | 'error' | 'info' {
-	switch (status) {
-		case UttrekkStatus.FULLFØRT:
-			return 'success';
-		case UttrekkStatus.FEILET:
-			return 'error';
-		case UttrekkStatus.KJØRER:
-			return 'warning';
-		case UttrekkStatus.OPPRETTET:
-			return 'info';
-		default:
-			return 'info';
-	}
-}
-
-function UttrekkRad({ uttrekk, lagretSøkTittel }: { uttrekk: Uttrekk; lagretSøkTittel: string }) {
+function UttrekkRad({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: LagretSøk }) {
 	const [lasterNed, setLasterNed] = useState(false);
 
 	const lastNedCsv = async () => {
@@ -59,13 +43,14 @@ function UttrekkRad({ uttrekk, lagretSøkTittel }: { uttrekk: Uttrekk; lagretSø
 			const url = window.URL.createObjectURL(blob);
 			const link = document.createElement('a');
 			link.href = url;
-			const filnavn = `${lagretSøkTittel.replace(/[^a-z0-9]/gi, '_')}_${uttrekk.typeKjøring}_${uttrekk.id}.csv`;
+			const filnavn = `${lagretSøk.tittel.replace(/[^a-z0-9]/gi, '_')}_${uttrekk.typeKjøring}_${uttrekk.id}.csv`;
 			link.setAttribute('download', filnavn);
 			document.body.appendChild(link);
 			link.click();
 			link.remove();
 			window.URL.revokeObjectURL(url);
 		} catch (error) {
+			// eslint-disable-next-line no-console
 			console.error('Feil ved nedlasting av CSV:', error);
 		} finally {
 			setLasterNed(false);
@@ -114,8 +99,8 @@ function UttrekkRad({ uttrekk, lagretSøkTittel }: { uttrekk: Uttrekk; lagretSø
 	);
 }
 
-export function UttrekkForLagretSøk({ lagretSøkId, lagretSøkTittel }: UttrekkForLagretSøkProps) {
-	const { data: uttrekk, isLoading, isError } = useHentUttrekkForLagretSøk(lagretSøkId);
+export function UttrekkForLagretSøk({ lagretSøk }: UttrekkForLagretSøkProps) {
+	const { data: uttrekk, isLoading, isError } = useHentUttrekkForLagretSøk(lagretSøk.id);
 
 	if (isError) {
 		return (
@@ -136,12 +121,7 @@ export function UttrekkForLagretSøk({ lagretSøkId, lagretSøkTittel }: Uttrekk
 						</Button>
 					)}
 					renderModal={({ open, closeModal }) => (
-						<OpprettUttrekkModal
-							lagretSøkId={lagretSøkId}
-							lagretSøkTittel={lagretSøkTittel}
-							open={open}
-							closeModal={closeModal}
-						/>
+						<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
 					)}
 				/>
 			</div>
@@ -161,7 +141,7 @@ export function UttrekkForLagretSøk({ lagretSøkId, lagretSøkTittel }: Uttrekk
 					</Table.Header>
 					<Table.Body>
 						{uttrekk.map((u) => (
-							<UttrekkRad key={u.id} uttrekk={u} lagretSøkTittel={lagretSøkTittel} />
+							<UttrekkRad key={u.id} uttrekk={u} lagretSøk={lagretSøk} />
 						))}
 					</Table.Body>
 				</Table>

@@ -1,35 +1,44 @@
-import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { Button, Heading, Modal, Radio, RadioGroup } from '@navikt/ds-react';
-import { TypeKjøring, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
+import React, { useContext, useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { Alert, BodyShort, Button, Heading, List, Modal } from '@navikt/ds-react';
+import AppContext from 'app/AppContext';
+import { LagretSøk, TypeKjøring, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 
 interface OpprettUttrekkModalProps {
-	lagretSøkId: number;
-	lagretSøkTittel: string;
+	lagretSøk: LagretSøk;
 	open: boolean;
 	closeModal: () => void;
 }
 
-interface OpprettUttrekkFormData {
-	typeKjoring: TypeKjøring;
-}
-
-export function OpprettUttrekkModal({ lagretSøkId, lagretSøkTittel, open, closeModal }: OpprettUttrekkModalProps) {
+export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUttrekkModalProps) {
 	const { mutate, isPending, isError } = useOpprettUttrekk(() => {
 		closeModal();
 	});
 
-	const { control, handleSubmit, reset } = useForm<OpprettUttrekkFormData>({
-		defaultValues: {
-			typeKjoring: TypeKjøring.OPPGAVER,
-		},
-	});
+	const feltdefinisjoner = useContext(AppContext).felter;
 
-	const onSubmit = (data: OpprettUttrekkFormData) => {
+	// Automatisk bestem type basert på om det finnes select-felter
+	const harSelectFelter = lagretSøk.query.select.length > 0;
+	const typeKjoring = harSelectFelter ? TypeKjøring.OPPGAVER : TypeKjøring.ANTALL;
+
+	// Hent visningsnavn for select-feltene
+	const selectFelterMedNavn = useMemo(() => {
+		return lagretSøk.query.select.map((selectFelt) => {
+			const feltdef = feltdefinisjoner.find((f) => f.område === selectFelt.område && f.kode === selectFelt.kode);
+			return {
+				...selectFelt,
+				visningsnavn: feltdef?.visningsnavn || `${selectFelt.område}.${selectFelt.kode}`,
+			};
+		});
+	}, [lagretSøk.query.select, feltdefinisjoner]);
+
+	const { handleSubmit, reset } = useForm();
+
+	const onSubmit = () => {
 		mutate({
-			lagretSokId: lagretSøkId,
+			lagretSokId: lagretSøk.id,
 			kjoreplan: null,
-			typeKjoring: data.typeKjoring,
+			typeKjoring,
 		});
 	};
 
@@ -42,24 +51,33 @@ export function OpprettUttrekkModal({ lagretSøkId, lagretSøkTittel, open, clos
 		<Modal open={open} onClose={handleClose} width="medium" aria-label="Opprett uttrekk">
 			<Modal.Header>
 				<Heading level="1" size="medium">
-					Opprett uttrekk for &#34;{lagretSøkTittel}&#34;
+					Opprett uttrekk for "{lagretSøk.tittel}"
 				</Heading>
 			</Modal.Header>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Body>
-					<Controller
-						name="typeKjoring"
-						control={control}
-						rules={{ required: true }}
-						render={({ field }) => (
-							<RadioGroup legend="Velg type uttrekk" {...field}>
-								<Radio value={TypeKjøring.OPPGAVER}>Oppgaver - full liste over oppgaver som matcher søket</Radio>
-								<Radio value={TypeKjøring.ANTALL}>Antall - kun antall oppgaver som matcher søket</Radio>
-							</RadioGroup>
-						)}
-					/>
+					<BodyShort spacing>
+						{harSelectFelter
+							? 'Uttrekket vil inneholde følgende felter:'
+							: 'Ingen felter er valgt. Uttrekket vil derfor kun hente antallet oppgaver.'}
+					</BodyShort>
+
+					{harSelectFelter ? (
+						<List>
+							{selectFelterMedNavn.map((felt) => (
+								<List.Item key={felt.id}>{felt.visningsnavn}</List.Item>
+							))}
+						</List>
+					) : (
+						<Alert variant="warning" size="small">
+							Ingen felter er valgt for uttrekk. Uttrekket vil kun inneholde antall oppgaver som matcher søket.
+						</Alert>
+					)}
+
 					{isError && (
-						<div className="mt-4 text-red-600">Noe gikk galt ved opprettelse av uttrekk. Prøv igjen senere.</div>
+						<Alert variant="error" className="mt-4">
+							Noe gikk galt ved opprettelse av uttrekk. Prøv igjen senere.
+						</Alert>
 					)}
 				</Modal.Body>
 				<Modal.Footer>
