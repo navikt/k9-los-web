@@ -1,9 +1,21 @@
-import React, { useState } from 'react';
-import { DownloadIcon, PlayIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Heading, Modal, Skeleton, Table } from '@navikt/ds-react';
-import { WarningIcon } from '@navikt/ft-plattform-komponenter';
+import React, { useEffect, useState } from 'react';
+import {
+	CheckmarkCircleIcon,
+	ClockDashedIcon,
+	DownloadIcon,
+	ExclamationmarkTriangleIcon,
+	PlayIcon,
+	TrashIcon,
+} from '@navikt/aksel-icons';
+import { Alert, BodyShort, Button, Heading, Loader, Modal, Skeleton } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { LagretSøk, Uttrekk, UttrekkStatus, useHentUttrekkForLagretSøk } from 'api/queries/avdelingslederQueries';
+import {
+	LagretSøk,
+	Uttrekk,
+	UttrekkStatus,
+	useHentUttrekkForLagretSøk,
+	useSlettUttrekk,
+} from 'api/queries/avdelingslederQueries';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
 import { dateTimeFormat } from 'utils/dateUtils';
@@ -16,9 +28,9 @@ interface UttrekkForLagretSøkProps {
 function getStatusText(status: UttrekkStatus): string {
 	switch (status) {
 		case UttrekkStatus.OPPRETTET:
-			return 'Opprettet';
+			return 'Venter i kø';
 		case UttrekkStatus.KJØRER:
-			return 'Kjører';
+			return 'Kjører nå';
 		case UttrekkStatus.FULLFØRT:
 			return 'Fullført';
 		case UttrekkStatus.FEILET:
@@ -28,8 +40,74 @@ function getStatusText(status: UttrekkStatus): string {
 	}
 }
 
-function UttrekkRad({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: LagretSøk }) {
+function getStatusColor(status: UttrekkStatus): string {
+	switch (status) {
+		case UttrekkStatus.OPPRETTET:
+			return 'bg-orange-100 text-orange-800 border-orange-300';
+		case UttrekkStatus.KJØRER:
+			return 'bg-blue-100 text-blue-800 border-blue-300';
+		case UttrekkStatus.FULLFØRT:
+			return 'bg-green-100 text-green-800 border-green-300';
+		case UttrekkStatus.FEILET:
+			return 'bg-red-100 text-red-800 border-red-300';
+		default:
+			return 'bg-gray-100 text-gray-800 border-gray-300';
+	}
+}
+
+function getStatusIcon(status: UttrekkStatus) {
+	switch (status) {
+		case UttrekkStatus.OPPRETTET:
+			return <ClockDashedIcon aria-hidden fontSize="1.5rem" />;
+		case UttrekkStatus.KJØRER:
+			return <Loader size="medium" />;
+		case UttrekkStatus.FULLFØRT:
+			return <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />;
+		case UttrekkStatus.FEILET:
+			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
+		default:
+			return null;
+	}
+}
+
+function formatDuration(milliseconds: number): string {
+	const seconds = Math.floor(milliseconds / 1000);
+	const minutes = Math.floor(seconds / 60);
+	const hours = Math.floor(minutes / 60);
+
+	if (hours > 0) {
+		return `${hours} t ${minutes % 60} min`;
+	}
+	if (minutes > 0) {
+		return `${minutes} min ${seconds % 60} sek`;
+	}
+	return `${seconds} sek`;
+}
+
+function calculateDuration(startTime: string | null, endTime: string | null, currentTime?: number): string | null {
+	if (!startTime) return null;
+
+	const start = new Date(startTime).getTime();
+	const end = endTime ? new Date(endTime).getTime() : currentTime || Date.now();
+
+	return formatDuration(end - start);
+}
+
+function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: LagretSøk }) {
 	const [lasterNed, setLasterNed] = useState(false);
+	const [currentTime, setCurrentTime] = useState(Date.now());
+	const { mutate: slettUttrekk } = useSlettUttrekk();
+
+	// Oppdater currentTime hvert sekund for aktive uttrekk
+	useEffect(() => {
+		if (uttrekk.status === UttrekkStatus.KJØRER) {
+			const interval = setInterval(() => {
+				setCurrentTime(Date.now());
+			}, 1000);
+			return () => clearInterval(interval);
+		}
+		return undefined;
+	}, [uttrekk.status]);
 
 	const lastNedCsv = async () => {
 		setLasterNed(true);
@@ -38,7 +116,6 @@ function UttrekkRad({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: Lag
 				responseType: 'blob',
 			});
 
-			// Lag en blob og trigger nedlasting
 			const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
 			const url = window.URL.createObjectURL(blob);
 			const link = document.createElement('a');
@@ -63,39 +140,79 @@ function UttrekkRad({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: Lag
 		uttrekk.antall !== null &&
 		uttrekk.antall > 0;
 
+	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
+
+	const kjøretid = calculateDuration(
+		uttrekk.startetTidspunkt || uttrekk.opprettetTidspunkt,
+		uttrekk.fullførtTidspunkt,
+		currentTime,
+	);
+
 	return (
-		<Table.Row>
-			<Table.DataCell>
-				{/* <span className={`px-2 py-1 rounded text-sm bg-${getStatusVariant(uttrekk.status)}-100`}> */}
-				{/* 	{getStatusText(uttrekk.status)} */}
-				{/* </span> */}
-				{getStatusText(uttrekk.status)}
-			</Table.DataCell>
-			<Table.DataCell>{uttrekk.antall !== null ? uttrekk.antall : '-'}</Table.DataCell>
-			<Table.DataCell>{dateTimeFormat(uttrekk.opprettetTidspunkt)}</Table.DataCell>
-			<Table.DataCell>{uttrekk.fullførtTidspunkt ? dateTimeFormat(uttrekk.fullførtTidspunkt) : '-'}</Table.DataCell>
-			<Table.DataCell>
-				{kanLasteNed && (
-					<Button size="small" variant="tertiary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
-						Last ned CSV
-					</Button>
-				)}
-				{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
-					<ModalButton
-						renderButton={() => (
-							<Button icon={<WarningIcon />} size="small">
-								Vis feilmelding
-							</Button>
-						)}
-						renderModal={({ open, closeModal }) => (
-							<Modal header={{ heading: 'Feil ved kjøring av uttrekk' }} open={open} onClose={closeModal}>
-								Feilmelding: <pre>{uttrekk.feilmelding}</pre>
-							</Modal>
-						)}
-					/>
-				)}
-			</Table.DataCell>
-		</Table.Row>
+		<div className={`rounded-lg border-2 p-4 mb-3 ${getStatusColor(uttrekk.status)}`}>
+			<div className="flex items-start justify-between gap-4">
+				<div className="flex items-center gap-3 flex-1">
+					<div className="flex-shrink-0">{getStatusIcon(uttrekk.status)}</div>
+					<div className="flex-1">
+						<div className="flex items-center gap-2 mb-1">
+							<span className="font-semibold text-lg">{getStatusText(uttrekk.status)}</span>
+							{uttrekk.antall !== null && (
+								<span className="text-sm">
+									· <strong>{uttrekk.antall}</strong> oppgaver
+								</span>
+							)}
+						</div>
+						<div className="text-sm">
+							{kjøretid && (
+								<>
+									<strong>Kjøretid:</strong> {kjøretid}
+								</>
+							)}
+							{!kjøretid && uttrekk.status === UttrekkStatus.OPPRETTET && (
+								<>
+									<strong>Opprettet:</strong> {dateTimeFormat(uttrekk.opprettetTidspunkt)}
+								</>
+							)}
+						</div>
+					</div>
+				</div>
+				<div className="flex gap-2 flex-shrink-0">
+					{kanLasteNed && (
+						<Button size="small" variant="secondary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
+							Last ned CSV
+						</Button>
+					)}
+					{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
+						<ModalButton
+							renderButton={() => (
+								<Button icon={<ExclamationmarkTriangleIcon />} size="small" variant="secondary">
+									Vis feilmelding
+								</Button>
+							)}
+							renderModal={({ open, closeModal }) => (
+								<Modal header={{ heading: 'Feil ved kjøring av uttrekk' }} open={open} onClose={closeModal}>
+									<BodyShort>
+										<strong>Feilmelding:</strong>
+									</BodyShort>
+									<pre className="mt-2 p-2 bg-gray-100 rounded overflow-auto">{uttrekk.feilmelding}</pre>
+								</Modal>
+							)}
+						/>
+					)}
+					{kanSlette && (
+						<Button
+							size="small"
+							variant="tertiary"
+							icon={<TrashIcon />}
+							onClick={() => slettUttrekk(uttrekk)}
+							title="Slett uttrekk"
+						>
+							Slett
+						</Button>
+					)}
+				</div>
+			</div>
+		</div>
 	);
 }
 
@@ -129,22 +246,11 @@ export function UttrekkForLagretSøk({ lagretSøk }: UttrekkForLagretSøkProps) 
 			{isLoading ? (
 				<Skeleton variant="rectangle" height={100} />
 			) : uttrekk && uttrekk.length > 0 ? (
-				<Table size="small">
-					<Table.Header>
-						<Table.Row>
-							<Table.ColumnHeader scope="col">Status</Table.ColumnHeader>
-							<Table.ColumnHeader scope="col">Antall</Table.ColumnHeader>
-							<Table.ColumnHeader scope="col">Opprettet</Table.ColumnHeader>
-							<Table.ColumnHeader scope="col">Fullført</Table.ColumnHeader>
-							<Table.ColumnHeader scope="col">Handlinger</Table.ColumnHeader>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{uttrekk.map((u) => (
-							<UttrekkRad key={u.id} uttrekk={u} lagretSøk={lagretSøk} />
-						))}
-					</Table.Body>
-				</Table>
+				<div>
+					{uttrekk.map((u) => (
+						<UttrekkKort key={u.id} uttrekk={u} lagretSøk={lagretSøk} />
+					))}
+				</div>
 			) : (
 				<BodyShort>Ingen uttrekk opprettet ennå.</BodyShort>
 			)}
