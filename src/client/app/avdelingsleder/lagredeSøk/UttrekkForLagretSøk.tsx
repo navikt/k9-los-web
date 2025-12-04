@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DownloadIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Heading, Skeleton, Table } from '@navikt/ds-react';
+import apiPaths from 'api/apiPaths';
 import { Uttrekk, UttrekkStatus, useHentUttrekkForLagretSøk } from 'api/queries/avdelingslederQueries';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
 import { dateFormat } from 'utils/dateUtils';
+import { axiosInstance } from 'utils/reactQueryConfig';
 
 interface UttrekkForLagretSøkProps {
 	lagretSøkId: number;
@@ -41,7 +43,34 @@ function getStatusVariant(status: UttrekkStatus): 'success' | 'warning' | 'error
 	}
 }
 
-function UttrekkRad({ uttrekk }: { uttrekk: Uttrekk }) {
+function UttrekkRad({ uttrekk, lagretSøkTittel }: { uttrekk: Uttrekk; lagretSøkTittel: string }) {
+	const [lasterNed, setLasterNed] = useState(false);
+
+	const lastNedCsv = async () => {
+		setLasterNed(true);
+		try {
+			const response = await axiosInstance.get(apiPaths.lastNedUttrekkCsv(uttrekk.id.toString()), {
+				responseType: 'blob',
+			});
+
+			// Lag en blob og trigger nedlasting
+			const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+			const url = window.URL.createObjectURL(blob);
+			const link = document.createElement('a');
+			link.href = url;
+			const filnavn = `${lagretSøkTittel.replace(/[^a-z0-9]/gi, '_')}_${uttrekk.typeKjøring}_${uttrekk.id}.csv`;
+			link.setAttribute('download', filnavn);
+			document.body.appendChild(link);
+			link.click();
+			link.remove();
+			window.URL.revokeObjectURL(url);
+		} catch (error) {
+			console.error('Feil ved nedlasting av CSV:', error);
+		} finally {
+			setLasterNed(false);
+		}
+	};
+
 	return (
 		<Table.Row>
 			<Table.DataCell>{uttrekk.typeKjøring}</Table.DataCell>
@@ -54,8 +83,14 @@ function UttrekkRad({ uttrekk }: { uttrekk: Uttrekk }) {
 			<Table.DataCell>{uttrekk.fullførtTidspunkt ? dateFormat(uttrekk.fullførtTidspunkt) : '-'}</Table.DataCell>
 			<Table.DataCell>
 				{uttrekk.status === UttrekkStatus.FULLFØRT && (
-					<Button size="small" variant="tertiary" icon={<DownloadIcon />} disabled>
-						Last ned (ikke implementert)
+					<Button
+						size="small"
+						variant="tertiary"
+						icon={<DownloadIcon />}
+						onClick={lastNedCsv}
+						loading={lasterNed}
+					>
+						Last ned CSV
 					</Button>
 				)}
 				{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
@@ -115,7 +150,7 @@ export function UttrekkForLagretSøk({ lagretSøkId, lagretSøkTittel }: Uttrekk
 					</Table.Header>
 					<Table.Body>
 						{uttrekk.map((u) => (
-							<UttrekkRad key={u.id} uttrekk={u} />
+							<UttrekkRad key={u.id} uttrekk={u} lagretSøkTittel={lagretSøkTittel} />
 						))}
 					</Table.Body>
 				</Table>
