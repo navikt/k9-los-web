@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { DownloadIcon, FilesIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
+import { FilesIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton, SortState, Table, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
-import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
+import { UttrekkForLagretSøk } from 'avdelingsleder/lagredeSøk/UttrekkForLagretSøk';
 import ModalButton from 'sharedComponents/ModalButton';
 import { dateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
@@ -67,6 +67,7 @@ function EndreTittel({
 
 export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 	const [endres, setEndres] = useState<number>();
+	const [ekspandertRad, setEkspandertRad] = useState<number>();
 	const [sort, setSort] = useState<SortState | undefined>({
 		orderBy: 'tittel',
 		direction: 'ascending',
@@ -113,6 +114,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		<Table sort={sort} onSortChange={handleSort} size="medium">
 			<Table.Header>
 				<Table.Row>
+					<Table.ColumnHeader scope="col" />
 					<Table.ColumnHeader sortable sortKey="tittel" scope="col">
 						Tittel
 					</Table.ColumnHeader>
@@ -127,7 +129,13 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 			</Table.Header>
 			<Table.Body>
 				{sorterteLagredeSøk.map((lagretSøk) => (
-					<Table.Row key={lagretSøk.id}>
+					<Table.ExpandableRow
+						key={lagretSøk.id}
+						open={ekspandertRad === lagretSøk.id}
+						onOpenChange={() => setEkspandertRad(ekspandertRad === lagretSøk.id ? undefined : lagretSøk.id)}
+						togglePlacement="left"
+						content={<UttrekkForLagretSøk lagretSøkId={lagretSøk.id} lagretSøkTittel={lagretSøk.tittel} />}
+					>
 						<Table.DataCell>
 							{endres === lagretSøk.id ? (
 								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndres(undefined)} />
@@ -166,21 +174,6 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 										<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
 									)}
 								/>
-								<ModalButton
-									renderButton={({ openModal }) => (
-										<Button icon={<DownloadIcon />} variant="tertiary" size="small" onClick={openModal}>
-											Opprett&nbsp;uttrekk
-										</Button>
-									)}
-									renderModal={({ open, closeModal }) => (
-										<OpprettUttrekkModal
-											lagretSøkId={lagretSøk.id}
-											lagretSøkTittel={lagretSøk.tittel}
-											open={open}
-											closeModal={closeModal}
-										/>
-									)}
-								/>
 								<div>
 									<Button
 										variant="tertiary"
@@ -207,7 +200,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 								</div>
 							</div>
 						</Table.DataCell>
-					</Table.Row>
+					</Table.ExpandableRow>
 				))}
 			</Table.Body>
 		</Table>

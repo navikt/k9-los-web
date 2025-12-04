@@ -378,10 +378,10 @@ export const useOpprettUttrekk = (callback?: () => void) => {
 	return useMutation({
 		mutationFn: (data: OpprettUttrekkRequest) =>
 			axiosInstance.post(apiPaths.opprettUttrekk, data).then((res) => res.data),
-		onSuccess: () =>
+		onSuccess: (_, variables) =>
 			queryClient
 				.invalidateQueries({
-					queryKey: [apiPaths.hentUttrekkForLagretSøk('')],
+					queryKey: [apiPaths.hentUttrekkForLagretSøk(variables.lagretSokId.toString())],
 				})
 				.then(() => {
 					if (callback) callback();
