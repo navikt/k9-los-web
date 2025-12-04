@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { FilesIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
+import { DownloadIcon, FilesIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton, SortState, Table, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
+import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
 import { dateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
@@ -163,6 +164,21 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 									)}
 									renderModal={({ open, closeModal }) => (
 										<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+									)}
+								/>
+								<ModalButton
+									renderButton={({ openModal }) => (
+										<Button icon={<DownloadIcon />} variant="tertiary" size="small" onClick={openModal}>
+											Opprett&nbsp;uttrekk
+										</Button>
+									)}
+									renderModal={({ open, closeModal }) => (
+										<OpprettUttrekkModal
+											lagretSøkId={lagretSøk.id}
+											lagretSøkTittel={lagretSøk.tittel}
+											open={open}
+											closeModal={closeModal}
+										/>
 									)}
 								/>
 								<div>

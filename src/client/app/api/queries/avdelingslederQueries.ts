@@ -333,3 +333,58 @@ export const useHentAntallLagretSøk = (id: number) =>
 		queryKey: [apiPaths.hentAntallLagretSøk(id.toString())],
 		queryFn: () => axiosInstance.get(apiPaths.hentAntallLagretSøk(id.toString())).then((response) => response.data),
 	});
+
+export enum UttrekkStatus {
+	OPPRETTET = 'OPPRETTET',
+	KJØRER = 'KJØRER',
+	FULLFØRT = 'FULLFØRT',
+	FEILET = 'FEILET',
+}
+
+export enum TypeKjøring {
+	ANTALL = 'ANTALL',
+	OPPGAVER = 'OPPGAVER',
+}
+
+export interface Uttrekk {
+	id: number;
+	opprettetTidspunkt: string;
+	status: UttrekkStatus;
+	lagretSøkId: number;
+	kjøreplan: string | null;
+	typeKjøring: TypeKjøring;
+	resultat: string | null;
+	feilmelding: string | null;
+	startetTidspunkt: string | null;
+	fullførtTidspunkt: string | null;
+}
+
+interface OpprettUttrekkRequest {
+	lagretSokId: number;
+	kjoreplan: string | null;
+	typeKjoring: TypeKjøring;
+}
+
+export const useHentUttrekkForLagretSøk = (lagretSokId: number) =>
+	useQuery<Uttrekk[], DefaultError, Uttrekk[]>({
+		queryKey: [apiPaths.hentUttrekkForLagretSøk(lagretSokId.toString())],
+		queryFn: () =>
+			axiosInstance.get(apiPaths.hentUttrekkForLagretSøk(lagretSokId.toString())).then((response) => response.data),
+	});
+
+export const useOpprettUttrekk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: OpprettUttrekkRequest) =>
+			axiosInstance.post(apiPaths.opprettUttrekk, data).then((res) => res.data),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentUttrekkForLagretSøk('')],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
