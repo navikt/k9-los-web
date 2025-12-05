@@ -4,6 +4,7 @@ import {
 	ClockDashedIcon,
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
+	InformationSquareIcon,
 	PlayIcon,
 	StopIcon,
 	TrashIcon,
@@ -16,31 +17,32 @@ import {
 	UttrekkStatus,
 	useHentUttrekkForLagretSøk,
 	useSlettUttrekk,
-	useStoppUttrekk,
 } from 'api/queries/avdelingslederQueries';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
-import { dateTimeFormat } from 'utils/dateUtils';
+import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 interface UttrekkForLagretSøkProps {
 	lagretSøk: LagretSøk;
 }
 
-function getStatusText(status: UttrekkStatus): string {
-	switch (status) {
+function getStatusText(uttrekk: Uttrekk): React.ReactNode {
+	switch (uttrekk.status) {
 		case UttrekkStatus.OPPRETTET:
-			return 'Venter i kø';
+			return 'Venter på å kjøre';
 		case UttrekkStatus.KJØRER:
 			return 'Kjører nå';
 		case UttrekkStatus.FULLFØRT:
-			return 'Fullført';
+			return (
+				<span>
+					<strong>{uttrekk.antall}</strong> oppgaver
+				</span>
+			);
 		case UttrekkStatus.FEILET:
 			return 'Feilet';
-		case UttrekkStatus.STOPPET:
-			return 'Stoppet';
 		default:
-			return status;
+			return uttrekk.status;
 	}
 }
 
@@ -54,8 +56,6 @@ function getStatusColor(status: UttrekkStatus): string {
 			return 'bg-green-100 text-green-800 border-green-300';
 		case UttrekkStatus.FEILET:
 			return 'bg-red-100 text-red-800 border-red-300';
-		case UttrekkStatus.STOPPET:
-			return 'bg-gray-100 text-gray-800 border-gray-300';
 		default:
 			return 'bg-gray-100 text-gray-800 border-gray-300';
 	}
@@ -71,34 +71,9 @@ function getStatusIcon(status: UttrekkStatus) {
 			return <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />;
 		case UttrekkStatus.FEILET:
 			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
-		case UttrekkStatus.STOPPET:
-			return <StopIcon aria-hidden fontSize="1.5rem" />;
 		default:
 			return null;
 	}
-}
-
-function formatDuration(milliseconds: number): string {
-	const seconds = Math.floor(milliseconds / 1000);
-	const minutes = Math.floor(seconds / 60);
-	const hours = Math.floor(minutes / 60);
-
-	if (hours > 0) {
-		return `${hours} t ${minutes % 60} min`;
-	}
-	if (minutes > 0) {
-		return `${minutes} min ${seconds % 60} sek`;
-	}
-	return `${seconds} sek`;
-}
-
-function calculateDuration(startTime: string | null, endTime: string | null, currentTime?: number): string | null {
-	if (!startTime) return null;
-
-	const start = new Date(startTime).getTime();
-	const end = endTime ? new Date(endTime).getTime() : currentTime || Date.now();
-
-	return formatDuration(end - start);
 }
 
 function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: LagretSøk }) {
@@ -149,39 +124,33 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 		uttrekk.antall !== null &&
 		uttrekk.antall > 0;
 
-	const kanStoppe = uttrekk.status === UttrekkStatus.KJØRER;
+	const kanStoppe = false; //uttrekk.status === UttrekkStatus.KJØRER;
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 
-	const kjøretid = calculateDuration(
-		uttrekk.startetTidspunkt || uttrekk.opprettetTidspunkt,
-		uttrekk.fullførtTidspunkt,
-		currentTime,
-	);
+	const kjøretid = calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt, currentTime);
 
 	return (
 		<div className={`rounded-lg border-2 p-4 mb-3 ${getStatusColor(uttrekk.status)}`}>
-			<div className="flex items-start justify-between gap-4">
+			<div className="flex items-center justify-between gap-4">
 				<div className="flex items-center gap-3 flex-1">
 					<div className="flex-shrink-0">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex-1">
-						<div className="flex items-center gap-2 mb-1">
-							<span className="font-semibold text-lg">{getStatusText(uttrekk.status)}</span>
-							{uttrekk.antall !== null && (
-								<span className="text-sm">
-									· <strong>{uttrekk.antall}</strong> oppgaver
+						<div className="flex items-center gap-2 mb-1">{getStatusText(uttrekk)}</div>
+						<div className="text-sm flex gap-2">
+							{!kjøretid && uttrekk.status === UttrekkStatus.OPPRETTET && (
+								<span>
+									<strong>Startet:</strong> {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
 								</span>
 							)}
-						</div>
-						<div className="text-sm">
-							{kjøretid && (
-								<>
-									<strong>Kjøretid:</strong> {kjøretid}
-								</>
+							{uttrekk.fullførtTidspunkt && (
+								<span>
+									<strong>Fullført:</strong> {dateTimeSecondsFormat(uttrekk.fullførtTidspunkt)}
+								</span>
 							)}
-							{!kjøretid && uttrekk.status === UttrekkStatus.OPPRETTET && (
-								<>
-									<strong>Opprettet:</strong> {dateTimeFormat(uttrekk.opprettetTidspunkt)}
-								</>
+							{kjøretid && (
+								<span>
+									<strong>Kjøretid:</strong> {kjøretid}
+								</span>
 							)}
 						</div>
 					</div>
@@ -205,17 +174,19 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 					)}
 					{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
 						<ModalButton
-							renderButton={() => (
-								<Button icon={<ExclamationmarkTriangleIcon />} size="small" variant="secondary">
+							renderButton={({ openModal }) => (
+								<Button icon={<InformationSquareIcon />} size="small" variant="secondary" onClick={openModal}>
 									Vis feilmelding
 								</Button>
 							)}
 							renderModal={({ open, closeModal }) => (
-								<Modal header={{ heading: 'Feil ved kjøring av uttrekk' }} open={open} onClose={closeModal}>
-									<BodyShort>
-										<strong>Feilmelding:</strong>
-									</BodyShort>
-									<pre className="mt-2 p-2 bg-gray-100 rounded overflow-auto">{uttrekk.feilmelding}</pre>
+								<Modal header={{ heading: 'Feil ved kjøring av uttrekk' }} width={700} open={open} onClose={closeModal}>
+									<div className="p-4">
+										<BodyShort>
+											<strong>Feilmelding:</strong>
+										</BodyShort>
+										<pre className="mt-2 p-2 bg-gray-100 rounded overflow-auto">{uttrekk.feilmelding}</pre>
+									</div>
 								</Modal>
 							)}
 						/>
