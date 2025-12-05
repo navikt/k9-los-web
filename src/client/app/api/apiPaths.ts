@@ -63,11 +63,9 @@ const apiPaths = {
 	slettLagretSøk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/lagret-sok/${id}/slett`,
 	hentAntallLagretSøk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/lagret-sok/${id}/antall`,
 	hentUttrekk: '/api/k9-los-api/ny-oppgavestyring/uttrekk',
-	hentUttrekkForLagretSøk: (lagretSokId: string) =>
-		`/api/k9-los-api/ny-oppgavestyring/uttrekk/lagret-sok/${lagretSokId}`,
+	hentAlleUttrekk: `/api/k9-los-api/ny-oppgavestyring/uttrekk`,
 	opprettUttrekk: '/api/k9-los-api/ny-oppgavestyring/uttrekk/opprett',
 	slettUttrekk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/slett`,
-	stoppUttrekk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/stopp`,
 	lastNedUttrekkCsv: (id: string) => `/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/csv`,
 };
 

@@ -350,8 +350,8 @@ export interface Uttrekk {
 	id: number;
 	opprettetTidspunkt: string;
 	status: UttrekkStatus;
-	lagretSøkId: number;
-	kjøreplan: string | null;
+	timeout: number;
+	query: OppgaveQuery;
 	typeKjøring: TypeKjøring;
 	antall: number | null;
 	feilmelding: string | null;
@@ -361,15 +361,14 @@ export interface Uttrekk {
 
 interface OpprettUttrekkRequest {
 	lagretSokId: number;
-	kjoreplan: string | null;
+	timeout: number;
 	typeKjoring: TypeKjøring;
 }
 
-export const useHentUttrekkForLagretSøk = (lagretSokId: number) =>
+export const useHentAlleUttrekk = () =>
 	useQuery<Uttrekk[], DefaultError, Uttrekk[]>({
-		queryKey: [apiPaths.hentUttrekkForLagretSøk(lagretSokId.toString())],
-		queryFn: () =>
-			axiosInstance.get(apiPaths.hentUttrekkForLagretSøk(lagretSokId.toString())).then((response) => response.data),
+		queryKey: [apiPaths.hentAlleUttrekk],
+		queryFn: () => axiosInstance.get(apiPaths.hentAlleUttrekk).then((response) => response.data),
 		refetchInterval: (query) => {
 			// Refetch hvert 1. sekund hvis det finnes uttrekk med status OPPRETTET eller KJØRER
 			const harAktiveUttrekk = query.state.data?.some(
@@ -385,10 +384,10 @@ export const useOpprettUttrekk = (callback?: () => void) => {
 	return useMutation({
 		mutationFn: (data: OpprettUttrekkRequest) =>
 			axiosInstance.post(apiPaths.opprettUttrekk, data).then((res) => res.data),
-		onSuccess: (_, variables) =>
+		onSuccess: () =>
 			queryClient
 				.invalidateQueries({
-					queryKey: [apiPaths.hentUttrekkForLagretSøk(variables.lagretSokId.toString())],
+					queryKey: [apiPaths.hentAlleUttrekk],
 				})
 				.then(() => {
 					if (callback) callback();
@@ -401,10 +400,10 @@ export const useSlettUttrekk = (callback?: () => void) => {
 
 	return useMutation({
 		mutationFn: (uttrekk: Uttrekk) => axiosInstance.delete(apiPaths.slettUttrekk(uttrekk.id.toString())),
-		onSuccess: (_, uttrekk) =>
+		onSuccess: () =>
 			queryClient
 				.invalidateQueries({
-					queryKey: [apiPaths.hentUttrekkForLagretSøk(uttrekk.lagretSøkId.toString())],
+					queryKey: [apiPaths.hentAlleUttrekk],
 				})
 				.then(() => {
 					if (callback) callback();
