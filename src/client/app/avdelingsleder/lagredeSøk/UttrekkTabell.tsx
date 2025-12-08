@@ -10,6 +10,7 @@ import {
 import { Alert, BodyShort, Button, Heading, Loader, Modal, Skeleton } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { Uttrekk, UttrekkStatus, useHentAlleUttrekk, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
@@ -65,19 +66,15 @@ function getStatusIcon(status: UttrekkStatus) {
 
 function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	const [lasterNed, setLasterNed] = useState(false);
-	const [currentTime, setCurrentTime] = useState(Date.now());
+
+	const [kjøretid, setKjøretid] = useState('');
+	const oppdaterKjøretid = () => setKjøretid(calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt));
+
 	const { mutate: slettUttrekk } = useSlettUttrekk();
 
-	// Oppdater currentTime hvert sekund for aktive uttrekk
-	useEffect(() => {
-		if (uttrekk.status === UttrekkStatus.KJØRER) {
-			const interval = setInterval(() => {
-				setCurrentTime(Date.now());
-			}, 1000);
-			return () => clearInterval(interval);
-		}
-		return undefined;
-	}, [uttrekk.status]);
+	// Oppdater kjøretid ved statusendring og hvert sekund hvis uttrekket kjører
+	useEffect(oppdaterKjøretid, [uttrekk.status]);
+	useInterval(oppdaterKjøretid, uttrekk.status === UttrekkStatus.KJØRER ? 1000 : null);
 
 	const lastNedCsv = async () => {
 		setLasterNed(true);
@@ -112,8 +109,6 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 
-	const kjøretid = calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt, currentTime);
-
 	return (
 		<div className={`rounded-lg border-2 p-4 mb-3 ${getStatusColor(uttrekk.status)}`}>
 			<div className="flex items-center justify-between gap-4">
@@ -122,17 +117,12 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 					<div className="flex-1">
 						<div className="flex items-center gap-2 mb-1">{getStatusText(uttrekk)}</div>
 						<div className="text-sm flex gap-2">
-							{!kjøretid && uttrekk.status === UttrekkStatus.OPPRETTET && (
-								<span>
-									<strong>Startet:</strong> {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
-								</span>
-							)}
-							{uttrekk.fullførtTidspunkt && (
-								<span>
-									<strong>Fullført:</strong> {dateTimeSecondsFormat(uttrekk.fullførtTidspunkt)}
-								</span>
-							)}
-							{kjøretid && (
+							<span>
+								<strong>Startet:</strong> {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
+							</span>
+							{(uttrekk.status === UttrekkStatus.KJØRER ||
+								uttrekk.status === UttrekkStatus.FEILET ||
+								uttrekk.status === UttrekkStatus.FULLFØRT) && (
 								<span>
 									<strong>Kjøretid:</strong> {kjøretid}
 								</span>

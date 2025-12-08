@@ -156,15 +156,11 @@ export function formatDuration(milliseconds: number): string {
 	return `${milliseconds} ms`;
 }
 
-export function calculateDuration(
-	startTime: string | null,
-	endTime: string | null,
-	currentTime?: number,
-): string | null {
+export function calculateDuration(startTime: string | null, endTime: string | null): string | null {
 	if (!startTime) return null;
 
 	const start = new Date(startTime).getTime();
-	const end = endTime ? new Date(endTime).getTime() : currentTime || Date.now();
+	const end = endTime ? new Date(endTime).getTime() : Date.now();
 
 	return formatDuration(end - start);
 }
