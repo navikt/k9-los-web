@@ -5,11 +5,13 @@ import {
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
 	InformationSquareIcon,
+	TasklistIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Heading, Loader, Modal, Skeleton } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { Uttrekk, UttrekkStatus, useHentAlleUttrekk, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
@@ -106,7 +108,7 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 
 	return (
-		<div className={`rounded-md p-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
+		<div className={`rounded-md p-2 pl-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
 			<div className="flex items-center justify-between gap-3">
 				<div className="flex items-center gap-3 flex-1">
 					<div className="flex-shrink-0">{getStatusIcon(uttrekk.status)}</div>
@@ -127,8 +129,29 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 					</div>
 				</div>
 				<div className="flex gap-2 flex-shrink-0">
+					<ModalButton
+						renderButton={({ openModal }) => (
+							<Button icon={<TasklistIcon />} size="small" variant="tertiary" onClick={openModal}>
+								Vis kriterier
+							</Button>
+						)}
+						renderModal={({ open, closeModal }) => (
+							<Modal
+								closeOnBackdropClick
+								header={{ heading: 'Kriterier brukt i uttrekket' }}
+								width={700}
+								open={open}
+								onClose={closeModal}
+							>
+								<BodyShort className="p-4">
+									Uttrekket ble gjort med kriteriene under. Du kan ikke endre kriteriene her.
+								</BodyShort>
+								<KøKriterieViewer query={uttrekk.query} tittel="Kriterier" />
+							</Modal>
+						)}
+					/>
 					{kanLasteNed && (
-						<Button size="small" variant="secondary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
+						<Button size="small" variant="tertiary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
 							Last ned CSV
 						</Button>
 					)}
