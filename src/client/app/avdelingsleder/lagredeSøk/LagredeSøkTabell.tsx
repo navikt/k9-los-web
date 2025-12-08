@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { FilesIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
+import { FilesIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton, SortState, Table, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
-import { UttrekkForLagretSøk } from 'avdelingsleder/lagredeSøk/UttrekkForLagretSøk';
+import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
 import ModalButton from 'sharedComponents/ModalButton';
 import { dateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
@@ -67,7 +67,6 @@ function EndreTittel({
 
 export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 	const [endres, setEndres] = useState<number>();
-	const [ekspandertRad, setEkspandertRad] = useState<number>();
 	const [sort, setSort] = useState<SortState | undefined>({
 		orderBy: 'tittel',
 		direction: 'ascending',
@@ -114,7 +113,6 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		<Table sort={sort} onSortChange={handleSort} size="medium">
 			<Table.Header>
 				<Table.Row>
-					<Table.ColumnHeader scope="col" />
 					<Table.ColumnHeader sortable sortKey="tittel" scope="col">
 						Tittel
 					</Table.ColumnHeader>
@@ -129,13 +127,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 			</Table.Header>
 			<Table.Body>
 				{sorterteLagredeSøk.map((lagretSøk) => (
-					<Table.ExpandableRow
-						key={lagretSøk.id}
-						open={ekspandertRad === lagretSøk.id}
-						onOpenChange={() => setEkspandertRad(ekspandertRad === lagretSøk.id ? undefined : lagretSøk.id)}
-						togglePlacement="left"
-						content={<UttrekkForLagretSøk lagretSøk={lagretSøk} />}
-					>
+					<Table.Row key={lagretSøk.id}>
 						<Table.DataCell>
 							{endres === lagretSøk.id ? (
 								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndres(undefined)} />
@@ -174,33 +166,39 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 										<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
 									)}
 								/>
-								<div>
-									<Button
-										variant="tertiary"
-										size="small"
-										onClick={() => {
-											kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${lagretSøk.tittel}` });
-										}}
-										icon={<FilesIcon />}
-									>
-										Kopier
-									</Button>
-								</div>
-								<div>
-									<Button
-										variant="tertiary"
-										size="small"
-										onClick={() => {
-											slettLagretSøk(lagretSøk.id);
-										}}
-										icon={<TrashIcon />}
-									>
-										Slett
-									</Button>
-								</div>
+								<ModalButton
+									renderButton={({ openModal }) => (
+										<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
+											Gjør&nbsp;uttrekk
+										</Button>
+									)}
+									renderModal={({ open, closeModal }) => (
+										<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+									)}
+								/>
+								<Button
+									variant="tertiary"
+									size="small"
+									onClick={() => {
+										kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${lagretSøk.tittel}` });
+									}}
+									icon={<FilesIcon />}
+								>
+									Kopier
+								</Button>
+								<Button
+									variant="tertiary"
+									size="small"
+									onClick={() => {
+										slettLagretSøk(lagretSøk.id);
+									}}
+									icon={<TrashIcon />}
+								>
+									Slett
+								</Button>
 							</div>
 						</Table.DataCell>
-					</Table.ExpandableRow>
+					</Table.Row>
 				))}
 			</Table.Body>
 		</Table>

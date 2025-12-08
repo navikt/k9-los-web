@@ -5,27 +5,14 @@ import {
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
 	InformationSquareIcon,
-	PlayIcon,
-	StopIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Heading, Loader, Modal, Skeleton } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import {
-	LagretSøk,
-	Uttrekk,
-	UttrekkStatus,
-	useHentUttrekkForLagretSøk,
-	useSlettUttrekk,
-} from 'api/queries/avdelingslederQueries';
-import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/OpprettUttrekkModal';
+import { Uttrekk, UttrekkStatus, useHentAlleUttrekk, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
 import ModalButton from 'sharedComponents/ModalButton';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
-
-interface UttrekkForLagretSøkProps {
-	lagretSøk: LagretSøk;
-}
 
 function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 	switch (uttrekk.status) {
@@ -76,11 +63,10 @@ function getStatusIcon(status: UttrekkStatus) {
 	}
 }
 
-function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: LagretSøk }) {
+function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	const [lasterNed, setLasterNed] = useState(false);
 	const [currentTime, setCurrentTime] = useState(Date.now());
 	const { mutate: slettUttrekk } = useSlettUttrekk();
-	const { mutate: stoppUttrekk } = useStoppUttrekk();
 
 	// Oppdater currentTime hvert sekund for aktive uttrekk
 	useEffect(() => {
@@ -104,7 +90,7 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 			const url = window.URL.createObjectURL(blob);
 			const link = document.createElement('a');
 			link.href = url;
-			const filnavn = `${lagretSøk.tittel.replace(/[^a-z0-9]/gi, '_')}_${uttrekk.typeKjøring}_${uttrekk.id}.csv`;
+			const filnavn = `uttrekk_${uttrekk.typeKjøring}_${uttrekk.id}.csv`;
 			link.setAttribute('download', filnavn);
 			document.body.appendChild(link);
 			link.click();
@@ -124,7 +110,6 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 		uttrekk.antall !== null &&
 		uttrekk.antall > 0;
 
-	const kanStoppe = false; //uttrekk.status === UttrekkStatus.KJØRER;
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 
 	const kjøretid = calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt, currentTime);
@@ -159,17 +144,6 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 					{kanLasteNed && (
 						<Button size="small" variant="secondary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
 							Last ned CSV
-						</Button>
-					)}
-					{kanStoppe && (
-						<Button
-							size="small"
-							variant="secondary"
-							icon={<StopIcon />}
-							onClick={() => stoppUttrekk(uttrekk)}
-							title="Stopp uttrekk"
-						>
-							Stopp
 						</Button>
 					)}
 					{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
@@ -208,8 +182,8 @@ function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk: La
 	);
 }
 
-export function UttrekkForLagretSøk({ lagretSøk }: UttrekkForLagretSøkProps) {
-	const { data: uttrekk, isLoading, isError } = useHentUttrekkForLagretSøk(lagretSøk.id);
+export function UttrekkTabell() {
+	const { data: uttrekk, isLoading, isError } = useHentAlleUttrekk();
 
 	if (isError) {
 		return (
@@ -220,31 +194,23 @@ export function UttrekkForLagretSøk({ lagretSøk }: UttrekkForLagretSøkProps) 
 	}
 
 	return (
-		<div className="p-4 bg-gray-50">
-			<div className="flex justify-between items-center mb-4">
-				<Heading size="small">Uttrekk</Heading>
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button icon={<PlayIcon />} variant="primary" size="small" onClick={openModal}>
-							Gjør et nytt uttrekk
-						</Button>
-					)}
-					renderModal={({ open, closeModal }) => (
-						<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-					)}
-				/>
-			</div>
+		<div className="mt-10">
+			<Heading size="medium" className="mb-4">
+				Dine uttrekk
+			</Heading>
 
 			{isLoading ? (
 				<Skeleton variant="rectangle" height={100} />
 			) : uttrekk && uttrekk.length > 0 ? (
 				<div>
 					{uttrekk.map((u) => (
-						<UttrekkKort key={u.id} uttrekk={u} lagretSøk={lagretSøk} />
+						<UttrekkKort key={u.id} uttrekk={u} />
 					))}
 				</div>
 			) : (
-				<BodyShort>Ingen uttrekk opprettet ennå.</BodyShort>
+				<BodyShort>
+					<i>Ingen uttrekk opprettet ennå</i>
+				</BodyShort>
 			)}
 		</div>
 	);

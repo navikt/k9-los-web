@@ -37,7 +37,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 	const onSubmit = () => {
 		mutate({
 			lagretSokId: lagretSøk.id,
-			kjoreplan: null,
+			timeout: 60,
 			typeKjoring,
 		});
 	};
