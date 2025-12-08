@@ -22,11 +22,7 @@ function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 		case UttrekkStatus.KJØRER:
 			return 'Kjører nå';
 		case UttrekkStatus.FULLFØRT:
-			return (
-				<span>
-					<strong>{uttrekk.antall}</strong> oppgaver
-				</span>
-			);
+			return <span>{uttrekk.antall} oppgaver</span>;
 		case UttrekkStatus.FEILET:
 			return 'Feilet';
 		default:
@@ -37,15 +33,15 @@ function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 function getStatusColor(status: UttrekkStatus): string {
 	switch (status) {
 		case UttrekkStatus.OPPRETTET:
-			return 'bg-orange-100 text-orange-800 border-orange-300';
+			return 'bg-orange-100 text-orange-800';
 		case UttrekkStatus.KJØRER:
-			return 'bg-blue-100 text-blue-800 border-blue-300';
+			return 'bg-blue-100 text-blue-800';
 		case UttrekkStatus.FULLFØRT:
-			return 'bg-gray-100 text-gray-700 border-gray-300';
+			return 'bg-gray-50 text-gray-700 border-solid border-1 border-gray-100';
 		case UttrekkStatus.FEILET:
-			return 'bg-red-100 text-red-800 border-red-300';
+			return 'bg-red-100 text-red-800';
 		default:
-			return 'bg-gray-100 text-gray-800 border-gray-300';
+			return 'bg-gray-50 text-gray-700';
 	}
 }
 
@@ -110,12 +106,12 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 
 	return (
-		<div className={`rounded-lg border-2 p-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
+		<div className={`rounded-md p-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
 			<div className="flex items-center justify-between gap-3">
-				<div className="flex items-center gap-2 flex-1">
+				<div className="flex items-center gap-3 flex-1">
 					<div className="flex-shrink-0">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex-1">
-						<div className="flex items-center gap-2">{getStatusText(uttrekk)}</div>
+						<div>{getStatusText(uttrekk)}</div>
 						<div className="text-sm flex gap-2 mt-0.5">
 							<span>
 								<strong>Startet:</strong> {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
@@ -185,7 +181,7 @@ export function UttrekkTabell() {
 
 	return (
 		<div className="mt-10">
-			<Heading size="medium" className="mb-4">
+			<Heading size="small" className="mb-4">
 				Dine uttrekk
 			</Heading>
 
