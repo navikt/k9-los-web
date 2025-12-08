@@ -158,7 +158,7 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 					{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
 						<ModalButton
 							renderButton={({ openModal }) => (
-								<Button icon={<InformationSquareIcon />} size="small" variant="secondary" onClick={openModal}>
+								<Button icon={<InformationSquareIcon />} size="small" variant="tertiary" onClick={openModal}>
 									Vis feilmelding
 								</Button>
 							)}

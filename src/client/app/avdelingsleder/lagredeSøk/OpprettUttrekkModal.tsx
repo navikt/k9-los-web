@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, BodyShort, Button, Heading, List, Modal } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Heading, List, Modal, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, TypeKjøring, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 
@@ -32,12 +32,16 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		});
 	}, [lagretSøk.query.select, feltdefinisjoner]);
 
-	const { handleSubmit, reset } = useForm();
+	const { handleSubmit, reset, register } = useForm({
+		defaultValues: {
+			timeout: 30,
+		},
+	});
 
-	const onSubmit = () => {
+	const onSubmit = (data: { timeout: number }) => {
 		mutate({
 			lagretSokId: lagretSøk.id,
-			timeout: 60,
+			timeout: data.timeout,
 			typeKjoring,
 		});
 	};
@@ -72,6 +76,19 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 							søkeresultat&#34;.
 						</Alert>
 					)}
+
+					<TextField
+						{...register('timeout', {
+							required: 'Timeout er påkrevd',
+							min: { value: 1, message: 'Timeout må være minst 1 sekund' },
+							max: { value: 300, message: 'Timeout kan ikke overstige 300 sekunder' },
+							valueAsNumber: true,
+						})}
+						label="Timeout (sekunder)"
+						description="Uttrekk med mye data kan ta lang tid å kjøre. Timeout kan økes ved behov, men vær forsiktig da det kan hemme ytelsen til systemet."
+						type="number"
+						className="mt-4"
+					/>
 
 					{isError && (
 						<Alert variant="error" className="mt-4">
