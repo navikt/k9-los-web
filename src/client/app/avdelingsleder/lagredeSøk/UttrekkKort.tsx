@@ -18,7 +18,6 @@ import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
 import { assertNever } from 'utils/assert-never';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
-import { axiosInstance } from 'utils/reactQueryConfig';
 
 function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 	switch (uttrekk.status) {
@@ -66,8 +65,6 @@ function getStatusIcon(status: UttrekkStatus) {
 }
 
 export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
-	const [lasterNed, setLasterNed] = useState(false);
-
 	const [kjøretid, setKjøretid] = useState('');
 	const oppdaterKjøretid = () => setKjøretid(calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt));
 
@@ -77,38 +74,13 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	useEffect(oppdaterKjøretid, [uttrekk.status]);
 	useInterval(oppdaterKjøretid, uttrekk.status === UttrekkStatus.KJØRER ? 1000 : null);
 
-	const lastNedCsv = async () => {
-		setLasterNed(true);
-		try {
-			const response = await axiosInstance.get(apiPaths.lastNedUttrekkCsv(uttrekk.id.toString()), {
-				responseType: 'blob',
-			});
-
-			const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
-			const url = window.URL.createObjectURL(blob);
-			const link = document.createElement('a');
-			link.href = url;
-			const filnavn = `uttrekk_${uttrekk.typeKjøring}_${uttrekk.id}.csv`;
-			link.setAttribute('download', filnavn);
-			document.body.appendChild(link);
-			link.click();
-			link.remove();
-			window.URL.revokeObjectURL(url);
-		} catch (error) {
-			// eslint-disable-next-line no-console
-			console.error('Feil ved nedlasting av CSV:', error);
-		} finally {
-			setLasterNed(false);
-		}
-	};
-
 	const kanLasteNed =
 		uttrekk.status === UttrekkStatus.FULLFØRT &&
 		uttrekk.typeKjøring === 'OPPGAVER' &&
 		uttrekk.antall !== null &&
 		uttrekk.antall > 0;
-
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
+	const kanViseFeilmelding = uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding;
 
 	return (
 		<div className={`rounded-md p-2 pl-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
@@ -165,12 +137,18 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 									<UttrekkResultatModal uttrekk={uttrekk} open={open} closeModal={closeModal} />
 								)}
 							/>
-							<Button size="small" variant="tertiary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
+							<Button
+								as="a"
+								size="small"
+								variant="tertiary"
+								href={apiPaths.lastNedUttrekkCsv(uttrekk.id.toString())}
+								icon={<DownloadIcon />}
+							>
 								Last ned CSV
 							</Button>
 						</>
 					)}
-					{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
+					{kanViseFeilmelding && (
 						<ModalButton
 							renderButton={({ openModal }) => (
 								<Button icon={<InformationSquareIcon />} size="small" variant="tertiary" onClick={openModal}>
