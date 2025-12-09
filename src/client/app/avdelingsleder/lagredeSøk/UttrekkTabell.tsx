@@ -163,7 +163,13 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 								</Button>
 							)}
 							renderModal={({ open, closeModal }) => (
-								<Modal header={{ heading: 'Feil ved kjøring av uttrekk' }} width={700} open={open} onClose={closeModal}>
+								<Modal
+									closeOnBackdropClick
+									header={{ heading: 'Feil ved kjøring av uttrekk' }}
+									width={700}
+									open={open}
+									onClose={closeModal}
+								>
 									<div className="p-4">
 										<BodyShort>
 											<strong>Feilmelding:</strong>

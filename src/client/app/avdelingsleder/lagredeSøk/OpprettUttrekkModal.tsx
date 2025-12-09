@@ -1,6 +1,6 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, BodyShort, Button, Heading, List, Modal, TextField } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Detail, Heading, List, Modal, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, TypeKjøring, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 
@@ -14,6 +14,8 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 	const { mutate, isPending, isError } = useOpprettUttrekk(() => {
 		closeModal();
 	});
+
+	const [visTimeoutInnstillinger, setVisTimeoutInnstillinger] = useState(false);
 
 	const feltdefinisjoner = useContext(AppContext).felter;
 
@@ -32,9 +34,26 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		});
 	}, [lagretSøk.query.select, feltdefinisjoner]);
 
-	const { handleSubmit, reset, register } = useForm({
+	// Hent visningsnavn for order-feltene
+	const orderFelterMedNavn = useMemo(() => {
+		return lagretSøk.query.order.map((orderFelt) => {
+			const feltdef = feltdefinisjoner.find((f) => f.område === orderFelt.område && f.kode === orderFelt.kode);
+			return {
+				...orderFelt,
+				visningsnavn: feltdef?.visningsnavn || `${orderFelt.område}.${orderFelt.kode}`,
+			};
+		});
+	}, [lagretSøk.query.order, feltdefinisjoner]);
+
+	const defaultTimeout = 30;
+	const {
+		handleSubmit,
+		reset,
+		register,
+		formState: { errors },
+	} = useForm({
 		defaultValues: {
-			timeout: 30,
+			timeout: defaultTimeout,
 		},
 	});
 
@@ -48,6 +67,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 
 	const handleClose = () => {
 		reset();
+		setVisTimeoutInnstillinger(false);
 		closeModal();
 	};
 
@@ -55,7 +75,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		<Modal open={open} onClose={handleClose} width="medium" aria-label="Opprett uttrekk">
 			<Modal.Header>
 				<Heading level="1" size="medium">
-					Opprett uttrekk for "{lagretSøk.tittel}"
+					Opprett uttrekk for &#34;{lagretSøk.tittel}&#34;
 				</Heading>
 			</Modal.Header>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -63,11 +83,24 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 					{harSelectFelter ? (
 						<>
 							<BodyShort>Uttrekket vil inneholde følgende felter:</BodyShort>
-							<List>
+							<List size="small">
 								{selectFelterMedNavn.map((felt) => (
 									<List.Item key={felt.id}>{felt.visningsnavn}</List.Item>
 								))}
 							</List>
+
+							{orderFelterMedNavn.length > 0 && (
+								<>
+									<BodyShort className="mt-5">Uttrekket vil sorteres etter:</BodyShort>
+									<List size="small">
+										{orderFelterMedNavn.map((felt) => (
+											<List.Item key={felt.id}>
+												{felt.visningsnavn} ({felt.økende ? 'stigende' : 'synkende'})
+											</List.Item>
+										))}
+									</List>
+								</>
+							)}
 						</>
 					) : (
 						<Alert variant="warning">
@@ -77,18 +110,37 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 						</Alert>
 					)}
 
-					<TextField
-						{...register('timeout', {
-							required: 'Timeout er påkrevd',
-							min: { value: 1, message: 'Timeout må være minst 1 sekund' },
-							max: { value: 300, message: 'Timeout kan ikke overstige 300 sekunder' },
-							valueAsNumber: true,
-						})}
-						label="Timeout (sekunder)"
-						description="Uttrekk med mye data kan ta lang tid å kjøre. Timeout kan økes ved behov, men vær forsiktig da det kan hemme ytelsen til systemet."
-						type="number"
-						className="mt-4"
-					/>
+					<div className="mt-5">
+						{!visTimeoutInnstillinger ? (
+							<>
+								<Detail>Uttrekket kjører som standard maksimalt i {defaultTimeout} sekunder.</Detail>
+								<Button
+									className="mt-2 p-0"
+									variant="tertiary"
+									size="xsmall"
+									type="button"
+									onClick={() => {
+										setVisTimeoutInnstillinger(true);
+									}}
+								>
+									Endre maksimal kjøretid
+								</Button>
+							</>
+						) : (
+							<TextField
+								{...register('timeout', {
+									required: 'Timeout er påkrevd',
+									min: { value: 1, message: 'Timeout må være minst 1 sekund' },
+									max: { value: 600, message: 'Timeout kan ikke overstige 600 sekunder (10 minutter)' },
+									valueAsNumber: true,
+								})}
+								error={errors.timeout?.message}
+								label="Maksimal kjøretid (sekunder)"
+								description="Uttrekk med mye data kan ta lang tid å kjøre. Vær forsiktig med høye verdier da det kan påvirke ytelsen til systemet."
+								type="number"
+							/>
+						)}
+					</div>
 
 					{isError && (
 						<Alert variant="error" className="mt-4">
