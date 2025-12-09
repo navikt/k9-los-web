@@ -428,8 +428,7 @@ export const useHentUttrekkResultat = (id: number, offset: number, limit: number
 	useQuery<UttrekkResultat, DefaultError, UttrekkResultat>({
 		queryKey: ['uttrekkResultat', id, offset, limit],
 		queryFn: () =>
-			axiosInstance
-				.get(apiPaths.hentUttrekkJson(id.toString(), offset, limit))
-				.then((response) => response.data),
+			axiosInstance.get(apiPaths.hentUttrekkJson(id.toString(), offset, limit)).then((response) => response.data),
 		enabled,
+		placeholderData: keepPreviousData,
 	});

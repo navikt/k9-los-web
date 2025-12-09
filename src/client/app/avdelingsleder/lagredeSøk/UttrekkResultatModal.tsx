@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, BodyShort, Loader, Modal, Pagination, Table } from '@navikt/ds-react';
+import AppContext from 'app/AppContext';
 import { Uttrekk, UttrekkResultatCelle, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 
 const PAGE_SIZE = 20;
@@ -30,11 +31,13 @@ export function UttrekkResultatModal({
 
 	const totalPages = data ? Math.ceil(data.totaltAntall / PAGE_SIZE) : 1;
 
+	const { felter } = useContext(AppContext);
 	// Bygg kolonner fra første rad
-	const kolonner: { kode: string; område: string | null }[] = [];
+	const kolonner: string[] = [];
 	if (data && data.rader.length > 0) {
 		data.rader[0].forEach((celle: UttrekkResultatCelle) => {
-			kolonner.push({ kode: celle.kode, område: celle.område });
+			const felt = felter.find((f) => f.område === celle.område && f.kode === celle.kode);
+			kolonner.push(felt ? felt.visningsnavn : celle.kode);
 		});
 	}
 
@@ -59,17 +62,17 @@ export function UttrekkResultatModal({
 							<Table size="small">
 								<Table.Header>
 									<Table.Row>
-										{kolonner.map((kolonne, idx) => (
-											<Table.HeaderCell key={idx}>
-												{kolonne.område ? `${kolonne.område}: ${kolonne.kode}` : kolonne.kode}
-											</Table.HeaderCell>
+										{kolonner.map((kolonne) => (
+											<Table.HeaderCell key={kolonne}>{kolonne}</Table.HeaderCell>
 										))}
 									</Table.Row>
 								</Table.Header>
 								<Table.Body>
 									{data.rader.map((rad, radIdx) => (
+										// eslint-disable-next-line react/no-array-index-key
 										<Table.Row key={radIdx}>
 											{rad.map((celle, celleIdx) => (
+												// eslint-disable-next-line react/no-array-index-key
 												<Table.DataCell key={celleIdx}>{formatCelleVerdi(celle.verdi)}</Table.DataCell>
 											))}
 										</Table.Row>
