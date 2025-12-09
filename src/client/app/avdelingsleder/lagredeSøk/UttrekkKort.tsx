@@ -16,6 +16,7 @@ import { UttrekkResultatModal } from 'avdelingsleder/lagredeSøk/UttrekkResultat
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
+import { assertNever } from 'utils/assert-never';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
@@ -30,7 +31,7 @@ function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 		case UttrekkStatus.FEILET:
 			return 'Feilet';
 		default:
-			return uttrekk.status;
+			return assertNever(uttrekk.status);
 	}
 }
 
@@ -40,12 +41,12 @@ function getStatusColor(status: UttrekkStatus): string {
 			return 'bg-orange-100 text-orange-800';
 		case UttrekkStatus.KJØRER:
 			return 'bg-blue-100 text-blue-800';
-		case UttrekkStatus.FULLFØRT:
-			return 'bg-gray-50 text-gray-700 border-solid border-1 border-gray-100';
 		case UttrekkStatus.FEILET:
 			return 'bg-red-100 text-red-800';
+		case UttrekkStatus.FULLFØRT:
+			return 'bg-gray-50 text-gray-700 border-solid border-1 border-gray-100';
 		default:
-			return 'bg-gray-50 text-gray-700';
+			return assertNever(status);
 	}
 }
 
@@ -60,7 +61,7 @@ function getStatusIcon(status: UttrekkStatus) {
 		case UttrekkStatus.FEILET:
 			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
 		default:
-			return null;
+			return assertNever(status);
 	}
 }
 
