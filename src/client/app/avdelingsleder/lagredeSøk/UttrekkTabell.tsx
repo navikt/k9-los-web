@@ -4,13 +4,21 @@ import {
 	ClockDashedIcon,
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
+	EyeIcon,
 	InformationSquareIcon,
 	TasklistIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Heading, Loader, Modal, Skeleton } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Heading, Loader, Modal, Pagination, Skeleton, Table } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { Uttrekk, UttrekkStatus, useHentAlleUttrekk, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import {
+	Uttrekk,
+	UttrekkResultatCelle,
+	UttrekkStatus,
+	useHentAlleUttrekk,
+	useHentUttrekkResultat,
+	useSlettUttrekk,
+} from 'api/queries/avdelingslederQueries';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
@@ -60,6 +68,97 @@ function getStatusIcon(status: UttrekkStatus) {
 		default:
 			return null;
 	}
+}
+
+const PAGE_SIZE = 20;
+
+function formatCelleVerdi(verdi: unknown): string {
+	if (verdi === null || verdi === undefined) {
+		return '';
+	}
+	if (typeof verdi === 'boolean') {
+		return verdi ? 'Ja' : 'Nei';
+	}
+	return String(verdi);
+}
+
+function UttrekkResultatModal({ uttrekk, open, closeModal }: { uttrekk: Uttrekk; open: boolean; closeModal: () => void }) {
+	const [page, setPage] = useState(1);
+	const offset = (page - 1) * PAGE_SIZE;
+
+	const { data, isLoading, isError } = useHentUttrekkResultat(uttrekk.id, offset, PAGE_SIZE, open);
+
+	const totalPages = data ? Math.ceil(data.totaltAntall / PAGE_SIZE) : 1;
+
+	// Bygg kolonner fra første rad
+	const kolonner: { kode: string; område: string | null }[] = [];
+	if (data && data.rader.length > 0) {
+		data.rader[0].forEach((celle: UttrekkResultatCelle) => {
+			kolonner.push({ kode: celle.kode, område: celle.område });
+		});
+	}
+
+	return (
+		<Modal
+			closeOnBackdropClick
+			header={{ heading: `Resultat av uttrekk (${data?.totaltAntall ?? '...'} rader)` }}
+			width="90vw"
+			open={open}
+			onClose={closeModal}
+		>
+			<Modal.Body>
+				{isLoading && (
+					<div className="flex justify-center p-8">
+						<Loader size="xlarge" />
+					</div>
+				)}
+				{isError && (
+					<Alert variant="error">Kunne ikke hente resultat. Prøv igjen.</Alert>
+				)}
+				{data && data.rader.length > 0 && (
+					<>
+						<div className="overflow-x-auto">
+							<Table size="small">
+								<Table.Header>
+									<Table.Row>
+										{kolonner.map((kolonne, idx) => (
+											<Table.HeaderCell key={idx}>
+												{kolonne.område ? `${kolonne.område}: ${kolonne.kode}` : kolonne.kode}
+											</Table.HeaderCell>
+										))}
+									</Table.Row>
+								</Table.Header>
+								<Table.Body>
+									{data.rader.map((rad, radIdx) => (
+										<Table.Row key={radIdx}>
+											{rad.map((celle, celleIdx) => (
+												<Table.DataCell key={celleIdx}>
+													{formatCelleVerdi(celle.verdi)}
+												</Table.DataCell>
+											))}
+										</Table.Row>
+									))}
+								</Table.Body>
+							</Table>
+						</div>
+						{totalPages > 1 && (
+							<div className="flex justify-center mt-4">
+								<Pagination
+									page={page}
+									onPageChange={setPage}
+									count={totalPages}
+									size="small"
+								/>
+							</div>
+						)}
+					</>
+				)}
+				{data && data.rader.length === 0 && (
+					<BodyShort>Ingen rader i uttrekket.</BodyShort>
+				)}
+			</Modal.Body>
+		</Modal>
+	);
 }
 
 function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
@@ -151,9 +250,21 @@ function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 						)}
 					/>
 					{kanLasteNed && (
-						<Button size="small" variant="tertiary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
-							Last ned CSV
-						</Button>
+						<>
+							<ModalButton
+								renderButton={({ openModal }) => (
+									<Button icon={<EyeIcon />} size="small" variant="tertiary" onClick={openModal}>
+										Vis resultat
+									</Button>
+								)}
+								renderModal={({ open, closeModal }) => (
+									<UttrekkResultatModal uttrekk={uttrekk} open={open} closeModal={closeModal} />
+								)}
+							/>
+							<Button size="small" variant="tertiary" icon={<DownloadIcon />} onClick={lastNedCsv} loading={lasterNed}>
+								Last ned CSV
+							</Button>
+						</>
 					)}
 					{uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding && (
 						<ModalButton

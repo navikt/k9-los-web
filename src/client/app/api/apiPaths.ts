@@ -67,6 +67,8 @@ const apiPaths = {
 	opprettUttrekk: '/api/k9-los-api/ny-oppgavestyring/uttrekk/opprett',
 	slettUttrekk: (id: string) => `/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/slett`,
 	lastNedUttrekkCsv: (id: string) => `/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/csv`,
+	hentUttrekkJson: (id: string, offset: number, limit: number) =>
+		`/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/json?offset=${offset}&limit=${limit}`,
 };
 
 export default apiPaths;
