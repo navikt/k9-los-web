@@ -209,9 +209,9 @@ export function UttrekkTabell() {
 	}
 
 	return (
-		<div className="mt-10">
-			<Heading size="small" className="mb-4">
-				Dine uttrekk
+		<div className="mt-12">
+			<Heading size="xsmall" className="mb-4">
+				Dine uttrekk av lagrede søk
 			</Heading>
 
 			{isLoading ? (
