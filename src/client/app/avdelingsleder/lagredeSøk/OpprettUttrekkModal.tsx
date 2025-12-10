@@ -1,5 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Detail, Heading, List, Modal, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, TypeKjøring, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
@@ -116,12 +117,12 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 						</Alert>
 					)}
 
-					<div className="mt-5">
+					<div className="mt-5 rounded-md bg-gray-100 p-2">
 						{!visTimeoutInnstillinger ? (
-							<>
-								<Detail>Uttrekket kjører som standard maksimalt i {defaultTimeout} sekunder.</Detail>
+							<div>
+								<Detail>Uttrekket vil kjøre maksimalt i {defaultTimeout} sekunder.</Detail>
 								<Button
-									className="mt-2 p-0"
+									className="mt-1 p-0"
 									variant="tertiary"
 									size="xsmall"
 									type="button"
@@ -131,58 +132,82 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 								>
 									Endre maksimal kjøretid
 								</Button>
-							</>
+							</div>
 						) : (
-							<TextField
-								{...register('timeout', {
-									required: 'Timeout er påkrevd',
-									min: { value: 1, message: 'Timeout må være minst 1 sekund' },
-									max: { value: 600, message: 'Timeout kan ikke overstige 600 sekunder (10 minutter)' },
-									valueAsNumber: true,
-								})}
-								error={errors.timeout?.message}
-								label="Maksimal kjøretid (sekunder)"
-								description="Uttrekk med mye data kan ta lang tid å kjøre. Vær forsiktig med høye verdier da det kan påvirke ytelsen til systemet."
-								type="number"
-							/>
+							<div>
+								<div className="float-right">
+									<XMarkIcon
+										className="pointer"
+										title="Tilbakestill timeout"
+										onClick={() => {
+											setVisTimeoutInnstillinger(false);
+											reset({ timeout: defaultTimeout });
+										}}
+									/>
+								</div>
+								<TextField
+									{...register('timeout', {
+										required: 'Timeout er påkrevd',
+										min: { value: 1, message: 'Timeout må være minst 1 sekund' },
+										max: { value: 600, message: 'Timeout kan ikke overstige 600 sekunder (10 minutter)' },
+										valueAsNumber: true,
+									})}
+									error={errors.timeout?.message}
+									label="Maksimal kjøretid (sekunder)"
+									description="Uttrekk med mye data kan ta lang tid å kjøre. Vær forsiktig med høye verdier da det kan påvirke ytelsen til systemet."
+									type="number"
+									width={100}
+								/>
+							</div>
 						)}
 					</div>
 
 					<div className="mt-5">
 						{!visAvgrensningsinnstillinger ? (
-							<Button
-								className="p-0"
-								variant="tertiary"
-								size="xsmall"
-								type="button"
-								onClick={() => {
-									setVisAvgrensningsinnstillinger(true);
-								}}
-							>
-								Legg til avgrensning
-							</Button>
+							<div className="rounded-md bg-gray-100 p-2">
+								<Detail>For å begrense antall resultater kan det legges til en avgrensning.</Detail>
+								<Button
+									className="mt-1 p-0"
+									variant="tertiary"
+									size="xsmall"
+									type="button"
+									onClick={() => {
+										setVisAvgrensningsinnstillinger(true);
+									}}
+								>
+									Legg til avgrensning
+								</Button>
+							</div>
 						) : (
-							<div className="flex gap-4">
-								<TextField
-									{...register('limit', {
-										min: { value: 1, message: 'Limit må være minst 1' },
-										valueAsNumber: true,
-									})}
-									error={errors.limit?.message}
-									label="Limit"
-									description="Maksimalt antall rader som skal hentes"
-									type="number"
-								/>
-								<TextField
-									{...register('offset', {
-										min: { value: 0, message: 'Offset må være minst 0' },
-										valueAsNumber: true,
-									})}
-									error={errors.offset?.message}
-									label="Offset"
-									description="Antall rader som skal hoppes over"
-									type="number"
-								/>
+							<div className="rounded-md bg-gray-100 p-2">
+								<div className="float-right">
+									<XMarkIcon
+										onClick={() => {
+											setVisAvgrensningsinnstillinger(false);
+											reset({ limit: null, offset: null });
+										}}
+									/>
+								</div>
+								<div className="flex gap-4">
+									<TextField
+										{...register('limit', {
+											min: { value: 1, message: 'Maksimalt antall rader må være minst 1' },
+											valueAsNumber: true,
+										})}
+										error={errors.limit?.message}
+										label="Maksimalt antall rader som skal hentes"
+										type="number"
+									/>
+									<TextField
+										{...register('offset', {
+											min: { value: 0, message: 'Antall rader som skal hoppes over må være minst 0' },
+											valueAsNumber: true,
+										})}
+										error={errors.offset?.message}
+										label="Antall rader som skal hoppes over"
+										type="number"
+									/>
+								</div>
 							</div>
 						)}
 					</div>
