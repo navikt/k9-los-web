@@ -348,6 +348,7 @@ export enum TypeKjøring {
 
 export interface Uttrekk {
 	id: number;
+	tittel: string;
 	opprettetTidspunkt: string;
 	status: UttrekkStatus;
 	timeout: number;
@@ -394,6 +395,20 @@ export const useOpprettUttrekk = (callback?: () => void) => {
 				.then(() => {
 					if (callback) callback();
 				}),
+	});
+};
+
+export const useEndreUttrekkTittel = (onSuccess?: () => void) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ id, tittel }: { id: number; tittel: string }) =>
+			axiosInstance.put(apiPaths.endreUttrekkTittel(id.toString()), { tittel }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [apiPaths.hentAlleUttrekk] });
+			if (onSuccess) {
+				onSuccess();
+			}
+		},
 	});
 };
 

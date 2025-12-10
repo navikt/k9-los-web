@@ -6,12 +6,13 @@ import {
 	ExclamationmarkTriangleIcon,
 	EyeIcon,
 	InformationSquareIcon,
+	PencilIcon,
 	TasklistIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
+import { BodyShort, Button, Loader, Modal, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import { Uttrekk, UttrekkStatus, useEndreUttrekkTittel, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
 import { UttrekkResultatModal } from 'avdelingsleder/lagredeSøk/UttrekkResultatModal';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
@@ -64,8 +65,64 @@ function getStatusIcon(status: UttrekkStatus) {
 	}
 }
 
+function EndreTittelUttrekk({
+	uttrekk,
+	ikkeIEndreModusLenger,
+}: {
+	uttrekk: Uttrekk;
+	ikkeIEndreModusLenger: () => void;
+}) {
+	const { mutate, isPending, isError } = useEndreUttrekkTittel(ikkeIEndreModusLenger);
+	const [tittel, setTittel] = useState(uttrekk.tittel || '');
+	const [feilmelding, setFeilmelding] = useState('');
+
+	useEffect(() => {
+		if (tittel.trim().length === 0) {
+			setFeilmelding('Tittel må være utfylt');
+		} else {
+			setFeilmelding('');
+		}
+	}, [tittel]);
+
+	useEffect(() => {
+		if (isError) {
+			setFeilmelding('Noe gikk galt ved lagring. Prøv igjen.');
+		}
+	}, [isError]);
+
+	return (
+		<form
+			className="flex gap-2 items-start"
+			onSubmit={(event) => {
+				event.preventDefault();
+				if (tittel.trim().length > 0) {
+					mutate({ id: uttrekk.id, tittel: tittel.trim() });
+				}
+			}}
+		>
+			<TextField
+				label="Tittel"
+				hideLabel
+				value={tittel}
+				onChange={(event) => setTittel(event.target.value)}
+				error={feilmelding}
+				htmlSize={40}
+				maxLength={100}
+				autoFocus
+			/>
+			<Button variant="secondary" disabled={isPending} type="submit" size="medium">
+				Lagre
+			</Button>
+			<Button variant="tertiary" disabled={isPending} type="button" onClick={ikkeIEndreModusLenger} size="medium">
+				Avbryt
+			</Button>
+		</form>
+	);
+}
+
 export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	const [kjøretid, setKjøretid] = useState('');
+	const [endres, setEndres] = useState(false);
 	const oppdaterKjøretid = () => setKjøretid(calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt));
 
 	const { mutate: slettUttrekk } = useSlettUttrekk();
@@ -88,6 +145,20 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 				<div className="flex items-center gap-3 flex-1">
 					<div className="flex-shrink-0">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex-1">
+						{endres ? (
+							<EndreTittelUttrekk uttrekk={uttrekk} ikkeIEndreModusLenger={() => setEndres(false)} />
+						) : (
+							<div className="flex items-center gap-2">
+								<div className="font-semibold">{uttrekk.tittel || 'Uttrekk uten tittel'}</div>
+								<Button
+									title="Endre tittel"
+									size="xsmall"
+									variant="tertiary"
+									icon={<PencilIcon />}
+									onClick={() => setEndres(true)}
+								/>
+							</div>
+						)}
 						<div>{getStatusText(uttrekk)}</div>
 						<div className="text-sm flex gap-2 mt-0.5">
 							<span>
