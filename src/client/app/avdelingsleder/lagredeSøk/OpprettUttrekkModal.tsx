@@ -136,9 +136,11 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 						) : (
 							<div>
 								<div className="float-right">
-									<XMarkIcon
-										className="pointer"
+									<Button
 										title="Tilbakestill timeout"
+										icon={<XMarkIcon />}
+										variant="tertiary-neutral"
+										size="small"
 										onClick={() => {
 											setVisTimeoutInnstillinger(false);
 											reset({ timeout: defaultTimeout });
@@ -181,7 +183,11 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 						) : (
 							<div className="rounded-md bg-gray-100 p-2">
 								<div className="float-right">
-									<XMarkIcon
+									<Button
+										icon={<XMarkIcon />}
+										variant="tertiary-neutral"
+										size="small"
+										title="Tilbakestill avgrensning"
 										onClick={() => {
 											setVisAvgrensningsinnstillinger(false);
 											reset({ limit: null, offset: null });
