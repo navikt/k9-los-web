@@ -16,6 +16,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 	});
 
 	const [visTimeoutInnstillinger, setVisTimeoutInnstillinger] = useState(false);
+	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
 
 	const feltdefinisjoner = useContext(AppContext).felter;
 
@@ -51,23 +52,28 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		reset,
 		register,
 		formState: { errors },
-	} = useForm({
+	} = useForm<{ timeout: number; limit?: number | null; offset?: number | null }>({
 		defaultValues: {
 			timeout: defaultTimeout,
+			limit: null,
+			offset: null,
 		},
 	});
 
-	const onSubmit = (data: { timeout: number }) => {
+	const onSubmit = (data: { timeout: number; limit?: number | null; offset?: number | null }) => {
 		mutate({
 			lagretSokId: lagretSøk.id,
 			timeout: data.timeout,
 			typeKjoring,
+			limit: data.limit || null,
+			offset: data.offset || null,
 		});
 	};
 
 	const handleClose = () => {
 		reset();
 		setVisTimeoutInnstillinger(false);
+		setVisAvgrensningsinnstillinger(false);
 		closeModal();
 	};
 
@@ -139,6 +145,45 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 								description="Uttrekk med mye data kan ta lang tid å kjøre. Vær forsiktig med høye verdier da det kan påvirke ytelsen til systemet."
 								type="number"
 							/>
+						)}
+					</div>
+
+					<div className="mt-5">
+						{!visAvgrensningsinnstillinger ? (
+							<Button
+								className="p-0"
+								variant="tertiary"
+								size="xsmall"
+								type="button"
+								onClick={() => {
+									setVisAvgrensningsinnstillinger(true);
+								}}
+							>
+								Legg til avgrensning
+							</Button>
+						) : (
+							<div className="flex gap-4">
+								<TextField
+									{...register('limit', {
+										min: { value: 1, message: 'Limit må være minst 1' },
+										valueAsNumber: true,
+									})}
+									error={errors.limit?.message}
+									label="Limit"
+									description="Maksimalt antall rader som skal hentes"
+									type="number"
+								/>
+								<TextField
+									{...register('offset', {
+										min: { value: 0, message: 'Offset må være minst 0' },
+										valueAsNumber: true,
+									})}
+									error={errors.offset?.message}
+									label="Offset"
+									description="Antall rader som skal hoppes over"
+									type="number"
+								/>
+							</div>
 						)}
 					</div>
 

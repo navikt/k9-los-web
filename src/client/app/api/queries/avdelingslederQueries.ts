@@ -363,6 +363,8 @@ interface OpprettUttrekkRequest {
 	lagretSokId: number;
 	timeout: number;
 	typeKjoring: TypeKjøring;
+	limit?: number | null;
+	offset?: number | null;
 }
 
 export const useHentAlleUttrekk = () =>
