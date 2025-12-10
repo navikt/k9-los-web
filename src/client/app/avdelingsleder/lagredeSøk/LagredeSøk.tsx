@@ -4,7 +4,7 @@ import { Alert, Button, Heading, HelpText } from '@navikt/ds-react';
 import { useHentLagredeSøk } from 'api/queries/avdelingslederQueries';
 import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
 import { OpprettLagretSøkModal } from 'avdelingsleder/lagredeSøk/OpprettLagretSøkModal';
-import { UttrekkTabell } from 'avdelingsleder/lagredeSøk/UttrekkTabell';
+import { UttrekkTabell } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkTabell';
 import ModalButton from 'sharedComponents/ModalButton';
 
 export function LagredeSøk() {

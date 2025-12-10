@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, BodyShort, Heading, Skeleton } from '@navikt/ds-react';
 import { useHentAlleUttrekk } from 'api/queries/avdelingslederQueries';
-import { UttrekkKort } from 'avdelingsleder/lagredeSøk/UttrekkKort';
+import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 
 export function UttrekkTabell() {
 	const { data: uttrekk, isLoading, isError } = useHentAlleUttrekk();
