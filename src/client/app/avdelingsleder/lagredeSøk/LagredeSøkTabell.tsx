@@ -159,7 +159,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 								<ModalButton
 									renderButton={({ openModal }) => (
 										<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
-											Endre&nbsp;kriterier
+											Endre kriterier
 										</Button>
 									)}
 									renderModal={({ open, closeModal }) => (
@@ -169,7 +169,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 								<ModalButton
 									renderButton={({ openModal }) => (
 										<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
-											Gjør&nbsp;uttrekk
+											Gjør uttrekk
 										</Button>
 									)}
 									renderModal={({ open, closeModal }) => (

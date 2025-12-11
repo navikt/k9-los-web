@@ -69,13 +69,14 @@ export function UttrekkResultatModal({
 								</Table.Header>
 								<Table.Body>
 									{data.rader.map((rad, radIdx) => (
-										// eslint-disable-next-line react/no-array-index-key
+										// Skrur av regel fordi arrayene er statiske
+										/* eslint-disable react/no-array-index-key */
 										<Table.Row key={radIdx}>
 											{rad.map((celle, celleIdx) => (
-												// eslint-disable-next-line react/no-array-index-key
 												<Table.DataCell key={celleIdx}>{formatCelleVerdi(celle.verdi)}</Table.DataCell>
 											))}
 										</Table.Row>
+										/* eslint-enable react/no-array-index-key */
 									))}
 								</Table.Body>
 							</Table>

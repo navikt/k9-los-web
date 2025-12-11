@@ -3851,9 +3851,9 @@ __metadata:
   linkType: hard
 
 "@navikt/aksel-icons@npm:^7.34.0":
-  version: 7.35.0
-  resolution: "@navikt/aksel-icons@npm:7.35.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Faksel-icons%2F7.35.0%2F7068430eff75ea06c6b047441e881cbfe05418c5"
-  checksum: 10/55ad853dedea20ae801c93e46026f1e271d3123cabfaab8e5f8c771067951ee9cc777e87d54774fbb05b774c74b41b2895f9932aa8d83678c6be047632e8eec8
+  version: 7.35.1
+  resolution: "@navikt/aksel-icons@npm:7.35.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Faksel-icons%2F7.35.1%2F83a5150571dd3c01d44e5f20320e56734ace3dc2"
+  checksum: 10/a8fddba083e6f74c73f601d62c15a08d3bf192e534f2c6d8d74349fd960fc9a10eb81b3aaab8ba7f9a272b3b4c20d19a14d8d9d35864377079f68d1559ea9b54
   languageName: node
   linkType: hard
 
@@ -3987,9 +3987,9 @@ __metadata:
   linkType: hard
 
 "@navikt/ds-tokens@npm:^7.34.0":
-  version: 7.35.0
-  resolution: "@navikt/ds-tokens@npm:7.35.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F7.35.0%2Fc2662001774ee2d027838f9ee2249fc77f9316bc"
-  checksum: 10/898cc1ae6ec7eb20e85d7f00f8edc60b3b8bd4a0256c63a6f341e0423d924ed1daeeb6bf3de4eb187f8b01955cf80f1f79ee13f99cac87f1a79f15d341070c83
+  version: 7.35.1
+  resolution: "@navikt/ds-tokens@npm:7.35.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F7.35.1%2Fc6e84a9e9939fdf8e9c638b6bf9d3de136d95afe"
+  checksum: 10/ced830b6e0618adadce980938b8a6513a6a0a2dd18cb34271c59f3f547a10f349f9ba91abc44b7b40fe80ebd4b41ccc42f45a57d718344966f792708e82f965f
   languageName: node
   linkType: hard
 

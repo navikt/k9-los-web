@@ -6,14 +6,12 @@ import {
 	ExclamationmarkTriangleIcon,
 	EyeIcon,
 	InformationSquareIcon,
-	PencilIcon,
 	TasklistIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
-import { EndreTittelUttrekk } from 'avdelingsleder/lagredeSøk/uttrekk/EndreTittelUttrekk';
 import { UttrekkResultatModal } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatModal';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
@@ -68,7 +66,6 @@ function getStatusIcon(status: UttrekkStatus) {
 
 export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	const [kjøretid, setKjøretid] = useState('');
-	const [endres, setEndres] = useState(false);
 	const oppdaterKjøretid = () => setKjøretid(calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt));
 
 	const { mutate: slettUttrekk } = useSlettUttrekk();

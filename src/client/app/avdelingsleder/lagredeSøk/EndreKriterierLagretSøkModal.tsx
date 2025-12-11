@@ -1,9 +1,13 @@
 import React, { useContext, useMemo } from 'react';
-import { Modal } from '@navikt/ds-react';
+import { ArrowsUpDownIcon, FilterIcon, TableIcon } from '@navikt/aksel-icons';
+import { Heading, Modal, Tabs } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
-import KøKriterieEditor from 'filter/KøKriterieEditor';
+import { KøKriterieEditorContent } from 'filter/KøKriterieEditor';
+import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
 import { FeltverdiOppgavefilter, OppgavefilterKode } from 'filter/filterTsTypes';
+import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
+import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
 import { RenderModalProps } from 'sharedComponents/ModalButton';
 
 export function EndreKriterierLagretSøkModal({
@@ -39,21 +43,41 @@ export function EndreKriterierLagretSøkModal({
 		[feltdefinisjoner, kode6],
 	);
 	return (
-		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" className="w-[44rem]" width={800}>
-			<Modal.Body>
+		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" className="w-[44rem]" width={900}>
+			<Modal.Header>
+				<Heading size="medium">Endre lagret søk</Heading>
+			</Modal.Header>
+			<Modal.Body className="p-2">
 				<AppContext.Provider value={overstyrteFeltdefinisjoner}>
-					<KøKriterieEditor
-						tittel="Kriterier for lagret søk"
+					<KøKriterieEditorProvider
 						initialQuery={lagretSøk.query}
-						avbryt={closeModal}
-						paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
-						readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
 						lagre={(oppgaveQuery) => {
 							endreLagretSøk({ ...lagretSøk, query: oppgaveQuery });
 						}}
-						visSortering
-						visSelectFelter
-					/>
+						avbryt={closeModal}
+					>
+						<Tabs defaultValue="kriterier">
+							<Tabs.List>
+								<Tabs.Tab value="kriterier" label="Kriterier" icon={<FilterIcon />} />
+								<Tabs.Tab value="felter" label="Felter" icon={<TableIcon />} />
+								<Tabs.Tab value="sortering" label="Sortering" icon={<ArrowsUpDownIcon />} />
+							</Tabs.List>
+							<div className="mt-8">
+								<Tabs.Panel value="kriterier">
+									<KøKriterieEditorContent
+										paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
+										readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
+									/>
+								</Tabs.Panel>
+								<Tabs.Panel value="felter">
+									<OppgaveSelectFelter />
+								</Tabs.Panel>
+								<Tabs.Panel value="sortering">
+									<OppgaveOrderFelter />
+								</Tabs.Panel>
+							</div>
+						</Tabs>
+					</KøKriterieEditorProvider>
 				</AppContext.Provider>
 			</Modal.Body>
 		</Modal>

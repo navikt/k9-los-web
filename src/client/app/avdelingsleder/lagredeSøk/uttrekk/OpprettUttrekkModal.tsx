@@ -111,9 +111,8 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 						</>
 					) : (
 						<Alert variant="warning">
-							Ingen felter er valgt for uttrekk. Uttrekket vil kun inneholde antall oppgaver som matcher søket. For å
-							sette felter gå til &#34;Endre kriterier&#34; og legg til felter under &#34;Felter som skal vises i
-							søkeresultat&#34;.
+							Ingen felter er valgt for uttrekk. Uttrekket vil kun inneholde antall oppgaver som matcher søket. Du kan
+							legge til felter ved å gå til &#34;Endre kriterier&#34; og &#34;Felter&#34;.
 						</Alert>
 					)}
 
