@@ -10,9 +10,9 @@ import {
 	TasklistIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
-import { BodyShort, Button, Loader, Modal, TextField } from '@navikt/ds-react';
+import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { Uttrekk, UttrekkStatus, useEndreUttrekkTittel, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import { Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
 import { EndreTittelUttrekk } from 'avdelingsleder/lagredeSøk/uttrekk/EndreTittelUttrekk';
 import { UttrekkResultatModal } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatModal';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
@@ -91,38 +91,11 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 				<div className="flex items-center gap-3 flex-1">
 					<div className="flex-shrink-0">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex-1">
-						{endres ? (
-							<EndreTittelUttrekk uttrekk={uttrekk} ikkeIEndreModusLenger={() => setEndres(false)} />
-						) : (
-							<div>
-								{uttrekk.tittel ? (
-									<div className="flex items-center gap-2 mb-1">
-										<div className="">{uttrekk.tittel}</div>
-										<Button
-											title="Endre tittel"
-											size="xsmall"
-											variant="tertiary"
-											icon={<PencilIcon />}
-											onClick={() => setEndres(true)}
-										/>
-									</div>
-								) : (
-									<div className="mb-1">
-										<Button
-											title="Legg til tittel"
-											size="xsmall"
-											variant="tertiary"
-											icon={<PencilIcon />}
-											onClick={() => setEndres(true)}
-										>
-											Legg til tittel
-										</Button>
-									</div>
-								)}
-							</div>
-						)}
 						<div>{getStatusText(uttrekk)}</div>
 						<div className="text-sm flex gap-2 mt-0.5">
+							<span className="truncate max-w-80">
+								<strong>Lagret søk:</strong> {uttrekk.tittel}
+							</span>
 							<span>
 								<strong>Startet:</strong> {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
 							</span>
