@@ -94,15 +94,31 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 						{endres ? (
 							<EndreTittelUttrekk uttrekk={uttrekk} ikkeIEndreModusLenger={() => setEndres(false)} />
 						) : (
-							<div className="flex items-center gap-2">
-								<div className="">{uttrekk.tittel}</div>
-								<Button
-									title="Endre tittel"
-									size="xsmall"
-									variant="tertiary"
-									icon={<PencilIcon />}
-									onClick={() => setEndres(true)}
-								/>
+							<div>
+								{uttrekk.tittel ? (
+									<div className="flex items-center gap-2 mb-1">
+										<div className="">{uttrekk.tittel}</div>
+										<Button
+											title="Endre tittel"
+											size="xsmall"
+											variant="tertiary"
+											icon={<PencilIcon />}
+											onClick={() => setEndres(true)}
+										/>
+									</div>
+								) : (
+									<div className="mb-1">
+										<Button
+											title="Legg til tittel"
+											size="xsmall"
+											variant="tertiary"
+											icon={<PencilIcon />}
+											onClick={() => setEndres(true)}
+										>
+											Legg til tittel
+										</Button>
+									</div>
+								)}
 							</div>
 						)}
 						<div>{getStatusText(uttrekk)}</div>
