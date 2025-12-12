@@ -47,7 +47,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		});
 	}, [lagretSøk.query.order, feltdefinisjoner]);
 
-	const defaultTimeout = 30;
+	const defaultTimeout = 300;
 	const {
 		handleSubmit,
 		reset,
@@ -119,7 +119,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 					<div className="mt-5 rounded-md bg-gray-100 p-2">
 						{!visTimeoutInnstillinger ? (
 							<div>
-								<Detail>Uttrekket vil kjøre maksimalt i {defaultTimeout} sekunder.</Detail>
+								<Detail>Uttrekket vil kjøre maksimalt i {defaultTimeout / 60} minutter.</Detail>
 								<Button
 									className="mt-1 p-0"
 									variant="tertiary"
