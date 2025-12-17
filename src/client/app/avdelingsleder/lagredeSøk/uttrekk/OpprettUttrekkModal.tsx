@@ -16,55 +16,54 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		closeModal();
 	});
 
-	const [visTimeoutInnstillinger, setVisTimeoutInnstillinger] = useState(false);
 	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
 
 	const feltdefinisjoner = useContext(AppContext).felter;
 
-	// Automatisk bestem type basert på om det finnes select-felter
-	const harSelectFelter = lagretSøk.query.select.length > 0;
-	const typeKjoring = harSelectFelter ? TypeKjøring.OPPGAVER : TypeKjøring.ANTALL;
+	// Bestem type basert på om det finnes select-felter
+	const typeKjoring = lagretSøk.query.select.length > 0 ? TypeKjøring.OPPGAVER : TypeKjøring.ANTALL;
 
 	// Hent visningsnavn for select-feltene
-	const selectFelterMedNavn = useMemo(() => {
-		return lagretSøk.query.select.map((selectFelt) => {
-			const feltdef = feltdefinisjoner.find((f) => f.område === selectFelt.område && f.kode === selectFelt.kode);
-			return {
-				...selectFelt,
-				visningsnavn: feltdef?.visningsnavn || `${selectFelt.område}.${selectFelt.kode}`,
-			};
-		});
-	}, [lagretSøk.query.select, feltdefinisjoner]);
+	const selectFelterMedNavn = useMemo(
+		() =>
+			lagretSøk.query.select.map((selectFelt) => {
+				const feltdef = feltdefinisjoner.find((f) => f.område === selectFelt.område && f.kode === selectFelt.kode);
+				return {
+					...selectFelt,
+					visningsnavn: feltdef?.visningsnavn || `${selectFelt.område}.${selectFelt.kode}`,
+				};
+			}),
+		[lagretSøk.query.select, feltdefinisjoner],
+	);
 
 	// Hent visningsnavn for order-feltene
-	const orderFelterMedNavn = useMemo(() => {
-		return lagretSøk.query.order.map((orderFelt) => {
-			const feltdef = feltdefinisjoner.find((f) => f.område === orderFelt.område && f.kode === orderFelt.kode);
-			return {
-				...orderFelt,
-				visningsnavn: feltdef?.visningsnavn || `${orderFelt.område}.${orderFelt.kode}`,
-			};
-		});
-	}, [lagretSøk.query.order, feltdefinisjoner]);
+	const orderFelterMedNavn = useMemo(
+		() =>
+			lagretSøk.query.order.map((orderFelt) => {
+				const feltdef = feltdefinisjoner.find((f) => f.område === orderFelt.område && f.kode === orderFelt.kode);
+				return {
+					...orderFelt,
+					visningsnavn: feltdef?.visningsnavn || `${orderFelt.område}.${orderFelt.kode}`,
+				};
+			}),
+		[lagretSøk.query.order, feltdefinisjoner],
+	);
 
-	const defaultTimeout = 300;
 	const {
 		handleSubmit,
 		reset,
 		register,
 		formState: { errors },
-	} = useForm<{ timeout: number; limit?: number | null; offset?: number | null }>({
+	} = useForm<{ limit?: number | null; offset?: number | null }>({
 		defaultValues: {
-			timeout: defaultTimeout,
 			limit: null,
 			offset: null,
 		},
 	});
 
-	const onSubmit = (data: { timeout: number; limit?: number | null; offset?: number | null }) => {
+	const onSubmit = (data: { limit?: number | null; offset?: number | null }) => {
 		mutate({
 			lagretSokId: lagretSøk.id,
-			timeout: data.timeout,
 			typeKjoring,
 			limit: data.limit || null,
 			offset: data.offset || null,
@@ -73,7 +72,6 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 
 	const handleClose = () => {
 		reset();
-		setVisTimeoutInnstillinger(false);
 		setVisAvgrensningsinnstillinger(false);
 		closeModal();
 	};
@@ -87,7 +85,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 			</Modal.Header>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Body>
-					{harSelectFelter ? (
+					{lagretSøk.query.select.length > 0 ? (
 						<>
 							<BodyShort>Uttrekket vil inneholde følgende felter:</BodyShort>
 							<List size="small">
@@ -115,53 +113,6 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 							legge til felter ved å gå til &#34;Endre kriterier&#34; og &#34;Felter&#34;.
 						</Alert>
 					)}
-
-					<div className="mt-5 rounded-md bg-gray-100 p-2">
-						{!visTimeoutInnstillinger ? (
-							<div>
-								<Detail>Uttrekket vil kjøre maksimalt i {defaultTimeout / 60} minutter.</Detail>
-								<Button
-									className="mt-1 p-0"
-									variant="tertiary"
-									size="xsmall"
-									type="button"
-									onClick={() => {
-										setVisTimeoutInnstillinger(true);
-									}}
-								>
-									Endre maksimal kjøretid
-								</Button>
-							</div>
-						) : (
-							<div>
-								<div className="float-right">
-									<Button
-										title="Tilbakestill timeout"
-										icon={<XMarkIcon />}
-										variant="tertiary-neutral"
-										size="small"
-										onClick={() => {
-											setVisTimeoutInnstillinger(false);
-											reset({ timeout: defaultTimeout });
-										}}
-									/>
-								</div>
-								<TextField
-									{...register('timeout', {
-										required: 'Timeout er påkrevd',
-										min: { value: 1, message: 'Timeout må være minst 1 sekund' },
-										max: { value: 600, message: 'Timeout kan ikke overstige 600 sekunder (10 minutter)' },
-										valueAsNumber: true,
-									})}
-									error={errors.timeout?.message}
-									label="Maksimal kjøretid (sekunder)"
-									description="Uttrekk med mye data kan ta lang tid å kjøre. Vær forsiktig med høye verdier da det kan påvirke ytelsen til systemet."
-									type="number"
-									width={100}
-								/>
-							</div>
-						)}
-					</div>
 
 					<div className="mt-5">
 						{!visAvgrensningsinnstillinger ? (

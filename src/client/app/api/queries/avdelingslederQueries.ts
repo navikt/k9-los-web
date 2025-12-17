@@ -351,7 +351,6 @@ export interface Uttrekk {
 	tittel: string;
 	opprettetTidspunkt: string;
 	status: UttrekkStatus;
-	timeout: number;
 	query: OppgaveQuery;
 	typeKjøring: TypeKjøring;
 	antall: number | null;
@@ -362,7 +361,6 @@ export interface Uttrekk {
 
 interface OpprettUttrekkRequest {
 	lagretSokId: number;
-	timeout: number;
 	typeKjoring: TypeKjøring;
 	limit?: number | null;
 	offset?: number | null;
@@ -435,7 +433,8 @@ export interface UttrekkResultatCelle {
 }
 
 export interface UttrekkResultat {
-	rader: UttrekkResultatCelle[][];
+	kolonner: string[];
+	rader: { id: { eksternId: string }; felter: UttrekkResultatCelle[] }[];
 	totaltAntall: number;
 	offset: number;
 	limit: number;

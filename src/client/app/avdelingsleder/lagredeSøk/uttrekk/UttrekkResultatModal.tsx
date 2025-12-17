@@ -32,14 +32,6 @@ export function UttrekkResultatModal({
 	const totalPages = data ? Math.ceil(data.totaltAntall / PAGE_SIZE) : 1;
 
 	const { felter } = useContext(AppContext);
-	// Bygg kolonner fra første rad
-	const kolonner: string[] = [];
-	if (data && data.rader.length > 0) {
-		data.rader[0].forEach((celle: UttrekkResultatCelle) => {
-			const felt = felter.find((f) => f.område === celle.område && f.kode === celle.kode);
-			kolonner.push(felt ? felt.visningsnavn : celle.kode);
-		});
-	}
 
 	return (
 		<Modal
@@ -62,21 +54,21 @@ export function UttrekkResultatModal({
 							<Table size="small">
 								<Table.Header>
 									<Table.Row>
-										{kolonner.map((kolonne) => (
-											<Table.HeaderCell key={kolonne}>{kolonne}</Table.HeaderCell>
+										{data.kolonner.map((kolonne) => (
+											<Table.HeaderCell key={kolonne}>
+												{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+											</Table.HeaderCell>
 										))}
 									</Table.Row>
 								</Table.Header>
 								<Table.Body>
-									{data.rader.map((rad, radIdx) => (
-										// Skrur av regel fordi arrayene er statiske
-										/* eslint-disable react/no-array-index-key */
-										<Table.Row key={radIdx}>
-											{rad.map((celle, celleIdx) => (
+									{data.rader.map((rad) => (
+										<Table.Row key={rad.id.eksternId}>
+											{rad.felter.map((celle, celleIdx) => (
+												// eslint-disable-next-line react/no-array-index-key
 												<Table.DataCell key={celleIdx}>{formatCelleVerdi(celle.verdi)}</Table.DataCell>
 											))}
 										</Table.Row>
-										/* eslint-enable react/no-array-index-key */
 									))}
 								</Table.Body>
 							</Table>
