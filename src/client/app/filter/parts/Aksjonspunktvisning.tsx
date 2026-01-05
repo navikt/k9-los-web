@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
-import { useKodeverk } from 'api/queries/kodeverkQueries';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { SelectedValues } from 'sharedComponents/searchWithDropdown/SelectedValues';
 
 interface Props {
@@ -11,8 +9,7 @@ interface Props {
 }
 
 export const Aksjonspunktvisning = ({ oppgavefilter }: Props) => {
-	const { data: alleKodeverk } = useKodeverk();
-	const oppgavekoder = alleKodeverk?.[kodeverkTyper.OPPGAVE_KODE] || [];
+	const oppgavekoder = [];
 	const { updateQuery } = useContext(FilterContext);
 	const formaterteOppgavekoder = oppgavekoder
 		.map((oppgavekode) => ({
