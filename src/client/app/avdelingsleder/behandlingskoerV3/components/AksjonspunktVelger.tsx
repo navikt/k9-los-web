@@ -13,7 +13,7 @@ const AksjonspunktVelger: FunctionComponent<
 			group: gruppering,
 		}))
 		.sort((a, b) => Number(a.value) - Number(b.value));
-	const grupper = [...new Set(formaterteOppgavekoder.map((oppgavekode) => oppgavekode.group))].sort();
+	const grupper = [...new Set(formaterteOppgavekoder.map(({ group }) => group))].sort();
 	return (
 		<SearchDropdownMedPredefinerteVerdier
 			feltdefinisjon={feltdefinisjon}
