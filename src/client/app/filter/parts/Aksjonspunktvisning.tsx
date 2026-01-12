@@ -1,24 +1,21 @@
 import React, { useContext } from 'react';
-import { useKodeverk } from 'api/queries/kodeverkQueries';
 import { FilterContext } from 'filter/FilterContext';
-import { FeltverdiOppgavefilter } from 'filter/filterTsTypes';
+import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
-import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import { SelectedValues } from 'sharedComponents/searchWithDropdown/SelectedValues';
 
 interface Props {
 	oppgavefilter: FeltverdiOppgavefilter;
+	feltdefinisjon: Oppgavefelt;
 }
 
-export const Aksjonspunktvisning = ({ oppgavefilter }: Props) => {
-	const { data: alleKodeverk } = useKodeverk();
-	const oppgavekoder = alleKodeverk?.[kodeverkTyper.OPPGAVE_KODE] || [];
+export const Aksjonspunktvisning = ({ oppgavefilter, feltdefinisjon }: Props) => {
 	const { updateQuery } = useContext(FilterContext);
-	const formaterteOppgavekoder = oppgavekoder
-		.map((oppgavekode) => ({
-			value: oppgavekode.kode,
-			label: `${oppgavekode.kode} - ${oppgavekode.navn}`,
-			group: oppgavekode.gruppering,
+	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
+		.map(({ verdi, visningsnavn, gruppering }) => ({
+			value: verdi,
+			label: visningsnavn,
+			group: gruppering,
 		}))
 		.sort((a, b) => Number(a.value) - Number(b.value));
 

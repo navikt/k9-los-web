@@ -47,7 +47,7 @@ const Group = ({ group, chips, remove }: { group: string; chips: Props['values']
 export const SelectedValues = ({ values, remove, removeAllValues }: Props) => {
 	const getUniqueGroups = () => {
 		const groups = values.map((group) => group.group);
-		return [...new Set(groups)];
+		return [...new Set(groups)].sort();
 	};
 	const groups = getUniqueGroups();
 	if (!values || !values.length) {

@@ -44,15 +44,13 @@ export default function DagensTall() {
 					<HGrid gap="space-24" columns={{ md: 2, lg: 3, xl: 4 }}>
 						{data.tall
 							.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe)
-							.map((value) => {
-								return (
+							.map((value) => (
 									<Teller3
 										key={value.undergruppe}
 										forklaring={data.undergrupper.find(({ kode }) => kode === value.undergruppe).navn}
 										tall={tidsområde === 'I_DAG' ? value.idag : value.siste7Dager}
 									/>
-								);
-							})}
+								))}
 					</HGrid>
 				</>
 			)}
