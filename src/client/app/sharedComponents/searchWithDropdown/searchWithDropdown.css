@@ -17,7 +17,9 @@
 	transform: translateY(4px);
 	z-index: var(--a-z-index-tooltip);
 	position: absolute;
-	width: 100%;
+	width: max-content;
+	max-width: 35rem;
+	overflow-x: hidden;
 	:global .navds-checkbox__label {
 		padding: 12px 0;
 	}
@@ -66,6 +68,19 @@
 }
 .suggestionCheckbox :global(.navds-checkbox__label) {
 	padding: 0.5rem 0 !important;
+	word-break: break-word;
+	white-space: normal !important;
+	flex-wrap: wrap !important;
+}
+.suggestionCheckbox :global(.navds-checkbox__content) {
+	white-space: normal;
+	overflow-wrap: anywhere;
+	min-width: 0;
+}
+.suggestionCheckbox :global(.navds-checkbox__label-text) {
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: break-word;
 }
 .suggestionCheckbox:global(.navds-checkbox) {
 	width: 100%;
