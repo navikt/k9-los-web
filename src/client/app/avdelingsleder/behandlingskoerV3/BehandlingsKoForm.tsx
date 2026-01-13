@@ -216,7 +216,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 					width={900}
 					aria-label="Kriterier for kø"
 				>
-					<Modal.Body className="flex flex-col min-h-[65rem]">
+					<Modal.Body className="flex flex-col">
 						<AppContext.Provider value={overstyrteFeltdefinisjoner}>
 							<KøKriterieEditor
 								initialQuery={formMethods.watch(fieldnames.OPPGAVE_QUERY)}
