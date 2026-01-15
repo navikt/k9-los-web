@@ -43,7 +43,7 @@ export function EndreKriterierLagretSøkModal({
 		[feltdefinisjoner, kode6],
 	);
 	return (
-		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" className="w-[44rem]" width={900}>
+		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" width={900}>
 			<Modal.Header>
 				<Heading size="medium">Endre lagret søk</Heading>
 			</Modal.Header>

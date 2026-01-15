@@ -63,6 +63,7 @@ export type Oppgaverad = {
 export type Verdiforklaring = {
 	verdi: string;
 	visningsnavn: string;
+	gruppering: string | undefined;
 	sekundærvalg: boolean;
 };
 

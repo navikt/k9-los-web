@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { ArrowUndoIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, ErrorMessage, Heading, Loader, Search, SortState, Table } from '@navikt/ds-react';
 import { useAvdelingslederReservasjoner } from 'api/queries/avdelingslederQueries';
-import { useKodeverk } from 'api/queries/kodeverkQueries';
 import ReservasjonerBolkButtons from 'avdelingsleder/reservasjoner/components/ReservasjonerBolkButtons';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
 import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonerModal';
@@ -76,7 +75,6 @@ const AvdelingslederReservasjonerTabell = () => {
 		isSuccess: isSuccessReservasjoner,
 		isError: isErrorReservasjoner,
 	} = useAvdelingslederReservasjoner();
-	const { data: alleKodeverk, isError: isErrorKodeverk, isLoading: isLoadingKodeverk } = useKodeverk();
 
 	useEffect(() => {
 		if (reservasjoner) {
@@ -91,7 +89,7 @@ const AvdelingslederReservasjonerTabell = () => {
 		id: reservasjon.saksnummer || reservasjon.journalpostId,
 		ytelse: reservasjon.ytelse,
 		type:
-			getKodeverknavnFraKode(reservasjon.behandlingType?.kode, kodeverkTyper.BEHANDLING_TYPE, alleKodeverk) +
+			getKodeverknavnFraKode(reservasjon.behandlingType?.kode, kodeverkTyper.BEHANDLING_TYPE, {}) +
 			(reservasjon.tilBeslutter ? ' - [B] ' : ''),
 		reservertTil: getDateAndTime(reservasjon.reservertTilTidspunkt).date,
 	});
@@ -113,7 +111,7 @@ const AvdelingslederReservasjonerTabell = () => {
 	};
 	const debounceFn = useCallback(_.debounce(sokEtterReservasjon, 300), [reservasjoner]);
 
-	if (isErrorReservasjoner || isErrorKodeverk) {
+	if (isErrorReservasjoner) {
 		return <ErrorMessage>Noe gikk galt ved henting av reservasjoner</ErrorMessage>;
 	}
 
@@ -139,7 +137,7 @@ const AvdelingslederReservasjonerTabell = () => {
 				</div>
 			</div>
 			<VerticalSpacer sixteenPx />
-			{(isLoadingReservasjoner || isLoadingKodeverk) && <Loader size="2xlarge" className={styles.spinner} />}
+			{isLoadingReservasjoner && <Loader size="2xlarge" className={styles.spinner} />}
 			{reservasjoner?.length > 0 && isSuccessReservasjoner && !finnesSokResultat && (
 				<>
 					<VerticalSpacer eightPx />

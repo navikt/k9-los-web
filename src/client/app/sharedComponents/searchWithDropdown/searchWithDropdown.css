@@ -9,7 +9,7 @@
 	padding-right: 3rem;
 }
 .suggestionPopover[data-reach-combobox-popover] {
-	min-width: 16.875rem;
+	min-width: 21rem;
 	background-color: white;
 	border-radius: var(--a-border-radius-medium);
 	box-shadow: var(--a-shadow-medium);
@@ -17,7 +17,6 @@
 	transform: translateY(4px);
 	z-index: var(--a-z-index-tooltip);
 	position: absolute;
-	width: 100%;
 	:global .navds-checkbox__label {
 		padding: 12px 0;
 	}
@@ -67,6 +66,17 @@
 .suggestionCheckbox :global(.navds-checkbox__label) {
 	padding: 0.5rem 0 !important;
 }
+.suggestionCheckbox :global(.navds-checkbox__content) {
+	white-space: normal;
+	overflow-wrap: break-word;
+	word-break: break-word;
+	min-width: 0;
+}
+.suggestionCheckbox :global(.navds-checkbox__label-text) {
+	white-space: normal;
+	overflow-wrap: anywhere;
+	word-break: break-word;
+}
 .suggestionCheckbox:global(.navds-checkbox) {
 	width: 100%;
 }
@@ -96,4 +106,14 @@
 .searchButton {
 	position: absolute;
 	right: 0;
+}
+
+.ungroupedSection {
+	margin-top: 1rem;
+	padding-top: 0.75rem;
+	border-top: 3px solid var(--a-border-strong);
+}
+
+.secondarySection {
+	border-top: 2px solid black;
 }
