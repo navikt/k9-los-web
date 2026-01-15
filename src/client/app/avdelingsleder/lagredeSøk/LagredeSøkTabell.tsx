@@ -82,6 +82,14 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		})),
 	});
 
+	const queryBeskrivelseQueries = useQueries({
+		queries: props.lagredeSøk.map((søk) => ({
+			queryKey: [apiPaths.hentQueryBeskrivelse(søk.id.toString())],
+			queryFn: () =>
+				axiosInstance.get<string>(apiPaths.hentQueryBeskrivelse(søk.id.toString())).then((response) => response.data),
+		})),
+	});
+
 	const handleSort = (sortKey: string) => {
 		const newDirection =
 			sort && sortKey === sort.orderBy && sort.direction === 'ascending' ? 'descending' : 'ascending';
@@ -94,7 +102,9 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 
 	const sorterteLagredeSøk = [...props.lagredeSøk].sort((a, b) => {
 		if (sort?.orderBy === 'tittel') {
-			return sort.direction === 'ascending' ? a.tittel.localeCompare(b.tittel) : b.tittel.localeCompare(a.tittel);
+			const tittelA = a.tittel || queryBeskrivelseQueries[props.lagredeSøk.indexOf(a)]?.data || '';
+			const tittelB = b.tittel || queryBeskrivelseQueries[props.lagredeSøk.indexOf(b)]?.data || '';
+			return sort.direction === 'ascending' ? tittelA.localeCompare(tittelB) : tittelB.localeCompare(tittelA);
 		}
 		if (sort?.orderBy === 'sistEndret') {
 			return sort.direction === 'ascending'
@@ -126,14 +136,22 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{sorterteLagredeSøk.map((lagretSøk) => (
+				{sorterteLagredeSøk.map((lagretSøk) => {
+					const søkIndex = props.lagredeSøk.indexOf(lagretSøk);
+					const queryBeskrivelse = queryBeskrivelseQueries[søkIndex]?.data ?? '';
+					const visTittel = lagretSøk.tittel || queryBeskrivelse;
+					return (
 					<Table.Row key={lagretSøk.id}>
 						<Table.DataCell>
 							{endres === lagretSøk.id ? (
 								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndres(undefined)} />
 							) : (
 								<div className="flex items-center gap-2">
-									<span>{lagretSøk.tittel}</span>
+									{queryBeskrivelseQueries[søkIndex]?.isLoading ? (
+										<Skeleton variant="text" width={200} />
+									) : (
+										<span>{visTittel}</span>
+									)}
 									{endres === undefined && (
 										<Button
 											title="Endre tittel"
@@ -147,10 +165,10 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 							)}
 						</Table.DataCell>
 						<Table.DataCell>
-							{antallQueries[props.lagredeSøk.indexOf(lagretSøk)].isLoading ? (
+							{antallQueries[søkIndex].isLoading ? (
 								<Skeleton variant="text" width={50} />
 							) : (
-								(antallQueries[props.lagredeSøk.indexOf(lagretSøk)].data ?? '-')
+								(antallQueries[søkIndex].data ?? '-')
 							)}
 						</Table.DataCell>
 						<Table.DataCell>{dateFormat(lagretSøk.sistEndret)}</Table.DataCell>
@@ -180,7 +198,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 									variant="tertiary"
 									size="small"
 									onClick={() => {
-										kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${lagretSøk.tittel}` });
+										kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${visTittel}` });
 									}}
 									icon={<FilesIcon />}
 								>
@@ -199,7 +217,8 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 							</div>
 						</Table.DataCell>
 					</Table.Row>
-				))}
+				);
+				})}
 			</Table.Body>
 		</Table>
 	);
