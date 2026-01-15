@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { Alert, BodyShort, Loader, Modal, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { Uttrekk, UttrekkResultatCelle, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
+import { Uttrekk, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 
 const PAGE_SIZE = 20;
 
 function formatCelleVerdi(verdi: unknown): string {
 	if (verdi === null || verdi === undefined) {
-		return '';
+		return '-';
 	}
 	if (typeof verdi === 'boolean') {
 		return verdi ? 'Ja' : 'Nei';
