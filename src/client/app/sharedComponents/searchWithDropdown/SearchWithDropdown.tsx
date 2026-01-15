@@ -18,6 +18,7 @@ export type SearchWithDropdownProps = {
 	description?: string;
 	suggestions: SuggestionsType[];
 	groups?: string[];
+	secondaryGroups?: string[];
 	heading: string;
 	updateSelection: (values: string[]) => void;
 	selectedValues: string[];
@@ -34,6 +35,7 @@ const SearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 		description,
 		suggestions,
 		groups,
+		secondaryGroups,
 		heading,
 		updateSelection,
 		selectedValues,
@@ -155,6 +157,7 @@ const SearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 				{isPopoverOpen && (
 					<SuggestionList
 						groups={groups}
+						secondaryGroups={secondaryGroups}
 						heading={heading}
 						suggestions={suggestions}
 						filteredSuggestions={filteredSuggestions}

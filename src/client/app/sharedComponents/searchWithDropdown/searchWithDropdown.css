@@ -107,3 +107,13 @@
 	position: absolute;
 	right: 0;
 }
+
+.ungroupedSection {
+	margin-top: 1rem;
+	padding-top: 0.75rem;
+	border-top: 3px solid var(--a-border-strong);
+}
+
+.secondarySection {
+	border-top: 2px solid black;
+}

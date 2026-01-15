@@ -7,13 +7,30 @@ const AksjonspunktVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown }) => {
 	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
-		.map(({ verdi, visningsnavn, gruppering }) => ({
+		.map(({ verdi, visningsnavn, gruppering, sekundærvalg }) => ({
 			value: verdi,
 			label: visningsnavn,
 			group: gruppering,
+			secondary: sekundærvalg,
 		}))
 		.sort((a, b) => Number(a.value) - Number(b.value));
-	const grupper = [...new Set(formaterteOppgavekoder.map(({ group }) => group))].sort();
+
+	// Finn grupper som kun har sekundærvalg-elementer
+	const alleGrupper = [...new Set(formaterteOppgavekoder.map(({ group }) => group))];
+	const sekundæreGrupper = alleGrupper.filter((group) => {
+		const itemsInGroup = formaterteOppgavekoder.filter((item) => item.group === group);
+		return itemsInGroup.length > 0 && itemsInGroup.every((item) => item.secondary);
+	});
+
+	// Sorter grupper: primære først (alfabetisk), deretter sekundære (alfabetisk)
+	const grupper = alleGrupper.sort((a, b) => {
+		const aIsSecondary = sekundæreGrupper.includes(a);
+		const bIsSecondary = sekundæreGrupper.includes(b);
+		if (aIsSecondary && !bIsSecondary) return 1;
+		if (!aIsSecondary && bIsSecondary) return -1;
+		return a.localeCompare(b);
+	});
+
 	return (
 		<SearchDropdownMedPredefinerteVerdier
 			feltdefinisjon={feltdefinisjon}
@@ -21,6 +38,7 @@ const AksjonspunktVelger: FunctionComponent<
 			oppgavefilter={oppgavefilter}
 			suggestions={formaterteOppgavekoder}
 			groups={grupper}
+			secondaryGroups={sekundæreGrupper}
 			error={error}
 			skjulValgteVerdierUnderDropdown={skjulValgteVerdierUnderDropdown}
 		/>
