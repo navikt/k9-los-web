@@ -87,8 +87,8 @@ function LagretSøkKort({
 	return (
 		<div className="rounded-md p-3 mb-2 bg-gray-50 border border-gray-200">
 			<div className="flex items-center justify-between gap-3">
-				<div className="flex items-start gap-3 flex-1 min-w-0">
-					<div className="flex-shrink-0 mt-0.5">
+				<div className="flex items-center gap-3 flex-1 min-w-0">
+					<div className="flex-shrink-0 flex items-center">
 						<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600" />
 					</div>
 					<div className="flex-1 min-w-0">

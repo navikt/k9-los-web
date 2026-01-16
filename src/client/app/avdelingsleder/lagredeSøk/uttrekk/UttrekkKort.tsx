@@ -86,7 +86,7 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 		<div className={`rounded-md p-2 pl-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
 			<div className="flex items-center justify-between gap-3">
 				<div className="flex items-center gap-3 flex-1">
-					<div className="flex-shrink-0">{getStatusIcon(uttrekk.status)}</div>
+					<div className="flex-shrink-0 flex items-center">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex-1">
 						<div>{getStatusText(uttrekk)}</div>
 						<div className="text-sm flex gap-2 mt-0.5">
