@@ -11,14 +11,16 @@ import { dateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 function EndreTittel({
+	querybeskrivelse,
 	lagretSøk,
 	ikkeIEndreModusLenger,
 }: {
+	querybeskrivelse: string;
 	lagretSøk: LagretSøk;
 	ikkeIEndreModusLenger: () => void;
 }) {
 	const { mutate, isPending, isError } = useEndreLagretSøk(ikkeIEndreModusLenger);
-	const [tittel, setTittel] = useState(lagretSøk.tittel);
+	const [tittel, setTittel] = useState(lagretSøk.tittel || querybeskrivelse);
 	const [feilmelding, setFeilmelding] = useState('');
 
 	useEffect(() => {
@@ -47,17 +49,18 @@ function EndreTittel({
 				error={feilmelding}
 				htmlSize={40}
 				maxLength={100}
+				size="small"
 				autoFocus
 			/>
-			<Button variant="secondary" disabled={isPending} type="submit">
+			<Button variant="secondary" disabled={isPending} type="submit" size="small">
 				Lagre
 			</Button>
 			{lagretSøk.tittel.length > 0 && (
-				<Button variant="secondary" disabled={isPending} type="reset">
+				<Button variant="secondary" disabled={isPending} type="reset" size="small">
 					Fjern tittel
 				</Button>
 			)}
-			<Button variant="tertiary" disabled={isPending} type="button" onClick={ikkeIEndreModusLenger}>
+			<Button variant="tertiary" disabled={isPending} type="button" onClick={ikkeIEndreModusLenger} size="small">
 				Avbryt
 			</Button>
 		</form>
@@ -93,7 +96,11 @@ function LagretSøkKort({
 					</div>
 					<div className="flex-1 min-w-0">
 						{endrerTittel ? (
-							<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
+							<EndreTittel
+								lagretSøk={lagretSøk}
+								querybeskrivelse={queryBeskrivelse}
+								ikkeIEndreModusLenger={() => setEndrerTittel(false)}
+							/>
 						) : (
 							<div className="truncate">
 								{harEgendefinertTittel && (
