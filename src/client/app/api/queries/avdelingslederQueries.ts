@@ -237,6 +237,7 @@ export interface LagretSøk {
 	tittel: string;
 	beskrivelse: string;
 	query: OppgaveQuery;
+	queryBeskrivelse: string;
 	lagetAv: number;
 	versjon: number;
 	sistEndret: string;
@@ -289,7 +290,6 @@ export const useEndreLagretSøk = (callback?: () => void) => {
 			Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.hentLagredeSøk] }),
 				queryClient.invalidateQueries({ queryKey: [apiPaths.hentAntallLagretSøk(id.toString())] }),
-				queryClient.invalidateQueries({ queryKey: [apiPaths.hentQueryBeskrivelse(id.toString())] }),
 			]).then(() => {
 				if (callback) callback();
 			}),
@@ -353,6 +353,7 @@ export interface Uttrekk {
 	opprettetTidspunkt: string;
 	status: UttrekkStatus;
 	query: OppgaveQuery;
+	queryBeskrivelse: string;
 	typeKjøring: TypeKjøring;
 	antall: number | null;
 	feilmelding: string | null;

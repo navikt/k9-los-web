@@ -11,16 +11,14 @@ import { dateFormat } from 'utils/dateUtils';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 function EndreTittel({
-	querybeskrivelse,
 	lagretSøk,
 	ikkeIEndreModusLenger,
 }: {
-	querybeskrivelse: string;
 	lagretSøk: LagretSøk;
 	ikkeIEndreModusLenger: () => void;
 }) {
 	const { mutate, isPending, isError } = useEndreLagretSøk(ikkeIEndreModusLenger);
-	const [tittel, setTittel] = useState(lagretSøk.tittel || querybeskrivelse);
+	const [tittel, setTittel] = useState(lagretSøk.tittel || lagretSøk.queryBeskrivelse);
 	const [feilmelding, setFeilmelding] = useState('');
 
 	useEffect(() => {
@@ -69,14 +67,10 @@ function EndreTittel({
 
 function LagretSøkKort({
 	lagretSøk,
-	queryBeskrivelse,
-	queryBeskrivelseLoading,
 	antall,
 	antallLoading,
 }: {
 	lagretSøk: LagretSøk;
-	queryBeskrivelse: string;
-	queryBeskrivelseLoading: boolean;
 	antall: number | undefined;
 	antallLoading: boolean;
 }) {
@@ -96,11 +90,7 @@ function LagretSøkKort({
 					</div>
 					<div className="flex-1 min-w-0">
 						{endrerTittel ? (
-							<EndreTittel
-								lagretSøk={lagretSøk}
-								querybeskrivelse={queryBeskrivelse}
-								ikkeIEndreModusLenger={() => setEndrerTittel(false)}
-							/>
+							<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 						) : (
 							<div className="truncate">
 								{harEgendefinertTittel && (
@@ -115,14 +105,14 @@ function LagretSøkKort({
 										/>
 									</div>
 								)}
-								{visKriterierPåHovedlinje && queryBeskrivelse}
+								{visKriterierPåHovedlinje && lagretSøk.queryBeskrivelse}
 							</div>
 						)}
 						<div className="text-sm text-gray-600 mt-1 flex gap-4">
 							{!visKriterierPåHovedlinje && (
 								<span className="truncate">
 									<strong>Kriterier: </strong>
-									{queryBeskrivelse}
+									{lagretSøk.queryBeskrivelse}
 								</span>
 							)}
 							<span>
@@ -165,8 +155,8 @@ function LagretSøkKort({
 						variant="tertiary"
 						size="small"
 						onClick={() => {
-							const visTittel = lagretSøk.tittel || queryBeskrivelse;
-							kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${visTittel}` });
+							const tittelEllerQueryBeskrivelse = lagretSøk.tittel || lagretSøk.queryBeskrivelse;
+							kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${tittelEllerQueryBeskrivelse}` });
 						}}
 						icon={<FilesIcon />}
 					>
@@ -190,22 +180,12 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		})),
 	});
 
-	const queryBeskrivelseQueries = useQueries({
-		queries: props.lagredeSøk.map((søk) => ({
-			queryKey: [apiPaths.hentQueryBeskrivelse(søk.id.toString())],
-			queryFn: () =>
-				axiosInstance.get<string>(apiPaths.hentQueryBeskrivelse(søk.id.toString())).then((response) => response.data),
-		})),
-	});
-
 	return (
 		<div>
 			{props.lagredeSøk.map((lagretSøk, index) => (
 				<LagretSøkKort
 					key={lagretSøk.id}
 					lagretSøk={lagretSøk}
-					queryBeskrivelse={queryBeskrivelseQueries[index]?.data ?? ''}
-					queryBeskrivelseLoading={queryBeskrivelseQueries[index]?.isLoading ?? false}
 					antall={antallQueries[index]?.data}
 					antallLoading={antallQueries[index]?.isLoading ?? false}
 				/>
