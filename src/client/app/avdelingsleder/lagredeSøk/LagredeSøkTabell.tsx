@@ -74,10 +74,19 @@ function LagretSøkKort({
 	const { mutate: endreLagretSøk } = useEndreLagretSøk();
 
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
+	const visKriterierPåHovedlinje = !harEgendefinertTittel && !endrerTittel;
+
+	const kriterierElement = queryBeskrivelseLoading ? (
+		<Skeleton variant="text" width={300} className="inline-block" />
+	) : (
+		<>
+			<b>Kriterier</b>: {queryBeskrivelse}
+		</>
+	);
 
 	return (
 		<div className="rounded-md p-3 mb-2 bg-gray-50 border border-gray-200">
-			<div className="flex items-start justify-between gap-3">
+			<div className="flex items-center justify-between gap-3">
 				<div className="flex items-start gap-3 flex-1 min-w-0">
 					<div className="flex-shrink-0 mt-0.5">
 						<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600" />
@@ -88,7 +97,7 @@ function LagretSøkKort({
 						) : (
 							<>
 								{harEgendefinertTittel && (
-									<div className="flex items-center gap-1 mb-1">
+									<div className="flex items-center gap-1">
 										<span className="font-semibold truncate">{lagretSøk.tittel}</span>
 										<Button
 											title="Endre tittel"
@@ -106,27 +115,11 @@ function LagretSøkKort({
 										/>
 									</div>
 								)}
-								<div className="flex items-center gap-1">
-									{queryBeskrivelseLoading ? (
-										<Skeleton variant="text" width={300} />
-									) : (
-										<span className={harEgendefinertTittel ? 'text-sm text-gray-600' : ''}>
-											{queryBeskrivelse || 'Ingen kriterier satt'}
-										</span>
-									)}
-									{!harEgendefinertTittel && (
-										<Button
-											title="Legg til egendefinert tittel"
-											size="xsmall"
-											variant="tertiary"
-											icon={<PencilIcon />}
-											onClick={() => setEndrerTittel(true)}
-										/>
-									)}
-								</div>
+								{visKriterierPåHovedlinje && <div>{kriterierElement}</div>}
 							</>
 						)}
 						<div className="text-sm text-gray-600 mt-1 flex gap-4">
+							{!visKriterierPåHovedlinje && <span>{kriterierElement}</span>}
 							<span>
 								<strong>Antall:</strong>{' '}
 								{antallLoading ? <Skeleton variant="text" width={30} className="inline-block" /> : (antall ?? '-')}
@@ -138,6 +131,11 @@ function LagretSøkKort({
 					</div>
 				</div>
 				<div className="flex gap-2 flex-shrink-0">
+					{!harEgendefinertTittel && !endrerTittel && (
+						<Button variant="tertiary" size="small" icon={<PencilIcon />} onClick={() => setEndrerTittel(true)}>
+							Sett tittel
+						</Button>
+					)}
 					<ModalButton
 						renderButton={({ openModal }) => (
 							<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
@@ -169,12 +167,7 @@ function LagretSøkKort({
 					>
 						Kopier
 					</Button>
-					<Button
-						variant="tertiary"
-						size="small"
-						onClick={() => slettLagretSøk(lagretSøk.id)}
-						icon={<TrashIcon />}
-					>
+					<Button variant="tertiary" size="small" onClick={() => slettLagretSøk(lagretSøk.id)} icon={<TrashIcon />}>
 						Slett
 					</Button>
 				</div>
