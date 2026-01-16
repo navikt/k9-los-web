@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { FilesIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Skeleton, SortState, Table, TextField } from '@navikt/ds-react';
+import { FilesIcon, PencilIcon, PlayIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Skeleton, SortState, Table, Tag, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
@@ -22,14 +22,6 @@ function EndreTittel({
 	const [feilmelding, setFeilmelding] = useState('');
 
 	useEffect(() => {
-		if (tittel.length === 0) {
-			setFeilmelding('Tittel må være utfylt');
-		} else {
-			setFeilmelding('');
-		}
-	}, [tittel]);
-
-	useEffect(() => {
 		if (isError) {
 			setFeilmelding('Noe gikk galt ved lagring av søk. Prøv å oppfrisk siden.');
 		}
@@ -40,9 +32,7 @@ function EndreTittel({
 			className="flex gap-2 items-start"
 			onSubmit={(event) => {
 				event.preventDefault();
-				if (tittel.length > 0) {
-					mutate({ ...lagretSøk, tittel });
-				}
+				mutate({ ...lagretSøk, tittel });
 			}}
 		>
 			<TextField
@@ -73,6 +63,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 	});
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
+	const { mutate: endreLagretSøk } = useEndreLagretSøk();
 
 	const antallQueries = useQueries({
 		queries: props.lagredeSøk.map((søk) => ({
@@ -139,6 +130,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 				{sorterteLagredeSøk.map((lagretSøk) => {
 					const søkIndex = props.lagredeSøk.indexOf(lagretSøk);
 					const queryBeskrivelse = queryBeskrivelseQueries[søkIndex]?.data ?? '';
+					const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 					const visTittel = lagretSøk.tittel || queryBeskrivelse;
 					return (
 					<Table.Row key={lagretSøk.id}>
@@ -150,16 +142,34 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 									{queryBeskrivelseQueries[søkIndex]?.isLoading ? (
 										<Skeleton variant="text" width={200} />
 									) : (
-										<span>{visTittel}</span>
+										<>
+											<span>{visTittel}</span>
+											{harEgendefinertTittel ? (
+												<Tag variant="alt1" size="small">Egendefinert</Tag>
+											) : (
+												<Tag variant="neutral" size="small">Generert</Tag>
+											)}
+										</>
 									)}
 									{endres === undefined && (
-										<Button
-											title="Endre tittel"
-											size="small"
-											variant="tertiary"
-											icon={<PencilIcon />}
-											onClick={() => setEndres(lagretSøk.id)}
-										/>
+										<>
+											<Button
+												title="Endre tittel"
+												size="small"
+												variant="tertiary"
+												icon={<PencilIcon />}
+												onClick={() => setEndres(lagretSøk.id)}
+											/>
+											{harEgendefinertTittel && (
+												<Button
+													title="Fjern egendefinert tittel"
+													size="small"
+													variant="tertiary"
+													icon={<XMarkIcon />}
+													onClick={() => endreLagretSøk({ ...lagretSøk, tittel: '' })}
+												/>
+											)}
+										</>
 									)}
 								</div>
 							)}

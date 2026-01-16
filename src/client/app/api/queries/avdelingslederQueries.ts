@@ -289,6 +289,7 @@ export const useEndreLagretSøk = (callback?: () => void) => {
 			Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.hentLagredeSøk] }),
 				queryClient.invalidateQueries({ queryKey: [apiPaths.hentAntallLagretSøk(id.toString())] }),
+				queryClient.invalidateQueries({ queryKey: [apiPaths.hentQueryBeskrivelse(id.toString())] }),
 			]).then(() => {
 				if (callback) callback();
 			}),
