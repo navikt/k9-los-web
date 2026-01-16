@@ -48,7 +48,6 @@ export function LagredeSøk() {
 						<p className="mb-0">Muligheter for videre utvikling, som prioriteres etter behov:</p>
 						<ul className="mt-0.5">
 							<li>Dele lagrede søk med andre.</li>
-							<li>Bruke lagrede søk som utgangspunkt for uttrekk av data.</li>
 							<li>Lagring av historikk, slik at man for eksempel kan få antallet av et søk kjørt hver uke.</li>
 						</ul>
 					</HelpText>
@@ -63,13 +62,7 @@ export function LagredeSøk() {
 					Legg til nytt lagret søk
 				</Button>
 			</div>
-			{nyttSøk && (
-				<EndreKriterierLagretSøkModal
-					lagretSøk={nyttSøk}
-					open={true}
-					closeModal={() => setNyttSøk(null)}
-				/>
-			)}
+			{nyttSøk && <EndreKriterierLagretSøkModal lagretSøk={nyttSøk} open={true} closeModal={() => setNyttSøk(null)} />}
 			{isError && (
 				<div>
 					<Alert variant="warning">
@@ -84,7 +77,7 @@ export function LagredeSøk() {
 					<i>Du har ingen lagrede søk ennå</i>
 				</div>
 			)}
-			{isSuccess && <UttrekkTabell />}
+			{isSuccess && !isError && <UttrekkTabell />}
 		</>
 	);
 }

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
-	CheckmarkCircleIcon,
 	ClockDashedIcon,
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
 	EyeIcon,
+	FileTextIcon,
 	InformationSquareIcon,
 	TasklistIcon,
 	TrashIcon,
@@ -56,7 +56,7 @@ function getStatusIcon(status: UttrekkStatus) {
 		case UttrekkStatus.KJØRER:
 			return <Loader size="medium" />;
 		case UttrekkStatus.FULLFØRT:
-			return <CheckmarkCircleIcon aria-hidden fontSize="1.5rem" />;
+			return <FileTextIcon aria-hidden fontSize="1.5rem" />;
 		case UttrekkStatus.FEILET:
 			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
 		default:
