@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading, HelpText } from '@navikt/ds-react';
-import { useHentLagredeSøk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, useHentLagredeSøk, useOpprettLagretSøk } from 'api/queries/avdelingslederQueries';
+import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
-import { OpprettLagretSøkModal } from 'avdelingsleder/lagredeSøk/OpprettLagretSøkModal';
 import { UttrekkTabell } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkTabell';
-import ModalButton from 'sharedComponents/ModalButton';
 
 export function LagredeSøk() {
 	const { data, isSuccess, isError } = useHentLagredeSøk({ retry: false });
+	const { mutate: opprettLagretSøk, isPending: oppretterSøk } = useOpprettLagretSøk();
+	const [nyttSøkId, setNyttSøkId] = useState<number | null>(null);
+	const [nyttSøk, setNyttSøk] = useState<LagretSøk | null>(null);
+
+	// Når vi har en nyttSøkId og data er oppdatert, finn det opprettede søket
+	useEffect(() => {
+		if (nyttSøkId !== null && data) {
+			const søk = data.find((s) => s.id === nyttSøkId);
+			if (søk) {
+				setNyttSøk(søk);
+				setNyttSøkId(null);
+			}
+		}
+	}, [nyttSøkId, data]);
+
+	const handleOpprettSøk = () => {
+		opprettLagretSøk(
+			{ tittel: '' },
+			{
+				onSuccess: (id: number) => {
+					setNyttSøkId(id);
+				},
+			},
+		);
+	};
+
 	return (
 		<>
 			<div className="flex justify-between items-center mb-10">
@@ -28,15 +53,23 @@ export function LagredeSøk() {
 						</ul>
 					</HelpText>
 				</Heading>
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button variant="secondary" onClick={openModal} icon={<PlusCircleIcon />} disabled={isError}>
-							Legg til nytt lagret søk
-						</Button>
-					)}
-					renderModal={({ open, closeModal }) => <OpprettLagretSøkModal open={open} closeModal={closeModal} />}
-				/>
+				<Button
+					variant="secondary"
+					onClick={handleOpprettSøk}
+					icon={<PlusCircleIcon />}
+					disabled={isError}
+					loading={oppretterSøk}
+				>
+					Legg til nytt lagret søk
+				</Button>
 			</div>
+			{nyttSøk && (
+				<EndreKriterierLagretSøkModal
+					lagretSøk={nyttSøk}
+					open={true}
+					closeModal={() => setNyttSøk(null)}
+				/>
+			)}
 			{isError && (
 				<div>
 					<Alert variant="warning">

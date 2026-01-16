@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { FilesIcon, MagnifyingGlassIcon, PencilIcon, PlayIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { FilesIcon, MagnifyingGlassIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
@@ -34,6 +34,10 @@ function EndreTittel({
 				event.preventDefault();
 				mutate({ ...lagretSøk, tittel });
 			}}
+			onReset={(event) => {
+				event.preventDefault();
+				mutate({ ...lagretSøk, tittel: '' });
+			}}
 		>
 			<TextField
 				label="Tittel"
@@ -48,6 +52,11 @@ function EndreTittel({
 			<Button variant="secondary" disabled={isPending} type="submit">
 				Lagre
 			</Button>
+			{lagretSøk.tittel.length > 0 && (
+				<Button variant="secondary" disabled={isPending} type="reset">
+					Fjern tittel
+				</Button>
+			)}
 			<Button variant="tertiary" disabled={isPending} type="button" onClick={ikkeIEndreModusLenger}>
 				Avbryt
 			</Button>
@@ -71,18 +80,9 @@ function LagretSøkKort({
 	const [endrerTittel, setEndrerTittel] = useState(false);
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
-	const { mutate: endreLagretSøk } = useEndreLagretSøk();
 
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const visKriterierPåHovedlinje = !harEgendefinertTittel && !endrerTittel;
-
-	const kriterierElement = queryBeskrivelseLoading ? (
-		<Skeleton variant="text" width={300} className="inline-block" />
-	) : (
-		<>
-			<b>Kriterier</b>: {queryBeskrivelse}
-		</>
-	);
 
 	return (
 		<div className="rounded-md p-3 mb-2 bg-gray-50 border border-gray-200">
@@ -95,10 +95,10 @@ function LagretSøkKort({
 						{endrerTittel ? (
 							<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 						) : (
-							<>
+							<div className="truncate">
 								{harEgendefinertTittel && (
 									<div className="flex items-center gap-1">
-										<span className="font-semibold truncate">{lagretSøk.tittel}</span>
+										{lagretSøk.tittel}
 										<Button
 											title="Endre tittel"
 											size="xsmall"
@@ -106,20 +106,18 @@ function LagretSøkKort({
 											icon={<PencilIcon />}
 											onClick={() => setEndrerTittel(true)}
 										/>
-										<Button
-											title="Fjern egendefinert tittel"
-											size="xsmall"
-											variant="tertiary"
-											icon={<XMarkIcon />}
-											onClick={() => endreLagretSøk({ ...lagretSøk, tittel: '' })}
-										/>
 									</div>
 								)}
-								{visKriterierPåHovedlinje && <div>{kriterierElement}</div>}
-							</>
+								{visKriterierPåHovedlinje && queryBeskrivelse}
+							</div>
 						)}
 						<div className="text-sm text-gray-600 mt-1 flex gap-4">
-							{!visKriterierPåHovedlinje && <span>{kriterierElement}</span>}
+							{!visKriterierPåHovedlinje && (
+								<span className="truncate">
+									<strong>Kriterier: </strong>
+									{queryBeskrivelse}
+								</span>
+							)}
 							<span>
 								<strong>Antall:</strong>{' '}
 								{antallLoading ? <Skeleton variant="text" width={30} className="inline-block" /> : (antall ?? '-')}
@@ -139,7 +137,7 @@ function LagretSøkKort({
 					<ModalButton
 						renderButton={({ openModal }) => (
 							<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
-								Endre
+								Endre kriterier
 							</Button>
 						)}
 						renderModal={({ open, closeModal }) => (
