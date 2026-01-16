@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { FilesIcon, PencilIcon, PlayIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Button, Skeleton, SortState, Table, Tag, TextField } from '@navikt/ds-react';
+import { FilesIcon, MagnifyingGlassIcon, PencilIcon, PlayIcon, TrashIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
@@ -55,16 +55,135 @@ function EndreTittel({
 	);
 }
 
-export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
-	const [endres, setEndres] = useState<number>();
-	const [sort, setSort] = useState<SortState | undefined>({
-		orderBy: 'tittel',
-		direction: 'ascending',
-	});
+function LagretSøkKort({
+	lagretSøk,
+	queryBeskrivelse,
+	queryBeskrivelseLoading,
+	antall,
+	antallLoading,
+}: {
+	lagretSøk: LagretSøk;
+	queryBeskrivelse: string;
+	queryBeskrivelseLoading: boolean;
+	antall: number | undefined;
+	antallLoading: boolean;
+}) {
+	const [endrerTittel, setEndrerTittel] = useState(false);
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 	const { mutate: endreLagretSøk } = useEndreLagretSøk();
 
+	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
+
+	return (
+		<div className="rounded-md p-3 mb-2 bg-gray-50 border border-gray-200">
+			<div className="flex items-start justify-between gap-3">
+				<div className="flex items-start gap-3 flex-1 min-w-0">
+					<div className="flex-shrink-0 mt-0.5">
+						<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600" />
+					</div>
+					<div className="flex-1 min-w-0">
+						{endrerTittel ? (
+							<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
+						) : (
+							<>
+								{harEgendefinertTittel && (
+									<div className="flex items-center gap-1 mb-1">
+										<span className="font-semibold truncate">{lagretSøk.tittel}</span>
+										<Button
+											title="Endre tittel"
+											size="xsmall"
+											variant="tertiary"
+											icon={<PencilIcon />}
+											onClick={() => setEndrerTittel(true)}
+										/>
+										<Button
+											title="Fjern egendefinert tittel"
+											size="xsmall"
+											variant="tertiary"
+											icon={<XMarkIcon />}
+											onClick={() => endreLagretSøk({ ...lagretSøk, tittel: '' })}
+										/>
+									</div>
+								)}
+								<div className="flex items-center gap-1">
+									{queryBeskrivelseLoading ? (
+										<Skeleton variant="text" width={300} />
+									) : (
+										<span className={harEgendefinertTittel ? 'text-sm text-gray-600' : ''}>
+											{queryBeskrivelse || 'Ingen kriterier satt'}
+										</span>
+									)}
+									{!harEgendefinertTittel && (
+										<Button
+											title="Legg til egendefinert tittel"
+											size="xsmall"
+											variant="tertiary"
+											icon={<PencilIcon />}
+											onClick={() => setEndrerTittel(true)}
+										/>
+									)}
+								</div>
+							</>
+						)}
+						<div className="text-sm text-gray-600 mt-1 flex gap-4">
+							<span>
+								<strong>Antall:</strong>{' '}
+								{antallLoading ? <Skeleton variant="text" width={30} className="inline-block" /> : (antall ?? '-')}
+							</span>
+							<span>
+								<strong>Sist endret:</strong> {dateFormat(lagretSøk.sistEndret)}
+							</span>
+						</div>
+					</div>
+				</div>
+				<div className="flex gap-2 flex-shrink-0">
+					<ModalButton
+						renderButton={({ openModal }) => (
+							<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
+								Endre
+							</Button>
+						)}
+						renderModal={({ open, closeModal }) => (
+							<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+						)}
+					/>
+					<ModalButton
+						renderButton={({ openModal }) => (
+							<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
+								Gjør uttrekk
+							</Button>
+						)}
+						renderModal={({ open, closeModal }) => (
+							<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+						)}
+					/>
+					<Button
+						variant="tertiary"
+						size="small"
+						onClick={() => {
+							const visTittel = lagretSøk.tittel || queryBeskrivelse;
+							kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${visTittel}` });
+						}}
+						icon={<FilesIcon />}
+					>
+						Kopier
+					</Button>
+					<Button
+						variant="tertiary"
+						size="small"
+						onClick={() => slettLagretSøk(lagretSøk.id)}
+						icon={<TrashIcon />}
+					>
+						Slett
+					</Button>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 	const antallQueries = useQueries({
 		queries: props.lagredeSøk.map((søk) => ({
 			queryKey: [apiPaths.hentAntallLagretSøk(søk.id.toString())],
@@ -81,155 +200,18 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[] }) {
 		})),
 	});
 
-	const handleSort = (sortKey: string) => {
-		const newDirection =
-			sort && sortKey === sort.orderBy && sort.direction === 'ascending' ? 'descending' : 'ascending';
-		setSort((prevState) =>
-			prevState && sortKey === prevState.orderBy && prevState.direction === 'descending'
-				? undefined
-				: { orderBy: sortKey, direction: newDirection },
-		);
-	};
-
-	const sorterteLagredeSøk = [...props.lagredeSøk].sort((a, b) => {
-		if (sort?.orderBy === 'tittel') {
-			const tittelA = a.tittel || queryBeskrivelseQueries[props.lagredeSøk.indexOf(a)]?.data || '';
-			const tittelB = b.tittel || queryBeskrivelseQueries[props.lagredeSøk.indexOf(b)]?.data || '';
-			return sort.direction === 'ascending' ? tittelA.localeCompare(tittelB) : tittelB.localeCompare(tittelA);
-		}
-		if (sort?.orderBy === 'sistEndret') {
-			return sort.direction === 'ascending'
-				? new Date(a.sistEndret).getTime() - new Date(b.sistEndret).getTime()
-				: new Date(b.sistEndret).getTime() - new Date(a.sistEndret).getTime();
-		}
-		if (sort?.orderBy === 'antall') {
-			const antallA = antallQueries[props.lagredeSøk.indexOf(a)].data ?? 0;
-			const antallB = antallQueries[props.lagredeSøk.indexOf(b)].data ?? 0;
-			return sort.direction === 'ascending' ? antallA - antallB : antallB - antallA;
-		}
-		return 0;
-	});
-
 	return (
-		<Table sort={sort} onSortChange={handleSort} size="medium">
-			<Table.Header>
-				<Table.Row>
-					<Table.ColumnHeader sortable sortKey="tittel" scope="col">
-						Tittel
-					</Table.ColumnHeader>
-					<Table.ColumnHeader sortable={antallQueries.every((query) => query.isSuccess)} sortKey="antall" scope="col">
-						Antall oppgaver
-					</Table.ColumnHeader>
-					<Table.ColumnHeader sortable sortKey="sistEndret" scope="col">
-						Sist endret
-					</Table.ColumnHeader>
-					<Table.ColumnHeader scope="col" />
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{sorterteLagredeSøk.map((lagretSøk) => {
-					const søkIndex = props.lagredeSøk.indexOf(lagretSøk);
-					const queryBeskrivelse = queryBeskrivelseQueries[søkIndex]?.data ?? '';
-					const harEgendefinertTittel = lagretSøk.tittel.length > 0;
-					const visTittel = lagretSøk.tittel || queryBeskrivelse;
-					return (
-					<Table.Row key={lagretSøk.id}>
-						<Table.DataCell>
-							{endres === lagretSøk.id ? (
-								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndres(undefined)} />
-							) : (
-								<div className="flex items-center gap-2">
-									{queryBeskrivelseQueries[søkIndex]?.isLoading ? (
-										<Skeleton variant="text" width={200} />
-									) : (
-										<>
-											<span>{visTittel}</span>
-											{harEgendefinertTittel ? (
-												<Tag variant="alt1" size="small">Egendefinert</Tag>
-											) : (
-												<Tag variant="neutral" size="small">Generert</Tag>
-											)}
-										</>
-									)}
-									{endres === undefined && (
-										<>
-											<Button
-												title="Endre tittel"
-												size="small"
-												variant="tertiary"
-												icon={<PencilIcon />}
-												onClick={() => setEndres(lagretSøk.id)}
-											/>
-											{harEgendefinertTittel && (
-												<Button
-													title="Fjern egendefinert tittel"
-													size="small"
-													variant="tertiary"
-													icon={<XMarkIcon />}
-													onClick={() => endreLagretSøk({ ...lagretSøk, tittel: '' })}
-												/>
-											)}
-										</>
-									)}
-								</div>
-							)}
-						</Table.DataCell>
-						<Table.DataCell>
-							{antallQueries[søkIndex].isLoading ? (
-								<Skeleton variant="text" width={50} />
-							) : (
-								(antallQueries[søkIndex].data ?? '-')
-							)}
-						</Table.DataCell>
-						<Table.DataCell>{dateFormat(lagretSøk.sistEndret)}</Table.DataCell>
-						<Table.DataCell>
-							<div className="flex gap-4">
-								<ModalButton
-									renderButton={({ openModal }) => (
-										<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
-											Endre
-										</Button>
-									)}
-									renderModal={({ open, closeModal }) => (
-										<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-									)}
-								/>
-								<ModalButton
-									renderButton={({ openModal }) => (
-										<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
-											Gjør uttrekk
-										</Button>
-									)}
-									renderModal={({ open, closeModal }) => (
-										<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-									)}
-								/>
-								<Button
-									variant="tertiary"
-									size="small"
-									onClick={() => {
-										kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${visTittel}` });
-									}}
-									icon={<FilesIcon />}
-								>
-									Kopier
-								</Button>
-								<Button
-									variant="tertiary"
-									size="small"
-									onClick={() => {
-										slettLagretSøk(lagretSøk.id);
-									}}
-									icon={<TrashIcon />}
-								>
-									Slett
-								</Button>
-							</div>
-						</Table.DataCell>
-					</Table.Row>
-				);
-				})}
-			</Table.Body>
-		</Table>
+		<div>
+			{props.lagredeSøk.map((lagretSøk, index) => (
+				<LagretSøkKort
+					key={lagretSøk.id}
+					lagretSøk={lagretSøk}
+					queryBeskrivelse={queryBeskrivelseQueries[index]?.data ?? ''}
+					queryBeskrivelseLoading={queryBeskrivelseQueries[index]?.isLoading ?? false}
+					antall={antallQueries[index]?.data}
+					antallLoading={antallQueries[index]?.isLoading ?? false}
+				/>
+			))}
+		</div>
 	);
 }
