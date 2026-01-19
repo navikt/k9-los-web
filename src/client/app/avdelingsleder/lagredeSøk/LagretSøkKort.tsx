@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { CogIcon, FilesIcon, MagnifyingGlassIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, HelpText, Skeleton, TextField, Tooltip } from '@navikt/ds-react';
+import { FilesIcon, MagnifyingGlassIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
+import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
@@ -102,7 +102,12 @@ export function LagretSøkKort({
 										/>
 									</div>
 								)}
-								{visKriterierPåHovedlinje && <div>{lagretSøk.queryBeskrivelse}</div>}
+								{visKriterierPåHovedlinje && (
+									<div className="truncate">
+										<strong className="font-regular">Kriterier: </strong>
+										{lagretSøk.queryBeskrivelse}
+									</div>
+								)}
 							</div>
 						)}
 						<div className="text-sm text-gray-600 mt-1 flex gap-4">
@@ -135,7 +140,12 @@ export function LagretSøkKort({
 							</Button>
 						)}
 						renderModal={({ open, closeModal }) => (
-							<EndreKriterierLagretSøkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+							<EndreKriterierLagretSøkModal
+								tittel="Endre lagret søk"
+								lagretSøk={lagretSøk}
+								open={open}
+								closeModal={closeModal}
+							/>
 						)}
 					/>
 					<ModalButton

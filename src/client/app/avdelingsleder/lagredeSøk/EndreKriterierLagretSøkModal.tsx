@@ -12,9 +12,10 @@ import { RenderModalProps } from 'sharedComponents/ModalButton';
 
 export function EndreKriterierLagretSøkModal({
 	lagretSøk,
+	tittel,
 	open,
 	closeModal,
-}: RenderModalProps & { lagretSøk: LagretSøk }) {
+}: RenderModalProps & { tittel: string; lagretSøk: LagretSøk }) {
 	const { isError: backendError, mutate: endreLagretSøk } = useEndreLagretSøk(closeModal);
 
 	// Backend vil lage default query med/uten kode6, og låser her valgene ihht. eksisterende query.
@@ -43,9 +44,9 @@ export function EndreKriterierLagretSøkModal({
 		[feltdefinisjoner, kode6],
 	);
 	return (
-		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" width={900}>
+		<Modal open={open} onClose={closeModal} aria-label={tittel} width={900}>
 			<Modal.Header>
-				<Heading size="medium">Endre lagret søk</Heading>
+				<Heading size="medium">{tittel}</Heading>
 			</Modal.Header>
 			<Modal.Body className="p-2">
 				<AppContext.Provider value={overstyrteFeltdefinisjoner}>

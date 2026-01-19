@@ -62,7 +62,14 @@ export function LagredeSøk() {
 					Legg til nytt lagret søk
 				</Button>
 			</div>
-			{nyttSøk && <EndreKriterierLagretSøkModal lagretSøk={nyttSøk} open={true} closeModal={() => setNyttSøk(null)} />}
+			{nyttSøk && (
+				<EndreKriterierLagretSøkModal
+					tittel="Nytt lagret søk"
+					lagretSøk={nyttSøk}
+					open
+					closeModal={() => setNyttSøk(null)}
+				/>
+			)}
 			{isError && (
 				<div>
 					<Alert variant="warning">
