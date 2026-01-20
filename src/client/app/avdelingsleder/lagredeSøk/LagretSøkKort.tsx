@@ -115,56 +115,59 @@ export function LagretSøkKort({
 					<div className="flex-shrink-0 flex items-center pt-1">
 						<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600" />
 					</div>
-					<div className="flex flex-col justify-between">
-						{endrerTittel ? (
-							<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
-						) : (
-							<>
-								{harEgendefinertTittel && (
-									<div className="flex items-center gap-1 mb-2">
-										<span className="font-semibold">{lagretSøk.tittel}</span>
-										<Button
-											title="Endre tittel"
-											size="xsmall"
-											variant="tertiary"
-											icon={<PencilIcon />}
-											onClick={() => setEndrerTittel(true)}
-										/>
-									</div>
-								)}
-								<ModalButton
-									renderButton={({ openModal }) => (
-										<button
-											type="button"
-											className="text-left hover:bg-gray-100 rounded p-1 -m-1 cursor-pointer bg-transparent border-none w-full"
-											onClick={openModal}
-										>
-											<QueryBeskrivelseVisning queryBeskrivelse={lagretSøk.queryBeskrivelse} />
-										</button>
-									)}
-									renderModal={({ open, closeModal }) => (
-										<EndreKriterierLagretSøkModal
-											tittel="Endre lagret søk"
-											lagretSøk={lagretSøk}
-											open={open}
-											closeModal={closeModal}
-										/>
-									)}
-								/>
-								<div className="text-sm text-gray-500 mt-1.5">
-									{antallLoading ? (
-										<Skeleton variant="text" width={100} className="inline-block" />
-									) : (
-										<>
-											{antall ?? '-'} oppgaver · Endret {dateFormat(lagretSøk.sistEndret)} · nr. {lagretSøk.id}
-										</>
-									)}
+					<div>
+						<div className="">
+							{endrerTittel && (
+								<div className="mb-2">
+									<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 								</div>
-							</>
-						)}
+							)}
+							{!endrerTittel && harEgendefinertTittel && (
+								<div className="flex items-center gap-1 mb-2">
+									<span className="font-medium">{lagretSøk.tittel}</span>
+									<Button
+										title="Endre tittel"
+										size="xsmall"
+										variant="tertiary"
+										icon={<PencilIcon />}
+										onClick={() => setEndrerTittel(true)}
+									/>
+								</div>
+							)}
+						</div>
+						<ModalButton
+							renderButton={({ openModal }) => (
+								<button
+									type="button"
+									className="text-left hover:bg-gray-100 rounded p-1 -m-1 cursor-pointer bg-transparent border-none w-full"
+									onClick={openModal}
+								>
+									<QueryBeskrivelseVisning queryBeskrivelse={lagretSøk.queryBeskrivelse} />
+								</button>
+							)}
+							renderModal={({ open, closeModal }) => (
+								<EndreKriterierLagretSøkModal
+									tittel="Endre lagret søk"
+									lagretSøk={lagretSøk}
+									open={open}
+									closeModal={closeModal}
+								/>
+							)}
+						/>
+						<div className="text-md text-gray-700 mt-1.5">
+							{antallLoading ? (
+								<Skeleton variant="text" width={100} className="inline-block" />
+							) : (
+								<>
+									<span className="font-medium">Antall oppgaver: </span>
+									{antall ? `${antall}` : '-'}
+									{/* <strong>Endret:</strong> {dateFormat(lagretSøk.sistEndret)}. */}
+								</>
+							)}
+						</div>
 					</div>
 				</div>
-				<div className="max-w-md flex gap-2 flex-shrink-0 flex-wrap justify-end">
+				<div className="max-w-[400px] flex gap-2 flex-shrink-0 flex-wrap justify-end">
 					{!harEgendefinertTittel && !endrerTittel && (
 						<Button variant="tertiary" size="small" icon={<PencilIcon />} onClick={() => setEndrerTittel(true)}>
 							Sett tittel

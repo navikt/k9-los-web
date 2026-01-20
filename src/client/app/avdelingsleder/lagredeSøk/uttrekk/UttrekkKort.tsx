@@ -26,7 +26,12 @@ function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 		case UttrekkStatus.KJØRER:
 			return 'Kjører nå';
 		case UttrekkStatus.FULLFØRT:
-			return <span>{uttrekk.antall} oppgaver</span>;
+			return (
+				<>
+					<span className="font-medium">Antall oppgaver: </span>
+					{uttrekk.antall}
+				</>
+			);
 		case UttrekkStatus.FEILET:
 			return 'Feilet';
 		default:
@@ -89,12 +94,18 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 					<div className="flex-shrink-0 flex items-start">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex-1">
 						<div>{getStatusText(uttrekk)}</div>
-						<div className="text-sm text-gray-500 mt-1.5">
-							Uttrekk {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)} fra lagret søk nr.{' '}
-							<span>{uttrekk.lagretSøkId}</span>{' '}
-							{(uttrekk.status === UttrekkStatus.KJØRER ||
-								uttrekk.status === UttrekkStatus.FEILET ||
-								uttrekk.status === UttrekkStatus.FULLFØRT) && <span>som brukte {kjøretid} på å kjøre</span>}
+						<div className="text-sm text-gray-700 mt-1.5">
+							{dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
+							{uttrekk.status === UttrekkStatus.KJØRER || uttrekk.status === UttrekkStatus.FEILET ? (
+								<span> (kjøretid {kjøretid}). </span>
+							) : (
+								'. '
+							)}
+							{/* {!!uttrekk.lagretSøkId && ( */}
+							{/* 	<span className="underline-offset-2 decoration-dotted underline"> */}
+							{/* 		Uttrekk fra lagret søk {uttrekk.lagretSøkId}. */}
+							{/* 	</span> */}
+							{/* )} */}
 						</div>
 					</div>
 				</div>
