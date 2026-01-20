@@ -152,11 +152,20 @@ export function LagretSøkKort({
 											/>
 										)}
 									/>
+									<div className="text-sm text-gray-500 mt-1.5">
+										{antallLoading ? (
+											<Skeleton variant="text" width={100} className="inline-block" />
+										) : (
+											<>
+												{antall ?? '-'} oppgaver · Endret {dateFormat(lagretSøk.sistEndret)}
+											</>
+										)}
+									</div>
 								</>
 							)}
 						</div>
 					</div>
-					<div className="flex gap-2 flex-shrink-0 flex-wrap justify-end">
+					<div className="max-w-md flex gap-2 flex-shrink-0 flex-wrap justify-end">
 						{!harEgendefinertTittel && !endrerTittel && (
 							<Button variant="tertiary" size="small" icon={<PencilIcon />} onClick={() => setEndrerTittel(true)}>
 								Sett tittel
@@ -203,15 +212,6 @@ export function LagretSøkKort({
 							Slett
 						</Button>
 					</div>
-				</div>
-				<div className="text-sm text-gray-600 flex gap-4 ml-9">
-					<span>
-						<strong>Antall:</strong>{' '}
-						{antallLoading ? <Skeleton variant="text" width={30} className="inline-block" /> : (antall ?? '-')}
-					</span>
-					<span>
-						<strong>Sist endret:</strong> {dateFormat(lagretSøk.sistEndret)}
-					</span>
 				</div>
 			</div>
 		</div>
