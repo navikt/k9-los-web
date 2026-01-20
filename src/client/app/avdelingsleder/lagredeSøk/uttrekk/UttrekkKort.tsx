@@ -84,25 +84,17 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 
 	return (
 		<div className={`rounded-md p-2 pl-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
-			<div className="flex items-center justify-between gap-3">
+			<div className="flex items-start justify-between gap-3">
 				<div className="flex items-center gap-3 flex-1">
-					<div className="flex-shrink-0 flex items-center">{getStatusIcon(uttrekk.status)}</div>
+					<div className="flex-shrink-0 flex items-start">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex-1">
 						<div>{getStatusText(uttrekk)}</div>
-						<div className="text-sm flex gap-2 mt-0.5">
-							<span className="truncate max-w-80">
-								<strong>Lagret søk:</strong> {uttrekk.tittel}
-							</span>
-							<span>
-								<strong>Startet:</strong> {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
-							</span>
+						<div className="text-sm text-gray-500 mt-1.5">
+							Uttrekk {dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)} fra lagret søk nr.{' '}
+							<span>{uttrekk.lagretSøkId}</span>{' '}
 							{(uttrekk.status === UttrekkStatus.KJØRER ||
 								uttrekk.status === UttrekkStatus.FEILET ||
-								uttrekk.status === UttrekkStatus.FULLFØRT) && (
-								<span>
-									<strong>Kjøretid:</strong> {kjøretid}
-								</span>
-							)}
+								uttrekk.status === UttrekkStatus.FULLFØRT) && <span>som brukte {kjøretid} på å kjøre</span>}
 						</div>
 					</div>
 				</div>

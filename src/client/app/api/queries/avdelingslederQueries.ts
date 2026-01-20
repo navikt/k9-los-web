@@ -360,6 +360,7 @@ export interface Uttrekk {
 	status: UttrekkStatus;
 	query: OppgaveQuery;
 	queryBeskrivelse: string;
+	lagretSøkId: number;
 	typeKjøring: TypeKjøring;
 	antall: number | null;
 	feilmelding: string | null;
