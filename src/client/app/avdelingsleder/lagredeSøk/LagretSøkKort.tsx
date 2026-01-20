@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Normaltekst } from 'nav-frontend-typografi';
-import { FilesIcon, MagnifyingGlassIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Skeleton, Tag, TextField } from '@navikt/ds-react';
+import {
+	ChevronDownIcon,
+	ChevronRightIcon,
+	FilesIcon,
+	MagnifyingGlassIcon,
+	PencilIcon,
+	PlayIcon,
+	TrashIcon,
+} from '@navikt/aksel-icons';
+import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import {
 	FilterBeskrivelse,
 	LagretSøk,
+	Uttrekk,
 	useEndreLagretSøk,
 	useKopierLagretSøk,
 	useSlettLagretSøk,
 } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
+import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 import ModalButton from 'sharedComponents/ModalButton';
-import { dateFormat } from 'utils/dateUtils';
 
 function QueryBeskrivelseVisning({ queryBeskrivelse }: { queryBeskrivelse: FilterBeskrivelse[] }) {
 	if (!queryBeskrivelse || queryBeskrivelse.length === 0) {
@@ -97,16 +105,20 @@ export function LagretSøkKort({
 	lagretSøk,
 	antall,
 	antallLoading,
+	uttrekk,
 }: {
 	lagretSøk: LagretSøk;
 	antall: number | undefined;
 	antallLoading: boolean;
+	uttrekk: Uttrekk[];
 }) {
 	const [endrerTittel, setEndrerTittel] = useState(false);
+	const [expanded, setExpanded] = useState(false);
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
+	const harUttrekk = uttrekk.length > 0;
 
 	return (
 		<div className="rounded-md p-3 mb-2 bg-gray-50 border-solid border-1 border-gray-100">
@@ -215,6 +227,25 @@ export function LagretSøkKort({
 					</Button>
 				</div>
 			</div>
+			{harUttrekk && (
+				<div className="mt-3">
+					<Button
+						variant="tertiary"
+						size="small"
+						onClick={() => setExpanded(!expanded)}
+						icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+					>
+						{expanded ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
+					</Button>
+					{expanded && (
+						<div className="ml-4 mt-2 border-l-2 border-gray-200 pl-4">
+							{uttrekk.map((u) => (
+								<UttrekkKort key={u.id} uttrekk={u} />
+							))}
+						</div>
+					)}
+				</div>
+			)}
 		</div>
 	);
 }

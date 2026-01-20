@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading, HelpText } from '@navikt/ds-react';
-import { LagretSøk, useHentLagredeSøk, useOpprettLagretSøk } from 'api/queries/avdelingslederQueries';
+import {
+	LagretSøk,
+	useHentAlleUttrekk,
+	useHentLagredeSøk,
+	useOpprettLagretSøk,
+} from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
-import { UttrekkTabell } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkTabell';
+import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 
 export function LagredeSøk() {
 	const { data, isSuccess, isError } = useHentLagredeSøk({ retry: false });
+	const { data: uttrekk } = useHentAlleUttrekk();
 	const { mutate: opprettLagretSøk, isPending: oppretterSøk } = useOpprettLagretSøk();
 	const [nyttSøkId, setNyttSøkId] = useState<number | null>(null);
 	const [nyttSøk, setNyttSøk] = useState<LagretSøk | null>(null);
@@ -33,6 +39,10 @@ export function LagredeSøk() {
 			},
 		);
 	};
+
+	// Finn uttrekk som ikke har tilhørende lagret søk (foreldreløse)
+	const lagretSøkIder = new Set(data?.map((s) => s.id) ?? []);
+	const foreldreløseUttrekk = uttrekk?.filter((u) => !u.lagretSøkId || !lagretSøkIder.has(u.lagretSøkId)) ?? [];
 
 	return (
 		<>
@@ -78,13 +88,24 @@ export function LagredeSøk() {
 					</Alert>
 				</div>
 			)}
-			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} />}
+			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} uttrekk={uttrekk ?? []} />}
 			{isSuccess && data.length === 0 && (
 				<div>
 					<i>Du har ingen lagrede søk ennå</i>
 				</div>
 			)}
-			{isSuccess && !isError && <UttrekkTabell />}
+			{isSuccess && !isError && foreldreløseUttrekk.length > 0 && (
+				<div className="mt-12">
+					<Heading size="xsmall" className="mb-4">
+						Uttrekk fra slettede søk
+					</Heading>
+					<div>
+						{foreldreløseUttrekk.map((u) => (
+							<UttrekkKort key={u.id} uttrekk={u} />
+						))}
+					</div>
+				</div>
+			)}
 		</>
 	);
 }
