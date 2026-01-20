@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FilesIcon, MagnifyingGlassIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Skeleton, Tag, TextField } from '@navikt/ds-react';
+import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import {
 	FilterBeskrivelse,
 	LagretSøk,
@@ -19,23 +19,13 @@ function QueryBeskrivelseVisning({ queryBeskrivelse }: { queryBeskrivelse: Filte
 	}
 
 	return (
-		<div className="flex flex-wrap gap-2">
+		<div className="flex flex-wrap gap-x-4 gap-y-0.5 text-sm">
 			{queryBeskrivelse.map((filter) => (
-				<div key={filter.feltnavn} className="flex items-center gap-1">
-					<span className="font-semibold text-gray-700">{filter.feltnavn}:</span>
-					{filter.nektelse && (
-						<Tag variant="warning" size="xsmall">
-							ikke
-						</Tag>
-					)}
-					<div className="flex flex-wrap gap-1">
-						{filter.verdier.map((verdi, idx) => (
-							<Tag key={idx} variant="neutral" size="xsmall">
-								{verdi}
-							</Tag>
-						))}
-					</div>
-				</div>
+				<span key={filter.feltnavn}>
+					<span className="font-medium text-gray-700">{filter.feltnavn}:</span>{' '}
+					{filter.nektelse && <span className="text-gray-600">Ikke </span>}
+					<span className="text-gray-600">{filter.verdier.join(', ')}</span>
+				</span>
 			))}
 		</div>
 	);
@@ -56,7 +46,7 @@ function EndreTittel({
 	ikkeIEndreModusLenger: () => void;
 }) {
 	const { mutate, isPending, isError } = useEndreLagretSøk(ikkeIEndreModusLenger);
-	const [tittel, setTittel] = useState(lagretSøk.tittel || queryBeskrivelseToString(lagretSøk.queryBeskrivelse));
+	const [tittel, setTittel] = useState(lagretSøk.tittel);
 	const [feilmelding, setFeilmelding] = useState('');
 
 	useEffect(() => {
@@ -150,9 +140,6 @@ export function LagretSøkKort({
 												className="text-left hover:bg-gray-100 rounded p-1 -m-1 cursor-pointer bg-transparent border-none w-full"
 												onClick={openModal}
 											>
-												<div className="text-sm text-gray-600 mb-1">
-													<strong>Kriterier:</strong>
-												</div>
 												<QueryBeskrivelseVisning queryBeskrivelse={lagretSøk.queryBeskrivelse} />
 											</button>
 										)}
