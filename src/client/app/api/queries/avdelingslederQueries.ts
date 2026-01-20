@@ -232,12 +232,18 @@ export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; 
 		refetchInterval: 60000,
 	});
 
+export interface FilterBeskrivelse {
+	feltnavn: string;
+	verdier: Array<string>;
+	nektelse: boolean;
+}
+
 export interface LagretSøk {
 	id: number;
 	tittel: string;
 	beskrivelse: string;
 	query: OppgaveQuery;
-	queryBeskrivelse: string;
+	queryBeskrivelse: FilterBeskrivelse[];
 	lagetAv: number;
 	versjon: number;
 	sistEndret: string;
