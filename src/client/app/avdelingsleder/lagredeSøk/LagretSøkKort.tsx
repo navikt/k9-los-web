@@ -3,9 +3,12 @@ import {
 	ChevronDownIcon,
 	ChevronRightIcon,
 	FilesIcon,
+	FilterIcon,
 	MagnifyingGlassIcon,
 	PencilIcon,
 	PlayIcon,
+	SortDownIcon,
+	TableIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
 import { Button, Skeleton, TextField } from '@navikt/ds-react';
@@ -21,8 +24,60 @@ import {
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
-import { FilterBeskrivelse as FilterBeskrivelseType, SelectBeskrivelse, utledFilterBeskrivelse, utledSelectBeskrivelse } from 'filter/queryBeskrivelseUtils';
+import {
+	FilterBeskrivelse as FilterBeskrivelseType,
+	OrderBeskrivelse,
+	SelectBeskrivelse,
+	utledFilterBeskrivelse,
+	utledOrderBeskrivelse,
+	utledSelectBeskrivelse,
+} from 'filter/queryBeskrivelseUtils';
 import ModalButton from 'sharedComponents/ModalButton';
+
+function QueryBoks({
+	ikon,
+	tittel,
+	tomTekst,
+	endreKnappTekst,
+	lagretSøk,
+	modalTab,
+	children,
+}: {
+	ikon: React.ReactNode;
+	tittel: string;
+	tomTekst: string;
+	endreKnappTekst: string;
+	lagretSøk: LagretSøk;
+	modalTab?: 'kriterier' | 'felter' | 'sortering';
+	children: React.ReactNode;
+}) {
+	return (
+		<div className="bg-gray-100 rounded-md p-2">
+			<div className="flex justify-between items-center gap-2">
+				<span className="text-sm font-medium text-gray-600">
+					{ikon} {tittel}
+				</span>
+				<ModalButton
+					renderButton={({ openModal }) => (
+						<Button variant="tertiary" size="xsmall" onClick={openModal}>
+							{endreKnappTekst}
+						</Button>
+					)}
+					renderModal={({ open, closeModal }) => (
+						<EndreKriterierLagretSøkModal
+							modalTab={modalTab}
+							tittel={`${tittel} for lagret søk`}
+							lagretSøk={lagretSøk}
+							open={open}
+							closeModal={closeModal}
+						/>
+					)}
+				/>
+			</div>
+			{children || <p className="text-gray-500 italic mt-1">{tomTekst}</p>}
+		</div>
+	);
+}
 
 function KriterierBoks({
 	queryBeskrivelse,
@@ -32,38 +87,25 @@ function KriterierBoks({
 	lagretSøk: LagretSøk;
 }) {
 	return (
-		<div className="bg-gray-100 rounded-md p-2">
-			<div className="flex justify-between items-center">
-				<span className="text-sm font-medium text-gray-600">Kriterier</span>
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button icon={<PencilIcon />} variant="tertiary" size="xsmall" onClick={openModal}>
-							Endre
-						</Button>
-					)}
-					renderModal={({ open, closeModal }) => (
-						<EndreKriterierLagretSøkModal
-							tittel="Endre kriterier"
-							lagretSøk={lagretSøk}
-							open={open}
-							closeModal={closeModal}
-						/>
-					)}
-				/>
-			</div>
-			{(!queryBeskrivelse || queryBeskrivelse.length === 0) ? (
-				<p className="text-gray-500 italic mt-1">Ingen kriterier</p>
-			) : (
+		<QueryBoks
+			ikon={<FilterIcon />}
+			tittel="Kriterier"
+			tomTekst="Ingen kriterier"
+			endreKnappTekst="Endre"
+			lagretSøk={lagretSøk}
+			modalTab="kriterier"
+		>
+			{queryBeskrivelse && queryBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{queryBeskrivelse.map((filter) => (
 						<div className="leading-normal" key={filter.feltnavn}>
-							<span className="font-medium text-gray-700">{filter.feltnavn}</span>: {filter.nektelse && 'Ikke '}
+							<span className="font-bold text-gray-700">{filter.feltnavn}</span>: {filter.nektelse && 'Ikke '}
 							{filter.verdier.join(', ')}
 						</div>
 					))}
 				</div>
 			)}
-		</div>
+		</QueryBoks>
 	);
 }
 
@@ -75,28 +117,15 @@ function FelterBoks({
 	lagretSøk: LagretSøk;
 }) {
 	return (
-		<div className="bg-gray-100 rounded-md p-2">
-			<div className="flex justify-between items-center">
-				<span className="text-sm font-medium text-gray-600">Felter</span>
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button icon={<PencilIcon />} variant="tertiary" size="xsmall" onClick={openModal}>
-							Endre
-						</Button>
-					)}
-					renderModal={({ open, closeModal }) => (
-						<EndreKriterierLagretSøkModal
-							tittel="Endre felter"
-							lagretSøk={lagretSøk}
-							open={open}
-							closeModal={closeModal}
-						/>
-					)}
-				/>
-			</div>
-			{(!selectBeskrivelse || selectBeskrivelse.length === 0) ? (
-				<p className="text-gray-500 italic mt-1">Ingen felter valgt</p>
-			) : (
+		<QueryBoks
+			ikon={<TableIcon />}
+			tittel="Felter"
+			tomTekst="Ingen felter valgt"
+			endreKnappTekst="Endre"
+			lagretSøk={lagretSøk}
+			modalTab="felter"
+		>
+			{selectBeskrivelse && selectBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{selectBeskrivelse.map((select) => (
 						<div className="leading-normal" key={select.feltnavn}>
@@ -105,7 +134,36 @@ function FelterBoks({
 					))}
 				</div>
 			)}
-		</div>
+		</QueryBoks>
+	);
+}
+
+function SorteringBoks({
+	orderBeskrivelse,
+	lagretSøk,
+}: {
+	orderBeskrivelse: OrderBeskrivelse[];
+	lagretSøk: LagretSøk;
+}) {
+	return (
+		<QueryBoks
+			ikon={<SortDownIcon />}
+			tittel="Sortering"
+			tomTekst="Ingen sortering"
+			endreKnappTekst="Endre"
+			lagretSøk={lagretSøk}
+			modalTab="sortering"
+		>
+			{orderBeskrivelse && orderBeskrivelse.length > 0 && (
+				<div className="flex flex-col gap-0.5 text-base mt-1">
+					{orderBeskrivelse.map((order) => (
+						<div className="leading-normal" key={order.feltnavn}>
+							{order.feltnavn} ({order.økende ? 'stigende' : 'synkende'})
+						</div>
+					))}
+				</div>
+			)}
+		</QueryBoks>
 	);
 }
 
@@ -219,6 +277,7 @@ export function LagretSøkKort({
 						<div className="flex gap-2">
 							<KriterierBoks queryBeskrivelse={utledFilterBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
 							<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+							<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
 						</div>
 						<div className="text-md text-gray-700 mt-1.5">
 							{antallLoading ? (

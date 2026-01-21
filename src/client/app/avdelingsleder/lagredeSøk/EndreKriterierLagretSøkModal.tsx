@@ -15,7 +15,8 @@ export function EndreKriterierLagretSøkModal({
 	tittel,
 	open,
 	closeModal,
-}: RenderModalProps & { tittel: string; lagretSøk: LagretSøk }) {
+	modalTab,
+}: RenderModalProps & { tittel: string; lagretSøk: LagretSøk; modalTab?: 'kriterier' | 'felter' | 'sortering' }) {
 	const { isError: backendError, mutate: endreLagretSøk } = useEndreLagretSøk(closeModal);
 
 	// Backend vil lage default query med/uten kode6, og låser her valgene ihht. eksisterende query.
@@ -43,6 +44,44 @@ export function EndreKriterierLagretSøkModal({
 		}),
 		[feltdefinisjoner, kode6],
 	);
+
+	const kriterier = (
+		<KøKriterieEditorContent
+			paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
+			readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
+		/>
+	);
+
+	const felter = <OppgaveSelectFelter />;
+
+	const sortering = <OppgaveOrderFelter />;
+
+	const innhold = (() => {
+		switch (modalTab) {
+			case 'kriterier':
+				return kriterier;
+			case 'felter':
+				return felter;
+			case 'sortering':
+				return sortering;
+			default:
+				return (
+					<Tabs defaultValue="kriterier">
+						<Tabs.List>
+							<Tabs.Tab value="kriterier" label="Kriterier" icon={<FilterIcon />} />
+							<Tabs.Tab value="felter" label="Felter" icon={<TableIcon />} />
+							<Tabs.Tab value="sortering" label="Sortering" icon={<ArrowsUpDownIcon />} />
+						</Tabs.List>
+						<div className="mt-8">
+							<Tabs.Panel value="kriterier">{kriterier}</Tabs.Panel>
+							<Tabs.Panel value="felter">{felter}</Tabs.Panel>
+							<Tabs.Panel value="sortering">{sortering}</Tabs.Panel>
+						</div>
+					</Tabs>
+				);
+		}
+	})();
+
 	return (
 		<Modal open={open} onClose={closeModal} aria-label={tittel} width={900}>
 			<Modal.Header>
@@ -57,27 +96,7 @@ export function EndreKriterierLagretSøkModal({
 						}}
 						avbryt={closeModal}
 					>
-						<Tabs defaultValue="kriterier">
-							<Tabs.List>
-								<Tabs.Tab value="kriterier" label="Kriterier" icon={<FilterIcon />} />
-								<Tabs.Tab value="felter" label="Felter" icon={<TableIcon />} />
-								<Tabs.Tab value="sortering" label="Sortering" icon={<ArrowsUpDownIcon />} />
-							</Tabs.List>
-							<div className="mt-8">
-								<Tabs.Panel value="kriterier">
-									<KøKriterieEditorContent
-										paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
-										readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
-									/>
-								</Tabs.Panel>
-								<Tabs.Panel value="felter">
-									<OppgaveSelectFelter />
-								</Tabs.Panel>
-								<Tabs.Panel value="sortering">
-									<OppgaveOrderFelter />
-								</Tabs.Panel>
-							</div>
-						</Tabs>
+						{innhold}
 					</KøKriterieEditorProvider>
 				</AppContext.Provider>
 			</Modal.Body>
