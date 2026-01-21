@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
 	ChevronDownIcon,
 	ChevronRightIcon,
@@ -9,6 +9,7 @@ import {
 	TrashIcon,
 } from '@navikt/aksel-icons';
 import { Button, Skeleton, TextField } from '@navikt/ds-react';
+import AppContext from 'app/AppContext';
 import {
 	FilterBeskrivelse,
 	LagretSøk,
@@ -20,6 +21,7 @@ import {
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
+import { utledFilterBeskrivelse } from 'filter/queryBeskrivelseUtils';
 import ModalButton from 'sharedComponents/ModalButton';
 
 function QueryBeskrivelseVisning({ queryBeskrivelse }: { queryBeskrivelse: FilterBeskrivelse[] }) {
@@ -112,6 +114,7 @@ export function LagretSøkKort({
 	antallLoading: boolean;
 	uttrekk: Uttrekk[];
 }) {
+	const { felter } = useContext(AppContext);
 	const [endrerTittel, setEndrerTittel] = useState(false);
 	const [expanded, setExpanded] = useState(false);
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
@@ -147,33 +150,33 @@ export function LagretSøkKort({
 						)}
 						<ModalButton
 							renderButton={({ openModal }) => (
-							<button
-								type="button"
-								className="text-left hover:bg-gray-100 rounded p-1 -m-1 cursor-pointer bg-transparent border-none w-full"
-								onClick={openModal}
-							>
-								<QueryBeskrivelseVisning queryBeskrivelse={lagretSøk.queryBeskrivelse} />
-							</button>
-						)}
-						renderModal={({ open, closeModal }) => (
-							<EndreKriterierLagretSøkModal
-								tittel="Endre lagret søk"
-								lagretSøk={lagretSøk}
-								open={open}
-								closeModal={closeModal}
-							/>
-						)}
-					/>
-					<div className="text-md text-gray-700 mt-1.5">
-						{antallLoading ? (
-							<Skeleton variant="text" width={100} className="inline-block" />
-						) : (
-							<>
-								<span className="font-medium">Antall oppgaver: </span>
-								{antall ? `${antall}` : '-'}
-							</>
-						)}
-					</div>
+								<button
+									type="button"
+									className="text-left hover:bg-gray-100 rounded p-1 -m-1 cursor-pointer bg-transparent border-none w-full"
+									onClick={openModal}
+								>
+									<QueryBeskrivelseVisning queryBeskrivelse={utledFilterBeskrivelse(lagretSøk.query, felter)} />
+								</button>
+							)}
+							renderModal={({ open, closeModal }) => (
+								<EndreKriterierLagretSøkModal
+									tittel="Endre lagret søk"
+									lagretSøk={lagretSøk}
+									open={open}
+									closeModal={closeModal}
+								/>
+							)}
+						/>
+						<div className="text-md text-gray-700 mt-1.5">
+							{antallLoading ? (
+								<Skeleton variant="text" width={100} className="inline-block" />
+							) : (
+								<>
+									<span className="font-medium">Antall oppgaver: </span>
+									{antall ? `${antall}` : '-'}
+								</>
+							)}
+						</div>
 					</div>
 				</div>
 				<div className="max-w-[400px] flex gap-2 flex-shrink-0 flex-wrap justify-end">
