@@ -256,54 +256,31 @@ export function LagretSøkKort({
 	const harUttrekk = uttrekk.length > 0;
 
 	return (
-		<div className="rounded-md p-3 mb-2 bg-gray-50 border-solid border-1 border-gray-100">
-			<div className="flex items-start justify-between gap-4">
-				<div className="flex flex-grow items-start gap-3 flex-1 min-w-0">
-					<div className="flex-shrink-0 flex items-center">
-						<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600" />
-					</div>
-					<div className="flex-grow">
-						{endrerTittel && (
-							<div className="mb-2">
-								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
-							</div>
-						)}
-						{!endrerTittel && (
-							<div className="flex items-center gap-1 mb-2">
-								{harEgendefinertTittel ? (
-									<span className="font-medium">{lagretSøk.tittel}</span>
-								) : (
-									<span className="text-medium italic text-gray-500">Ingen tittel</span>
-								)}
-								<Button
-									title={harEgendefinertTittel ? 'Endre tittel' : 'Sett tittel'}
-									size="xsmall"
-									variant="tertiary"
-									icon={<PencilIcon />}
-									onClick={() => setEndrerTittel(true)}
-								>
-									{/* {!harEgendefinertTittel && 'Sett tittel'} */}
-								</Button>
-							</div>
-						)}
-						<div className="flex gap-2">
-							<KriterierBoks queryBeskrivelse={utledFilterBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-							<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-							<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-						</div>
-						<div className="text-md text-gray-700 mt-2">
-							{antallLoading ? (
-								<Skeleton variant="text" width={100} className="inline-block" />
+		<div className="rounded-md p-3 mb-2 bg-gray-50 border-solid border-1 border-gray-100 flex flex-col gap-2">
+			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
+			<div className="w-full flex items-center justify-between gap-2">
+				<div className="flex items-center gap-2 min-w-0 flex-1">
+					<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600 flex-shrink-0" />
+					{endrerTittel ? (
+						<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
+					) : (
+						<div className="flex items-center gap-1">
+							{harEgendefinertTittel ? (
+								<span className="font-medium">{lagretSøk.tittel}</span>
 							) : (
-								<>
-									<span className="font-medium">Antall oppgaver: </span>
-									{antall !== undefined ? `${antall}` : '-'}
-								</>
+								<span className="italic text-gray-500">Ingen tittel</span>
 							)}
+							<Button
+								title={harEgendefinertTittel ? 'Endre tittel' : 'Sett tittel'}
+								size="xsmall"
+								variant="tertiary"
+								icon={<PencilIcon />}
+								onClick={() => setEndrerTittel(true)}
+							/>
 						</div>
-					</div>
+					)}
 				</div>
-				<div className="max-w-[200px] flex gap-2 flex-shrink-0 flex-wrap justify-end">
+				<div className="flex gap-2 flex-shrink-0">
 					<Button
 						variant="tertiary"
 						size="small"
@@ -321,35 +298,58 @@ export function LagretSøkKort({
 					</Button>
 				</div>
 			</div>
-			<ModalButton
-				renderButton={({ openModal }) => (
-					<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
-						Gjør uttrekk
-					</Button>
+
+			{/* Rad 2: KriterieBoks, FelterBoks, SorteringBoks */}
+			<div className="w-full flex gap-2">
+				<KriterierBoks queryBeskrivelse={utledFilterBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+				<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+				<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+			</div>
+
+			{/* Rad 3: Antall oppgaver */}
+			<div className="w-full text-md text-gray-700">
+				{antallLoading ? (
+					<Skeleton variant="text" width={100} className="inline-block" />
+				) : (
+					<>
+						<span className="font-medium">Antall oppgaver: </span>
+						{antall !== undefined ? `${antall}` : '-'}
+					</>
 				)}
-				renderModal={({ open, closeModal }) => (
-					<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-				)}
-			/>
-			{harUttrekk && (
-				<div className="mt-3">
-					<Button
-						variant="tertiary"
-						size="small"
-						onClick={() => setExpanded(!expanded)}
-						icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
-					>
-						{expanded ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
-					</Button>
-					{expanded && (
-						<div className="ml-4 mt-2 border-l-2 border-gray-200 pl-4">
-							{uttrekk.map((u) => (
-								<UttrekkKort key={u.id} uttrekk={u} />
-							))}
-						</div>
+			</div>
+
+			{/* Rad 4: Uttrekk-visning */}
+			<div className="w-full">
+				<ModalButton
+					renderButton={({ openModal }) => (
+						<Button icon={<PlayIcon />} variant="secondary" size="small" onClick={openModal}>
+							Gjør uttrekk
+						</Button>
 					)}
-				</div>
-			)}
+					renderModal={({ open, closeModal }) => (
+						<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+					)}
+				/>
+				{harUttrekk && (
+					<div className="mt-2">
+						<Button
+							variant="tertiary"
+							size="small"
+							onClick={() => setExpanded(!expanded)}
+							icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+						>
+							{expanded ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
+						</Button>
+						{expanded && (
+							<div className="ml-4 mt-2 border-l-2 border-gray-200 pl-4">
+								{uttrekk.map((u) => (
+									<UttrekkKort key={u.id} uttrekk={u} />
+								))}
+							</div>
+						)}
+					</div>
+				)}
+			</div>
 		</div>
 	);
 }
