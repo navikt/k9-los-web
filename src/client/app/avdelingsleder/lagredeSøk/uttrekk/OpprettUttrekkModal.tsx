@@ -80,7 +80,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		<Modal open={open} onClose={handleClose} width="medium" aria-label="Opprett uttrekk">
 			<Modal.Header>
 				<Heading level="1" size="medium">
-					Opprett uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34</> : 'lagret søk'}
+					Opprett uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
 				</Heading>
 			</Modal.Header>
 			<form onSubmit={handleSubmit(onSubmit)}>

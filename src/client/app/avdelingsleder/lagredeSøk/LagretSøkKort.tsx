@@ -173,13 +173,6 @@ function SorteringBoks({
 	);
 }
 
-function queryBeskrivelseToString(queryBeskrivelse: FilterBeskrivelse[]): string {
-	if (!queryBeskrivelse || queryBeskrivelse.length === 0) {
-		return '';
-	}
-	return queryBeskrivelse.map((f) => `${f.feltnavn}: ${f.verdier.join(', ')}`).join(' | ');
-}
-
 function EndreTittel({
 	lagretSøk,
 	ikkeIEndreModusLenger,
@@ -285,8 +278,7 @@ export function LagretSøkKort({
 						variant="tertiary"
 						size="small"
 						onClick={() => {
-							const tittelEllerQueryBeskrivelse =
-								lagretSøk.tittel || queryBeskrivelseToString(lagretSøk.queryBeskrivelse);
+							const tittelEllerQueryBeskrivelse = lagretSøk.tittel || `lagret søk med id ${lagretSøk.id}`;
 							kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${tittelEllerQueryBeskrivelse}` });
 						}}
 						icon={<FilesIcon />}
@@ -327,12 +319,20 @@ export function LagretSøkKort({
 						</Button>
 					)}
 					renderModal={({ open, closeModal }) => (
-						<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+						<OpprettUttrekkModal
+							lagretSøk={lagretSøk}
+							open={open}
+							closeModal={() => {
+								setExpanded(true);
+								closeModal();
+							}}
+						/>
 					)}
 				/>
 				{harUttrekk && (
-					<div className="mt-2">
+					<div className="mt-4">
 						<Button
+							className="pl-0"
 							variant="tertiary"
 							size="small"
 							onClick={() => setExpanded(!expanded)}
@@ -341,7 +341,7 @@ export function LagretSøkKort({
 							{expanded ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
 						</Button>
 						{expanded && (
-							<div className="ml-4 mt-2 border-l-2 border-gray-200 pl-4">
+							<div className="mt-2">
 								{uttrekk.map((u) => (
 									<UttrekkKort key={u.id} uttrekk={u} />
 								))}
