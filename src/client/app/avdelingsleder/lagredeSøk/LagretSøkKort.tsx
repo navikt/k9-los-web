@@ -54,11 +54,11 @@ function QueryBoks({
 	children: React.ReactNode;
 }) {
 	return (
-		<div className={`bg-gray-100 rounded-md p-2 border-solid border-1 border-gray-200 ${className || ''}`}>
+		<div className={`rounded-md p-2 border-solid border-[2px] border-gray-200 ${className || ''}`}>
 			<div className="flex justify-between items-center gap-2">
-				<span className="text-sm font-medium text-gray-600">
+				<div className="text-sm text-gray-700 flex items-center gap-1 font-medium">
 					{ikon} {tittel}
-				</span>
+				</div>
 				<ModalButton
 					renderButton={({ openModal }) => (
 						<Button variant="tertiary" size="xsmall" onClick={openModal}>
@@ -102,7 +102,8 @@ function KriterierBoks({
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{queryBeskrivelse.map((filter) => (
 						<div className="leading-normal" key={filter.feltnavn}>
-							<span className="font-bold text-gray-700">{filter.feltnavn}</span>: {filter.nektelse && 'Ikke '}
+							<span className="font-bold text-gray-700">{filter.feltnavn}</span>:{' '}
+							{filter.nektelse && <span className="">Ikke </span>}
 							{filter.verdier.join(', ')}
 						</div>
 					))}
@@ -290,7 +291,7 @@ export function LagretSøkKort({
 							) : (
 								<>
 									<span className="font-medium">Antall oppgaver: </span>
-									{antall ? `${antall}` : '-'}
+									{antall !== undefined ? `${antall}` : '-'}
 								</>
 							)}
 						</div>
