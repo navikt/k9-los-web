@@ -257,12 +257,12 @@ export function LagretSøkKort({
 
 	return (
 		<div className="rounded-md p-3 mb-2 bg-gray-50 border-solid border-1 border-gray-100">
-			<div className="flex items-start justify-between gap-3">
-				<div className="flex items-start gap-3 flex-1 min-w-0">
-					<div className="flex-shrink-0 flex items-center pt-1">
+			<div className="flex items-start justify-between gap-4">
+				<div className="flex flex-grow items-start gap-3 flex-1 min-w-0">
+					<div className="flex-shrink-0 flex items-center">
 						<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600" />
 					</div>
-					<div>
+					<div className="flex-grow">
 						{endrerTittel && (
 							<div className="mb-2">
 								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
@@ -291,7 +291,7 @@ export function LagretSøkKort({
 							<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
 							<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
 						</div>
-						<div className="text-md text-gray-700 mt-1.5">
+						<div className="text-md text-gray-700 mt-2">
 							{antallLoading ? (
 								<Skeleton variant="text" width={100} className="inline-block" />
 							) : (
@@ -303,17 +303,7 @@ export function LagretSøkKort({
 						</div>
 					</div>
 				</div>
-				<div className="max-w-[400px] flex gap-2 flex-shrink-0 flex-wrap justify-end">
-					<ModalButton
-						renderButton={({ openModal }) => (
-							<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
-								Gjør uttrekk
-							</Button>
-						)}
-						renderModal={({ open, closeModal }) => (
-							<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
-						)}
-					/>
+				<div className="max-w-[200px] flex gap-2 flex-shrink-0 flex-wrap justify-end">
 					<Button
 						variant="tertiary"
 						size="small"
@@ -331,6 +321,16 @@ export function LagretSøkKort({
 					</Button>
 				</div>
 			</div>
+			<ModalButton
+				renderButton={({ openModal }) => (
+					<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
+						Gjør uttrekk
+					</Button>
+				)}
+				renderModal={({ open, closeModal }) => (
+					<OpprettUttrekkModal lagretSøk={lagretSøk} open={open} closeModal={closeModal} />
+				)}
+			/>
 			{harUttrekk && (
 				<div className="mt-3">
 					<Button
