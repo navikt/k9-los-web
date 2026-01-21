@@ -41,6 +41,7 @@ function QueryBoks({
 	endreKnappTekst,
 	lagretSøk,
 	modalTab,
+	className,
 	children,
 }: {
 	ikon: React.ReactNode;
@@ -49,10 +50,11 @@ function QueryBoks({
 	endreKnappTekst: string;
 	lagretSøk: LagretSøk;
 	modalTab?: 'kriterier' | 'felter' | 'sortering';
+	className?: string;
 	children: React.ReactNode;
 }) {
 	return (
-		<div className="bg-gray-100 rounded-md p-2">
+		<div className={`bg-gray-100 rounded-md p-2 border-solid border-1 border-gray-200 ${className || ''}`}>
 			<div className="flex justify-between items-center gap-2">
 				<span className="text-sm font-medium text-gray-600">
 					{ikon} {tittel}
@@ -94,6 +96,7 @@ function KriterierBoks({
 			endreKnappTekst="Endre"
 			lagretSøk={lagretSøk}
 			modalTab="kriterier"
+			className="w-1/2"
 		>
 			{queryBeskrivelse && queryBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
@@ -124,6 +127,7 @@ function FelterBoks({
 			endreKnappTekst="Endre"
 			lagretSøk={lagretSøk}
 			modalTab="felter"
+			className="w-1/4"
 		>
 			{selectBeskrivelse && selectBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
@@ -153,6 +157,7 @@ function SorteringBoks({
 			endreKnappTekst="Endre"
 			lagretSøk={lagretSøk}
 			modalTab="sortering"
+			className="w-1/4"
 		>
 			{orderBeskrivelse && orderBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
