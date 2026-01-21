@@ -6,6 +6,7 @@ import {
 	useHentAlleUttrekk,
 	useHentLagredeSøk,
 	useOpprettLagretSøk,
+	useSlettLagretSøk,
 } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
@@ -15,8 +16,10 @@ export function LagredeSøk() {
 	const { data, isSuccess, isError } = useHentLagredeSøk({ retry: false });
 	const { data: uttrekk } = useHentAlleUttrekk();
 	const { mutate: opprettLagretSøk, isPending: oppretterSøk } = useOpprettLagretSøk();
+	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 	const [nyttSøkId, setNyttSøkId] = useState<number | null>(null);
 	const [nyttSøk, setNyttSøk] = useState<LagretSøk | null>(null);
+	const [highlightSøkId, setHighlightSøkId] = useState<number | null>(null);
 
 	// Når vi har en nyttSøkId og data er oppdatert, finn det opprettede søket
 	useEffect(() => {
@@ -40,9 +43,26 @@ export function LagredeSøk() {
 		);
 	};
 
+	const handleLagreNyttSøk = () => {
+		if (nyttSøk) {
+			setHighlightSøkId(nyttSøk.id);
+		}
+		setNyttSøk(null);
+	};
+
+	const handleAvbrytNyttSøk = () => {
+		if (nyttSøk) {
+			slettLagretSøk(nyttSøk.id);
+		}
+		setNyttSøk(null);
+	};
+
 	// Finn uttrekk som ikke har tilhørende lagret søk (foreldreløse)
 	const lagretSøkIder = new Set(data?.map((s) => s.id) ?? []);
 	const foreldreløseUttrekk = uttrekk?.filter((u) => !u.lagretSøkId || !lagretSøkIder.has(u.lagretSøkId)) ?? [];
+
+	// Filtrer bort søket som er under opprettelse fra listen
+	const visbareLagredeSøk = data?.filter((s) => s.id !== nyttSøk?.id) ?? [];
 
 	return (
 		<>
@@ -77,7 +97,8 @@ export function LagredeSøk() {
 					tittel="Nytt lagret søk"
 					lagretSøk={nyttSøk}
 					open
-					closeModal={() => setNyttSøk(null)}
+					onLagre={handleLagreNyttSøk}
+					onAvbryt={handleAvbrytNyttSøk}
 				/>
 			)}
 			{isError && (
@@ -88,8 +109,15 @@ export function LagredeSøk() {
 					</Alert>
 				</div>
 			)}
-			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} uttrekk={uttrekk ?? []} />}
-			{isSuccess && data.length === 0 && (
+			{isSuccess && visbareLagredeSøk.length > 0 && (
+				<LagredeSøkTabell
+					lagredeSøk={visbareLagredeSøk}
+					uttrekk={uttrekk ?? []}
+					highlightSøkId={highlightSøkId}
+					onHighlightComplete={() => setHighlightSøkId(null)}
+				/>
+			)}
+			{isSuccess && visbareLagredeSøk.length === 0 && !nyttSøk && (
 				<div>
 					<i>Du har ingen lagrede søk ennå</i>
 				</div>

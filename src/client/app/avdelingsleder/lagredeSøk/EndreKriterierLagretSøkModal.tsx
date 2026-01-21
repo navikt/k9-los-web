@@ -8,16 +8,30 @@ import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
 import { FeltverdiOppgavefilter, OppgavefilterKode } from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
 import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
-import { RenderModalProps } from 'sharedComponents/ModalButton';
+
+type EndreKriterierProps = {
+	open: boolean;
+	tittel: string;
+	lagretSøk: LagretSøk;
+	modalTab?: 'kriterier' | 'felter' | 'sortering';
+} & (
+	| { closeModal: () => void; onLagre?: never; onAvbryt?: never }
+	| { closeModal?: never; onLagre: () => void; onAvbryt: () => void }
+);
 
 export function EndreKriterierLagretSøkModal({
 	lagretSøk,
 	tittel,
 	open,
 	closeModal,
+	onLagre,
+	onAvbryt,
 	modalTab,
-}: RenderModalProps & { tittel: string; lagretSøk: LagretSøk; modalTab?: 'kriterier' | 'felter' | 'sortering' }) {
-	const { isError: backendError, mutate: endreLagretSøk } = useEndreLagretSøk(closeModal);
+}: EndreKriterierProps) {
+	const handleLagre = onLagre ?? closeModal;
+	const handleAvbryt = onAvbryt ?? closeModal;
+
+	const { isError: backendError, mutate: endreLagretSøk } = useEndreLagretSøk(handleLagre);
 
 	// Backend vil lage default query med/uten kode6, og låser her valgene ihht. eksisterende query.
 	// Dette er ikke for å iverta sikkerhet. Antar at backend vil håndtere dette.
@@ -83,7 +97,7 @@ export function EndreKriterierLagretSøkModal({
 	})();
 
 	return (
-		<Modal open={open} onClose={closeModal} aria-label={tittel} width={900}>
+		<Modal open={open} onClose={handleAvbryt} aria-label={tittel} width={900}>
 			<Modal.Header>
 				<Heading size="medium">{tittel}</Heading>
 			</Modal.Header>
@@ -94,7 +108,7 @@ export function EndreKriterierLagretSøkModal({
 						lagre={(oppgaveQuery) => {
 							endreLagretSøk({ ...lagretSøk, query: oppgaveQuery });
 						}}
-						avbryt={closeModal}
+						avbryt={handleAvbryt}
 					>
 						{innhold}
 					</KøKriterieEditorProvider>

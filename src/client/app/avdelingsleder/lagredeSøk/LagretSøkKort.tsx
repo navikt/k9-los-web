@@ -203,11 +203,15 @@ export function LagretSøkKort({
 	antall,
 	antallLoading,
 	uttrekk,
+	highlight,
+	onHighlightComplete,
 }: {
 	lagretSøk: LagretSøk;
 	antall: number | undefined;
 	antallLoading: boolean;
 	uttrekk: Uttrekk[];
+	highlight?: boolean;
+	onHighlightComplete?: () => void;
 }) {
 	const { felter } = useContext(AppContext);
 	const [endrerTittel, setEndrerTittel] = useState(false);
@@ -219,7 +223,10 @@ export function LagretSøkKort({
 	const harUttrekk = uttrekk.length > 0;
 
 	return (
-		<div className="rounded-md p-3 mb-2 bg-gray-50 border-solid border-1 border-gray-100 flex flex-col gap-2">
+		<div
+			className={`rounded-md p-3 mb-2 bg-gray-50 border-solid border-1 border-gray-100 flex flex-col gap-2 ${highlight ? 'animate-highlight' : ''}`}
+			onAnimationEnd={onHighlightComplete}
+		>
 			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
 			<div className="w-full flex items-center justify-between gap-2">
 				<div className="flex items-center gap-2 min-w-0 flex-1">
