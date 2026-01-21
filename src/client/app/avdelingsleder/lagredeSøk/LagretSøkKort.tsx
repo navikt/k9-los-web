@@ -268,16 +268,22 @@ export function LagretSøkKort({
 								<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 							</div>
 						)}
-						{!endrerTittel && harEgendefinertTittel && (
+						{!endrerTittel && (
 							<div className="flex items-center gap-1 mb-2">
-								<span className="font-medium">{lagretSøk.tittel}</span>
+								{harEgendefinertTittel ? (
+									<span className="font-medium">{lagretSøk.tittel}</span>
+								) : (
+									<span className="text-medium italic text-gray-500">Ingen tittel</span>
+								)}
 								<Button
-									title="Endre tittel"
+									title={harEgendefinertTittel ? 'Endre tittel' : 'Sett tittel'}
 									size="xsmall"
 									variant="tertiary"
 									icon={<PencilIcon />}
 									onClick={() => setEndrerTittel(true)}
-								/>
+								>
+									{/* {!harEgendefinertTittel && 'Sett tittel'} */}
+								</Button>
 							</div>
 						)}
 						<div className="flex gap-2">
@@ -298,11 +304,6 @@ export function LagretSøkKort({
 					</div>
 				</div>
 				<div className="max-w-[400px] flex gap-2 flex-shrink-0 flex-wrap justify-end">
-					{!harEgendefinertTittel && !endrerTittel && (
-						<Button variant="tertiary" size="small" icon={<PencilIcon />} onClick={() => setEndrerTittel(true)}>
-							Sett tittel
-						</Button>
-					)}
 					<ModalButton
 						renderButton={({ openModal }) => (
 							<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
