@@ -48,7 +48,7 @@ function getStatusColor(status: UttrekkStatus): string {
 		case UttrekkStatus.FEILET:
 			return 'bg-red-100 text-red-800';
 		case UttrekkStatus.FULLFØRT:
-			return 'bg-gray-50 text-gray-700 border-solid border-1 border-gray-100';
+			return 'bg-gray-200 text-gray-700';
 		default:
 			return assertNever(status);
 	}
@@ -88,28 +88,21 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	const kanViseFeilmelding = uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding;
 
 	return (
-		<div className={`rounded-md p-2 pl-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
-			<div className="flex items-start justify-between gap-3">
+		<div className={`rounded-md py-2 px-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
+			<div className="flex items-center justify-between gap-3">
 				<div className="flex items-center gap-3 flex-1">
-					<div className="flex-shrink-0 flex items-start">{getStatusIcon(uttrekk.status)}</div>
-					<div className="flex-1">
+					<div className="flex-shrink-0 flex items-center">{getStatusIcon(uttrekk.status)}</div>
+					<div className="flex items-center gap-3">
 						<div>{getStatusText(uttrekk)}</div>
-						<div className="text-sm text-gray-700 mt-1.5">
+						<div className="text-sm text-gray-600">
 							{dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
 							{uttrekk.status === UttrekkStatus.KJØRER || uttrekk.status === UttrekkStatus.FEILET ? (
-								<span> (kjøretid {kjøretid}). </span>
-							) : (
-								'. '
-							)}
-							{/* {!!uttrekk.lagretSøkId && ( */}
-							{/* 	<span className="underline-offset-2 decoration-dotted underline"> */}
-							{/* 		Uttrekk fra lagret søk {uttrekk.lagretSøkId}. */}
-							{/* 	</span> */}
-							{/* )} */}
+								<span> (kjøretid {kjøretid})</span>
+							) : null}
 						</div>
 					</div>
 				</div>
-				<div className="flex gap-2 flex-shrink-0">
+				<div className="flex items-center gap-1 flex-shrink-0">
 					<ModalButton
 						renderButton={({ openModal }) => (
 							<Button icon={<TasklistIcon />} size="small" variant="tertiary" onClick={openModal}>
