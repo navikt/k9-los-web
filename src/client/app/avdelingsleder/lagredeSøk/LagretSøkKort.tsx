@@ -14,7 +14,6 @@ import {
 import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import {
-	FilterBeskrivelse,
 	LagretSøk,
 	Uttrekk,
 	useEndreLagretSøk,
@@ -36,23 +35,18 @@ import ModalButton from 'sharedComponents/ModalButton';
 
 function QueryBoks({
 	ikon,
-	tittel,
-	tomTekst,
-	endreKnappTekst,
 	lagretSøk,
 	modalTab,
 	className,
 	children,
 }: {
 	ikon: React.ReactNode;
-	tittel: string;
-	tomTekst: string;
-	endreKnappTekst: string;
 	lagretSøk: LagretSøk;
 	modalTab?: 'kriterier' | 'felter' | 'sortering';
 	className?: string;
 	children: React.ReactNode;
 }) {
+	const tittel = modalTab.charAt(0).toUpperCase() + modalTab.slice(1);
 	return (
 		<div className={`rounded-md p-2 border-solid border-[2px] border-gray-200 ${className || ''}`}>
 			<div className="flex justify-between items-center gap-2">
@@ -61,8 +55,8 @@ function QueryBoks({
 				</div>
 				<ModalButton
 					renderButton={({ openModal }) => (
-						<Button variant="tertiary" size="xsmall" onClick={openModal}>
-							{endreKnappTekst}
+						<Button variant="tertiary" size="xsmall" onClick={openModal} title={`Endre ${modalTab}`}>
+							Endre
 						</Button>
 					)}
 					renderModal={({ open, closeModal }) => (
@@ -76,7 +70,7 @@ function QueryBoks({
 					)}
 				/>
 			</div>
-			{children || <p className="text-gray-500 italic mt-1">{tomTekst}</p>}
+			{children || <p className="text-gray-500 italic mt-1">Ingen {modalTab} valgt</p>}
 		</div>
 	);
 }
@@ -89,15 +83,7 @@ function KriterierBoks({
 	lagretSøk: LagretSøk;
 }) {
 	return (
-		<QueryBoks
-			ikon={<FilterIcon />}
-			tittel="Kriterier"
-			tomTekst="Ingen kriterier"
-			endreKnappTekst="Endre"
-			lagretSøk={lagretSøk}
-			modalTab="kriterier"
-			className="w-1/2"
-		>
+		<QueryBoks ikon={<FilterIcon />} lagretSøk={lagretSøk} modalTab="kriterier" className="w-1/2">
 			{queryBeskrivelse && queryBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{queryBeskrivelse.map((filter) => (
@@ -121,15 +107,7 @@ function FelterBoks({
 	lagretSøk: LagretSøk;
 }) {
 	return (
-		<QueryBoks
-			ikon={<TableIcon />}
-			tittel="Felter"
-			tomTekst="Ingen felter valgt"
-			endreKnappTekst="Endre"
-			lagretSøk={lagretSøk}
-			modalTab="felter"
-			className="w-1/4"
-		>
+		<QueryBoks ikon={<TableIcon />} lagretSøk={lagretSøk} modalTab="felter" className="w-1/4">
 			{selectBeskrivelse && selectBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{selectBeskrivelse.map((select) => (
@@ -151,15 +129,7 @@ function SorteringBoks({
 	lagretSøk: LagretSøk;
 }) {
 	return (
-		<QueryBoks
-			ikon={<SortDownIcon />}
-			tittel="Sortering"
-			tomTekst="Ingen sortering"
-			endreKnappTekst="Endre"
-			lagretSøk={lagretSøk}
-			modalTab="sortering"
-			className="w-1/4"
-		>
+		<QueryBoks ikon={<SortDownIcon />} lagretSøk={lagretSøk} modalTab="sortering" className="w-1/4">
 			{orderBeskrivelse && orderBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{orderBeskrivelse.map((order) => (
