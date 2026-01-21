@@ -21,22 +21,90 @@ import {
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
-import { utledFilterBeskrivelse } from 'filter/queryBeskrivelseUtils';
+import { FilterBeskrivelse as FilterBeskrivelseType, SelectBeskrivelse, utledFilterBeskrivelse, utledSelectBeskrivelse } from 'filter/queryBeskrivelseUtils';
 import ModalButton from 'sharedComponents/ModalButton';
 
-function QueryBeskrivelseVisning({ queryBeskrivelse }: { queryBeskrivelse: FilterBeskrivelse[] }) {
-	if (!queryBeskrivelse || queryBeskrivelse.length === 0) {
-		return <span className="text-gray-500 italic">Ingen kriterier</span>;
-	}
-
+function KriterierBoks({
+	queryBeskrivelse,
+	lagretSøk,
+}: {
+	queryBeskrivelse: FilterBeskrivelseType[];
+	lagretSøk: LagretSøk;
+}) {
 	return (
-		<div className="flex flex-wrap gap-x-4 gap-y-0.5 text-base">
-			{queryBeskrivelse.map((filter) => (
-				<div className="bg-gray-200 leading-none rounded-sm p-1.5" key={filter.feltnavn}>
-					<span className="font-medium text-gray-700">{filter.feltnavn}</span>: {filter.nektelse && 'Ikke '}{' '}
-					{filter.verdier.join(', ')}
+		<div className="bg-gray-100 rounded-md p-2">
+			<div className="flex justify-between items-center">
+				<span className="text-sm font-medium text-gray-600">Kriterier</span>
+				<ModalButton
+					renderButton={({ openModal }) => (
+						<Button icon={<PencilIcon />} variant="tertiary" size="xsmall" onClick={openModal}>
+							Endre
+						</Button>
+					)}
+					renderModal={({ open, closeModal }) => (
+						<EndreKriterierLagretSøkModal
+							tittel="Endre kriterier"
+							lagretSøk={lagretSøk}
+							open={open}
+							closeModal={closeModal}
+						/>
+					)}
+				/>
+			</div>
+			{(!queryBeskrivelse || queryBeskrivelse.length === 0) ? (
+				<p className="text-gray-500 italic mt-1">Ingen kriterier</p>
+			) : (
+				<div className="flex flex-col gap-0.5 text-base mt-1">
+					{queryBeskrivelse.map((filter) => (
+						<div className="leading-normal" key={filter.feltnavn}>
+							<span className="font-medium text-gray-700">{filter.feltnavn}</span>: {filter.nektelse && 'Ikke '}
+							{filter.verdier.join(', ')}
+						</div>
+					))}
 				</div>
-			))}
+			)}
+		</div>
+	);
+}
+
+function FelterBoks({
+	selectBeskrivelse,
+	lagretSøk,
+}: {
+	selectBeskrivelse: SelectBeskrivelse[];
+	lagretSøk: LagretSøk;
+}) {
+	return (
+		<div className="bg-gray-100 rounded-md p-2">
+			<div className="flex justify-between items-center">
+				<span className="text-sm font-medium text-gray-600">Felter</span>
+				<ModalButton
+					renderButton={({ openModal }) => (
+						<Button icon={<PencilIcon />} variant="tertiary" size="xsmall" onClick={openModal}>
+							Endre
+						</Button>
+					)}
+					renderModal={({ open, closeModal }) => (
+						<EndreKriterierLagretSøkModal
+							tittel="Endre felter"
+							lagretSøk={lagretSøk}
+							open={open}
+							closeModal={closeModal}
+						/>
+					)}
+				/>
+			</div>
+			{(!selectBeskrivelse || selectBeskrivelse.length === 0) ? (
+				<p className="text-gray-500 italic mt-1">Ingen felter valgt</p>
+			) : (
+				<div className="flex flex-col gap-0.5 text-base mt-1">
+					{selectBeskrivelse.map((select) => (
+						<div className="leading-normal" key={select.feltnavn}>
+							{select.feltnavn}
+						</div>
+					))}
+				</div>
+			)}
 		</div>
 	);
 }
@@ -148,25 +216,10 @@ export function LagretSøkKort({
 								/>
 							</div>
 						)}
-						<ModalButton
-							renderButton={({ openModal }) => (
-								<button
-									type="button"
-									className="text-left hover:bg-gray-100 rounded p-1 -m-1 cursor-pointer bg-transparent border-none w-full"
-									onClick={openModal}
-								>
-									<QueryBeskrivelseVisning queryBeskrivelse={utledFilterBeskrivelse(lagretSøk.query, felter)} />
-								</button>
-							)}
-							renderModal={({ open, closeModal }) => (
-								<EndreKriterierLagretSøkModal
-									tittel="Endre lagret søk"
-									lagretSøk={lagretSøk}
-									open={open}
-									closeModal={closeModal}
-								/>
-							)}
-						/>
+						<div className="flex gap-2">
+							<KriterierBoks queryBeskrivelse={utledFilterBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+							<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+						</div>
 						<div className="text-md text-gray-700 mt-1.5">
 							{antallLoading ? (
 								<Skeleton variant="text" width={100} className="inline-block" />
@@ -185,21 +238,6 @@ export function LagretSøkKort({
 							Sett tittel
 						</Button>
 					)}
-					<ModalButton
-						renderButton={({ openModal }) => (
-							<Button icon={<PencilIcon />} variant="tertiary" size="small" onClick={openModal}>
-								Endre kriterier
-							</Button>
-						)}
-						renderModal={({ open, closeModal }) => (
-							<EndreKriterierLagretSøkModal
-								tittel="Endre lagret søk"
-								lagretSøk={lagretSøk}
-								open={open}
-								closeModal={closeModal}
-							/>
-						)}
-					/>
 					<ModalButton
 						renderButton={({ openModal }) => (
 							<Button icon={<PlayIcon />} variant="tertiary" size="small" onClick={openModal}>
