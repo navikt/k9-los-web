@@ -335,6 +335,22 @@ export const useSlettLagretSøk = (callback?: () => void) => {
 	});
 };
 
+export const useSlettUttrekkForLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (lagretSokId: number) => axiosInstance.delete(apiPaths.slettUttrekkForLagretSøk(lagretSokId.toString())),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentAlleUttrekk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
 export const useHentAntallLagretSøk = (id: number) =>
 	useQuery<number, DefaultError, number>({
 		queryKey: [apiPaths.hentAntallLagretSøk(id.toString())],

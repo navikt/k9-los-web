@@ -21,6 +21,7 @@ import {
 	useSlettLagretSøk,
 } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
+import { SlettLagretSøkModal } from 'avdelingsleder/lagredeSøk/SlettLagretSøkModal';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 import {
@@ -255,9 +256,27 @@ export function LagretSøkKort({
 					>
 						Kopier
 					</Button>
-					<Button variant="tertiary" size="small" onClick={() => slettLagretSøk(lagretSøk.id)} icon={<TrashIcon />}>
-						Slett
-					</Button>
+					{harUttrekk ? (
+						<ModalButton
+							renderButton={({ openModal }) => (
+								<Button variant="tertiary" size="small" onClick={openModal} icon={<TrashIcon />}>
+									Slett
+								</Button>
+							)}
+							renderModal={({ open, closeModal }) => (
+								<SlettLagretSøkModal
+									lagretSøk={lagretSøk}
+									antallUttrekk={uttrekk.length}
+									open={open}
+									closeModal={closeModal}
+								/>
+							)}
+						/>
+					) : (
+						<Button variant="tertiary" size="small" onClick={() => slettLagretSøk(lagretSøk.id)} icon={<TrashIcon />}>
+							Slett
+						</Button>
+					)}
 				</div>
 			</div>
 
