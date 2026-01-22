@@ -100,7 +100,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 									<List size="small">
 										{orderFelterMedNavn.map((felt) => (
 											<List.Item key={felt.id}>
-												{felt.visningsnavn} ({felt.økende ? 'stigende' : 'synkende'})
+												{felt.visningsnavn} ({felt.økende ? 'økende' : 'synkende'})
 											</List.Item>
 										))}
 									</List>

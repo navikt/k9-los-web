@@ -135,7 +135,7 @@ function SorteringBoks({
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{orderBeskrivelse.map((order) => (
 						<div className="leading-normal" key={order.feltnavn}>
-							{order.feltnavn} ({order.økende ? 'stigende' : 'synkende'})
+							{order.feltnavn} ({order.økende ? 'økende' : 'synkende'})
 						</div>
 					))}
 				</div>

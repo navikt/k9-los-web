@@ -31,7 +31,7 @@ const OppgaveOrderFelter = () => {
 	const handleUpdateDirection = (feltId, direction) => {
 		updateQuery([
 			updateSortering(feltId, {
-				økende: Boolean(direction),
+				økende: direction === 'true',
 			}),
 		]);
 	};
