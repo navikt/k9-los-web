@@ -1,8 +1,7 @@
 /* eslint-disable camelcase */
-
 /* eslint-disable react/jsx-pascal-case */
 import React, { useContext, useEffect, useState } from 'react';
-import { BodyLong, Button, Checkbox, Label, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Button, UNSAFE_Combobox } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter, OppgaveQuery, Oppgavefelt, OppgavefilterKode } from 'filter/filterTsTypes';
@@ -13,17 +12,15 @@ interface Props {
 	oppgavefilter: FeltverdiOppgavefilter;
 	addGruppeOperation: (model: OppgaveQuery) => OppgaveQuery;
 	paakrevdeKoder: OppgavefilterKode[];
-	køvisning: boolean;
 }
 
-const VelgKriterie = ({ oppgavefilter, addGruppeOperation, køvisning, paakrevdeKoder = [] }: Props) => {
+const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }: Props) => {
 	const { updateQuery, errors } = useContext(FilterContext);
 	const { felter } = useContext(AppContext);
 	const [valgtKriterie, setValgtKriterie] = useState<Oppgavefelt | string>();
 	const [options, setOptions] = useState([]);
 	const [selectedChildIndex, setSelectedChildIndex] = useState(undefined);
 	const [fritekst, setFritekst] = useState('');
-	const [visAvanserteValg, setVisAvanserteValg] = useState('nei');
 	const [klikketLeggTilUtenÅVelgeKriterie, setKlikketLeggTilUtenÅVelgeKriterie] = useState(false);
 	// error fra modellen
 	const errorMessage =
@@ -44,26 +41,19 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, køvisning, paakrevde
 		const primærvalg = kriterierSomKanVelges?.filter((v) => v.kokriterie);
 		const avanserteValg = kriterierSomKanVelges?.filter((v) => !v.kokriterie);
 
-		if (visAvanserteValg === 'ja' || !køvisning) {
-			const valg = [...primærvalg, ...avanserteValg];
-			const selectedChild = valg.findIndex((v) => v === avanserteValg[0]);
-			if (selectedChild !== -1) {
-				setSelectedChildIndex(selectedChild + 2);
-			}
-			const optionList = valg.map((v) => ({ value: feltverdiKey(v), label: v.visningsnavn }));
-			return [{ label: 'Gruppe', value: '__gruppe' }, ...optionList];
+		const valg = [...primærvalg, ...avanserteValg];
+		const selectedChild = valg.findIndex((v) => v === avanserteValg[0]);
+		if (selectedChild !== -1) {
+			setSelectedChildIndex(selectedChild + 1);
 		}
-		const optionList = primærvalg.map((v) => ({ value: feltverdiKey(v), label: v.visningsnavn }));
-		return [{ label: 'Gruppe', value: '__gruppe' }, ...optionList];
+		const optionsList = valg.map((v) => ({ value: feltverdiKey(v), label: v.visningsnavn }));
+		optionsList.push({ label: 'Gruppe', value: '__gruppe' });
+		return optionsList;
 	};
 
 	useEffect(() => {
 		setOptions(getOptions());
-	}, [JSON.stringify(kriterierSomKanVelges), visAvanserteValg]);
-
-	const toggleAvanserteValg = () => {
-		setVisAvanserteValg((prevState) => (prevState === 'nei' ? 'ja' : 'nei'));
-	};
+	}, [JSON.stringify(kriterierSomKanVelges)]);
 
 	const handleSelect = (value: string) => {
 		if (value === '__gruppe') {
@@ -114,11 +104,6 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, køvisning, paakrevde
 					options={options}
 					error={errorMessage}
 				/>
-				{køvisning && (
-					<Checkbox value="ja" size="small" onClick={toggleAvanserteValg}>
-						Avanserte valg
-					</Checkbox>
-				)}
 				<div className="flex gap-4 mt-4">
 					<Button variant="primary" size="small" onClick={() => leggTil(valgtKriterie)}>
 						Legg til
@@ -128,16 +113,16 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, køvisning, paakrevde
 					</Button>
 				</div>
 			</div>
-			<div className="mt-[-0.125rem]">
-				{valgtKriterie && (
-					<>
-						<Label size="small">Beskrivelse:</Label>
-						<BodyLong className="mt-1" size="small">
-							Her vil det komme en beskrivelse for hva dette kriteriet er
-						</BodyLong>
-					</>
-				)}
-			</div>
+			{/* <div className="mt-[-0.125rem]"> */}
+			{/* 	{valgtKriterie && ( */}
+			{/* 		<> */}
+			{/* 			<Label size="small">Beskrivelse:</Label> */}
+			{/* 			<BodyLong className="mt-1" size="small"> */}
+			{/* 				Her vil det komme en beskrivelse for hva dette kriteriet er */}
+			{/* 			</BodyLong> */}
+			{/* 		</> */}
+			{/* 	)} */}
+			{/* </div> */}
 		</div>
 	);
 };
