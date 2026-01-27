@@ -78,6 +78,7 @@ export type Oppgavefelt = {
 	område: string;
 	kode: OppgavefilterKode;
 	visningsnavn: string;
+	beskrivelse?: string;
 	kokriterie: boolean;
 	tolkes_som: TolkesSom;
 	verdiforklaringerErUttømmende: boolean;
@@ -117,19 +118,15 @@ export enum OppgavefilterKode {
 	Behandlingssteg = 'behandlingssteg',
 	BehandlingTypekode = 'behandlingTypekode',
 	BehandlingUuid = 'behandlingUuid',
-	Beskyttelse = 'beskyttelse',
-	EgenAnsatt = 'egenAnsatt',
 	Personbeskyttelse = 'personbeskyttelse',
 	Fagsystem = 'fagsystem',
 	FraEndringsdialog = 'fraEndringsdialog',
 	Hastesak = 'hastesak',
 	HelautomatiskBehandlet = 'helautomatiskBehandlet',
-	Kildeområde = 'kildeområde',
 	LiggerHosBeslutter = 'liggerHosBeslutter',
 	LøsbartAksjonspunkt = 'løsbartAksjonspunkt',
 	MottattDato = 'mottattDato',
 	NyeKrav = 'nyeKrav',
-	Oppgaveområde = 'oppgaveområde',
 	Oppgavesaksbehandlingstid = 'oppgavesaksbehandlingstid',
 	Oppgavestatus = 'oppgavestatus',
 	Oppgavetype = 'oppgavetype',

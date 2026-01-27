@@ -1637,14 +1637,6 @@ export const felter = [
 		verdiforklaringer: null,
 	},
 	{
-		område: null,
-		kode: 'kildeområde',
-		visningsnavn: 'Kildeområde',
-		tolkes_som: 'String',
-		verdiforklaringerErUttømmende: false,
-		verdiforklaringer: [],
-	},
-	{
 		område: 'K9',
 		kode: 'løsbartAksjonspunkt',
 		visningsnavn: 'Aksjonspunkt som kan løses',
@@ -2067,14 +2059,6 @@ export const felter = [
 		tolkes_som: 'boolean',
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
-	},
-	{
-		område: null,
-		kode: 'oppgaveområde',
-		visningsnavn: 'Oppgaveområde',
-		tolkes_som: 'String',
-		verdiforklaringerErUttømmende: false,
-		verdiforklaringer: [],
 	},
 	{
 		område: null,

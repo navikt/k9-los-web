@@ -1,7 +1,8 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/jsx-pascal-case */
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, UNSAFE_Combobox } from '@navikt/ds-react';
+import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
+import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter, OppgaveQuery, Oppgavefelt, OppgavefilterKode } from 'filter/filterTsTypes';
@@ -17,8 +18,8 @@ interface Props {
 const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }: Props) => {
 	const { updateQuery, errors } = useContext(FilterContext);
 	const { felter } = useContext(AppContext);
-	const [valgtKriterie, setValgtKriterie] = useState<Oppgavefelt | string>();
-	const [options, setOptions] = useState([]);
+	const [valgtKriterie, setValgtKriterie] = useState<Oppgavefelt | '__gruppe'>();
+	const [options, setOptions] = useState<ComboboxOption[]>([]);
 	const [selectedChildIndex, setSelectedChildIndex] = useState(undefined);
 	const [fritekst, setFritekst] = useState('');
 	const [klikketLeggTilUtenÅVelgeKriterie, setKlikketLeggTilUtenÅVelgeKriterie] = useState(false);
@@ -28,14 +29,8 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 			? 'Du må velge et kriterie'
 			: errors.find((e) => e.id === oppgavefilter.id && e.felt === 'kode')?.message;
 
-	// TODO: fjern når de er fjernet i backend
-	const kriterierUtenEgenAnsattOgAdressebeskyttelse = felter.filter(
-		(v) => v.kode !== OppgavefilterKode.Beskyttelse && v.kode !== OppgavefilterKode.EgenAnsatt,
-	);
-
-	const kriterierSomKanVelges = paakrevdeKoder.length
-		? kriterierUtenEgenAnsattOgAdressebeskyttelse.filter((kriterie) => paakrevdeKoder.some((v) => v !== kriterie.kode))
-		: kriterierUtenEgenAnsattOgAdressebeskyttelse;
+	const kriterierSomKanVelges =
+		paakrevdeKoder.length > 0 ? felter.filter((kriterie) => paakrevdeKoder.some((v) => v !== kriterie.kode)) : felter;
 
 	const getOptions = () => {
 		const primærvalg = kriterierSomKanVelges?.filter((v) => v.kokriterie);
@@ -113,16 +108,14 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 					</Button>
 				</div>
 			</div>
-			{/* <div className="mt-[-0.125rem]"> */}
-			{/* 	{valgtKriterie && ( */}
-			{/* 		<> */}
-			{/* 			<Label size="small">Beskrivelse:</Label> */}
-			{/* 			<BodyLong className="mt-1" size="small"> */}
-			{/* 				Her vil det komme en beskrivelse for hva dette kriteriet er */}
-			{/* 			</BodyLong> */}
-			{/* 		</> */}
-			{/* 	)} */}
-			{/* </div> */}
+			{valgtKriterie !== '__gruppe' && valgtKriterie?.beskrivelse && (
+				<div className="mt-[-0.125rem]">
+					<Label size="small">Beskrivelse:</Label>
+					<BodyLong className="mt-1" size="small">
+						{valgtKriterie.beskrivelse}
+					</BodyLong>
+				</div>
+			)}
 		</div>
 	);
 };
