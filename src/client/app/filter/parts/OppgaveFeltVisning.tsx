@@ -2,7 +2,7 @@ import React from 'react';
 import dayjs from 'dayjs';
 import durationPlugin from 'dayjs/plugin/duration';
 import { Oppgavefelt, Oppgavefeltverdi, TolkesSom } from 'filter/filterTsTypes';
-import { aksjonspunktKoder } from 'filter/konstanter';
+import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 
 dayjs.extend(durationPlugin);
 
@@ -28,7 +28,7 @@ const OppgaveFeltVisning = ({ felt, oppgaveFelter }: Props) => {
 		return <div>-</div>;
 	}
 
-	if (aksjonspunktKoder.includes(oppgaveFelt.kode)) {
+	if (kriterierSomSkalGrupperes.includes(oppgaveFelt.kode)) {
 		const aksjonspunkter = getVerdiforklaringer(felt, oppgaveFelt, true).join(', ');
 
 		return <div>{aksjonspunkter}</div>;

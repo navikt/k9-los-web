@@ -116,6 +116,7 @@ export enum OppgavefilterKode {
 	BehandlendeEnhet = 'behandlendeEnhet',
 	Behandlingsstatus = 'behandlingsstatus',
 	Behandlingssteg = 'behandlingssteg',
+	Behandlingsårsak = 'behandlingsårsak',
 	BehandlingTypekode = 'behandlingTypekode',
 	BehandlingUuid = 'behandlingUuid',
 	Personbeskyttelse = 'personbeskyttelse',
