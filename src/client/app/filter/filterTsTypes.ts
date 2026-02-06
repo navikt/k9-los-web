@@ -64,7 +64,8 @@ export type Verdiforklaring = {
 	verdi: string;
 	visningsnavn: string;
 	gruppering: string | undefined;
-	sekundærvalg: boolean;
+	sekundærvalg?: boolean;
+	synlighet?: 'SKJULT' | 'OVER_STREKEN' | 'UNDER_STREKEN';
 };
 
 export enum TolkesSom {

@@ -7,12 +7,17 @@ const AksjonspunktVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown }) => {
 	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
-		.map(({ verdi, visningsnavn, gruppering, sekundærvalg }) => ({
-			value: verdi,
-			label: visningsnavn,
-			group: gruppering,
-			secondary: sekundærvalg,
-		}))
+		.filter(({ synlighet }) => synlighet !== 'SKJULT')
+		.map(({ verdi, visningsnavn, gruppering, synlighet, sekundærvalg }) => {
+			// sekundærvalg skal fases ut til fordel for synlighet, har begge feltene p.t. for å være foroverkompatibelt
+			const secondary = synlighet ? synlighet === 'UNDER_STREKEN' : (sekundærvalg ?? false);
+			return {
+				value: verdi,
+				label: visningsnavn,
+				group: gruppering,
+				secondary,
+			};
+		})
 		.sort((a, b) => Number(a.value) - Number(b.value));
 
 	// Finn grupper som kun har sekundærvalg-elementer
