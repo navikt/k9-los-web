@@ -231,6 +231,12 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
+	moveSelectFelt(fromIndex: number, toIndex: number) {
+		const [moved] = this.oppgaveQuery.select.splice(fromIndex, 1);
+		this.oppgaveQuery.select.splice(toIndex, 0, moved);
+		return this;
+	}
+
 	addEnkelOrderFelt(data = {}) {
 		this.oppgaveQuery.order.push({
 			id: uuid(),

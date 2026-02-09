@@ -67,6 +67,13 @@ const updateSelectFelt =
 		return newModel.toOppgaveQuery();
 	};
 
+const moveSelectFelt =
+	(fromIndex: number, toIndex: number) =>
+	(model: OppgaveQuery): OppgaveQuery => {
+		const newModel = new OppgaveQueryModel(model);
+		return newModel.moveSelectFelt(fromIndex, toIndex).toOppgaveQuery();
+	};
+
 // -------------------- Order Manipulations --------------------
 
 const removeSortering =
@@ -116,6 +123,7 @@ export {
 	addSelectFelt,
 	updateFilter,
 	updateSelectFelt,
+	moveSelectFelt,
 	removeSortering,
 	resetSortering,
 	addSortering,
