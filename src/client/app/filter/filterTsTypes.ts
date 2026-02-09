@@ -64,7 +64,8 @@ export type Verdiforklaring = {
 	verdi: string;
 	visningsnavn: string;
 	gruppering: string | undefined;
-	sekundærvalg: boolean;
+	sekundærvalg?: boolean;
+	synlighet?: 'SKJULT' | 'OVER_STREKEN' | 'UNDER_STREKEN';
 };
 
 export enum TolkesSom {
@@ -78,6 +79,7 @@ export type Oppgavefelt = {
 	område: string;
 	kode: OppgavefilterKode;
 	visningsnavn: string;
+	beskrivelse?: string;
 	kokriterie: boolean;
 	tolkes_som: TolkesSom;
 	verdiforklaringerErUttømmende: boolean;
@@ -115,21 +117,18 @@ export enum OppgavefilterKode {
 	BehandlendeEnhet = 'behandlendeEnhet',
 	Behandlingsstatus = 'behandlingsstatus',
 	Behandlingssteg = 'behandlingssteg',
+	Behandlingsårsak = 'behandlingsårsak',
 	BehandlingTypekode = 'behandlingTypekode',
 	BehandlingUuid = 'behandlingUuid',
-	Beskyttelse = 'beskyttelse',
-	EgenAnsatt = 'egenAnsatt',
 	Personbeskyttelse = 'personbeskyttelse',
 	Fagsystem = 'fagsystem',
 	FraEndringsdialog = 'fraEndringsdialog',
 	Hastesak = 'hastesak',
 	HelautomatiskBehandlet = 'helautomatiskBehandlet',
-	Kildeområde = 'kildeområde',
 	LiggerHosBeslutter = 'liggerHosBeslutter',
 	LøsbartAksjonspunkt = 'løsbartAksjonspunkt',
 	MottattDato = 'mottattDato',
 	NyeKrav = 'nyeKrav',
-	Oppgaveområde = 'oppgaveområde',
 	Oppgavesaksbehandlingstid = 'oppgavesaksbehandlingstid',
 	Oppgavestatus = 'oppgavestatus',
 	Oppgavetype = 'oppgavetype',

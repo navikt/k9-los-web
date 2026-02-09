@@ -4,7 +4,7 @@ import React, { FunctionComponent, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import { Button, ErrorMessage, Modal, Skeleton, UNSAFE_Combobox } from '@navikt/ds-react';
-import { Datepicker, Form, TextAreaField } from '@navikt/ft-form-hooks';
+import { Datepicker, Form, InputField, TextAreaField } from '@navikt/ft-form-hooks';
 import { dateAfterOrEqualToToday, hasValidText, maxLength, minLength, required } from '@navikt/ft-form-validators';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
@@ -141,7 +141,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 						/>
 					</div>
 					{!harFlereReservasjoner(reservasjoner) && (
-						<TextAreaField
+						<InputField
 							className="mt-8"
 							label="Begrunn endring av reservasjon"
 							name="begrunnelse"

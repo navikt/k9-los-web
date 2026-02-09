@@ -3,7 +3,7 @@ import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
-import { aksjonspunktKoder } from 'filter/konstanter';
+import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { removeFilter } from 'filter/queryUtils';
 import { FeltverdiOppgavefilter, OppgavefilterKode } from '../filterTsTypes';
 import { Aksjonspunktvisning } from './Aksjonspunktvisning';
@@ -17,7 +17,7 @@ interface Props {
 	readOnly: boolean;
 }
 
-const erAksjonspunktFelt = (feltdefinisjon) => aksjonspunktKoder.includes(feltdefinisjon.kode);
+const erAksjonspunktFelt = (feltdefinisjon) => kriterierSomSkalGrupperes.includes(feltdefinisjon.kode);
 
 const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnly = false }) => {
 	const testID = useMemo(() => generateId(), []);
@@ -55,7 +55,9 @@ const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnl
 					</div>
 				)}
 			</div>
-			{feltdefinisjon && erAksjonspunktFelt(feltdefinisjon) && <Aksjonspunktvisning oppgavefilter={oppgavefilter} feltdefinisjon={feltdefinisjon} />}
+			{feltdefinisjon && erAksjonspunktFelt(feltdefinisjon) && (
+				<Aksjonspunktvisning oppgavefilter={oppgavefilter} feltdefinisjon={feltdefinisjon} />
+			)}
 		</div>
 	);
 };

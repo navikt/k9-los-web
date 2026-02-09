@@ -32,7 +32,6 @@ const OppgavefilterPanel = ({
 			<VelgKriterie
 				oppgavefilter={oppgavefilter}
 				addGruppeOperation={addGruppeOperation}
-				køvisning={køvisning}
 				paakrevdeKoder={paakrevdeKoder}
 			/>
 		);
