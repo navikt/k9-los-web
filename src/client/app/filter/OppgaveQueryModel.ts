@@ -269,4 +269,10 @@ export default class OppgaveQueryModel {
 		}
 		return this;
 	}
+
+	moveOrderFelt(fromIndex: number, toIndex: number) {
+		const [moved] = this.oppgaveQuery.order.splice(fromIndex, 1);
+		this.oppgaveQuery.order.splice(toIndex, 0, moved);
+		return this;
+	}
 }
