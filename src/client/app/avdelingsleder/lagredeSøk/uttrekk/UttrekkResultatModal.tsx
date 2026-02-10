@@ -6,7 +6,7 @@ import { Uttrekk, useHentUttrekkResultat } from 'api/queries/avdelingslederQueri
 const PAGE_SIZE = 20;
 
 function formatCelleVerdi(verdi: unknown): string {
-	if (verdi === null || verdi === undefined) {
+	if (verdi === null || verdi === undefined || verdi === '') {
 		return '-';
 	}
 	if (typeof verdi === 'boolean') {
