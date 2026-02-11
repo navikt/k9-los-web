@@ -109,8 +109,6 @@ const config = {
 
 	resolve: {
 		alias: {
-			react: path.resolve(dirname, '../node_modules/react'),
-			'react-dom': path.resolve(dirname, '../node_modules/react-dom'),
 			styles: path.join(ROOT_DIR, 'styles'),
 			images: path.join(ROOT_DIR, 'images'),
 			testHelpers: path.join(ROOT_DIR, 'testHelpers'),

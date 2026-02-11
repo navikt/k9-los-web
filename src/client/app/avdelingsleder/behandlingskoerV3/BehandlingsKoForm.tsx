@@ -1,9 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { Alert, Button, ErrorMessage, Heading, Label, Modal } from '@navikt/ds-react';
-import { Form, InputField, TextAreaField } from '@navikt/ft-form-hooks';
-import { required } from '@navikt/ft-form-validators';
+import { Alert, Button, ErrorMessage, Heading, Label, Modal, TextField, Textarea } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { useHentSaksbehandlereAvdelingsleder, useKo, useOppdaterKøMutation } from 'api/queries/avdelingslederQueries';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
@@ -106,22 +104,27 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 		[feltdefinisjoner, kø.skjermet],
 	);
 	return (
-		<Form formMethods={formMethods}>
+		<div>
 			<div className="grid grid-cols-2 gap-16">
 				<div>
 					<Heading className="mb-2" size="small">
 						Om køen
 					</Heading>
 					<div className="bg-[#e6f0ff] rounded p-5">
-						<InputField label="Navn" name={fieldnames.TITTEL} size="medium" validate={[required]} />
-						<TextAreaField
+						<TextField
+							label="Navn"
 							size="medium"
-							name="beskrivelse"
+							error={formMethods.formState.errors[fieldnames.TITTEL]?.message as string}
+							{...formMethods.register(fieldnames.TITTEL, { required: 'Feltet er påkrevd' })}
+						/>
+						<Textarea
+							size="medium"
 							label="Beskrivelse"
 							description="Her kan du legge inn en valgfri beskrivelse av hva denne køen inneholder."
 							className="mt-8"
 							maxLength={4000}
-							validate={[required]}
+							error={formMethods.formState.errors[fieldnames.BESKRIVELSE]?.message as string}
+							{...formMethods.register(fieldnames.BESKRIVELSE, { required: 'Feltet er påkrevd' })}
 						/>
 					</div>
 				</div>
@@ -231,7 +234,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 					</Modal.Body>
 				</Modal>
 			)}
-		</Form>
+		</div>
 	);
 };
 

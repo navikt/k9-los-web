@@ -3,9 +3,7 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
-import { Button, ErrorMessage, Modal, Skeleton, UNSAFE_Combobox } from '@navikt/ds-react';
-import { Datepicker, Form, InputField, TextAreaField } from '@navikt/ft-form-hooks';
-import { dateAfterOrEqualToToday, hasValidText, maxLength, minLength, required } from '@navikt/ft-form-validators';
+import { Button, DatePicker, ErrorMessage, Modal, Skeleton, TextField, UNSAFE_Combobox, useDatepicker } from '@navikt/ds-react';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 
@@ -59,10 +57,19 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 		mode: 'onBlur',
 		reValidateMode: 'onChange',
 	});
-	const { setValue, formState, trigger } = formMethods;
+	const { setValue, formState, trigger, register, handleSubmit } = formMethods;
 	useEffect(() => {
-		formMethods.register('reservertAvIdent', { validate: required });
+		formMethods.register('reservertAvIdent', { validate: (v) => (!v ? 'Feltet er påkrevd' : undefined) });
 	}, [formMethods]);
+
+	const defaultReserverTil = initialValues(reservasjoner).reserverTil;
+	const { datepickerProps, inputProps } = useDatepicker({
+		fromDate: new Date(),
+		defaultSelected: defaultReserverTil ? new Date(defaultReserverTil) : undefined,
+		onDateChange: (date) => {
+			setValue('reserverTil', date ? dayjs(date).format('YYYY-MM-DD') : '', { shouldDirty: true });
+		},
+	});
 
 	const saksbehandlerIdent = formMethods.watch('reservertAvIdent');
 	const onSubmit = (brukerIdent: string, begrunnelse: string, reserverTil: string) => {
@@ -88,19 +95,18 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 	};
 
 	return (
-		<Form
-			formMethods={formMethods}
-			onSubmit={(values) => {
-				onSubmit(values.reservertAvIdent, values.begrunnelse, values.reserverTil);
+		<Modal
+			open={open}
+			onClose={closeModal}
+			header={{
+				heading: reservasjoner.length === 1 ? 'Endre reservasjon' : `Endre ${reservasjoner.length} reservasjoner`,
 			}}
+			className="min-w-[500px]"
 		>
-			<Modal
-				open={open}
-				onClose={closeModal}
-				header={{
-					heading: reservasjoner.length === 1 ? 'Endre reservasjon' : `Endre ${reservasjoner.length} reservasjoner`,
-				}}
-				className="min-w-[500px]"
+			<form
+				onSubmit={handleSubmit((values) => {
+					onSubmit(values.reservertAvIdent, values.begrunnelse, values.reserverTil);
+				})}
 			>
 				<Modal.Body>
 					{isLoading && <Skeleton height={80} />}
@@ -129,23 +135,28 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 						/>
 					)}
 					<div className="mt-8">
-						<Datepicker
-							label={
-								reservasjoner.length === 1
-									? 'Velg dato som reservasjonen avsluttes'
-									: 'Velg dato som reservasjonene avsluttes'
-							}
-							description={reservasjoner.length > 1 && 'Behold eksisterende dato ved å la feltet stå tomt'}
-							name="reserverTil"
-							validate={[dateAfterOrEqualToToday]}
-						/>
+						<DatePicker {...datepickerProps}>
+							<DatePicker.Input
+								{...inputProps}
+								label={
+									reservasjoner.length === 1
+										? 'Velg dato som reservasjonen avsluttes'
+										: 'Velg dato som reservasjonene avsluttes'
+								}
+								description={reservasjoner.length > 1 ? 'Behold eksisterende dato ved å la feltet stå tomt' : undefined}
+							/>
+						</DatePicker>
 					</div>
 					{!harFlereReservasjoner(reservasjoner) && (
-						<InputField
+						<TextField
 							className="mt-8"
 							label="Begrunn endring av reservasjon"
-							name="begrunnelse"
-							validate={[required, minLength(3), maxLength(1500), hasValidText]}
+							error={formState.errors.begrunnelse?.message}
+							{...register('begrunnelse', {
+								required: 'Feltet er påkrevd',
+								minLength: { value: 3, message: 'Må være minst 3 tegn' },
+								maxLength: { value: 1500, message: 'Maks 1500 tegn' },
+							})}
 						/>
 					)}
 				</Modal.Body>
@@ -157,8 +168,8 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 						Avbryt
 					</Button>
 				</Modal.Footer>
-			</Modal>
-		</Form>
+			</form>
+		</Modal>
 	);
 };
 

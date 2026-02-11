@@ -1,9 +1,8 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { MenuGridIcon } from '@navikt/aksel-icons';
-import { ActionMenu, Dropdown, InternalHeader, Spacer } from '@navikt/ds-react';
+import { ActionMenu, InternalHeader, Spacer } from '@navikt/ds-react';
 import Endringslogg from '@navikt/familie-endringslogg';
-import { Header } from '@navikt/ft-plattform-komponenter';
 import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import * as styles from './headerWithErrorPanel.css';
@@ -90,7 +89,17 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 	return (
 		<header ref={fixedHeaderRef} className={`${styles.container} ${isDev ? styles.containerDev : ''}`}>
 			<div ref={wrapperRef}>
-				<Header title="Pleiepenger og omsorgspenger" changeLocation={goToHomepage}>
+				<InternalHeader>
+					<InternalHeader.Title
+						as="a"
+						href="/"
+						onClick={(e) => {
+							e.preventDefault();
+							goToHomepage();
+						}}
+					>
+						Nav Pleiepenger og omsorgspenger
+					</InternalHeader.Title>
 					{visDriftsmeldingerKnapp && (
 						<button type="button" className={styles.knapp} onClick={goTilDriftsmeldingerPanel}>
 							Driftsmeldinger
@@ -143,7 +152,6 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 							</ActionMenu.Group>
 						</ActionMenu.Content>
 					</ActionMenu>
-					<Dropdown.Menu.Divider />
 					<Spacer />
 					<InternalHeader.User className="text-white" name={innloggetSaksbehandler?.brukerIdent} />
 					{isDev && (
@@ -151,7 +159,7 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 							Logg ut
 						</button>
 					)}
-				</Header>
+				</InternalHeader>
 			</div>
 			<DriftsmeldingPanel />
 		</header>

@@ -7,7 +7,6 @@ import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType }
 import { init } from '@sentry/browser';
 import { breadcrumbsIntegration, reactRouterV6BrowserTracingIntegration } from '@sentry/react';
 import '@navikt/ds-css';
-import '@navikt/ft-plattform-komponenter/dist/style.css';
 import AppContainer from 'app/AppContainer';
 import { setEnvVariables } from 'app/envVariablesUtils';
 

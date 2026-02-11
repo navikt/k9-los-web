@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Button, Label, TextField } from '@navikt/ds-react';
-import { PlusIcon } from '@navikt/ft-plattform-komponenter';
+import { PlusIcon } from '@navikt/aksel-icons';
 import { useHentSaksbehandlereAvdelingsleder, useLeggTilSaksbehandler } from 'api/queries/avdelingslederQueries';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
