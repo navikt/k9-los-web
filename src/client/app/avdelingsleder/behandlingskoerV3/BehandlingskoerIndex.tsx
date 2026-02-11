@@ -196,15 +196,13 @@ const BehandlingskoerIndex = () => {
 					))}
 				</Table.Body>
 			</Table>
-			{visNyKøModal && (
-				<NyKøModal
-					vis
-					lukk={() => setVisNyKøModal(false)}
-					onSuccessCallback={(id) => {
-						setKøSomNettoppBleLaget(id);
-					}}
-				/>
-			)}
+			<NyKøModal
+				open={visNyKøModal}
+				onOpenChange={setVisNyKøModal}
+				onSuccessCallback={(id) => {
+					setKøSomNettoppBleLaget(id);
+				}}
+			/>
 		</>
 	);
 };
