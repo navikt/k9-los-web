@@ -1,13 +1,11 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Button, Dialog, ErrorMessage } from '@navikt/ds-react';
-import { Form, InputField } from '@navikt/ft-form-hooks';
-import { minLength, required } from '@navikt/ft-form-validators';
+import { Button, Dialog, ErrorMessage, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { useNyKøMutation } from 'api/queries/avdelingslederQueries';
 
-enum fieldnames {
-	TITTEL = 'tittel',
+interface FormValues {
+	tittel: string;
 }
 
 interface OwnProps {
@@ -17,17 +15,23 @@ interface OwnProps {
 }
 
 const NyKøModal = ({ open, onOpenChange, onSuccessCallback }: OwnProps) => {
-	const callback = (id) => {
+	const callback = (id: string) => {
 		onOpenChange(false);
 		if (onSuccessCallback) onSuccessCallback(id);
 	};
 	const mutation = useNyKøMutation(callback);
 
-	const formMethods = useForm({
-		defaultValues: {
-			[fieldnames.TITTEL]: '',
-		},
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<FormValues>({
+		defaultValues: { tittel: '' },
 	});
+
+	const onSubmit = (data: FormValues) => {
+		mutation.mutate({ url: apiPaths.opprettOppgaveko, body: data });
+	};
 
 	return (
 		<Dialog open={open} onOpenChange={(nextOpen) => onOpenChange(nextOpen)}>
@@ -36,16 +40,16 @@ const NyKøModal = ({ open, onOpenChange, onSuccessCallback }: OwnProps) => {
 					<Dialog.Title>Ny oppgavekø</Dialog.Title>
 				</Dialog.Header>
 				<Dialog.Body>
-					<Form
-						formMethods={formMethods}
-						onSubmit={(data) => mutation.mutate({ url: apiPaths.opprettOppgaveko, body: data })}
-					>
-						<InputField
+					<form onSubmit={handleSubmit(onSubmit)}>
+						<TextField
 							className="my-6 max-w"
 							label="Kønavn"
-							name={fieldnames.TITTEL}
-							size="small"
-							validate={[required, minLength(3)]}
+							autoFocus
+							error={errors.tittel?.message}
+							{...register('tittel', {
+								required: 'Feltet er påkrevd',
+								minLength: { value: 3, message: 'Må være minst 3 tegn' },
+							})}
 						/>
 						{mutation.isError && <ErrorMessage>Noe gikk galt ved oppretting av kø.</ErrorMessage>}
 						<Dialog.Footer>
@@ -54,9 +58,11 @@ const NyKøModal = ({ open, onOpenChange, onSuccessCallback }: OwnProps) => {
 									Avbryt
 								</Button>
 							</Dialog.CloseTrigger>
-							<Button loading={mutation.isPending}>Opprett kø</Button>
+							<Button loading={mutation.isPending} type="submit">
+								Opprett kø
+							</Button>
 						</Dialog.Footer>
-					</Form>
+					</form>
 				</Dialog.Body>
 			</Dialog.Popup>
 		</Dialog>
