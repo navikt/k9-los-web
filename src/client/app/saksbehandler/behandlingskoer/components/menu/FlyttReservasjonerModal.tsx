@@ -1,11 +1,12 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/jsx-pascal-case */
-import React, { FunctionComponent, useEffect } from 'react';
+import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import {
 	Button,
 	DatePicker,
+	DateValidationT,
 	ErrorMessage,
 	Modal,
 	Skeleton,
@@ -72,8 +73,12 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 	}, [formMethods]);
 
 	const defaultReserverTil = initialValues(reservasjoner).reserverTil;
-	const { datepickerProps, inputProps } = useDatepicker({
-		onValidate: (validation) => {
+	const [dateTouched, setDateTouched] = useState(false);
+	const lastDateValidation = useRef(null);
+
+	const applyDateValidation = useCallback(
+		(validation: DateValidationT) => {
+			if (!validation) return;
 			if (validation.isInvalid) {
 				setError('reserverTil', { type: 'custom', message: 'Ugyldig dato' });
 			} else if (validation.isBefore) {
@@ -82,12 +87,29 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 				clearErrors('reserverTil');
 			}
 		},
+		[setError, clearErrors],
+	);
+
+	const { datepickerProps, inputProps } = useDatepicker({
+		onValidate: (validation) => {
+			lastDateValidation.current = validation;
+			if (dateTouched) {
+				applyDateValidation(validation);
+			}
+		},
 		fromDate: new Date(),
 		defaultSelected: defaultReserverTil ? new Date(defaultReserverTil) : undefined,
 		onDateChange: (date) => {
+			if (date) clearErrors('reserverTil');
 			setValue('reserverTil', date ? dayjs(date).format('YYYY-MM-DD') : '', { shouldDirty: true });
 		},
 	});
+
+	const handleDateInputBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+		setDateTouched(true);
+		applyDateValidation(lastDateValidation.current);
+		inputProps.onBlur?.(e);
+	};
 
 	const saksbehandlerIdent = formMethods.watch('reservertAvIdent');
 	const onSubmit = (brukerIdent: string, begrunnelse: string, reserverTil: string) => {
@@ -156,6 +178,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 						<DatePicker {...datepickerProps}>
 							<DatePicker.Input
 								{...inputProps}
+								onBlur={handleDateInputBlur}
 								label={
 									reservasjoner.length === 1
 										? 'Velg dato som reservasjonen avsluttes'
