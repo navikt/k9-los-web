@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { Button, Loader, Skeleton, SortState, Table } from '@navikt/ds-react';
+import { Button, Dialog, Loader, Skeleton, SortState, Table } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { useAlleKoer } from 'api/queries/avdelingslederQueries';
 import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
@@ -162,9 +162,21 @@ const BehandlingskoerIndex = () => {
 
 	return (
 		<>
-			<Button className="mb-7" variant="primary" onClick={() => setVisNyKøModal(true)} icon={<PlusCircleIcon />}>
-				Legg til ny oppgavekø
-			</Button>
+			<Dialog open={visNyKøModal} onOpenChange={(nextOpen) => setVisNyKøModal(nextOpen)}>
+				<Dialog.Trigger>
+					<Button className="mb-7" variant="primary" icon={<PlusCircleIcon />}>
+						Legg til ny oppgavekø
+					</Button>
+				</Dialog.Trigger>
+				{visNyKøModal && (
+					<NyKøModal
+						onSuccessCallback={(id) => {
+							setVisNyKøModal(false);
+							setKøSomNettoppBleLaget(id);
+						}}
+					/>
+				)}
+			</Dialog>
 			<Table sort={sort} onSortChange={handleSort} size="small">
 				<Table.Header>
 					<Table.Row>
@@ -196,13 +208,6 @@ const BehandlingskoerIndex = () => {
 					))}
 				</Table.Body>
 			</Table>
-			<NyKøModal
-				open={visNyKøModal}
-				onOpenChange={setVisNyKøModal}
-				onSuccessCallback={(id) => {
-					setKøSomNettoppBleLaget(id);
-				}}
-			/>
 		</>
 	);
 };

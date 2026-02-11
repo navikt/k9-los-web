@@ -9,17 +9,11 @@ interface FormValues {
 }
 
 interface OwnProps {
-	open: boolean;
-	onOpenChange: (open: boolean) => void;
 	onSuccessCallback?: (id: string) => void;
 }
 
-const NyKøModal = ({ open, onOpenChange, onSuccessCallback }: OwnProps) => {
-	const callback = (id: string) => {
-		onOpenChange(false);
-		if (onSuccessCallback) onSuccessCallback(id);
-	};
-	const mutation = useNyKøMutation(callback);
+const NyKøModal = ({ onSuccessCallback }: OwnProps) => {
+	const mutation = useNyKøMutation(onSuccessCallback);
 
 	const {
 		register,
@@ -34,38 +28,35 @@ const NyKøModal = ({ open, onOpenChange, onSuccessCallback }: OwnProps) => {
 	};
 
 	return (
-		<Dialog open={open} onOpenChange={(nextOpen) => onOpenChange(nextOpen)}>
-			<Dialog.Popup className="w-[44rem]">
-				<Dialog.Header>
-					<Dialog.Title>Ny oppgavekø</Dialog.Title>
-				</Dialog.Header>
-				<Dialog.Body>
-					<form onSubmit={handleSubmit(onSubmit)}>
-						<TextField
-							className="my-6 max-w"
-							label="Kønavn"
-							autoFocus
-							error={errors.tittel?.message}
-							{...register('tittel', {
-								required: 'Feltet er påkrevd',
-								minLength: { value: 3, message: 'Må være minst 3 tegn' },
-							})}
-						/>
-						{mutation.isError && <ErrorMessage>Noe gikk galt ved oppretting av kø.</ErrorMessage>}
-						<Dialog.Footer>
-							<Dialog.CloseTrigger>
-								<Button variant="secondary" type="button">
-									Avbryt
-								</Button>
-							</Dialog.CloseTrigger>
-							<Button loading={mutation.isPending} type="submit">
-								Opprett kø
+		<Dialog.Popup className="w-[44rem]">
+			<Dialog.Header>
+				<Dialog.Title>Ny oppgavekø</Dialog.Title>
+			</Dialog.Header>
+			<Dialog.Body>
+				<form onSubmit={handleSubmit(onSubmit)}>
+					<TextField
+						className="my-6 max-w"
+						label="Kønavn"
+						error={errors.tittel?.message}
+						{...register('tittel', {
+							required: 'Feltet er påkrevd',
+							minLength: { value: 3, message: 'Må være minst 3 tegn' },
+						})}
+					/>
+					{mutation.isError && <ErrorMessage>Noe gikk galt ved oppretting av kø.</ErrorMessage>}
+					<Dialog.Footer>
+						<Dialog.CloseTrigger>
+							<Button variant="secondary" type="button">
+								Avbryt
 							</Button>
-						</Dialog.Footer>
-					</form>
-				</Dialog.Body>
-			</Dialog.Popup>
-		</Dialog>
+						</Dialog.CloseTrigger>
+						<Button loading={mutation.isPending} type="submit">
+							Opprett kø
+						</Button>
+					</Dialog.Footer>
+				</form>
+			</Dialog.Body>
+		</Dialog.Popup>
 	);
 };
 
