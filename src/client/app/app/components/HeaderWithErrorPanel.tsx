@@ -100,6 +100,7 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 					>
 						Nav Pleiepenger og omsorgspenger
 					</InternalHeader.Title>
+					<Spacer />
 					{visDriftsmeldingerKnapp && (
 						<button type="button" className={styles.knapp} onClick={goTilDriftsmeldingerPanel}>
 							Driftsmeldinger
@@ -152,7 +153,6 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 							</ActionMenu.Group>
 						</ActionMenu.Content>
 					</ActionMenu>
-					<Spacer />
 					<InternalHeader.User className="text-white" name={innloggetSaksbehandler?.brukerIdent} />
 					{isDev && (
 						<button type="button" className={styles.knapp} onClick={loggUt}>
