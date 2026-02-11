@@ -3,7 +3,16 @@
 import React, { FunctionComponent, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
-import { Button, DatePicker, ErrorMessage, Modal, Skeleton, TextField, UNSAFE_Combobox, useDatepicker } from '@navikt/ds-react';
+import {
+	Button,
+	DatePicker,
+	ErrorMessage,
+	Modal,
+	Skeleton,
+	TextField,
+	UNSAFE_Combobox,
+	useDatepicker,
+} from '@navikt/ds-react';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
 import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 
@@ -57,13 +66,22 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 		mode: 'onBlur',
 		reValidateMode: 'onChange',
 	});
-	const { setValue, formState, trigger, register, handleSubmit } = formMethods;
+	const { setValue, formState, trigger, register, handleSubmit, setError, clearErrors } = formMethods;
 	useEffect(() => {
 		formMethods.register('reservertAvIdent', { validate: (v) => (!v ? 'Feltet er påkrevd' : undefined) });
 	}, [formMethods]);
 
 	const defaultReserverTil = initialValues(reservasjoner).reserverTil;
 	const { datepickerProps, inputProps } = useDatepicker({
+		onValidate: (validation) => {
+			if (validation.isInvalid) {
+				setError('reserverTil', { type: 'custom', message: 'Ugyldig dato' });
+			} else if (validation.isBefore) {
+				setError('reserverTil', { type: 'custom', message: 'Dato må være etter eller lik dagens dato' });
+			} else {
+				clearErrors('reserverTil');
+			}
+		},
 		fromDate: new Date(),
 		defaultSelected: defaultReserverTil ? new Date(defaultReserverTil) : undefined,
 		onDateChange: (date) => {
@@ -144,6 +162,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 										: 'Velg dato som reservasjonene avsluttes'
 								}
 								description={reservasjoner.length > 1 ? 'Behold eksisterende dato ved å la feltet stå tomt' : undefined}
+								error={formState.errors.reserverTil?.message}
 							/>
 						</DatePicker>
 					</div>
