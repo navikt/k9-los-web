@@ -1,9 +1,8 @@
-/* eslint-disable camelcase */
-/* eslint-disable react/jsx-pascal-case */
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import dayjs from 'dayjs';
 import {
+	UNSAFE_Combobox as AkselCombobox,
 	Button,
 	DatePicker,
 	DateValidationT,
@@ -11,7 +10,6 @@ import {
 	Modal,
 	Skeleton,
 	TextField,
-	UNSAFE_Combobox,
 	useDatepicker,
 } from '@navikt/ds-react';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
@@ -79,7 +77,13 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 	const applyDateValidation = useCallback(
 		(validation: DateValidationT) => {
 			if (!validation) return;
-			if (validation.isInvalid) {
+			if (validation.isEmpty && harFlereReservasjoner(reservasjoner)) {
+				clearErrors('reserverTil');
+				return;
+			}
+			if (validation.isEmpty && !harFlereReservasjoner(reservasjoner)) {
+				setError('reserverTil', { type: 'custom', message: 'Feltet er påkrevd' });
+			} else if (validation.isInvalid) {
 				setError('reserverTil', { type: 'custom', message: 'Ugyldig dato' });
 			} else if (validation.isBefore) {
 				setError('reserverTil', { type: 'custom', message: 'Dato må være etter eller lik dagens dato' });
@@ -87,7 +91,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 				clearErrors('reserverTil');
 			}
 		},
-		[setError, clearErrors],
+		[setError, clearErrors, reservasjoner],
 	);
 
 	const { datepickerProps, inputProps } = useDatepicker({
@@ -152,9 +156,8 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 					{isLoading && <Skeleton height={80} />}
 					{(error || !saksbehandlere) && <ErrorMessage>Noe gikk galt ved henting av saksbehandlere</ErrorMessage>}
 					{saksbehandlere.length > 0 && (
-						<UNSAFE_Combobox
+						<AkselCombobox
 							label="Velg saksbehandler"
-							size="small"
 							options={saksbehandlerOptions}
 							selectedOptions={
 								saksbehandlerIdent && saksbehandlerOptions.find((v) => v.value === saksbehandlerIdent)
