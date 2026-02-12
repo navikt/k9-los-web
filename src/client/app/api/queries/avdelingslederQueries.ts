@@ -65,7 +65,7 @@ export const useAlleKoer = (options = {}) =>
 		...options,
 	});
 
-export const useNyKøMutation = (callback) => {
+export const useNyKøMutation = (callback: (id: string) => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation<OppgavekøV3, unknown, { url: string; body: { tittel: string } }>({

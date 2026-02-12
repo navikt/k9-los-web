@@ -123,8 +123,10 @@ const AvdelingslederReservasjonerTabell = () => {
 						Alle reservasjoner
 						{reservasjoner?.length > 0 && isSuccessReservasjoner && ` (${reservasjoner.length} stk)`}
 					</Heading>
-					{/* Hvis mer enn 50 antas litt scrolling, så det kan være kjekt å ha knappene på toppen i tillegg til i bunn */}
-					{valgteReservasjoner.length > 50 && <ReservasjonerBolkButtons valgteReservasjoner={valgteReservasjoner} />}
+					{/* Hvis mer enn 5 kan det være kjekt å ha knappene på toppen i tillegg til i bunn */}
+					{reservasjoner?.length > 5 && valgteReservasjoner.length > 0 && (
+						<ReservasjonerBolkButtons valgteReservasjoner={valgteReservasjoner} />
+					)}
 				</div>
 				<div>
 					<Search

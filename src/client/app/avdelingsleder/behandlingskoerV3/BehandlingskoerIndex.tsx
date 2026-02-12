@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import dayjs from 'dayjs';
-import { PlusCircleIcon } from '@navikt/aksel-icons';
-import { Button, Loader, Skeleton, SortState, Table } from '@navikt/ds-react';
+import { Loader, Skeleton, SortState, Table } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { useAlleKoer } from 'api/queries/avdelingslederQueries';
+import NyKøDialog from 'avdelingsleder/behandlingskoerV3/NyKøDialog';
 import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
 import { axiosInstance } from 'utils/reactQueryConfig';
 import BehandlingsKoForm from './BehandlingsKoForm';
 import KopierKø from './KopierKø';
-import NyKøModal from './NyKøModal';
 import SlettKø from './SlettKø';
 
 function scrollToId(id: string) {
@@ -99,7 +98,6 @@ const BehandlingskoerIndex = () => {
 	const { results: køerMedAntallOppgaver, isSuccess: isSuccessAll } = berikMedAntallOppgaverIndividuelt(
 		initielleKøer || [],
 	);
-	const [visNyKøModal, setVisNyKøModal] = useState(false);
 	const [sort, setSort] = useState<SortState | undefined>({
 		orderBy: 'tittel',
 		direction: 'ascending',
@@ -162,9 +160,11 @@ const BehandlingskoerIndex = () => {
 
 	return (
 		<>
-			<Button className="mb-7" variant="primary" onClick={() => setVisNyKøModal(true)} icon={<PlusCircleIcon />}>
-				Legg til ny oppgavekø
-			</Button>
+			<NyKøDialog
+				onSuccessCallback={(id) => {
+					setKøSomNettoppBleLaget(id);
+				}}
+			/>
 			<Table sort={sort} onSortChange={handleSort} size="small">
 				<Table.Header>
 					<Table.Row>
@@ -196,15 +196,6 @@ const BehandlingskoerIndex = () => {
 					))}
 				</Table.Body>
 			</Table>
-			{visNyKøModal && (
-				<NyKøModal
-					vis
-					lukk={() => setVisNyKøModal(false)}
-					onSuccessCallback={(id) => {
-						setKøSomNettoppBleLaget(id);
-					}}
-				/>
-			)}
 		</>
 	);
 };
