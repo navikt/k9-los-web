@@ -12017,7 +12017,7 @@ __metadata:
     react-hook-form: "npm:7.66.1"
     react-idle-timer: "npm:5.7.2"
     react-modal: "npm:3.16.3"
-    react-router: "npm:7.9.3"
+    react-router: "npm:7.12.0"
     storybook: "npm:9.1.10"
     tailwindcss: "npm:3.4.18"
     terser-webpack-plugin: "npm:5.3.16"
@@ -14596,9 +14596,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:7.9.3":
-  version: 7.9.3
-  resolution: "react-router@npm:7.9.3"
+"react-router@npm:7.12.0":
+  version: 7.12.0
+  resolution: "react-router@npm:7.12.0"
   dependencies:
     cookie: "npm:^1.0.1"
     set-cookie-parser: "npm:^2.6.0"
@@ -14608,7 +14608,7 @@ __metadata:
   peerDependenciesMeta:
     react-dom:
       optional: true
-  checksum: 10/62066f09214c5b026b0d400af946aa0b16ef5be7f5120a4400e1b1fc487249220c2d735d9f6a2afa505a136bc8ef4cd7657b1ff8126871068cbf7ec773febce3
+  checksum: 10/578324f792721200bd57a220c7931af692613943051c9bb0c6303613849ec9a2c2365a3a6afe1b3976c13edc8f71616bb9cfdb13c0ac501f239ad11a6884e3f8
   languageName: node
   linkType: hard
 
