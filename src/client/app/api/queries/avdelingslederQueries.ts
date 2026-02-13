@@ -232,18 +232,11 @@ export const useHentFerdigstiltePerEnhet = ({ gruppe, uker }: { gruppe: string; 
 		refetchInterval: 60000,
 	});
 
-export interface FilterBeskrivelse {
-	feltnavn: string;
-	verdier: Array<string>;
-	nektelse: boolean;
-}
-
 export interface LagretSøk {
 	id: number;
 	tittel: string;
 	beskrivelse: string;
 	query: OppgaveQuery;
-	queryBeskrivelse: FilterBeskrivelse[];
 	lagetAv: number;
 	versjon: number;
 	sistEndret: string;
@@ -339,7 +332,8 @@ export const useSlettUttrekkForLagretSøk = (callback?: () => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		mutationFn: (lagretSokId: number) => axiosInstance.delete(apiPaths.slettUttrekkForLagretSøk(lagretSokId.toString())),
+		mutationFn: (lagretSokId: number) =>
+			axiosInstance.delete(apiPaths.slettUttrekkForLagretSøk(lagretSokId.toString())),
 		onSuccess: () =>
 			queryClient
 				.invalidateQueries({
