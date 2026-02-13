@@ -56,8 +56,8 @@ function QueryBoks({
 				</div>
 				<ModalButton
 					renderButton={({ openModal }) => (
-						<Button variant="tertiary" size="xsmall" onClick={openModal} title={`Endre ${modalTab}`}>
-							Endre
+						<Button variant="tertiary" size="xsmall" onClick={openModal}>
+							Endre {modalTab}
 						</Button>
 					)}
 					renderModal={({ open, closeModal }) => (
