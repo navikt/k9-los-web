@@ -1,13 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading, HelpText } from '@navikt/ds-react';
-import { useHentLagredeSøk } from 'api/queries/avdelingslederQueries';
+import {
+	LagretSøk,
+	useHentAlleUttrekk,
+	useHentLagredeSøk,
+	useOpprettLagretSøk,
+} from 'api/queries/avdelingslederQueries';
+import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
-import { OpprettLagretSøkModal } from 'avdelingsleder/lagredeSøk/OpprettLagretSøkModal';
-import ModalButton from 'sharedComponents/ModalButton';
+import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 
 export function LagredeSøk() {
 	const { data, isSuccess, isError } = useHentLagredeSøk({ retry: false });
+	const { data: uttrekk } = useHentAlleUttrekk();
+	const { mutate: opprettLagretSøk, isPending: oppretterSøk } = useOpprettLagretSøk();
+	const [nyttSøkId, setNyttSøkId] = useState<number | null>(null);
+	const [nyttSøk, setNyttSøk] = useState<LagretSøk | null>(null);
+
+	// Når vi har en nyttSøkId og data er oppdatert, finn det opprettede søket
+	useEffect(() => {
+		if (nyttSøkId !== null && data) {
+			const søk = data.find((s) => s.id === nyttSøkId);
+			if (søk) {
+				setNyttSøk(søk);
+				setNyttSøkId(null);
+			}
+		}
+	}, [nyttSøkId, data]);
+
+	const handleOpprettSøk = () => {
+		opprettLagretSøk(
+			{ tittel: '' },
+			{
+				onSuccess: (id: number) => {
+					setNyttSøkId(id);
+				},
+			},
+		);
+	};
+
+	// Finn uttrekk som ikke har tilhørende lagret søk (foreldreløse)
+	const lagretSøkIder = new Set(data?.map((s) => s.id) ?? []);
+	const foreldreløseUttrekk = uttrekk?.filter((u) => !u.lagretSøkId || !lagretSøkIder.has(u.lagretSøkId)) ?? [];
+
 	return (
 		<>
 			<div className="flex justify-between items-center mb-10">
@@ -22,20 +58,28 @@ export function LagredeSøk() {
 						<p className="mb-0">Muligheter for videre utvikling, som prioriteres etter behov:</p>
 						<ul className="mt-0.5">
 							<li>Dele lagrede søk med andre.</li>
-							<li>Bruke lagrede søk som utgangspunkt for uttrekk av data.</li>
 							<li>Lagring av historikk, slik at man for eksempel kan få antallet av et søk kjørt hver uke.</li>
 						</ul>
 					</HelpText>
 				</Heading>
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button variant="secondary" onClick={openModal} icon={<PlusCircleIcon />} disabled={isError}>
-							Legg til nytt lagret søk
-						</Button>
-					)}
-					renderModal={({ open, closeModal }) => <OpprettLagretSøkModal open={open} closeModal={closeModal} />}
-				/>
+				<Button
+					variant="secondary"
+					onClick={handleOpprettSøk}
+					icon={<PlusCircleIcon />}
+					disabled={isError}
+					loading={oppretterSøk}
+				>
+					Legg til nytt lagret søk
+				</Button>
 			</div>
+			{nyttSøk && (
+				<EndreKriterierLagretSøkModal
+					tittel="Nytt lagret søk"
+					lagretSøk={nyttSøk}
+					open
+					closeModal={() => setNyttSøk(null)}
+				/>
+			)}
 			{isError && (
 				<div>
 					<Alert variant="warning">
@@ -44,10 +88,22 @@ export function LagredeSøk() {
 					</Alert>
 				</div>
 			)}
-			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} />}
+			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} uttrekk={uttrekk ?? []} />}
 			{isSuccess && data.length === 0 && (
 				<div>
 					<i>Du har ingen lagrede søk ennå</i>
+				</div>
+			)}
+			{isSuccess && !isError && foreldreløseUttrekk.length > 0 && (
+				<div className="mt-12">
+					<Heading size="xsmall" className="mb-4">
+						Uttrekk fra slettede søk
+					</Heading>
+					<div>
+						{foreldreløseUttrekk.map((u) => (
+							<UttrekkKort key={u.id} uttrekk={u} />
+						))}
+					</div>
 				</div>
 			)}
 		</>

@@ -9,6 +9,20 @@
 .noGap {
 	gap: 0;
 }
+.dragHandle {
+	cursor: grab;
+	display: flex;
+	align-items: center;
+	margin-right: var(--a-spacing-2);
+	padding: 0;
+	border: none;
+	background: none;
+	color: var(--a-gray-600);
+	flex-shrink: 0;
+}
+.dragHandle:hover {
+	color: var(--a-gray-900);
+}
 
 .orderDirection {
 	gap: 0;

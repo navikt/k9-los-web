@@ -328,8 +328,142 @@ export const useSlettLagretSøk = (callback?: () => void) => {
 	});
 };
 
+export const useSlettUttrekkForLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (lagretSokId: number) =>
+			axiosInstance.delete(apiPaths.slettUttrekkForLagretSøk(lagretSokId.toString())),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentAlleUttrekk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
 export const useHentAntallLagretSøk = (id: number) =>
 	useQuery<number, DefaultError, number>({
 		queryKey: [apiPaths.hentAntallLagretSøk(id.toString())],
 		queryFn: () => axiosInstance.get(apiPaths.hentAntallLagretSøk(id.toString())).then((response) => response.data),
+	});
+
+export enum UttrekkStatus {
+	OPPRETTET = 'OPPRETTET',
+	KJØRER = 'KJØRER',
+	FULLFØRT = 'FULLFØRT',
+	FEILET = 'FEILET',
+}
+
+export enum TypeKjøring {
+	ANTALL = 'ANTALL',
+	OPPGAVER = 'OPPGAVER',
+}
+
+export interface Uttrekk {
+	id: number;
+	tittel: string;
+	opprettetTidspunkt: string;
+	status: UttrekkStatus;
+	query: OppgaveQuery;
+	queryBeskrivelse: string;
+	lagretSøkId: number;
+	typeKjøring: TypeKjøring;
+	antall: number | null;
+	feilmelding: string | null;
+	startetTidspunkt: string | null;
+	fullførtTidspunkt: string | null;
+}
+
+interface OpprettUttrekkRequest {
+	lagretSokId: number;
+	typeKjoring: TypeKjøring;
+	limit?: number | null;
+	offset?: number | null;
+}
+
+export const useHentAlleUttrekk = () =>
+	useQuery<Uttrekk[], DefaultError, Uttrekk[]>({
+		queryKey: [apiPaths.hentAlleUttrekk],
+		queryFn: () => axiosInstance.get(apiPaths.hentAlleUttrekk).then((response) => response.data),
+		refetchInterval: (query) => {
+			// Refetch hvert 1. sekund hvis det finnes uttrekk med status OPPRETTET eller KJØRER
+			const harAktiveUttrekk = query.state.data?.some(
+				(uttrekk) => uttrekk.status === UttrekkStatus.OPPRETTET || uttrekk.status === UttrekkStatus.KJØRER,
+			);
+			return harAktiveUttrekk ? 1000 : false;
+		},
+	});
+
+export const useOpprettUttrekk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: OpprettUttrekkRequest) =>
+			axiosInstance.post(apiPaths.opprettUttrekk, data).then((res) => res.data),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentAlleUttrekk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useEndreUttrekkTittel = (onSuccess?: () => void) => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: ({ id, tittel }: { id: number; tittel: string }) =>
+			axiosInstance.put(apiPaths.endreUttrekkTittel(id.toString()), { tittel }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: [apiPaths.hentAlleUttrekk] });
+			if (onSuccess) {
+				onSuccess();
+			}
+		},
+	});
+};
+
+export const useSlettUttrekk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (uttrekk: Uttrekk) => axiosInstance.delete(apiPaths.slettUttrekk(uttrekk.id.toString())),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentAlleUttrekk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export interface UttrekkResultatCelle {
+	område: string | null;
+	kode: string;
+	verdi: unknown;
+}
+
+export interface UttrekkResultat {
+	kolonner: string[];
+	rader: { id: { eksternId: string }; felter: UttrekkResultatCelle[] }[];
+	totaltAntall: number;
+	offset: number;
+	limit: number;
+}
+
+export const useHentUttrekkResultat = (id: number, offset: number, limit: number, enabled: boolean) =>
+	useQuery<UttrekkResultat, DefaultError, UttrekkResultat>({
+		queryKey: ['uttrekkResultat', id, offset, limit],
+		queryFn: () =>
+			axiosInstance.get(apiPaths.hentUttrekkJson(id.toString(), offset, limit)).then((response) => response.data),
+		enabled,
+		placeholderData: keepPreviousData,
 	});

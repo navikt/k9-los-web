@@ -1,16 +1,22 @@
 import React, { useContext, useMemo } from 'react';
-import { Modal } from '@navikt/ds-react';
+import { ArrowsUpDownIcon, FilterIcon, TableIcon } from '@navikt/aksel-icons';
+import { Heading, Modal, Tabs } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
-import KøKriterieEditor from 'filter/KøKriterieEditor';
+import { KøKriterieEditorContent } from 'filter/KøKriterieEditor';
+import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
 import { FeltverdiOppgavefilter, OppgavefilterKode } from 'filter/filterTsTypes';
+import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
+import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
 import { RenderModalProps } from 'sharedComponents/ModalButton';
 
 export function EndreKriterierLagretSøkModal({
 	lagretSøk,
+	tittel,
 	open,
 	closeModal,
-}: RenderModalProps & { lagretSøk: LagretSøk }) {
+	modalTab,
+}: RenderModalProps & { tittel: string; lagretSøk: LagretSøk; modalTab?: 'kriterier' | 'felter' | 'sortering' }) {
 	const { isError: backendError, mutate: endreLagretSøk } = useEndreLagretSøk(closeModal);
 
 	// Backend vil lage default query med/uten kode6, og låser her valgene ihht. eksisterende query.
@@ -38,20 +44,60 @@ export function EndreKriterierLagretSøkModal({
 		}),
 		[feltdefinisjoner, kode6],
 	);
+
+	const kriterier = (
+		<KøKriterieEditorContent
+			paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
+			readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
+		/>
+	);
+
+	const felter = <OppgaveSelectFelter />;
+
+	const sortering = <OppgaveOrderFelter />;
+
+	const innhold = (() => {
+		switch (modalTab) {
+			case 'kriterier':
+				return kriterier;
+			case 'felter':
+				return felter;
+			case 'sortering':
+				return sortering;
+			default:
+				return (
+					<Tabs defaultValue="kriterier">
+						<Tabs.List>
+							<Tabs.Tab value="kriterier" label="Kriterier" icon={<FilterIcon />} />
+							<Tabs.Tab value="felter" label="Felter" icon={<TableIcon />} />
+							<Tabs.Tab value="sortering" label="Sortering" icon={<ArrowsUpDownIcon />} />
+						</Tabs.List>
+						<div className="mt-8">
+							<Tabs.Panel value="kriterier">{kriterier}</Tabs.Panel>
+							<Tabs.Panel value="felter">{felter}</Tabs.Panel>
+							<Tabs.Panel value="sortering">{sortering}</Tabs.Panel>
+						</div>
+					</Tabs>
+				);
+		}
+	})();
+
 	return (
-		<Modal open={open} onClose={closeModal} aria-label="Endre lagret søk" width={900}>
-			<Modal.Body>
+		<Modal open={open} onClose={closeModal} aria-label={tittel} width={900}>
+			<Modal.Header>
+				<Heading size="medium">{tittel}</Heading>
+			</Modal.Header>
+			<Modal.Body className="p-2">
 				<AppContext.Provider value={overstyrteFeltdefinisjoner}>
-					<KøKriterieEditor
-						tittel="Kriterier for lagret søk"
+					<KøKriterieEditorProvider
 						initialQuery={lagretSøk.query}
-						avbryt={closeModal}
-						paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
-						readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
 						lagre={(oppgaveQuery) => {
 							endreLagretSøk({ ...lagretSøk, query: oppgaveQuery });
 						}}
-					/>
+						avbryt={closeModal}
+					>
+						{innhold}
+					</KøKriterieEditorProvider>
 				</AppContext.Provider>
 			</Modal.Body>
 		</Modal>

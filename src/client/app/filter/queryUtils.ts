@@ -67,6 +67,13 @@ const updateSelectFelt =
 		return newModel.toOppgaveQuery();
 	};
 
+const moveSelectFelt =
+	(fromIndex: number, toIndex: number) =>
+	(model: OppgaveQuery): OppgaveQuery => {
+		const newModel = new OppgaveQueryModel(model);
+		return newModel.moveSelectFelt(fromIndex, toIndex).toOppgaveQuery();
+	};
+
 // -------------------- Order Manipulations --------------------
 
 const removeSortering =
@@ -100,6 +107,13 @@ const updateSortering =
 		return newModel.updateEnkelOrderFelt(id, updatedData).toOppgaveQuery();
 	};
 
+const moveSortering =
+	(fromIndex: number, toIndex: number) =>
+	(model: OppgaveQuery): OppgaveQuery => {
+		const newModel = new OppgaveQueryModel(model);
+		return newModel.moveOrderFelt(fromIndex, toIndex).toOppgaveQuery();
+	};
+
 // -------------------- Helpers --------------------
 
 export type QueryFunction = (query: OppgaveQuery) => OppgaveQuery;
@@ -116,9 +130,11 @@ export {
 	addSelectFelt,
 	updateFilter,
 	updateSelectFelt,
+	moveSelectFelt,
 	removeSortering,
 	resetSortering,
 	addSortering,
 	updateSortering,
+	moveSortering,
 	applyFunctions,
 };
