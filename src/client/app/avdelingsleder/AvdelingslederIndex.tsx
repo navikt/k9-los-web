@@ -122,7 +122,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 				<Heading size="large">Avdelingslederpanel</Heading>
 				<VerticalSpacer eightPx />
 				<FeatureSwitch
-					defaultValue={true}
+					defaultValue={false}
 					enabled={<StatusFordeling />}
 					disabled={<Status />}
 					switchLabel="Vis ny statuslinje"
