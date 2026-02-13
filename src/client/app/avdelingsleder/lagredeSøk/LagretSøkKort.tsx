@@ -90,8 +90,7 @@ function KriterierBoks({
 					{queryBeskrivelse.map((filter) => (
 						<div className="leading-normal" key={filter.feltnavn}>
 							<span className="font-bold text-gray-700">{filter.feltnavn}</span>:{' '}
-							{filter.nektelse && <span className="">Ikke </span>}
-							{filter.verdier.join(', ')}
+							{filter.operatorPrefiks ?? filter.verdier.join(', ')}
 						</div>
 					))}
 				</div>

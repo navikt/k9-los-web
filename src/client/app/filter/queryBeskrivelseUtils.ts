@@ -6,8 +6,8 @@ import {
 	EnkelSelectFelt,
 	FeltverdiOppgavefilter,
 	FilterType,
-	Oppgavefelt,
 	OppgaveQuery,
+	Oppgavefelt,
 	TolkesSom,
 } from './filterTsTypes';
 import { OPERATORS } from './utils';
@@ -17,7 +17,7 @@ dayjs.extend(durationPlugin);
 export interface FilterBeskrivelse {
 	feltnavn: string;
 	verdier: string[];
-	nektelse: boolean;
+	operatorPrefiks?: string;
 }
 
 export interface SelectBeskrivelse {
@@ -96,20 +96,32 @@ function formaterVerdier(verdier: string[], feltdef: Oppgavefelt | undefined): s
 	return verdier.map((v) => formaterVerdi(v, feltdef));
 }
 
-function erNektelse(operator: string): boolean {
-	return operator === OPERATORS.NOT_EQUALS || operator === OPERATORS.NOT_IN;
+function operatorPrefiks(operator: string, verdier: string[]): string | undefined {
+	if (operator === OPERATORS.NOT_EQUALS || operator === OPERATORS.NOT_IN) {
+		return `ikke ${verdier.join(', ')}`;
+	}
+	if (operator === OPERATORS.LESS_THAN_OR_EQUALS) {
+		return `t.o.m. ${verdier[0] ?? ''}`.trim();
+	}
+	if (operator === OPERATORS.GREATER_THAN_OR_EQUALS) {
+		return `f.o.m. ${verdier[0] ?? ''}`.trim();
+	}
+	if (operator === OPERATORS.INTERVAL && verdier.length >= 2) {
+		return `${verdier[0]} – ${verdier[1]}`;
+	}
+	return undefined;
 }
 
 function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
 	const feltdef = finnFeltdefinisjon(felter, filter.område, filter.kode);
 	const feltnavn = hentVisningsnavn(felter, filter.område, filter.kode);
 	const verdier = formaterVerdier(filter.verdi || [], feltdef);
-	const nektelse = erNektelse(filter.operator);
+	const prefiks = operatorPrefiks(filter.operator, verdier);
 
 	return {
 		feltnavn,
 		verdier,
-		nektelse,
+		...(prefiks !== undefined && { operatorPrefiks: prefiks }),
 	};
 }
 
@@ -153,13 +165,9 @@ function beskrivelseForOrderFelt(orderFelt: EnkelOrderFelt, felter: Oppgavefelt[
 export function utledQueryBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): OppgaveQueryBeskrivelse {
 	const filtere = traverserFiltere(query.filtere || [], felter);
 
-	const select = (query.select || [])
-		.filter((s) => s.kode)
-		.map((s) => beskrivelseForSelectFelt(s, felter));
+	const select = (query.select || []).filter((s) => s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
 
-	const order = (query.order || [])
-		.filter((o) => o.kode)
-		.map((o) => beskrivelseForOrderFelt(o, felter));
+	const order = (query.order || []).filter((o) => o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
 
 	return {
 		filtere,
@@ -173,13 +181,9 @@ export function utledFilterBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[
 }
 
 export function utledSelectBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): SelectBeskrivelse[] {
-	return (query.select || [])
-		.filter((s) => s.kode)
-		.map((s) => beskrivelseForSelectFelt(s, felter));
+	return (query.select || []).filter((s) => s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
 }
 
 export function utledOrderBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): OrderBeskrivelse[] {
-	return (query.order || [])
-		.filter((o) => o.kode)
-		.map((o) => beskrivelseForOrderFelt(o, felter));
+	return (query.order || []).filter((o) => o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
 }

@@ -122,11 +122,10 @@ describe('queryBeskrivelseUtils', () => {
 			expect(result[0]).toEqual<FilterBeskrivelse>({
 				feltnavn: 'Oppgavestatus',
 				verdier: ['Åpen', 'Venter'],
-				nektelse: false,
 			});
 		});
 
-		it('should set nektelse to true for NOT_IN operator', () => {
+		it('should set operatorPrefiks to "ikke" for NOT_IN operator', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
@@ -140,7 +139,7 @@ describe('queryBeskrivelseUtils', () => {
 
 			const result = utledFilterBeskrivelse(query, felter);
 
-			expect(result[0].nektelse).toBe(true);
+			expect(result[0].operatorPrefiks).toBe('ikke Kode 7, Egen ansatt');
 			expect(result[0].verdier).toEqual(['Kode 7', 'Egen ansatt']);
 		});
 
@@ -176,6 +175,41 @@ describe('queryBeskrivelseUtils', () => {
 			const result = utledFilterBeskrivelse(query, felter);
 
 			expect(result[0].verdier).toEqual(['15.01.2024']);
+			expect(result[0].operatorPrefiks).toBe('f.o.m. 15.01.2024');
+		});
+
+		it('should add t.o.m. prefix for LESS_THAN_OR_EQUALS timestamp', () => {
+			const query = opprettQuery([
+				{
+					type: 'feltverdi',
+					id: '1',
+					område: 'K9',
+					kode: 'mottattDato' as any,
+					operator: 'LESS_THAN_OR_EQUALS',
+					verdi: ['2026-02-13T00:00:00'],
+				},
+			]);
+
+			const result = utledFilterBeskrivelse(query, felter);
+
+			expect(result[0].operatorPrefiks).toBe('t.o.m. 13.02.2026');
+		});
+
+		it('should add tankestrek for INTERVAL timestamp', () => {
+			const query = opprettQuery([
+				{
+					type: 'feltverdi',
+					id: '1',
+					område: 'K9',
+					kode: 'mottattDato' as any,
+					operator: 'INTERVAL',
+					verdi: ['2026-02-01T00:00:00', '2026-02-13T00:00:00'],
+				},
+			]);
+
+			const result = utledFilterBeskrivelse(query, felter);
+
+			expect(result[0].operatorPrefiks).toBe('01.02.2026 – 13.02.2026');
 		});
 
 		it('should format duration values', () => {
@@ -193,6 +227,7 @@ describe('queryBeskrivelseUtils', () => {
 			const result = utledFilterBeskrivelse(query, felter);
 
 			expect(result[0].verdier).toEqual(['2d 5t']);
+			expect(result[0].operatorPrefiks).toBe('t.o.m. 2d 5t');
 		});
 
 		it('should skip filters without values', () => {
