@@ -59,10 +59,14 @@ function KriterieOperator({ oppgavefilter, readOnly }: { oppgavefilter: Feltverd
 		return null;
 	}
 
-	const handleChangeOperator = (event) => {
+	const handleChangeOperator = (event: { target: { value: any } }) => {
+		const newOperator = event.target.value;
+		const switchingFromInterval = oppgavefilter.operator === OPERATORS.INTERVAL && newOperator !== OPERATORS.INTERVAL;
+
 		updateQuery([
 			updateFilter(oppgavefilter.id, {
-				operator: event.target.value,
+				operator: newOperator,
+				...(switchingFromInterval && { verdi: oppgavefilter.verdi?.slice(0, 1) ?? [] }),
 			}),
 		]);
 	};
