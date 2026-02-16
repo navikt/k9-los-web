@@ -14,7 +14,7 @@ export const AdminIndex: FunctionComponent = () => {
 	}
 
 	return (
-		<div className="p-4 max-w-[1000px] mx-auto bg-white">
+		<div className="p-4 max-w-[1000px] mx-auto bg-ax-bg-default">
 			<DriftsmeldingerPanel />
 		</div>
 	);

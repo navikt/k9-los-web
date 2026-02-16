@@ -18,7 +18,7 @@ const Group = ({ group, chips, remove }: { group: string; chips: Props['values']
 	const [open, setOpen] = useState(false);
 
 	return (
-        <div className={open ? `bg-white rounded-md p-1.5 pt-0 pl-0 w-full` : ''}>
+        <div className={open ? `bg-ax-bg-default rounded-md p-1.5 pt-0 pl-0 w-full` : ''}>
             <Button
 				className="!p-1"
 				size="small"
