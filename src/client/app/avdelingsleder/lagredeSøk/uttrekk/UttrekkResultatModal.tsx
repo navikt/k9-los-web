@@ -34,14 +34,14 @@ export function UttrekkResultatModal({
 	const { felter } = useContext(AppContext);
 
 	return (
-		<Modal
+        <Modal
 			closeOnBackdropClick
 			header={{ heading: `Resultat av uttrekk (${data?.totaltAntall ?? '...'} rader)` }}
 			width="90vw"
 			open={open}
 			onClose={closeModal}
 		>
-			<Modal.Body>
+            <Modal.Body>
 				{isLoading && (
 					<div className="flex justify-center p-8">
 						<Loader size="xlarge" />
@@ -66,7 +66,7 @@ export function UttrekkResultatModal({
 										<Table.Row key={rad.id.eksternId}>
 											{rad.felter.map((celle, celleIdx) => (
 												// eslint-disable-next-line react/no-array-index-key
-												<Table.DataCell key={celleIdx}>{formatCelleVerdi(celle.verdi)}</Table.DataCell>
+												(<Table.DataCell key={celleIdx}>{formatCelleVerdi(celle.verdi)}</Table.DataCell>)
 											))}
 										</Table.Row>
 									))}
@@ -82,6 +82,6 @@ export function UttrekkResultatModal({
 				)}
 				{data && data.rader.length === 0 && <BodyShort>Ingen rader i uttrekket.</BodyShort>}
 			</Modal.Body>
-		</Modal>
-	);
+        </Modal>
+    );
 }

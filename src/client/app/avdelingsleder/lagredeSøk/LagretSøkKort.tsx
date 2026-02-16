@@ -49,9 +49,9 @@ function QueryBoks({
 }) {
 	const tittel = modalTab.charAt(0).toUpperCase() + modalTab.slice(1);
 	return (
-		<div className={`rounded-md p-2 border-solid border-[2px] border-gray-200 ${className || ''}`}>
+		<div className={`rounded-md p-2 border-solid border-[2px] border-ax-neutral-300 ${className || ''}`}>
 			<div className="flex justify-between items-center gap-2">
-				<div className="text-sm text-gray-700 flex items-center gap-1 font-medium">
+				<div className="text-sm text-ax-neutral-800 flex items-center gap-1 font-medium">
 					{ikon} {tittel}
 				</div>
 				<ModalButton
@@ -71,7 +71,7 @@ function QueryBoks({
 					)}
 				/>
 			</div>
-			{children || <p className="text-gray-500 italic mt-1">Ingen {modalTab} valgt</p>}
+			{children || <p className="text-ax-neutral-600 italic mt-1">Ingen {modalTab} valgt</p>}
 		</div>
 	);
 }
@@ -89,7 +89,7 @@ function KriterierBoks({
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{queryBeskrivelse.map((filter) => (
 						<div className="leading-normal" key={filter.feltnavn}>
-							<span className="font-bold text-gray-700">{filter.feltnavn}</span>:{' '}
+							<span className="font-ax-bold text-ax-neutral-800">{filter.feltnavn}</span>:{' '}
 							{filter.operatorPrefiks ?? filter.verdier.join(', ')}
 						</div>
 					))}
@@ -219,11 +219,11 @@ export function LagretSøkKort({
 	const harUttrekk = uttrekk.length > 0;
 
 	return (
-		<div className="rounded-md p-3 mb-2 bg-gray-50 border-solid border-1 border-gray-100 flex flex-col gap-2">
+		<div className="rounded-md p-3 mb-2 bg-ax-neutral-100 border-solid border-1 border-ax-neutral-200 flex flex-col gap-2">
 			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
 			<div className="w-full flex items-center justify-between gap-2">
 				<div className="flex items-center gap-2 min-w-0 flex-1">
-					<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-gray-600 flex-shrink-0" />
+					<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-ax-neutral-700 flex-shrink-0" />
 					{endrerTittel ? (
 						<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 					) : (
@@ -231,7 +231,7 @@ export function LagretSøkKort({
 							{harEgendefinertTittel ? (
 								<span className="font-medium">{lagretSøk.tittel}</span>
 							) : (
-								<span className="italic text-gray-500">Ingen tittel</span>
+								<span className="italic text-ax-neutral-600">Ingen tittel</span>
 							)}
 							<Button
 								title={harEgendefinertTittel ? 'Endre tittel' : 'Sett tittel'}
@@ -287,7 +287,7 @@ export function LagretSøkKort({
 			</div>
 
 			{/* Rad 3: Antall oppgaver */}
-			<div className="w-full text-md text-gray-700">
+			<div className="w-full text-md text-ax-neutral-800">
 				{antallLoading ? (
 					<Skeleton variant="text" width={100} className="inline-block" />
 				) : (

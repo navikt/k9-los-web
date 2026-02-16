@@ -3,8 +3,6 @@
 	width: 75%;
 	left: 50%;
 	transform: translateX(-50%);
-
-	--ac-panel-bg: var(--a-gray-50);
 }
 .filterFelt {
 	padding-left: 0;
@@ -17,18 +15,18 @@
 
 .filterFelt > div {
 	display: flex;
-	gap: var(--a-spacing-4);
-	margin-top: var(--a-spacing-4);
+	gap: var(--ax-space-16);
+	margin-top: var(--ax-space-16);
 }
 .filterFelt > div > div {
 	display: inline-block;
 }
 .filterFelt > * {
-	padding-left: var(--a-spacing-4);
+	padding-left: var(--ax-space-16);
 }
 .filter {
 	position: relative;
-	margin-top: var(--a-spacing-4);
+	margin-top: var(--ax-space-16);
 }
 .filter > .filter {
 	background-color: #eee;
@@ -41,18 +39,18 @@
 }
 .filterButtonGroup {
 	display: flex;
-	margin-top: var(--a-spacing-8);
-	padding-bottom: var(--a-spacing-8);
-	gap: var(--a-spacing-4);
+	margin-top: var(--ax-space-32);
+	padding-bottom: var(--ax-space-32);
+	gap: var(--ax-space-16);
 }
 .selectEnkelFelt {
 	display: flex;
 	align-items: center;
 }
 .feltvalgBlokk {
-	margin-top: var(--a-spacing-8);
+	margin-top: var(--ax-space-32);
 }
 .limitTextField {
-	margin-top: var(--a-spacing-8);
-	padding-bottom: var(--a-spacing-16);
+	margin-top: var(--ax-space-32);
+	padding-bottom: var(--ax-space-64);
 }

@@ -63,7 +63,7 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 		updateQuery([updateFilter(oppgavefilter.id, { combineOperator: value })]);
 	};
 	return (
-		<div className="rounded-sm border-solid border-[1px] border-surface-action p-4">
+		<div className="rounded-sm border-solid border-[1px] border-ax-bg-accent-strong p-4">
 			<div className="flex">
 				<div className={`flex mb-3 ${filterGruppeStyles.toggle}`}>
 					<Label className="mr-2 self-center" size="small">

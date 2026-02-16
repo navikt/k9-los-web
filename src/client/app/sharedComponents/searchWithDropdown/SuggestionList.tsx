@@ -90,7 +90,7 @@ const SuggestionList = ({
 		<ComboboxPopover className={`${styles.suggestionPopover}`} portal={false}>
 			{groups?.length > 0 && (
 				<fieldset className={styles.fieldset}>
-					<legend className="navds-sr-only">{heading}</legend>
+					<legend className="aksel-sr-only">{heading}</legend>
 					<ComboboxList className={styles.list}>
 						{!showFilteredSuggestionsOnly &&
 							primaryGroups
@@ -118,7 +118,7 @@ const SuggestionList = ({
 			)}
 			{!groups && (
 				<fieldset className={styles.fieldset}>
-					<legend className="navds-sr-only">{heading}</legend>
+					<legend className="aksel-sr-only">{heading}</legend>
 					<ComboboxList className={styles.list}>
 						{!showFilteredSuggestionsOnly &&
 							suggestions.map((suggestion) => (

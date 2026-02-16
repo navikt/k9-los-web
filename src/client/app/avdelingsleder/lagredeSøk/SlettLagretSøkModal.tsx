@@ -27,17 +27,21 @@ export function SlettLagretSøkModal({ lagretSøk, antallUttrekk, open, closeMod
 	};
 
 	return (
-		<Modal open={open} onClose={closeModal} aria-label="Slett lagret søk">
-			<Modal.Header>
+        <Modal open={open} onClose={closeModal} aria-label="Slett lagret søk">
+            <Modal.Header>
 				<Heading size="medium">Slett lagret søk</Heading>
 			</Modal.Header>
-			<Modal.Body>
+            <Modal.Body>
 				<BodyShort>
 					Dette lagrede søket har {antallUttrekk} tilknyttede uttrekk. Hva ønsker du å gjøre?
 				</BodyShort>
 			</Modal.Body>
-			<Modal.Footer>
-				<Button variant="danger" onClick={handleSlettMedUttrekk} loading={isPending}>
+            <Modal.Footer>
+				<Button
+                    data-color="danger"
+                    variant="primary"
+                    onClick={handleSlettMedUttrekk}
+                    loading={isPending}>
 					Slett søk og uttrekk
 				</Button>
 				<Button variant="secondary" onClick={handleSlettUtenUttrekk} loading={isPending}>
@@ -47,6 +51,6 @@ export function SlettLagretSøkModal({ lagretSøk, antallUttrekk, open, closeMod
 					Avbryt
 				</Button>
 			</Modal.Footer>
-		</Modal>
-	);
+        </Modal>
+    );
 }

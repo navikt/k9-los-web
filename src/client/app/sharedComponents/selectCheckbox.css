@@ -2,12 +2,12 @@
 	border-bottom: 1px solid #cfcfcf;
 	padding: 0 1.25rem;
 }
-.wrapper :global(.navds-body-short) {
+.wrapper :global(.aksel-body-short) {
 	align-items: center;
 	display: flex;
 	justify-content: space-between;
 }
-.wrapper :global(.navds-checkbox__label) {
+.wrapper :global(.aksel-checkbox__label) {
 	padding: 0.5rem 0 !important;
 }
 

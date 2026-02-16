@@ -47,15 +47,15 @@ export default function FerdigstiltePerEnhet() {
 	};
 
 	return (
-		<Box padding="4" borderWidth="1" borderColor="border-default">
-			<Heading size="small">Ferdigstilte behandlinger og oppgaver per enhet</Heading>
-			<VerticalSpacer eightPx />
-			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
-			{data.oppdatertTidspunkt && (
+        <Box padding="space-16" borderWidth="1" borderColor="neutral">
+            <Heading size="small">Ferdigstilte behandlinger og oppgaver per enhet</Heading>
+            <VerticalSpacer eightPx />
+            {!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
+            {data.oppdatertTidspunkt && (
 				<>
 					<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
 					<VerticalSpacer eightPx />
-					<HStack className="mt-4 mb-6" gap="4">
+					<HStack className="mt-4 mb-6" gap="space-16">
 						<Select
 							label="Valgt ytelse"
 							hideLabel
@@ -77,6 +77,6 @@ export default function FerdigstiltePerEnhet() {
 					<ReactECharts option={chartOption} height={grafHeight} />
 				</>
 			)}
-		</Box>
-	);
+        </Box>
+    );
 }

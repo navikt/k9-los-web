@@ -1,7 +1,7 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Detail, Heading, List, Modal, TextField } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Detail, Heading, List, Modal, TextField, Box } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, TypeKjøring, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 
@@ -77,33 +77,33 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 	};
 
 	return (
-		<Modal open={open} onClose={handleClose} width="medium" aria-label="Opprett uttrekk">
-			<Modal.Header>
+        <Modal open={open} onClose={handleClose} width="medium" aria-label="Opprett uttrekk">
+            <Modal.Header>
 				<Heading level="1" size="medium">
 					Opprett uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
 				</Heading>
 			</Modal.Header>
-			<form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Body>
 					{lagretSøk.query.select.length > 0 ? (
 						<>
 							<BodyShort>Uttrekket vil inneholde følgende felter:</BodyShort>
-							<List size="small">
-								{selectFelterMedNavn.map((felt) => (
-									<List.Item key={felt.id}>{felt.visningsnavn}</List.Item>
-								))}
-							</List>
+							<Box marginBlock="space-12" asChild><List size="small">
+                                    {selectFelterMedNavn.map((felt) => (
+                                        <List.Item key={felt.id}>{felt.visningsnavn}</List.Item>
+                                    ))}
+                                </List></Box>
 
 							{orderFelterMedNavn.length > 0 && (
 								<>
 									<BodyShort className="mt-5">Uttrekket vil sorteres etter:</BodyShort>
-									<List size="small">
-										{orderFelterMedNavn.map((felt) => (
-											<List.Item key={felt.id}>
-												{felt.visningsnavn} ({felt.økende ? 'økende' : 'synkende'})
-											</List.Item>
-										))}
-									</List>
+									<Box marginBlock="space-12" asChild><List size="small">
+                                            {orderFelterMedNavn.map((felt) => (
+                                                <List.Item key={felt.id}>
+                                                    {felt.visningsnavn} ({felt.økende ? 'økende' : 'synkende'})
+                                                </List.Item>
+                                            ))}
+                                        </List></Box>
 								</>
 							)}
 						</>
@@ -116,7 +116,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 
 					<div className="mt-5">
 						{!visAvgrensningsinnstillinger ? (
-							<div className="rounded-md bg-gray-100 p-2">
+							<div className="rounded-md bg-ax-neutral-200 p-2">
 								<Detail>For å begrense antall resultater kan det legges til en avgrensning.</Detail>
 								<Button
 									className="mt-1 p-0"
@@ -131,18 +131,18 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 								</Button>
 							</div>
 						) : (
-							<div className="rounded-md bg-gray-100 p-2">
+							<div className="rounded-md bg-ax-neutral-200 p-2">
 								<div className="float-right">
 									<Button
-										icon={<XMarkIcon />}
-										variant="tertiary-neutral"
-										size="small"
-										title="Tilbakestill avgrensning"
-										onClick={() => {
+                                        data-color="neutral"
+                                        icon={<XMarkIcon />}
+                                        variant="tertiary"
+                                        size="small"
+                                        title="Tilbakestill avgrensning"
+                                        onClick={() => {
 											setVisAvgrensningsinnstillinger(false);
 											reset({ limit: null, offset: null });
-										}}
-									/>
+										}} />
 								</div>
 								<div className="flex gap-4">
 									<TextField
@@ -183,6 +183,6 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 					</Button>
 				</Modal.Footer>
 			</form>
-		</Modal>
-	);
+        </Modal>
+    );
 }

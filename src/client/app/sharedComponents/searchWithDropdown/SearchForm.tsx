@@ -37,23 +37,23 @@ const SearchForm: React.FC<SearchFormProps> = ({
 	return (
 		<div className={styles.form}>
 			<div className={showLabel ? 'mb-2' : ''}>
-				<Label htmlFor={inputId} size={size} className={`${showLabel ? '' : 'navds-sr-only'}`}>
+				<Label htmlFor={inputId} size={size} className={`${showLabel ? '' : 'aksel-sr-only'}`}>
 					{label}
 				</Label>
 			</div>
 			{description && (
-				<BodyShort size={size} as="div" id={descriptionId} className="navds-form-field__description">
+				<BodyShort size={size} as="div" id={descriptionId} className="aksel-form-field__description">
 					{description}
 				</BodyShort>
 			)}
-			<Combobox className={`navds-search__wrapper ${styles.searchWrapper}`} onSelect={onSelect} openOnFocus>
+			<Combobox className={`aksel-search__wrapper ${styles.searchWrapper}`} onSelect={onSelect} openOnFocus>
 				<div className="flex">
-					<div className="navds-search__wrapper-inner">
+					<div className="aksel-search__wrapper-inner">
 						<ComboboxInput
 							id={inputId}
 							autoComplete="off"
 							aria-describedby={descriptionId}
-							className="navds-search__input navds-search__input--secondary navds-text-field__input navds-body-short navds-body--small py-0"
+							className="aksel-search__input aksel-search__input--secondary aksel-text-field__input aksel-body-short aksel-body--small py-0"
 							style={{ minHeight: comboboxSize }}
 							onChange={onChange}
 							value={currentInput}
@@ -62,7 +62,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
 					</div>
 					<button
 						type="button"
-						className={`${styles.searchButton} navds-button navds-button--primary navds-button--medium navds-button--icon-only p-1`}
+						className={`${styles.searchButton} aksel-button aksel-button--primary aksel-button--medium aksel-button--icon-only p-1`}
 						style={{ minWidth: comboboxSize, minHeight: comboboxSize }}
 						onClick={() => {
 							const comboboxInput = document.getElementById(inputId) as HTMLInputElement;
@@ -76,7 +76,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
 						}}
 						aria-label="search button"
 					>
-						<span className="navds-button__icon">
+						<span className="aksel-button__icon">
 							<MagnifyingGlassIcon />
 						</span>
 					</button>

@@ -1,4 +1,4 @@
-@import '@navikt/ds-tokens';
+@import '@navikt/ds-tokens/css';
 
 .container {
 	top: 0;
@@ -17,7 +17,7 @@
 	color: white;
 	text-transform: none;
 	font-weight: 400;
-	padding: var(--a-spacing-3) var(--a-spacing-5);
+	padding: var(--ax-space-12) var(--ax-space-20);
 }
 .knapp:hover {
 	background-color: #0067c5;

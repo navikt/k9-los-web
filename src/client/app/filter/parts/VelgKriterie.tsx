@@ -1,5 +1,5 @@
-/* eslint-disable camelcase */
 /* eslint-disable react/jsx-pascal-case */
+/* eslint-disable camelcase */
 import React, { useContext, useEffect, useState } from 'react';
 import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
@@ -83,7 +83,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 	};
 
 	return (
-		<div className="flex gap-7 border-dashed border-[1px] border-surface-action rounded-sm pt-4 pr-7 pb-5 pl-4">
+		<div className="flex gap-7 border-dashed border-[1px] border-ax-bg-accent-strong rounded-sm pt-4 pr-7 pb-5 pl-4">
 			<div className="basis-5/12 velgKriterie">
 				<style>
 					{`.velgKriterie ul > li:nth-child(${selectedChildIndex}) {

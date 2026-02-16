@@ -114,7 +114,7 @@ const KøKriterieEditorProvider = ({ initialQuery, lagre, avbryt, visSortering, 
 			<div className="mt-3 p-4 rounded-lg flex flex-col flex-grow">
 				{children}
 				<div className="mt-auto">
-					<div className="bg-surface-subtle rounded flex gap-8 p-5 mt-8">
+					<div className="bg-ax-bg-neutral-soft rounded flex gap-8 p-5 mt-8">
 						{visSortering && (
 							<div className="w-6/12">
 								<EnkelSortering />
