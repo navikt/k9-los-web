@@ -10,11 +10,11 @@ type groupObject = {
 
 interface Props {
 	values: groupObject[];
-	remove: (value: string) => void;
-	removeAllValues: () => void;
+	remove?: (value: string) => void;
+	removeAllValues?: () => void;
 }
 
-const Group = ({ group, chips, remove }: { group: string; chips: Props['values']; remove: Props['remove'] }) => {
+const Group = ({ group, chips, remove }: { group: string; chips: Props['values']; remove?: Props['remove'] }) => {
 	const [open, setOpen] = useState(false);
 
 	return (
@@ -32,11 +32,17 @@ const Group = ({ group, chips, remove }: { group: string; chips: Props['values']
             {open && (
 				<div className="p-2">
 					<Chips size="small">
-						{chips.map((v) => (
-							<Chips.Removable data-color="accent" key={v.value} onClick={() => remove(v.value)}>
-								{v.label}
-							</Chips.Removable>
-						))}
+						{chips.map((v) =>
+							remove ? (
+								<Chips.Removable data-color="accent" key={v.value} onClick={() => remove(v.value)}>
+									{v.label}
+								</Chips.Removable>
+							) : (
+								<Chips.Toggle data-color="accent" key={v.value} selected>
+									{v.label}
+								</Chips.Toggle>
+							),
+						)}
 					</Chips>
 				</div>
 			)}
@@ -60,16 +66,18 @@ export const SelectedValues = ({ values, remove, removeAllValues }: Props) => {
 					<Group key={group} group={group} chips={values.filter((v) => v.group === group)} remove={remove} />
 				))}
 			</div>
-			<Button
-				icon={<TrashIcon />}
-				variant="primary"
-				size="small"
-				type="button"
-				className="mt-3"
-				onClick={removeAllValues}
-			>
-				Fjern alle
-			</Button>
+			{removeAllValues && (
+				<Button
+					icon={<TrashIcon />}
+					variant="primary"
+					size="small"
+					type="button"
+					className="mt-3"
+					onClick={removeAllValues}
+				>
+					Fjern alle
+				</Button>
+			)}
 		</div>
 	);
 };

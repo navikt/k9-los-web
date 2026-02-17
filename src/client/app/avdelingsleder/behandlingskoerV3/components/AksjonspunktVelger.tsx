@@ -5,7 +5,7 @@ import SearchDropdownMedPredefinerteVerdier, {
 
 const AksjonspunktVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
-> = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown }) => {
+> = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown, readOnly }) => {
 	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
 		.filter(({ synlighet }) => synlighet !== 'SKJULT')
 		.map(({ verdi, visningsnavn, gruppering, synlighet, sekundærvalg }) => {
@@ -46,6 +46,7 @@ const AksjonspunktVelger: FunctionComponent<
 			secondaryGroups={sekundæreGrupper}
 			error={error}
 			skjulValgteVerdierUnderDropdown={skjulValgteVerdierUnderDropdown}
+			readOnly={readOnly}
 		/>
 	);
 };

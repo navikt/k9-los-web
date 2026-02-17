@@ -109,6 +109,7 @@ const KriterieVerdi = ({
 				oppgavefilter={oppgavefilter}
 				error={errorMessage}
 				skjulValgteVerdierUnderDropdown
+				readOnly={readOnly}
 			/>
 		);
 	}

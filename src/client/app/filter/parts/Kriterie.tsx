@@ -56,7 +56,7 @@ const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnl
 				)}
 			</div>
 			{feltdefinisjon && erAksjonspunktFelt(feltdefinisjon) && (
-				<Aksjonspunktvisning oppgavefilter={oppgavefilter} feltdefinisjon={feltdefinisjon} />
+				<Aksjonspunktvisning oppgavefilter={oppgavefilter} feltdefinisjon={feltdefinisjon} readOnly={readOnly} />
 			)}
 		</div>
 	);

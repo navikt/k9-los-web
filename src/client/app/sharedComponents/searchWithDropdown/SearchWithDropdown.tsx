@@ -27,6 +27,7 @@ export type SearchWithDropdownProps = {
 	className?: string;
 	id?: string;
 	skjulValgteVerdierUnderDropdown?: boolean;
+	readOnly?: boolean;
 };
 
 /** Grouped dropdown built with Aksel primitives (Search + Popover + Checkbox) */
@@ -45,6 +46,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		showLabel = false,
 		size = 'small',
 		skjulValgteVerdierUnderDropdown = false,
+		readOnly = false,
 	} = props;
 
 	const [selectedSuggestionValues, setSelectedSuggestionValues] = useState(selectedValues);
@@ -229,23 +231,39 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	return (
 		<div className={`${styles.searchContainer} ${className || ''}`}>
 			<div>
-				<Label htmlFor={id} size={size} className={showLabel ? '' : 'aksel-sr-only'}>
-					{label}
-				</Label>
-				<div ref={anchorRef}>
-					<Search
+				{readOnly ? (
+					<UNSAFE_Combobox
 						id={id}
-						label={label}
-						hideLabel
 						size={size}
-						variant="secondary"
-						value={currentInput}
-						onChange={(val) => setCurrentInput(val)}
-						onFocus={() => setIsOpen(true)}
-						onClear={() => setCurrentInput('')}
-						autoComplete="off"
+						label={label}
+						hideLabel={!showLabel}
+						options={[]}
+						isMultiSelect
+						shouldShowSelectedOptions={false}
+						selectedOptions={sv.map((s) => ({ label: s.label, value: s.value }))}
+						readOnly
 					/>
-				</div>
+				) : (
+					<>
+						<Label htmlFor={id} size={size} className={showLabel ? '' : 'aksel-sr-only'}>
+							{label}
+						</Label>
+						<div ref={anchorRef}>
+							<Search
+								id={id}
+								label={label}
+								hideLabel
+								size={size}
+								variant="secondary"
+								value={currentInput}
+								onChange={(val) => setCurrentInput(val)}
+								onFocus={() => setIsOpen(true)}
+								onClear={() => setCurrentInput('')}
+								autoComplete="off"
+							/>
+						</div>
+					</>
+				)}
 				{isOpen && (
 					<div ref={dropdownRef} className={styles.dropdown}>
 						<fieldset className={styles.fieldset}>
@@ -294,7 +312,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 				)}
 			</div>
 			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
-				<SelectedValues values={sv} remove={onRemoveSuggestion} removeAllValues={removeAllSuggestions} />
+				<SelectedValues values={sv} remove={readOnly ? undefined : onRemoveSuggestion} removeAllValues={readOnly ? undefined : removeAllSuggestions} />
 			)}
 			{error && <ErrorMessage>{error}</ErrorMessage>}
 		</div>
@@ -316,6 +334,7 @@ const SimpleSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 		showLabel = false,
 		size = 'small',
 		skjulValgteVerdierUnderDropdown = false,
+		readOnly = false,
 	} = props;
 
 	const [value, setValue] = useState('');
@@ -385,9 +404,10 @@ const SimpleSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 				selectedOptions={selectedOptions}
 				value={value}
 				error={error}
+				readOnly={readOnly}
 			/>
 			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
-				<SelectedValues values={sv} remove={onRemoveSuggestion} removeAllValues={removeAllSuggestions} />
+				<SelectedValues values={sv} remove={readOnly ? undefined : onRemoveSuggestion} removeAllValues={readOnly ? undefined : removeAllSuggestions} />
 			)}
 		</div>
 	);

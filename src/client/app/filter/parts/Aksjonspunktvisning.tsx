@@ -7,9 +7,10 @@ import { SelectedValues } from 'sharedComponents/searchWithDropdown/SelectedValu
 interface Props {
 	oppgavefilter: FeltverdiOppgavefilter;
 	feltdefinisjon: Oppgavefelt;
+	readOnly?: boolean;
 }
 
-export const Aksjonspunktvisning = ({ oppgavefilter, feltdefinisjon }: Props) => {
+export const Aksjonspunktvisning = ({ oppgavefilter, feltdefinisjon, readOnly }: Props) => {
 	const { updateQuery } = useContext(FilterContext);
 	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
 		.map(({ verdi, visningsnavn, gruppering }) => ({
@@ -46,5 +47,5 @@ export const Aksjonspunktvisning = ({ oppgavefilter, feltdefinisjon }: Props) =>
 		update([]);
 	};
 
-	return <SelectedValues values={values} remove={remove} removeAllValues={removeAllValues} />;
+	return <SelectedValues values={values} remove={readOnly ? undefined : remove} removeAllValues={readOnly ? undefined : removeAllValues} />;
 };
