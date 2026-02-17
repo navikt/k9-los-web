@@ -18,17 +18,37 @@ const defaultProps: SearchWithDropdownProps = {
 };
 
 describe('SearchWithDropdown', () => {
-	beforeEach(() => {
+	it('renders the correct label (ungrouped)', () => {
 		render(<SearchWithDropdown {...defaultProps} />);
-	});
-
-	it('renders the correct label', () => {
 		expect(screen.getByLabelText('Search label')).toBeInTheDocument();
 	});
 
-	it('renders selected suggestions correctly', async () => {
+	it('renders selected suggestions correctly (ungrouped)', async () => {
 		render(<SearchWithDropdown {...defaultProps} selectedValues={['Value 1']} />);
 		screen.getByRole('button', { name: 'Group 1 (1)' }).click();
 		expect((await screen.findAllByText('Label 1')).length).toBeGreaterThanOrEqual(1);
+	});
+
+	it('renders the correct label (grouped)', () => {
+		render(
+			<SearchWithDropdown
+				{...defaultProps}
+				groups={['Group 1', 'Group 2']}
+				heading="Select items"
+			/>,
+		);
+		expect(screen.getByLabelText('Search label')).toBeInTheDocument();
+	});
+
+	it('renders groups when groups prop is provided', () => {
+		render(
+			<SearchWithDropdown
+				{...defaultProps}
+				groups={['Group 1', 'Group 2']}
+				heading="Select items"
+			/>,
+		);
+		expect(screen.getByText('Group 1')).toBeInTheDocument();
+		expect(screen.getByText('Group 2')).toBeInTheDocument();
 	});
 });

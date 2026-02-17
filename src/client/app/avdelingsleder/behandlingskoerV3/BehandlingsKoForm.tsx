@@ -86,6 +86,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 		onSubmit({ ...kø, ...formMethods.getValues(), oppgaveQuery });
 		setVisFilterModal(false);
 	};
+	const grupper = [...new Set(formaterteSaksbehandlere.map((oppgavekode) => oppgavekode.group))].sort();
 	const saksbehandlere = formMethods.watch(fieldnames.SAKSBEHANDLERE);
 	const feltdefinisjoner = useContext(AppContext).felter;
 	const overstyrteFeltdefinisjoner = useMemo(
@@ -145,6 +146,8 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 							className="bg-[#e6f0ff] rounded p-5"
 							suggestions={formaterteSaksbehandlere}
 							showLabel
+							groups={grupper}
+							heading="Velg saksbehandlere"
 							updateSelection={(valgteSaksbehandlere) => {
 								formMethods.setValue(fieldnames.SAKSBEHANDLERE, valgteSaksbehandlere, { shouldDirty: true });
 								formMethods.trigger('saksbehandlere');
