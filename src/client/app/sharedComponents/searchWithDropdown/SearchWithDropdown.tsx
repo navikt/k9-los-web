@@ -237,9 +237,8 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 						size={size}
 						label={label}
 						hideLabel={!showLabel}
-						options={[]}
+						options={sv.map((s) => ({ label: s.label, value: s.value }))}
 						isMultiSelect
-						shouldShowSelectedOptions={false}
 						selectedOptions={sv.map((s) => ({ label: s.label, value: s.value }))}
 						readOnly
 					/>
