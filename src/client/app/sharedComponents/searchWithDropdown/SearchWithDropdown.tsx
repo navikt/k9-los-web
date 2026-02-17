@@ -79,7 +79,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		const selectedGroups = selectedValues
 			.map((v) => getSuggestion(v)?.group)
 			.filter(Boolean);
-		setOpenGroups([...new Set(selectedGroups)]);
+		setOpenGroups((prev) => [...new Set([...prev, ...selectedGroups])]);
 		setCurrentInput('');
 	}, [JSON.stringify(selectedValues)]);
 
