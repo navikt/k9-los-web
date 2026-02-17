@@ -58,6 +58,21 @@
 	padding: 0 0.25rem;
 }
 
+.chevronButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	padding: 0.125rem;
+	cursor: pointer;
+	border-radius: 0.25rem;
+}
+
+.chevronButton:hover {
+	background-color: var(--ax-bg-neutral-moderate-hover);
+}
+
 .chevronOpen {
 	transform: rotate(90deg);
 }

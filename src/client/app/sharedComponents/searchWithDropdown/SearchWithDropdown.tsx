@@ -138,19 +138,25 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 						className="flex-shrink-0"
 						size="small"
 						value={group}
-						onClick={() => toggleGroupSelection(group)}
+						onChange={() => toggleGroupSelection(group)}
 						checked={groupHasSelection(group)}
 					>
 						{group}
 					</Checkbox>
 					<div className="flex items-center ml-auto gap-1">
 						{numSelected > 0 && <span className={styles.numberBubble}>{numSelected}</span>}
-						<ChevronRightIcon
-							width="1.5rem"
-							height="1.5rem"
+						<button
+							type="button"
 							onClick={() => toggleGroupOpen(group)}
-							className={`${openGroups.includes(group) ? styles.chevronOpen : ''} cursor-pointer`}
-						/>
+							className={styles.chevronButton}
+							aria-label={`${openGroups.includes(group) ? 'Skjul' : 'Vis'} ${group}`}
+						>
+							<ChevronRightIcon
+								width="1.5rem"
+								height="1.5rem"
+								className={openGroups.includes(group) ? styles.chevronOpen : undefined}
+							/>
+						</button>
 					</div>
 				</div>
 				{openGroups.includes(group) && (
@@ -160,7 +166,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 								<Checkbox
 									size="small"
 									value={suggestion.value}
-									onClick={() => onSelect(suggestion.value)}
+									onChange={() => onSelect(suggestion.value)}
 									checked={selectedSuggestionValues.includes(suggestion.value)}
 								>
 									{suggestion.label}
@@ -202,7 +208,8 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 					placement="bottom-start"
 					offset={4}
 				>
-					<Popover.Content className={styles.popoverContent}>
+					{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+					<Popover.Content className={styles.popoverContent} onMouseDown={(e) => e.stopPropagation()}>
 						<fieldset className={styles.fieldset}>
 							{heading && <legend className="aksel-sr-only">{heading}</legend>}
 							<ul className={styles.groupList}>
@@ -221,7 +228,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 											<Checkbox
 												size="small"
 												value={suggestion.value}
-												onClick={() => onSelect(suggestion.value)}
+												onChange={() => onSelect(suggestion.value)}
 												checked={selectedSuggestionValues.includes(suggestion.value)}
 											>
 												{suggestion.label}
