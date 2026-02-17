@@ -4,6 +4,7 @@ import {
 	Checkbox,
 	CheckboxGroup,
 	DatePicker,
+	HStack,
 	Select,
 	TextField,
 	useDatepicker,
@@ -16,7 +17,6 @@ import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS, calculateDays, mapBooleanToStringArray, mapStringToBooleanArray } from 'filter/utils';
 import { enkeltverdi } from 'utils/enkeltverdi';
-import * as styles from '../filterIndex.css';
 import MultiSelectKriterie from './MultiSelectKriterie';
 
 const useChangeValue = (oppgavefilter, updateQuery) => (value) => {
@@ -181,7 +181,6 @@ const KriterieVerdi = ({
 		return (
 			<CheckboxGroup
 				size="small"
-				className={`${styles.feltvalgCheckboxes}`}
 				hideLegend
 				legend={feltdefinisjon.visningsnavn}
 				onChange={handleChangeBoolean}
@@ -189,8 +188,10 @@ const KriterieVerdi = ({
 				error={errorMessage}
 				readOnly={readOnly}
 			>
-				<Checkbox value="ja">Ja</Checkbox>
-				{feltdefinisjon.kode !== OppgavefilterKode.Hastesak ? <Checkbox value="nei">Nei</Checkbox> : null}
+				<HStack gap="space-20" wrap>
+					<Checkbox value="ja">Ja</Checkbox>
+					{feltdefinisjon.kode !== OppgavefilterKode.Hastesak ? <Checkbox value="nei">Nei</Checkbox> : null}
+				</HStack>
 			</CheckboxGroup>
 		);
 	}
@@ -203,7 +204,6 @@ const KriterieVerdi = ({
 	) {
 		return (
 			<CheckboxGroup
-				className={`${styles.feltvalgCheckboxes}`}
 				size="small"
 				hideLegend
 				legend={feltdefinisjon.visningsnavn}
@@ -212,11 +212,13 @@ const KriterieVerdi = ({
 				error={errorMessage}
 				readOnly={readOnly}
 			>
-				{feltdefinisjon.verdiforklaringer.map((verdiforklaring) => (
-					<Checkbox key={verdiforklaring.visningsnavn} value={verdiforklaring.verdi}>
-						{verdiforklaring.visningsnavn}
-					</Checkbox>
-				))}
+				<HStack gap="space-8" wrap>
+					{feltdefinisjon.verdiforklaringer.map((verdiforklaring) => (
+						<Checkbox key={verdiforklaring.visningsnavn} value={verdiforklaring.verdi}>
+							{verdiforklaring.visningsnavn}
+						</Checkbox>
+					))}
+				</HStack>
 			</CheckboxGroup>
 		);
 	}
