@@ -229,6 +229,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 								paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
 								readOnlyKoder={kø.skjermet ? [OppgavefilterKode.Personbeskyttelse] : []}
 								visSortering
+								hovedknappTekst="Lagre"
 							/>
 						</AppContext.Provider>
 					</Modal.Body>

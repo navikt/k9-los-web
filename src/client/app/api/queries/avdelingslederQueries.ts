@@ -246,6 +246,11 @@ interface OpprettLagretSøkRequest {
 	tittel: string;
 }
 
+interface NyttLagretSøkRequest {
+	tittel: string;
+	query: OppgaveQuery;
+}
+
 interface EndreLagretSøkRequest {
 	id: number;
 	tittel: string;
@@ -262,12 +267,37 @@ export const useHentLagredeSøk = (
 		...options,
 	});
 
+export const useHentLagredeSøkDefaultQuery = (
+	options?: Omit<UseQueryOptions<OppgaveQuery, DefaultError, OppgaveQuery>, 'queryKey'>,
+) =>
+	useQuery<OppgaveQuery, DefaultError, OppgaveQuery>({
+		queryKey: [apiPaths.hentLagredeSøkDefaultQuery],
+		...options,
+	});
+
 export const useOpprettLagretSøk = (callback?: () => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: (data: OpprettLagretSøkRequest) =>
 			axiosInstance.post(apiPaths.opprettLagretSøk, data).then((res) => res.data),
+		onSuccess: () =>
+			queryClient
+				.invalidateQueries({
+					queryKey: [apiPaths.hentLagredeSøk],
+				})
+				.then(() => {
+					if (callback) callback();
+				}),
+	});
+};
+
+export const useNyttLagretSøk = (callback?: () => void) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		mutationFn: (data: NyttLagretSøkRequest) =>
+			axiosInstance.post(apiPaths.nyttLagretSøk, data).then((res) => res.data),
 		onSuccess: () =>
 			queryClient
 				.invalidateQueries({

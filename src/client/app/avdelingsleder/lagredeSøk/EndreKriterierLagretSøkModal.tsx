@@ -2,27 +2,36 @@ import React, { useContext, useMemo } from 'react';
 import { ArrowsUpDownIcon, FilterIcon, TableIcon } from '@navikt/aksel-icons';
 import { Heading, Modal, Tabs } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { LagretSøk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, useEndreLagretSøk, useNyttLagretSøk } from 'api/queries/avdelingslederQueries';
 import { KøKriterieEditorContent } from 'filter/KøKriterieEditor';
 import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
-import { FeltverdiOppgavefilter, OppgavefilterKode } from 'filter/filterTsTypes';
+import { FeltverdiOppgavefilter, OppgaveQuery, OppgavefilterKode } from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
 import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
 import { RenderModalProps } from 'sharedComponents/ModalButton';
 
+type EndreKriterierProps = RenderModalProps & {
+	tittel: string;
+	modalTab?: 'kriterier' | 'felter' | 'sortering';
+} & ({ lagretSøk: LagretSøk; initialQuery?: never } | { initialQuery: OppgaveQuery; lagretSøk?: never });
+
 export function EndreKriterierLagretSøkModal({
 	lagretSøk,
+	initialQuery,
 	tittel,
 	open,
 	closeModal,
 	modalTab,
-}: RenderModalProps & { tittel: string; lagretSøk: LagretSøk; modalTab?: 'kriterier' | 'felter' | 'sortering' }) {
-	const { isError: backendError, mutate: endreLagretSøk } = useEndreLagretSøk(closeModal);
+}: EndreKriterierProps) {
+	const { mutate: endreLagretSøk } = useEndreLagretSøk(closeModal);
+	const { mutate: nyttLagretSøk } = useNyttLagretSøk(closeModal);
+
+	const query = lagretSøk?.query ?? initialQuery;
 
 	// Backend vil lage default query med/uten kode6, og låser her valgene ihht. eksisterende query.
 	// Dette er ikke for å iverta sikkerhet. Antar at backend vil håndtere dette.
 	const kode6 =
-		lagretSøk.query.filtere.find((filter) => {
+		query.filtere.find((filter) => {
 			if (filter.type !== 'feltverdi') return false;
 			const { kode, verdi } = filter as FeltverdiOppgavefilter;
 			return kode === OppgavefilterKode.Personbeskyttelse && verdi.includes('KODE6');
@@ -90,11 +99,16 @@ export function EndreKriterierLagretSøkModal({
 			<Modal.Body className="p-2">
 				<AppContext.Provider value={overstyrteFeltdefinisjoner}>
 					<KøKriterieEditorProvider
-						initialQuery={lagretSøk.query}
+						initialQuery={query}
 						lagre={(oppgaveQuery) => {
-							endreLagretSøk({ ...lagretSøk, query: oppgaveQuery });
+							if (lagretSøk) {
+								endreLagretSøk({ ...lagretSøk, query: oppgaveQuery });
+							} else {
+								nyttLagretSøk({ tittel: '', query: oppgaveQuery });
+							}
 						}}
 						avbryt={closeModal}
+						hovedknappTekst={lagretSøk ? 'Lagre' : 'Opprett'}
 					>
 						{innhold}
 					</KøKriterieEditorProvider>
