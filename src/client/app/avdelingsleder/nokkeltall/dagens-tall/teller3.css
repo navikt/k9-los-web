@@ -97,7 +97,7 @@
 	line-height: 1;
 }
 
-.nedbrytning span {
+span.nedbrytningTekst {
 	font-size: 13px;
 	font-weight: 500;
 	color: #2d6a4f;
