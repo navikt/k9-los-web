@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-pascal-case */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, ErrorMessage, Label, Popover, Search, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Button, Checkbox, ErrorMessage, Label, Search, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { SelectedValues } from './SelectedValues';
 import * as styles from './searchWithDropdown.css';
@@ -53,6 +53,16 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	const [isOpen, setIsOpen] = useState(false);
 	const [visUnderStreken, setVisUnderStreken] = useState(false);
 	const anchorRef = useRef<HTMLDivElement>(null);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	const handleClickOutside = useCallback((e: MouseEvent) => {
+		if (
+			dropdownRef.current?.contains(e.target as Node) ||
+			anchorRef.current?.contains(e.target as Node)
+		)
+			return;
+		setIsOpen(false);
+	}, []);
 
 	const getSuggestion = (v: string) => suggestions.find((s) => s.value === v);
 
@@ -86,6 +96,13 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	useEffect(() => {
 		updateSelection(selectedSuggestionValues);
 	}, [selectedSuggestionValues]);
+
+	useEffect(() => {
+		if (isOpen) {
+			document.addEventListener('mousedown', handleClickOutside);
+		}
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, [isOpen, handleClickOutside]);
 
 	const onSelect = (value: string) => {
 		setSelectedSuggestionValues((prev) =>
@@ -201,15 +218,8 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 						autoComplete="off"
 					/>
 				</div>
-				<Popover
-					open={isOpen}
-					onClose={() => setIsOpen(false)}
-					anchorEl={anchorRef.current}
-					placement="bottom-start"
-					offset={4}
-				>
-					{/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-					<Popover.Content className={styles.popoverContent} onMouseDown={(e) => e.stopPropagation()}>
+				{isOpen && (
+					<div ref={dropdownRef} className={styles.dropdown}>
 						<fieldset className={styles.fieldset}>
 							{heading && <legend className="aksel-sr-only">{heading}</legend>}
 							<ul className={styles.groupList}>
@@ -252,8 +262,8 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 								Lukk
 							</Button>
 						</div>
-					</Popover.Content>
-				</Popover>
+					</div>
+				)}
 			</div>
 			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
 				<SelectedValues values={sv} remove={onRemoveSuggestion} removeAllValues={removeAllSuggestions} />

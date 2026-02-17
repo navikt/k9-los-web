@@ -40,7 +40,7 @@ describe('SearchWithDropdown', () => {
 		expect(screen.getByLabelText('Search label')).toBeInTheDocument();
 	});
 
-	it('renders groups when groups prop is provided', () => {
+	it('renders groups when groups prop is provided', async () => {
 		render(
 			<SearchWithDropdown
 				{...defaultProps}
@@ -48,6 +48,7 @@ describe('SearchWithDropdown', () => {
 				heading="Select items"
 			/>,
 		);
+		await userEvent.click(screen.getByLabelText('Search label'));
 		expect(screen.getByText('Group 1')).toBeInTheDocument();
 		expect(screen.getByText('Group 2')).toBeInTheDocument();
 	});
