@@ -76,14 +76,21 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 			)
 		: suggestions;
 
+	const isInitialMount = useRef(true);
 	useEffect(() => {
+		// Ikke overskriv lokal state mens dropdown er åpen — lokal state er autoritativ
+		if (!isInitialMount.current && isOpen) return;
+
 		setSelectedSuggestionValues(selectedValues);
 		selectedRef.current = selectedValues;
 		prevSyncedRef.current = JSON.stringify(selectedValues);
-		const selectedGroups = selectedValues
-			.map((v) => getSuggestion(v)?.group)
-			.filter(Boolean);
-		setOpenGroups((prev) => [...new Set([...prev, ...selectedGroups])]);
+		if (isInitialMount.current) {
+			isInitialMount.current = false;
+			const selectedGroups = selectedValues
+				.map((v) => getSuggestion(v)?.group)
+				.filter(Boolean);
+			setOpenGroups((prev) => [...new Set([...prev, ...selectedGroups])]);
+		}
 		setCurrentInput('');
 	}, [JSON.stringify(selectedValues)]);
 
@@ -130,9 +137,16 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		const groupValues = suggestions.filter((s) => s.group === group).map((s) => s.value);
 		setSelectedSuggestionValues((prev) => {
 			const allSelected = groupValues.every((v) => prev.includes(v));
-			const next = allSelected
-				? prev.filter((v) => !groupValues.includes(v))
-				: [...new Set([...prev, ...groupValues])];
+			if (allSelected) {
+				// Deselect all in group → collapse group
+				setOpenGroups((og) => og.filter((g) => g !== group));
+				const next = prev.filter((v) => !groupValues.includes(v));
+				selectedRef.current = next;
+				return next;
+			}
+			// Select all in group → expand group
+			setOpenGroups((og) => (og.includes(group) ? og : [...og, group]));
+			const next = [...new Set([...prev, ...groupValues])];
 			selectedRef.current = next;
 			return next;
 		});
