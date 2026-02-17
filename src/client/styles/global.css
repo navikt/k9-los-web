@@ -187,6 +187,11 @@ body {
 .modal__overlay {
 	background-color: rgba(61, 56, 49, 90%);
 }
+
+/* Fjern intern scroll i modal body, la dialog-elementet håndtere scroll som helhet */
+.aksel-modal--top .aksel-modal__body {
+	overflow: visible;
+}
 .textarea--medMeta__teller {
 	color: #262626;
 	font-size: 0.8rem;
