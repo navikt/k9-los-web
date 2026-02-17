@@ -21,7 +21,7 @@
 		"@navikt/ds-tailwind": "8.2.2",
 		"@navikt/ds-tokens": "8.2.2",
 		"@navikt/familie-endringslogg": "14.0.6",
-		"@reach/combobox": "0.18.0",
+
 		"@sentry/browser": "10.36.0",
 		"@sentry/cli": "2.58.2",
 		"@sentry/react": "10.36.0",

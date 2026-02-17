@@ -28,7 +28,7 @@ const Home: FunctionComponent = () => {
 	const queryClient = useQueryClient();
 
 	useEffect(() => {
-		if (saksbehandler.brukerIdent) {
+		if (saksbehandler !== undefined) {
 			if (saksbehandler.kanOppgavestyre) {
 				queryClient.prefetchQuery({
 					queryKey: [apiPaths.hentSaksbehandlereAvdelingsleder],
@@ -38,7 +38,7 @@ const Home: FunctionComponent = () => {
 				queryKey: [apiPaths.hentSaksbehandlereSomSaksbehandler],
 			});
 		}
-	}, [queryClient, saksbehandler.brukerIdent, saksbehandler.kanOppgavestyre]);
+	}, [queryClient, saksbehandler?.brukerIdent, saksbehandler?.kanOppgavestyre]);
 
 	const contextValues = useMemo(() => ({ felter: data?.felter || [] }), [data]);
 

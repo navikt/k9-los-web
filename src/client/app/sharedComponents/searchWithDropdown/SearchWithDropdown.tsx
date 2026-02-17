@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { ErrorMessage } from '@navikt/ds-react';
-import SearchForm from './SearchForm';
+/* eslint-disable react/jsx-pascal-case */
+import React, { useEffect, useState } from 'react';
+import { UNSAFE_Combobox } from '@navikt/ds-react';
+import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { SelectedValues } from './SelectedValues';
-import SuggestionList from './SuggestionList';
 import * as styles from './searchWithDropdown.css';
 
 interface SuggestionsType {
@@ -19,7 +18,7 @@ export type SearchWithDropdownProps = {
 	suggestions: SuggestionsType[];
 	groups?: string[];
 	secondaryGroups?: string[];
-	heading: string;
+	heading?: string;
 	updateSelection: (values: string[]) => void;
 	selectedValues: string[];
 	showLabel?: boolean;
@@ -34,9 +33,7 @@ const SearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 		label,
 		description,
 		suggestions,
-		groups,
-		secondaryGroups,
-		heading,
+		secondaryGroups = [],
 		updateSelection,
 		selectedValues,
 		error,
@@ -47,136 +44,94 @@ const SearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 		skjulValgteVerdierUnderDropdown = false,
 	} = props;
 
-	const [selectedSuggestionValues, setSelectedSuggestionValues] = useState(selectedValues);
-	const [filteredSuggestions, setFilteredSuggestions] = useState(suggestions);
-	const [currentInput, setCurrentInput] = useState('');
-	const [openSuggestionGroups, setOpenSuggestionGroups] = useState<string[]>([]);
-	const [showFilteredSuggestionsOnly, setShowFilteredSuggestionsOnly] = useState(false);
-	const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-	const inputId = useMemo(() => id || uuidv4(), []);
-	const descriptionId = useMemo(() => uuidv4(), []);
+	const [value, setValue] = useState('');
+	const [visSekundærvalg, setVisSekundærvalg] = useState(false);
 
 	const getSuggestion = (suggestionValue: string) => suggestions.find((s) => s.value === suggestionValue);
 
+	const hasSecondaryGroups = secondaryGroups.length > 0;
+
 	useEffect(() => {
-		const selectedGroups = [];
-		setSelectedSuggestionValues(selectedValues);
-		selectedValues.forEach((value) => {
-			const selectedGroup = getSuggestion(value)?.group;
-			if (selectedGroup) selectedGroups.push(selectedGroup);
-		});
-		setOpenSuggestionGroups([...new Set(selectedGroups)]);
-		setShowFilteredSuggestionsOnly(false);
-		setFilteredSuggestions(suggestions);
-		setCurrentInput('');
-	}, [JSON.stringify(selectedValues)]);
-
-	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const suggestionLabel = event.target.value;
-		setCurrentInput(suggestionLabel);
-		if (!suggestionLabel) {
-			setFilteredSuggestions(suggestions);
-			setShowFilteredSuggestionsOnly(false);
-		} else {
-			setFilteredSuggestions(
-				suggestions.filter(
-					(s) =>
-						s.label.toLowerCase().indexOf(suggestionLabel.toLowerCase()) > -1 || s.value.indexOf(suggestionLabel) > -1,
-				),
-			);
-			setShowFilteredSuggestionsOnly(true);
+		if (hasSecondaryGroups) {
+			const hasSelectedSecondary = selectedValues.some((v) => secondaryGroups.includes(getSuggestion(v)?.group));
+			if (hasSelectedSecondary) {
+				setVisSekundærvalg(true);
+			}
 		}
-	};
+	}, []);
 
-	const onSelect = (suggestionValue: string) => {
-		if (selectedSuggestionValues.includes(suggestionValue)) {
-			setSelectedSuggestionValues(selectedSuggestionValues.filter((s) => s !== suggestionValue));
-		} else {
-			setSelectedSuggestionValues([...selectedSuggestionValues, suggestionValue]);
+	const primaryOptions: ComboboxOption[] = suggestions
+		.filter((s) => !hasSecondaryGroups || !secondaryGroups.includes(s.group))
+		.map((s) => ({ label: s.label, value: s.value }));
+
+	const secondaryOptions: ComboboxOption[] = suggestions
+		.filter((s) => hasSecondaryGroups && secondaryGroups.includes(s.group))
+		.map((s) => ({ label: s.label, value: s.value }));
+
+	const getOptions = (): ComboboxOption[] => {
+		if (!hasSecondaryGroups) {
+			return suggestions.map((s) => ({ label: s.label, value: s.value }));
 		}
-	};
-
-	const deselectSuggestionGroupAndSubValues = (suggestionGroup: string) => {
-		setSelectedSuggestionValues(
-			selectedSuggestionValues.filter((suggestionValue) => getSuggestion(suggestionValue).group !== suggestionGroup),
-		);
-	};
-
-	const selectSuggestionGroupAndSubValues = (suggestionGroup: string) => {
-		const relevantSuggestionValues = suggestions.filter((s) => s.group === suggestionGroup).map((s) => s.value);
-		setSelectedSuggestionValues([...selectedSuggestionValues, ...relevantSuggestionValues]);
-	};
-
-	const toggleGroupSelectionValues = (suggestionGroup: string) => {
-		const isGroupSelected = selectedSuggestionValues.some(
-			(suggestionValue) => getSuggestion(suggestionValue).group === suggestionGroup,
-		);
-		if (isGroupSelected) {
-			deselectSuggestionGroupAndSubValues(suggestionGroup);
-		} else {
-			selectSuggestionGroupAndSubValues(suggestionGroup);
+		if (visSekundærvalg) {
+			return [...primaryOptions, ...secondaryOptions];
 		}
+		return [...primaryOptions, { value: '--- Vis alle ---', label: '--- Vis alle ---' }];
 	};
 
-	const toggleGroupOpen = (suggestionGroup: string) => {
-		if (openSuggestionGroups.includes(suggestionGroup)) {
-			setOpenSuggestionGroups(openSuggestionGroups.filter((s) => s !== suggestionGroup));
+	const options = getOptions();
+
+	const selectedOptions: ComboboxOption[] = selectedValues
+		.map((v) => {
+			const s = getSuggestion(v);
+			return s ? { label: s.label, value: s.value } : undefined;
+		})
+		.filter(Boolean);
+
+	const onToggleSelected = (option: string, isSelected: boolean) => {
+		if (option === '--- Vis alle ---') {
+			setVisSekundærvalg(true);
+			setValue('');
+			return;
+		}
+		if (isSelected) {
+			updateSelection([...selectedValues, option]);
 		} else {
-			setOpenSuggestionGroups([...openSuggestionGroups, suggestionGroup]);
+			updateSelection(selectedValues.filter((v) => v !== option));
 		}
 	};
 
 	const onRemoveSuggestion = (suggestionValue: string) => {
-		const newSelectedValues = selectedSuggestionValues.filter((s) => s !== suggestionValue);
-		setSelectedSuggestionValues(newSelectedValues);
-		updateSelection(newSelectedValues);
+		updateSelection(selectedValues.filter((v) => v !== suggestionValue));
 	};
 
 	const removeAllSuggestions = () => {
-		setSelectedSuggestionValues([]);
 		updateSelection([]);
 	};
 
-	const sv = selectedSuggestionValues.map((s) => getSuggestion(s));
+	const sv = selectedValues.map((s) => getSuggestion(s)).filter(Boolean);
 
 	return (
 		<div className={`${styles.searchContainer} ${className || ''}`}>
-			<SearchForm
-				label={label}
-				showLabel={showLabel}
-				description={description}
-				inputId={inputId}
-				descriptionId={descriptionId}
-				currentInput={currentInput}
-				onChange={onChange}
-				isPopoverOpen={isPopoverOpen}
-				setIsPopoverOpen={setIsPopoverOpen}
-				onSelect={onSelect}
+			<UNSAFE_Combobox
+				id={id}
 				size={size}
-			>
-				{isPopoverOpen && (
-					<SuggestionList
-						groups={groups}
-						secondaryGroups={secondaryGroups}
-						heading={heading}
-						suggestions={suggestions}
-						filteredSuggestions={filteredSuggestions}
-						showFilteredSuggestionsOnly={showFilteredSuggestionsOnly}
-						selectedSuggestionValues={selectedSuggestionValues}
-						onSelect={onSelect}
-						toggleGroupSelectionValues={toggleGroupSelectionValues}
-						toggleGroupOpen={toggleGroupOpen}
-						updateSelection={updateSelection}
-						openSuggestionGroups={openSuggestionGroups}
-						setIsPopoverOpen={setIsPopoverOpen}
-						getSuggestion={getSuggestion}
-					/>
-				)}
-			</SearchForm>
-			{!skjulValgteVerdierUnderDropdown && (
+				label={label}
+				description={description}
+				hideLabel={!showLabel}
+				options={options}
+				isMultiSelect
+				shouldShowSelectedOptions={false}
+				shouldAutocomplete
+				onChange={setValue}
+				onClear={() => setValue('')}
+				onToggleSelected={onToggleSelected}
+				selectedOptions={selectedOptions}
+				value={value}
+				error={error}
+			/>
+			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
 				<SelectedValues values={sv} remove={onRemoveSuggestion} removeAllValues={removeAllSuggestions} />
 			)}
-			{error && <ErrorMessage>{error}</ErrorMessage>}
 		</div>
 	);
 };
