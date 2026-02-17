@@ -54,6 +54,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	const [visUnderStreken, setVisUnderStreken] = useState(false);
 	const anchorRef = useRef<HTMLDivElement>(null);
 	const dropdownRef = useRef<HTMLDivElement>(null);
+	const selectedRef = useRef(selectedSuggestionValues);
 
 	const handleClickOutside = useCallback((e: MouseEvent) => {
 		if (
@@ -76,6 +77,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 
 	useEffect(() => {
 		setSelectedSuggestionValues(selectedValues);
+		selectedRef.current = selectedValues;
 		const selectedGroups = selectedValues
 			.map((v) => getSuggestion(v)?.group)
 			.filter(Boolean);
@@ -92,10 +94,12 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		}
 	}, []);
 
-	// Sync local selection to parent whenever it changes
+	// Sync local selection to parent when dropdown closes
 	useEffect(() => {
-		updateSelection(selectedSuggestionValues);
-	}, [selectedSuggestionValues]);
+		if (!isOpen) {
+			updateSelection(selectedRef.current);
+		}
+	}, [isOpen]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -105,9 +109,11 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	}, [isOpen, handleClickOutside]);
 
 	const onSelect = (value: string) => {
-		setSelectedSuggestionValues((prev) =>
-			prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value],
-		);
+		setSelectedSuggestionValues((prev) => {
+			const next = prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value];
+			selectedRef.current = next;
+			return next;
+		});
 	};
 
 	const toggleGroupOpen = (group: string) => {
@@ -118,12 +124,14 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 
 	const toggleGroupSelection = (group: string) => {
 		const groupValues = suggestions.filter((s) => s.group === group).map((s) => s.value);
-		const allSelected = groupValues.every((v) => selectedSuggestionValues.includes(v));
-		if (allSelected) {
-			setSelectedSuggestionValues((prev) => prev.filter((v) => !groupValues.includes(v)));
-		} else {
-			setSelectedSuggestionValues((prev) => [...new Set([...prev, ...groupValues])]);
-		}
+		setSelectedSuggestionValues((prev) => {
+			const allSelected = groupValues.every((v) => prev.includes(v));
+			const next = allSelected
+				? prev.filter((v) => !groupValues.includes(v))
+				: [...new Set([...prev, ...groupValues])];
+			selectedRef.current = next;
+			return next;
+		});
 	};
 
 	const groupHasSelection = (group: string) =>
@@ -136,11 +144,13 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	const onRemoveSuggestion = (v: string) => {
 		const newValues = selectedSuggestionValues.filter((s) => s !== v);
 		setSelectedSuggestionValues(newValues);
+		selectedRef.current = newValues;
 		updateSelection(newValues);
 	};
 
 	const removeAllSuggestions = () => {
 		setSelectedSuggestionValues([]);
+		selectedRef.current = [];
 		updateSelection([]);
 	};
 
@@ -265,7 +275,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 					</div>
 				)}
 			</div>
-			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
+			{!skjulValgteVerdierUnderDropdown && !isOpen && sv.length > 0 && (
 				<SelectedValues values={sv} remove={onRemoveSuggestion} removeAllValues={removeAllSuggestions} />
 			)}
 			{error && <ErrorMessage>{error}</ErrorMessage>}
