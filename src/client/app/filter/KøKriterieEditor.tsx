@@ -53,6 +53,7 @@ interface OwnProps {
 	paakrevdeKoder?: OppgavefilterKode[];
 	readOnlyKoder?: OppgavefilterKode[];
 	visSortering?: boolean;
+	hovedknappTekst: string;
 }
 
 const KøKriterieEditor = ({
@@ -63,9 +64,16 @@ const KøKriterieEditor = ({
 	paakrevdeKoder,
 	readOnlyKoder,
 	visSortering,
+	hovedknappTekst,
 }: OwnProps) => {
 	return (
-		<KøKriterieEditorProvider avbryt={avbryt} lagre={lagre} initialQuery={initialQuery} visSortering={visSortering}>
+		<KøKriterieEditorProvider
+			avbryt={avbryt}
+			lagre={lagre}
+			initialQuery={initialQuery}
+			visSortering={visSortering}
+			hovedknappTekst={hovedknappTekst}
+		>
 			<Heading size="small" spacing className="mt-3">
 				{tittel}
 			</Heading>

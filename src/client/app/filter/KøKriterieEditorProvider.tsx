@@ -15,10 +15,18 @@ interface OwnProps {
 	avbryt: () => void;
 	initialQuery?: OppgaveQuery;
 	visSortering?: boolean;
+	hovedknappTekst: string;
 	children: React.ReactNode;
 }
 
-const KøKriterieEditorProvider = ({ initialQuery, lagre, avbryt, visSortering, children }: OwnProps) => {
+const KøKriterieEditorProvider = ({
+	initialQuery,
+	lagre,
+	avbryt,
+	visSortering,
+	hovedknappTekst,
+	children,
+}: OwnProps) => {
 	const [queryErrorMessage, setQueryErrorMessage] = useState(null);
 	const [queryErrors, setQueryErrors] = useState([]);
 	const [shouldRevalidate, setShouldRevalidate] = useState(false);
@@ -148,7 +156,7 @@ const KøKriterieEditorProvider = ({ initialQuery, lagre, avbryt, visSortering, 
 								Avbryt
 							</Button>
 							<Button onClick={validerOgLagre} loading={validerIsPending} disabled={validerIsPending}>
-								Lagre
+								{hovedknappTekst}
 							</Button>
 						</div>
 					</div>

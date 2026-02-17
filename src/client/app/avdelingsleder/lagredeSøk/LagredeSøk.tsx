@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading, HelpText } from '@navikt/ds-react';
-import {
-	LagretSøk,
-	useHentAlleUttrekk,
-	useHentLagredeSøk,
-	useOpprettLagretSøk,
-} from 'api/queries/avdelingslederQueries';
+import { useHentAlleUttrekk, useHentLagredeSøk, useHentLagredeSøkDefaultQuery } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
@@ -14,31 +9,8 @@ import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 export function LagredeSøk() {
 	const { data, isSuccess, isError } = useHentLagredeSøk({ retry: false });
 	const { data: uttrekk } = useHentAlleUttrekk();
-	const { mutate: opprettLagretSøk, isPending: oppretterSøk } = useOpprettLagretSøk();
-	const [nyttSøkId, setNyttSøkId] = useState<number | null>(null);
-	const [nyttSøk, setNyttSøk] = useState<LagretSøk | null>(null);
-
-	// Når vi har en nyttSøkId og data er oppdatert, finn det opprettede søket
-	useEffect(() => {
-		if (nyttSøkId !== null && data) {
-			const søk = data.find((s) => s.id === nyttSøkId);
-			if (søk) {
-				setNyttSøk(søk);
-				setNyttSøkId(null);
-			}
-		}
-	}, [nyttSøkId, data]);
-
-	const handleOpprettSøk = () => {
-		opprettLagretSøk(
-			{ tittel: '' },
-			{
-				onSuccess: (id: number) => {
-					setNyttSøkId(id);
-				},
-			},
-		);
-	};
+	const { data: defaultQuery } = useHentLagredeSøkDefaultQuery();
+	const [visOpprettModal, setVisOpprettModal] = useState(false);
 
 	// Finn uttrekk som ikke har tilhørende lagret søk (foreldreløse)
 	const lagretSøkIder = new Set(data?.map((s) => s.id) ?? []);
@@ -64,20 +36,19 @@ export function LagredeSøk() {
 				</Heading>
 				<Button
 					variant="secondary"
-					onClick={handleOpprettSøk}
+					onClick={() => setVisOpprettModal(true)}
 					icon={<PlusCircleIcon />}
-					disabled={isError}
-					loading={oppretterSøk}
+					disabled={isError || !defaultQuery}
 				>
 					Legg til nytt lagret søk
 				</Button>
 			</div>
-			{nyttSøk && (
+			{visOpprettModal && defaultQuery && (
 				<EndreKriterierLagretSøkModal
 					tittel="Nytt lagret søk"
-					lagretSøk={nyttSøk}
+					initialQuery={defaultQuery}
 					open
-					closeModal={() => setNyttSøk(null)}
+					closeModal={() => setVisOpprettModal(false)}
 				/>
 			)}
 			{isError && (
