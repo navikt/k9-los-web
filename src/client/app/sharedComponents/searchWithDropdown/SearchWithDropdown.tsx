@@ -55,6 +55,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	const anchorRef = useRef<HTMLDivElement>(null);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 	const selectedRef = useRef(selectedSuggestionValues);
+	const prevSyncedRef = useRef(JSON.stringify(selectedValues));
 
 	const handleClickOutside = useCallback((e: MouseEvent) => {
 		if (
@@ -78,6 +79,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	useEffect(() => {
 		setSelectedSuggestionValues(selectedValues);
 		selectedRef.current = selectedValues;
+		prevSyncedRef.current = JSON.stringify(selectedValues);
 		const selectedGroups = selectedValues
 			.map((v) => getSuggestion(v)?.group)
 			.filter(Boolean);
@@ -94,12 +96,14 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		}
 	}, []);
 
-	// Sync local selection to parent when dropdown closes
+	// Sync local selection to parent on every change
 	useEffect(() => {
-		if (!isOpen) {
-			updateSelection(selectedRef.current);
+		const key = JSON.stringify(selectedSuggestionValues);
+		if (key !== prevSyncedRef.current) {
+			prevSyncedRef.current = key;
+			updateSelection(selectedSuggestionValues);
 		}
-	}, [isOpen]);
+	}, [selectedSuggestionValues]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -275,7 +279,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 					</div>
 				)}
 			</div>
-			{!skjulValgteVerdierUnderDropdown && !isOpen && sv.length > 0 && (
+			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
 				<SelectedValues values={sv} remove={onRemoveSuggestion} removeAllValues={removeAllSuggestions} />
 			)}
 			{error && <ErrorMessage>{error}</ErrorMessage>}

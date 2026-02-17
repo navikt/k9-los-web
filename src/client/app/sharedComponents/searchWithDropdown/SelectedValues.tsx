@@ -12,6 +12,7 @@ interface Props {
 	values: groupObject[];
 	remove: (value: string) => void;
 	removeAllValues: () => void;
+	reserveSpace?: boolean;
 }
 
 const Group = ({ group, chips, remove }: { group: string; chips: Props['values']; remove: Props['remove'] }) => {
@@ -44,32 +45,33 @@ const Group = ({ group, chips, remove }: { group: string; chips: Props['values']
     );
 };
 
-export const SelectedValues = ({ values, remove, removeAllValues }: Props) => {
+export const SelectedValues = ({ values, remove, removeAllValues, reserveSpace = false }: Props) => {
 	const getUniqueGroups = () => {
 		const groups = values.map((group) => group.group);
 		return [...new Set(groups)].sort();
 	};
 	const groups = getUniqueGroups();
-	if (!values || !values.length) {
-		return null;
-	}
 	return (
-		<div>
-			<div className="flex flex-wrap gap-2 mt-3">
-				{groups.map((group) => (
-					<Group key={group} group={group} chips={values.filter((v) => v.group === group)} remove={remove} />
-				))}
-			</div>
-			<Button
-				icon={<TrashIcon />}
-				variant="primary"
-				size="small"
-				type="button"
-				className="mt-3"
-				onClick={removeAllValues}
-			>
-				Fjern alle
-			</Button>
+		<div style={reserveSpace ? { minHeight: '5.25rem' } : undefined}>
+			{values.length > 0 && (
+				<>
+					<div className="flex flex-wrap gap-2 mt-3">
+						{groups.map((group) => (
+							<Group key={group} group={group} chips={values.filter((v) => v.group === group)} remove={remove} />
+						))}
+					</div>
+					<Button
+						icon={<TrashIcon />}
+						variant="primary"
+						size="small"
+						type="button"
+						className="mt-3"
+						onClick={removeAllValues}
+					>
+						Fjern alle
+					</Button>
+				</>
+			)}
 		</div>
 	);
 };

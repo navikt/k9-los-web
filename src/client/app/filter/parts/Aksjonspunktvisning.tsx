@@ -46,5 +46,5 @@ export const Aksjonspunktvisning = ({ oppgavefilter, feltdefinisjon }: Props) =>
 		update([]);
 	};
 
-	return <SelectedValues values={values} remove={remove} removeAllValues={removeAllValues} />;
+	return <SelectedValues values={values} remove={remove} removeAllValues={removeAllValues} reserveSpace />;
 };
