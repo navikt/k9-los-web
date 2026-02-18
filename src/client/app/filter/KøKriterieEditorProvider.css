@@ -1,0 +1,6 @@
+.filterButtonGroup {
+	display: flex;
+	margin-top: var(--ax-space-32);
+	padding-bottom: var(--ax-space-32);
+	gap: var(--ax-space-16);
+}
