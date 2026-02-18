@@ -10,8 +10,3 @@ export const setValueInLocalStorage = (key: string, value: string) => {
 export const removeValueFromLocalStorage = (key: string) => {
 	window.localStorage.removeItem(key);
 };
-
-export const lagreTilLocalStorageCallback = (key: string, value: string, callback: (v: string) => void) => {
-	setValueInLocalStorage(key, value);
-	callback(value);
-};
