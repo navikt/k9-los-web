@@ -7,8 +7,9 @@ export const comboboxSeparatorStyle = (containerClass: string, index: number | u
 	return `
 		.${containerClass} ul > li:nth-child(${index - 1}) { margin-bottom: 0; }
 		.${containerClass} ul > li:nth-child(${index}) {
-			margin-top: 0;
-			margin-bottom: 0;
+			margin: 0;
+			padding: 6px 16px;
+			border-radius: 0;
 			border-top: 2px solid var(--ax-border-focus);
 		}`;
 };
