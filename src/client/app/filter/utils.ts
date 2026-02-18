@@ -1,6 +1,18 @@
 import dayjs from 'dayjs';
 import { Oppgavefelt, TolkesSom } from './filterTsTypes';
 
+/** Genererer CSS for en separator-strek i UNSAFE_Combobox via nth-child, siden komponenten ikke støtter grupper nativt. */
+export const comboboxSeparatorStyle = (containerClass: string, index: number | undefined): string => {
+	if (!index) return '';
+	return `
+		.${containerClass} ul > li:nth-child(${index - 1}) { margin-bottom: 0; }
+		.${containerClass} ul > li:nth-child(${index}) {
+			margin-top: 0;
+			margin-bottom: 0;
+			border-top: 2px solid var(--ax-border-focus);
+		}`;
+};
+
 export const OPERATORS = {
 	// Eksakt lik
 	EQUALS: 'EQUALS',

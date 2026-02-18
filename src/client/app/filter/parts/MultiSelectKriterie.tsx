@@ -6,6 +6,7 @@ import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
+import { comboboxSeparatorStyle } from 'filter/utils';
 
 interface Props {
 	feltdefinisjon?: Oppgavefelt;
@@ -77,11 +78,7 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 	};
 	return (
 		<div className="multiSelectKriterie">
-			<style>
-				{`.multiSelectKriterie ul > li:nth-child(${selectedChildIndex}) {
-           border-top: 2px solid black; 
-        }`}
-			</style>
+			<style>{comboboxSeparatorStyle('multiSelectKriterie', selectedChildIndex)}</style>
 			<UNSAFE_Combobox
 				size="small"
 				label={feltdefinisjon.visningsnavn}

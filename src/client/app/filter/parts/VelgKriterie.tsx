@@ -7,7 +7,7 @@ import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter, OppgaveQuery, Oppgavefelt, OppgavefilterKode } from 'filter/filterTsTypes';
 import { removeFilter, updateFilter } from 'filter/queryUtils';
-import { feltverdiKey, kodeFraKey } from 'filter/utils';
+import { comboboxSeparatorStyle, feltverdiKey, kodeFraKey } from 'filter/utils';
 
 interface Props {
 	oppgavefilter: FeltverdiOppgavefilter;
@@ -85,11 +85,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 	return (
 		<div className="flex gap-7 border-dashed border-[1px] border-ax-bg-accent-strong rounded-sm pt-4 pr-7 pb-5 pl-4">
 			<div className="basis-5/12 velgKriterie">
-				<style>
-					{`.velgKriterie ul > li:nth-child(${selectedChildIndex}) {
-           border-top: 2px solid black; 
-        }`}
-				</style>
+				<style>{comboboxSeparatorStyle('velgKriterie', selectedChildIndex)}</style>
 				<UNSAFE_Combobox
 					label="Velg kriterie:"
 					size="small"
