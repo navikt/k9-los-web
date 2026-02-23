@@ -42,13 +42,13 @@ function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 function getStatusColor(status: UttrekkStatus): string {
 	switch (status) {
 		case UttrekkStatus.OPPRETTET:
-			return 'bg-orange-100 text-orange-800';
+			return 'bg-ax-warning-200 text-ax-warning-900';
 		case UttrekkStatus.KJØRER:
-			return 'bg-blue-100 text-blue-800';
+			return 'bg-ax-accent-200 text-ax-accent-900';
 		case UttrekkStatus.FEILET:
-			return 'bg-red-100 text-red-800';
+			return 'bg-ax-danger-200 text-ax-danger-900';
 		case UttrekkStatus.FULLFØRT:
-			return 'bg-gray-200 text-gray-700';
+			return 'bg-ax-neutral-300 text-ax-neutral-800';
 		default:
 			return assertNever(status);
 	}
@@ -94,7 +94,7 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 					<div className="flex-shrink-0 flex items-center">{getStatusIcon(uttrekk.status)}</div>
 					<div className="flex items-center gap-3">
 						<div>{getStatusText(uttrekk)}</div>
-						<div className="text-sm text-gray-600">
+						<div className="text-sm text-ax-neutral-700">
 							{dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
 							{uttrekk.status === UttrekkStatus.KJØRER || uttrekk.status === UttrekkStatus.FEILET ? (
 								<span> (kjøretid {kjøretid})</span>
@@ -166,7 +166,7 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 										<BodyShort>
 											<strong>Feilmelding:</strong>
 										</BodyShort>
-										<pre className="mt-2 p-2 bg-gray-100 rounded overflow-auto">{uttrekk.feilmelding}</pre>
+										<pre className="mt-2 p-2 bg-ax-neutral-200 rounded overflow-auto">{uttrekk.feilmelding}</pre>
 									</div>
 								</Modal>
 							)}

@@ -1,6 +1,27 @@
 import dayjs from 'dayjs';
 import { Oppgavefelt, TolkesSom } from './filterTsTypes';
 
+/** Reservert verdi for separator-element i UNSAFE_Combobox. */
+export const COMBOBOX_SEPARATOR_VALUE = '__separator__';
+
+/**
+ * Genererer CSS som gjør separator-opsjonen til en synlig strek.
+ * Selve separator-elementet har pointer-events: none så hover-stilen ikke aktiveres.
+ */
+export const comboboxSeparatorStyle = (containerClass: string): string => `
+	.${containerClass} li[id$="-option-${COMBOBOX_SEPARATOR_VALUE}"] {
+		margin: 4px 0;
+		padding: 0;
+		height: 0;
+		border-top: 2px solid var(--ax-border-focus);
+		border-radius: 0;
+		pointer-events: none;
+	}
+	.${containerClass} li[id$="-option-${COMBOBOX_SEPARATOR_VALUE}"] > * {
+		display: none;
+	}
+`;
+
 export const OPERATORS = {
 	// Eksakt lik
 	EQUALS: 'EQUALS',

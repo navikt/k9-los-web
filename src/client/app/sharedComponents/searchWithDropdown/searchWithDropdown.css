@@ -1,119 +1,95 @@
 .searchContainer {
 	border-radius: 0.25rem;
 	max-width: 50rem;
+	position: relative;
 }
-.form:global(.navds-form-field) {
-	justify-items: stretch;
-}
-.input:global(.navds-search__input) {
-	padding-right: 3rem;
-}
-.suggestionPopover[data-reach-combobox-popover] {
-	min-width: 21rem;
-	background-color: white;
-	border-radius: var(--a-border-radius-medium);
-	box-shadow: var(--a-shadow-medium);
-	padding: 1.125rem 0;
-	transform: translateY(4px);
-	z-index: var(--a-z-index-tooltip);
+
+.dropdown {
 	position: absolute;
-	:global .navds-checkbox__label {
-		padding: 12px 0;
-	}
+	z-index: 1000;
+	min-width: 21rem;
+	max-height: 28rem;
+	overflow-y: auto;
+	padding: 0.5rem 0;
+	background: var(--ax-bg-default);
+	border: 1px solid var(--ax-border-neutral-subtle);
+	border-radius: 0.5rem;
+	box-shadow: var(--ax-shadow-medium);
+	margin-top: 0.25rem;
 }
 
-.list[data-reach-combobox-list] {
-	list-style-type: none;
-	margin: 0 0 1.125rem;
-	padding: 0;
-}
-.list[data-reach-combobox-list] ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-.suggestion[data-reach-combobox-option] {
-	padding-bottom: 0.5rem;
-	padding-top: 0.5rem;
-}
-.suggestion[data-reach-combobox-option][data-highlighted],
-.suggestion[data-reach-combobox-option]:hover {
-	background-color: var(--a-blue-100);
-}
-.suggestion:first-child {
-	border-radius: var(--a-border-radius-medium) var(--a-border-radius-medium) 0 0;
-}
-.suggestion:last-child {
-	border-radius: 0 0 var(--a-border-radius-medium) var(--a-border-radius-medium);
-}
-.suggestion:only-child {
-	border-radius: var(--a-border-radius-medium);
-}
-.suggestion [data-user-value] {
-	font-weight: bold;
-}
-.suggestion [data-suggested-value] {
-	font-weight: normal;
-}
-
-.suggestionSubgroup {
-	padding-left: 2rem;
-}
-.suggestionCheckbox {
-	border-bottom: 1px solid #cfcfcf;
-	padding: 0 1rem;
-}
-.suggestionCheckbox :global(.navds-checkbox__label) {
-	padding: 0.5rem 0 !important;
-}
-.suggestionCheckbox :global(.navds-checkbox__content) {
-	white-space: normal;
-	overflow-wrap: break-word;
-	word-break: break-word;
-	min-width: 0;
-}
-.suggestionCheckbox :global(.navds-checkbox__label-text) {
-	white-space: normal;
-	overflow-wrap: anywhere;
-	word-break: break-word;
-}
-.suggestionCheckbox:global(.navds-checkbox) {
-	width: 100%;
-}
-.listHeading {
-	border-bottom: 1px solid #cfcfcf;
-	padding: 0 1.25rem 0.6875rem;
-	font-size: var(--a-font-size-medium);
-}
 .fieldset {
 	border: none;
 	padding: 0;
-}
-.popoverButtonWrapper {
 	margin: 0;
-	padding: 0;
-	text-align: center;
-}
-.merkelapperHeading:global(.navds-heading) {
-	margin: 1rem 0 0.25rem;
-	display: inline-block;
-}
-.searchWrapper {
-	position: relative;
-	display: block;
-	max-width: 37.5rem;
-}
-.searchButton {
-	position: absolute;
-	right: 0;
 }
 
-.ungroupedSection {
-	margin-top: 1rem;
-	padding-top: 0.75rem;
-	border-top: 3px solid var(--a-border-strong);
+.groupList {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.groupHeader {
+	display: flex;
+	align-items: center;
+	padding: 0.25rem 1rem;
+	border-bottom: 1px solid var(--ax-border-neutral-subtle);
+}
+
+.subList {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.subItem {
+	padding: 0.125rem 1rem 0.125rem 2.5rem;
+	border-bottom: 1px solid var(--ax-border-neutral-subtle);
+}
+
+.filterItem {
+	padding: 0.125rem 1rem;
+	border-bottom: 1px solid var(--ax-border-neutral-subtle);
+}
+
+.numberBubble {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--ax-bg-accent-strong);
+	color: var(--ax-text-accent-contrast);
+	border-radius: 50%;
+	min-width: 1.25rem;
+	height: 1.25rem;
+	font-size: 0.75rem;
+	padding: 0 0.25rem;
+}
+
+.chevronButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	padding: 0.125rem;
+	cursor: pointer;
+	border-radius: 0.25rem;
+}
+
+.chevronButton:hover {
+	background-color: var(--ax-bg-neutral-moderate-hover);
+}
+
+.chevronOpen {
+	transform: rotate(90deg);
+}
+
+.popoverButtons {
+	text-align: center;
+	padding: 0.25rem 0 0;
 }
 
 .secondarySection {
-	border-top: 2px solid black;
+	border-top: 2px solid var(--ax-border-neutral-strong);
 }

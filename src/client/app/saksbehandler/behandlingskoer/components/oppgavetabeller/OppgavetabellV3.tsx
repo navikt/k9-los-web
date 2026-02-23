@@ -34,20 +34,20 @@ export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 	const kolonnekoder = Object.keys(kolonner);
 
 	return (
-		<Table>
-			<Table.Header>
+        <Table>
+            <Table.Header>
 				<Table.Row>
 					{kolonnekoder.map((kode) => (
 						<Table.HeaderCell key={kode}>{kolonner[kode]}</Table.HeaderCell>
 					))}
 				</Table.Row>
 			</Table.Header>
-			<Table.Body>
+            <Table.Body>
 				{rader.map((rad) => {
 					const { id } = rad;
 					return (
-						<Table.Row key={id}>
-							{kolonnekoder.map((kode) => {
+                        <Table.Row key={id}>
+                            {kolonnekoder.map((kode) => {
 								const verdi = rad[kode] ?? '';
 								if (/^\d{4}-\d{2}-\d{2}/.test(verdi)) {
 									const dato = dayjs(verdi).format('DD.MM.YYYY');
@@ -60,10 +60,10 @@ export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 								}
 								return <Table.DataCell key={kode}>{verdi}</Table.DataCell>;
 							})}
-						</Table.Row>
-					);
+                        </Table.Row>
+                    );
 				})}
 			</Table.Body>
-		</Table>
-	);
+        </Table>
+    );
 };

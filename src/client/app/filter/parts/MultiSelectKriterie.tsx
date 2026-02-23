@@ -6,6 +6,7 @@ import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { FilterContext } from 'filter/FilterContext';
 import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
+import { comboboxSeparatorStyle, COMBOBOX_SEPARATOR_VALUE } from 'filter/utils';
 
 interface Props {
 	feltdefinisjon?: Oppgavefelt;
@@ -17,7 +18,6 @@ interface Props {
 const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }: Props) => {
 	const [value, setValue] = useState('');
 	const [visSekundærvalg, setVisSekundærvalg] = useState(false);
-	const [selectedChildIndex, setSelectedChildIndex] = useState(undefined);
 	const [options, setOptions] = useState<ComboboxOption[]>([]);
 	const { updateQuery } = useContext(FilterContext);
 	const verdier = oppgavefilter.verdi;
@@ -39,12 +39,7 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 
 		const harSekundærvalg = sekundærvalg?.length > 0;
 		if (visSekundærvalg && harSekundærvalg) {
-			const valg = [...primærvalg, ...sekundærvalg];
-			const selectedChild = valg.findIndex((v) => v === sekundærvalg[0]);
-			if (selectedChild !== -1) {
-				setSelectedChildIndex(selectedChild + 1);
-			}
-			return valg;
+			return [...primærvalg, { value: COMBOBOX_SEPARATOR_VALUE, label: '' }, ...sekundærvalg];
 		}
 
 		const filteredOptions = feltdefinisjon.verdiforklaringer
@@ -63,6 +58,7 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 	}, [feltdefinisjon, visSekundærvalg]);
 
 	const onToggleSelected = (option: string, isSelected: boolean) => {
+		if (option === COMBOBOX_SEPARATOR_VALUE) return;
 		if (option === '--- Vis alle ---') {
 			setVisSekundærvalg(true);
 			setValue('');
@@ -77,11 +73,7 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 	};
 	return (
 		<div className="multiSelectKriterie">
-			<style>
-				{`.multiSelectKriterie ul > li:nth-child(${selectedChildIndex}) {
-           border-top: 2px solid black; 
-        }`}
-			</style>
+			<style>{comboboxSeparatorStyle('multiSelectKriterie')}</style>
 			<UNSAFE_Combobox
 				size="small"
 				label={feltdefinisjon.visningsnavn}

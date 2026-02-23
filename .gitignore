@@ -9,7 +9,6 @@
 # testing
 /coverage
 /target/
-**/playwright-report
 **/test-results
 # production
 
@@ -29,7 +28,5 @@ yarn-error.log*
 .eslintcache
 jest_cache
 /test-results/
-/playwright-report/
-/playwright/.cache/
 
 *storybook.log

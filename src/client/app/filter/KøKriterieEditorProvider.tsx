@@ -4,8 +4,8 @@ import { Alert, Button, Label, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { useHentAntallOppgaver, useValiderOppgaveQuery } from 'api/queries/oppgaveQueries';
 import { FilterContext } from './FilterContext';
+import * as styles from './KøKriterieEditorProvider.css';
 import OppgaveQueryModel from './OppgaveQueryModel';
-import * as styles from './filterIndex.css';
 import { OppgaveQuery } from './filterTsTypes';
 import { QueryFunction, applyFunctions } from './queryUtils';
 import EnkelSortering from './sortering/EnkelSortering';
@@ -122,7 +122,7 @@ const KøKriterieEditorProvider = ({
 			<div className="mt-3 p-4 rounded-lg flex flex-col flex-grow">
 				{children}
 				<div className="mt-auto">
-					<div className="bg-surface-subtle rounded flex gap-8 p-5 mt-8">
+					<div className="bg-ax-bg-neutral-soft rounded flex gap-8 p-5 mt-8">
 						{visSortering && (
 							<div className="w-6/12">
 								<EnkelSortering />

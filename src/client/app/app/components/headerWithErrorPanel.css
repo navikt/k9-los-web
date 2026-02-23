@@ -1,4 +1,4 @@
-@import '@navikt/ds-tokens';
+@import '@navikt/ds-tokens/css';
 
 .container {
 	top: 0;
@@ -17,7 +17,7 @@
 	color: white;
 	text-transform: none;
 	font-weight: 400;
-	padding: var(--a-spacing-3) var(--a-spacing-5);
+	padding: var(--ax-space-12) var(--ax-space-20);
 }
 .knapp:hover {
 	background-color: #0067c5;
@@ -25,9 +25,17 @@
 .knapp:focus {
 	box-shadow: none;
 }
+
 .endringslogg-container {
-	color: black;
-	margin-top: 4px;
+	/* @navikt/familie-endringslogg bruker Aksel v7-tokens (--a-*). Kan fjernes når endringslogg er migrert og oppdatert til v8 (--ax-*). */
+	--a-surface-inverted: #262626;
+	--a-bg-default: #fff;
+	--a-text-default: #262626;
+	--a-border-focus: #254b6d;
+	--a-border-focus-on-inverted: #fff;
+	--a-surface-action: #0067c5;
+	--a-red-400: #c30000;
+	--a-text-action: #0067c5;
 }
 
 .endringslogg-container :global(.endringslogg) {

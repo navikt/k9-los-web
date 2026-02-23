@@ -96,7 +96,7 @@ const Teller: FunctionComponent<OwnProps> = ({ forklaring, tall }) => {
 					<div className={styles.nedbrytning}>
 						{ferdigstilt.linjer.map((linje) => (
 							<KildeViewer key={linje.visningsnavn} tittel={forklaring} linje={linje}>
-								<span>{`${linje.verdi} ${linje.visningsnavn}`}</span>
+								<span className={styles.nedbrytningTekst}>{`${linje.verdi} ${linje.visningsnavn}`}</span>
 							</KildeViewer>
 						))}
 					</div>

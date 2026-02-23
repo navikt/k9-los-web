@@ -13,14 +13,14 @@ export default function FeatureSwitchSparkles(props: {
 	const Ikon = isTurnedOn ? SparklesFillIcon : SparklesIcon;
 
 	return (
-		<HStack gap="0" align="start" wrap justify="space-between">
+		<HStack gap="space-0" align="start" wrap justify="space-between">
 			<div className="flex-grow">{isTurnedOn ? props.turnedOn : props.turnedOff}</div>
 			<Button ref={buttonRef} onClick={() => setToggleMeny(!toggleMeny)} variant="tertiary">
 				<Ikon title="Teste ut funksjonalitet som er under utvikling" fontSize="1.5rem" />
 			</Button>
 			<Popover anchorEl={buttonRef.current} open={toggleMeny} onClose={() => setToggleMeny(false)}>
 				<Popover.Content>
-					<HStack gap="2" align="center">
+					<HStack gap="space-8" align="center">
 						<Switch size="small" checked={isTurnedOn} onChange={(event) => setIsTurnedOn(event.target.checked)}>
 							{props.switchLabel}
 						</Switch>

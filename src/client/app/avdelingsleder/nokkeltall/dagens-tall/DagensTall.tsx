@@ -14,16 +14,16 @@ export default function DagensTall() {
 	if (data === undefined) return null;
 
 	return (
-		<Box padding="4" borderWidth="1" borderColor="border-default">
-			<HStack align="center" justify="space-between">
+        <Box padding="space-16" borderWidth="1" borderColor="neutral">
+            <HStack align="center" justify="space-between">
 				<Heading size="small">Dagens tall</Heading>
 			</HStack>
-			<VerticalSpacer eightPx />
-			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
-			{data.oppdatertTidspunkt && (
+            <VerticalSpacer eightPx />
+            {!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
+            {data.oppdatertTidspunkt && (
 				<>
 					<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
-					<HStack className="mt-4 mb-6" gap="4">
+					<HStack className="mt-4 mb-6" gap="space-16">
 						<Select
 							label="Valgt ytelse"
 							hideLabel
@@ -54,6 +54,6 @@ export default function DagensTall() {
 					</HGrid>
 				</>
 			)}
-		</Box>
-	);
+        </Box>
+    );
 }

@@ -9,7 +9,6 @@ import AvdelingslederIndex from 'avdelingsleder/AvdelingslederIndex';
 import { Oppgavefelt } from 'filter/filterTsTypes';
 import SaksbehandlerIndex from 'saksbehandler/SaksbehandlerIndex';
 import AdminIndex from '../../admin/AdminIndex';
-import FilterIndex from '../../filter/FilterIndex';
 import MissingPage from './MissingPage';
 
 /**
@@ -28,7 +27,7 @@ const Home: FunctionComponent = () => {
 	const queryClient = useQueryClient();
 
 	useEffect(() => {
-		if (saksbehandler.brukerIdent) {
+		if (saksbehandler !== undefined) {
 			if (saksbehandler.kanOppgavestyre) {
 				queryClient.prefetchQuery({
 					queryKey: [apiPaths.hentSaksbehandlereAvdelingsleder],
@@ -38,7 +37,7 @@ const Home: FunctionComponent = () => {
 				queryKey: [apiPaths.hentSaksbehandlereSomSaksbehandler],
 			});
 		}
-	}, [queryClient, saksbehandler.brukerIdent, saksbehandler.kanOppgavestyre]);
+	}, [queryClient, saksbehandler?.brukerIdent, saksbehandler?.kanOppgavestyre]);
 
 	const contextValues = useMemo(() => ({ felter: data?.felter || [] }), [data]);
 
@@ -46,7 +45,6 @@ const Home: FunctionComponent = () => {
 		<div className="mt-5">
 			<AppContext.Provider value={contextValues}>
 				<SentryRoutes>
-					<Route path="/filter" element={<FilterIndex />} />
 					<Route path="/" element={<SaksbehandlerIndex />} />
 					<Route path="/avdelingsleder" element={<AvdelingslederIndex />} />
 					<Route path="/admin" element={<AdminIndex />} />

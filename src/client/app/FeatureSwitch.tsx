@@ -13,7 +13,7 @@ export default function FeatureSwitch(props: {
 	const [featureEnabled, setFeatureEnabled] = useState(props.defaultValue ?? false);
 
 	const featureSwitch = (
-		<HStack gap="2" align="center">
+		<HStack gap="space-8" align="center">
 			<Switch size="small" checked={featureEnabled} onChange={(event) => setFeatureEnabled(event.target.checked)}>
 				{props.switchLabel}
 			</Switch>
@@ -23,7 +23,7 @@ export default function FeatureSwitch(props: {
 	const feature = featureEnabled ? props.enabled : props.disabled;
 
 	return props.flex ? (
-		<HStack gap="0" align="start" wrap justify="space-between">
+		<HStack gap="space-0" align="start" wrap justify="space-between">
 			<div className="flex-grow">{feature}</div>
 			{featureSwitch}
 		</HStack>

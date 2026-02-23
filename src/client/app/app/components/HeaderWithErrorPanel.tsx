@@ -153,7 +153,7 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 							</ActionMenu.Group>
 						</ActionMenu.Content>
 					</ActionMenu>
-					<InternalHeader.User className="text-white" name={innloggetSaksbehandler?.brukerIdent} />
+					<InternalHeader.User name={innloggetSaksbehandler?.brukerIdent} />
 					{isDev && (
 						<button type="button" className={styles.knapp} onClick={loggUt}>
 							Logg ut

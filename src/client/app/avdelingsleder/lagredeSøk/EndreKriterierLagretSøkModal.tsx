@@ -92,7 +92,7 @@ export function EndreKriterierLagretSøkModal({
 	})();
 
 	return (
-		<Modal open={open} onClose={closeModal} aria-label={tittel} width={900}>
+		<Modal open={open} onClose={closeModal} aria-label={tittel} width={900} placement="top">
 			<Modal.Header>
 				<Heading size="medium">{tittel}</Heading>
 			</Modal.Header>

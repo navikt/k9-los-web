@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, List, Skeleton } from '@navikt/ds-react';
+import { BodyShort, Button, List, Skeleton, Heading, Box } from '@navikt/ds-react';
 import { useHentAndreSaksbehandleresKøer, useSlettSaksbehandler } from 'api/queries/avdelingslederQueries';
 import SletteSaksbehandlerModal from 'avdelingsleder/bemanning/components/SletteSaksbehandlerModal';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
@@ -19,17 +19,24 @@ const KøListe = ({
 }) => {
 	const skeleton = <Skeleton width={80} />;
 	return (
-		<List title={title} size="small">
-			{isLoading && (
-				<>
-					<List.Item>{skeleton}</List.Item>
-					<List.Item>{skeleton}</List.Item>
-					<List.Item>{skeleton}</List.Item>
-				</>
-			)}
-			{isSuccess && data.length === 0 && <BodyShort size="small">Ingen køer tildelt</BodyShort>}
-			{isSuccess && data.length > 0 && data.map(({ id, tittel }) => <List.Item key={id}>{tittel}</List.Item>)}
-		</List>
+		<div>
+			<Heading as="h3" size="xsmall">
+				{title}
+			</Heading>
+			<Box marginBlock="space-12" asChild>
+				<List size="small">
+					{isLoading && (
+						<>
+							<List.Item>{skeleton}</List.Item>
+							<List.Item>{skeleton}</List.Item>
+							<List.Item>{skeleton}</List.Item>
+						</>
+					)}
+					{isSuccess && data.length === 0 && <BodyShort size="small">Ingen køer tildelt</BodyShort>}
+					{isSuccess && data.length > 0 && data.map(({ id, tittel }) => <List.Item key={id}>{tittel}</List.Item>)}
+				</List>
+			</Box>
+		</div>
 	);
 };
 
@@ -60,7 +67,7 @@ const SaksbehandlerInfo: FunctionComponent<OwnProps> = ({ saksbehandler }) => {
 				onClick={() => {
 					setVisSlettModal(true);
 				}}
-				className="bg-red-400 hover:bg-red-600 mt-6"
+				className="bg-ax-danger-500 hover:bg-ax-danger-700 mt-6"
 				size="small"
 				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
 			>

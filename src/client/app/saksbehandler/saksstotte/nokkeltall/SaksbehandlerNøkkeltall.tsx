@@ -45,7 +45,7 @@ export default function SaksbehandlerNøkkeltall() {
 	return (
 		<div>
 			<Heading size="xsmall">
-				<HStack gap="2">
+				<HStack gap="space-8">
 					<span>Nye og ferdigstilte oppgaver siste 7 dager</span>
 					<HelpText>
 						Tallene oppdateres periodisk. Sist oppdatert{' '}
