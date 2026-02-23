@@ -9,6 +9,17 @@ import * as styles from './headerWithErrorPanel.css';
 
 const isDev = !window.location.hostname.includes('intern.nav.no');
 
+const endringsloggBackendUrl = (() => {
+	// I påvente av oppsett for proxy settes url direkte her
+	if (window.location.hostname.includes('intern.nav.no')) {
+		return 'https://familie-endringslogg.intern.nav.no';
+	} else if (window.location.hostname.includes('dev.intern.nav.no')) {
+		return 'https://familie-endringslogg.dev.intern.nav.no';
+	} else if (window.location.hostname.includes('localhost')) {
+		return '/api/endringslogg';
+	}
+})();
+
 const HeaderWithErrorPanel: FunctionComponent = () => {
 	const navigate = useNavigate();
 
@@ -66,7 +77,7 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 							userId={innloggetSaksbehandler?.brukerIdent}
 							appId="K9_SAK"
 							appName="K9 Sak"
-							backendUrl="/api/endringslogg"
+							backendUrl={endringsloggBackendUrl}
 							stil="lys"
 							alignLeft
 							maxEntries={150}

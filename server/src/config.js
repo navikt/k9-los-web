@@ -72,6 +72,10 @@ const getProxyConfig = () => {
 			logger.error(`Api entry ${index} mangler 'url'`);
 			process.exit(1);
 		}
+		if (!entry.scopes) {
+			logger.error(`Api entry ${index} mangler 'scopes'`);
+			process.exit(1);
+		}
 	});
 
 	return config;

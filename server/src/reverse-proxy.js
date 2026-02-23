@@ -16,10 +16,6 @@ const proxyOptions = (api) => ({
 			log.info('IS_VERDIKJEDE is true, skipping token processing.');
 			return options;
 		}
-		if (!api.scopes) {
-			// Ikke et kall som krever token, returner options som de er
-			return options;
-		}
 		try {
 			const token = req.headers.authorization.replace('Bearer ', '');
 			const validationResult = await validateToken(token);

@@ -12,8 +12,6 @@ proxyRedirects:
     scope: "api://dev-fss.k9saksbehandling.k9-los-api/.default"
     url: "https://k9-los-api.dev-fss-pub.nais.io"
     backendPath: "/forvaltning"
-  - path: "/api/endringslogg"
-    url: "https://familie-endringslogg.intern.dev.nav.no"
 resources:
   limits:
     memory: 200Mi
