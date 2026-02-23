@@ -11,12 +11,12 @@ const isDev = !window.location.hostname.includes('intern.nav.no');
 
 const endringsloggBackendUrl = (() => {
 	// I påvente av oppsett for proxy settes url direkte her
-	if (window.location.hostname.includes('intern.nav.no')) {
-		return 'https://familie-endringslogg.intern.nav.no';
-	} else if (window.location.hostname.includes('dev.intern.nav.no')) {
-		return 'https://familie-endringslogg.dev.intern.nav.no';
-	} else if (window.location.hostname.includes('localhost')) {
+	if (window.location.hostname.includes('localhost')) {
 		return '/api/endringslogg';
+	} else if (window.location.hostname.includes('dev')) {
+		return 'https://familie-endringslogg.intern.dev.nav.no';
+	} else {
+		return 'https://familie-endringslogg.intern.nav.no';
 	}
 })();
 
