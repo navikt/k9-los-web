@@ -138,8 +138,7 @@
 	},
 	"scripts": {
 		"test": "jest --colors",
-		"dev-env-variables": "cross-env SOKEBOKS_NYE_KOER=enabled SAKSBEHANDLER_KAN_VELGE_NYE_KOER=enabled AVDELINGSLEDER_TILGANG_TIL_NYE_KOER=enabled K9_LOS_API_URL=http://localhost:8020/api",
-		"dev": "yarn dev-env-variables cross-env node webpack/webpack.dev.server.mjs --config webpack/webpack.dev.mjs",
+		"dev": "yarn node webpack/webpack.dev.server.mjs --config webpack/webpack.dev.mjs",
 		"build": "cross-env NODE_ENV=production SENTRY_RELEASE=$(git rev-parse --short HEAD) webpack --config webpack/webpack.prod.mjs",
 		"ts-check": "tsc --pretty --skipLibCheck",
 		"lint": "eslint --cache --fix \"src/**/*.ts?(x)\"",

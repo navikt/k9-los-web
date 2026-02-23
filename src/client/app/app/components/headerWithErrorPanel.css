@@ -3,7 +3,8 @@
 }
 
 .endringslogg-container {
-	margin-top: var(--ax-space-4);
+	border-left: 1px solid var(--ax-border-neutral-subtleA);
+	margin-top: var(--ax-space-6);
 
 	/* @navikt/familie-endringslogg bruker Aksel v7-tokens (--a-*). Kan fjernes når endringslogg er migrert og oppdatert til v8 (--ax-*). */
 	--a-surface-inverted: #262626;

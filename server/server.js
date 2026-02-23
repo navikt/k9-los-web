@@ -1,11 +1,9 @@
-/* eslint-disable no-underscore-dangle */
 import cors from 'cors';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { decodeJwt } from 'jose';
 import { validateToken } from '@navikt/oasis';
-import { envVariables } from './envVariables.js';
 import config from './src/config.js';
 import logger from './src/log.js';
 import reverseProxy from './src/reverse-proxy.js';
@@ -120,9 +118,6 @@ async function startApp() {
 			});
 		});
 
-		server.get('/envVariables', (req, res) => {
-			res.json(envVariables());
-		});
 		reverseProxy.setup(server);
 
 		// serve static files

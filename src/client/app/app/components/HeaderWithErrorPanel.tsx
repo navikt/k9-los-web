@@ -60,15 +60,13 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 				{visAvdelingslederKnapp && (
 					<InternalHeader.Button onClick={goTilAvdelingslederPanel}>Avdelingslederpanel</InternalHeader.Button>
 				)}
-				{innloggetSaksbehandler?.brukerIdent && window.location.hostname.includes('nav') && (
+				{innloggetSaksbehandler?.brukerIdent && (
 					<div className={styles['endringslogg-container']}>
 						<Endringslogg
 							userId={innloggetSaksbehandler?.brukerIdent}
 							appId="K9_SAK"
 							appName="K9 Sak"
-							backendUrl={
-								isDev ? 'https://familie-endringslogg.intern.dev.nav.no' : 'https://familie-endringslogg.intern.nav.no'
-							}
+							backendUrl="/api/endringslogg"
 							stil="lys"
 							alignLeft
 							maxEntries={150}

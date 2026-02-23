@@ -8,12 +8,16 @@ const xTimestamp = 'x-Timestamp';
 const stripTrailingSlash = (str) => (str.endsWith('/') ? str.slice(0, -1) : str);
 
 const proxyOptions = (api) => ({
-	timeout: 40000,
+	timeout: 20000,
 	proxyReqOptDecorator: async (options, req) => {
 		log.info(`Proxy request started for ${req.originalUrl}`);
 
 		if (process.env.IS_VERDIKJEDE === 'true') {
 			log.info('IS_VERDIKJEDE is true, skipping token processing.');
+			return options;
+		}
+		if (!api.scopes) {
+			// Ikke et kall som krever token, returner options som de er
 			return options;
 		}
 		try {
