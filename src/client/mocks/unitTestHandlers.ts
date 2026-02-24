@@ -39,4 +39,9 @@ export const unitTestHandlers = [
 				]),
 			),
 	),
+
+	http.post(
+		'/api/endringslogg/endringslogg/text',
+		() => new Response(JSON.stringify([{ title: 'Test av nyhet', seen: true, date: new Date().toISOString() }])),
+	),
 ];
