@@ -1,4 +1,6 @@
-export const oppgaveQueryForDuration = {
+import { OppgaveQuery, Oppgavefelt, Oppgaverad } from 'filter/filterTsTypes';
+
+export const oppgaveQueryForDuration: OppgaveQuery = {
 	filtere: [
 		{
 			id: '9c826b1e-35f3-416f-a4b2-7c0862e90c9b',
@@ -22,8 +24,9 @@ export const oppgaveQueryForDuration = {
 	id: 'ba50126a-5e5e-4c24-86ea-0255af308837',
 };
 
-export const oppgaverMedDuration = [
+export const oppgaverMedDuration: Oppgaverad[] = [
 	{
+		id: '1',
 		felter: [
 			{
 				område: 'K9',
@@ -33,6 +36,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '2',
 		felter: [
 			{
 				område: 'K9',
@@ -42,6 +46,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '3',
 		felter: [
 			{
 				område: 'K9',
@@ -51,6 +56,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '4',
 		felter: [
 			{
 				område: 'K9',
@@ -60,6 +66,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '5',
 		felter: [
 			{
 				område: 'K9',
@@ -69,6 +76,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '6',
 		felter: [
 			{
 				område: 'K9',
@@ -78,6 +86,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '7',
 		felter: [
 			{
 				område: 'K9',
@@ -87,6 +96,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '8',
 		felter: [
 			{
 				område: 'K9',
@@ -96,6 +106,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '9',
 		felter: [
 			{
 				område: 'K9',
@@ -105,6 +116,7 @@ export const oppgaverMedDuration = [
 		],
 	},
 	{
+		id: '10',
 		felter: [
 			{
 				område: 'K9',
@@ -137,8 +149,9 @@ export const oppgaveQueryForDate = {
 	limit: 10,
 	id: '4d552437-e47e-44a9-9239-99c8f2ea4963',
 };
-export const oppgaverMedDate = [
+export const oppgaverMedDate: Oppgaverad[] = [
 	{
+		id: '1',
 		felter: [
 			{
 				område: 'K9',
@@ -148,6 +161,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '2',
 		felter: [
 			{
 				område: 'K9',
@@ -157,6 +171,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '3',
 		felter: [
 			{
 				område: 'K9',
@@ -166,6 +181,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '4',
 		felter: [
 			{
 				område: 'K9',
@@ -175,6 +191,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '5',
 		felter: [
 			{
 				område: 'K9',
@@ -184,6 +201,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '6',
 		felter: [
 			{
 				område: 'K9',
@@ -193,6 +211,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '7',
 		felter: [
 			{
 				område: 'K9',
@@ -202,6 +221,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '8',
 		felter: [
 			{
 				område: 'K9',
@@ -211,6 +231,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '9',
 		felter: [
 			{
 				område: 'K9',
@@ -220,6 +241,7 @@ export const oppgaverMedDate = [
 		],
 	},
 	{
+		id: '10',
 		felter: [
 			{
 				område: 'K9',
@@ -230,7 +252,7 @@ export const oppgaverMedDate = [
 	},
 ];
 
-export const felter = [
+export const felter: Oppgavefelt[] = [
 	{
 		område: 'K9',
 		kode: 'akkumulertVentetidAnnetForTidligereVersjoner',

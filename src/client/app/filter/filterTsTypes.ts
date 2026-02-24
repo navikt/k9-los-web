@@ -102,6 +102,7 @@ export enum OppgavefilterKode {
 	AkkumulertVentetidSaksbehandler = 'akkumulertVentetidSaksbehandler',
 	AkkumulertVentetidSøker = 'akkumulertVentetidSøker',
 	AkkumulertVentetidTekniskFeil = 'akkumulertVentetidTekniskFeil',
+	AkkumulertVentetidSaksbehandlerForTidligereVersjoner = 'akkumulertVentetidSaksbehandlerForTidligereVersjoner',
 	Aksjonspunkt = 'aksjonspunkt',
 	AktivtAksjonspunkt = 'aktivtAksjonspunkt',
 	AktivVentefrist = 'aktivVentefrist',

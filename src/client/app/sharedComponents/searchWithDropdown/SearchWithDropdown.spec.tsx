@@ -25,7 +25,7 @@ describe('SearchWithDropdown', () => {
 
 	it('renders selected suggestions correctly (ungrouped)', async () => {
 		render(<SearchWithDropdown {...defaultProps} selectedValues={['Value 1']} />);
-		screen.getByRole('button', { name: 'Group 1 (1)' }).click();
+		await userEvent.click(screen.getByRole('button', { name: 'Group 1 (1)' }));
 		expect((await screen.findAllByText('Label 1')).length).toBeGreaterThanOrEqual(1);
 	});
 
