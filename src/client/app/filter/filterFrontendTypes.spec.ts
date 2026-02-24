@@ -1,4 +1,4 @@
-import { tilApiFilter, tilApiQuery, tilIdentifiedFilter, tilIdentifiedQuery } from './filterFrontendTypes';
+import { fjernNodeIdFraFilter, tilApiQuery, tilIdentifiedFilter, tilIdentifiedQuery } from './filterFrontendTypes';
 import {
 	CombineOppgavefilter,
 	EnkelOrderFelt,
@@ -100,7 +100,7 @@ describe('filterFrontendTypes konvertering', () => {
 			expect(identified._nodeId).toBeDefined();
 			expect(identified.type).toBe('feltverdi');
 
-			const roundtripped = tilApiFilter(identified);
+			const roundtripped = fjernNodeIdFraFilter(identified);
 			expect(roundtripped).toEqual(feltverdiFilter);
 		});
 
@@ -116,7 +116,7 @@ describe('filterFrontendTypes konvertering', () => {
 				});
 			}
 
-			const roundtripped = tilApiFilter(identified);
+			const roundtripped = fjernNodeIdFraFilter(identified);
 			expect(roundtripped).toEqual(combineFilter);
 		});
 	});

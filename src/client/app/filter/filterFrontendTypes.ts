@@ -1,38 +1,21 @@
 import { v4 as uuid } from 'uuid';
-import {
-	CombineOppgavefilter,
-	EnkelOrderFelt,
-	EnkelSelectFelt,
-	FeltverdiOppgavefilter,
-	OppgaveQuery,
-	Oppgavefilter,
-} from './filterTsTypes';
-
-export type WithNodeIdField<T, X extends keyof T> = T & { _nodeId: string };
+import { CombineOppgavefilter, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter } from './filterTsTypes';
 
 export type WithNodeId<T> = T & { _nodeId: string };
 
-export type WithNodeIdRecursive<T extends object> = WithNodeId<{
-	[K in keyof T]: T[K] extends (infer U)[] ? ([U] extends [object] ? WithNodeIdRecursive<U>[] : T[K]) : T[K];
-}>;
+export type WithNodeIdRecursive<T extends object> = T extends any
+	? WithNodeId<{
+			[K in keyof T]: T[K] extends (infer U)[] ? ([U] extends [object] ? WithNodeIdRecursive<U>[] : T[K]) : T[K];
+		}>
+	: never;
 
 export type IdentifiedFeltverdiOppgavefilter = WithNodeId<FeltverdiOppgavefilter>;
 
-export type IdentifiedCombineOppgavefilter = WithNodeId<Omit<CombineOppgavefilter, 'filtere'>> & {
-	filtere: IdentifiedOppgavefilter[];
-};
+export type IdentifiedCombineOppgavefilter = WithNodeIdRecursive<CombineOppgavefilter>;
 
 export type IdentifiedOppgavefilter = IdentifiedFeltverdiOppgavefilter | IdentifiedCombineOppgavefilter;
 
-export type IdentifiedOppgaveQuery = {
-	_nodeId: string;
-	filtere: IdentifiedOppgavefilter[];
-	select: WithNodeId<EnkelSelectFelt>[];
-	order: WithNodeId<EnkelOrderFelt>[];
-	limit: number;
-};
-
-// export type IdentifiedOppgaveQuery = WithNodeIdRecursive<OppgaveQuery>;
+export type IdentifiedOppgaveQuery = WithNodeIdRecursive<OppgaveQuery>;
 
 export function tilIdentifiedFilter(filter: Oppgavefilter): IdentifiedOppgavefilter {
 	if (filter.type === 'combine') {
@@ -59,10 +42,10 @@ export function tilIdentifiedQuery(query: OppgaveQuery): IdentifiedOppgaveQuery 
 	};
 }
 
-export function tilApiFilter(filter: IdentifiedOppgavefilter): Oppgavefilter {
+export function fjernNodeIdFraFilter(filter: IdentifiedOppgavefilter): Oppgavefilter {
 	if (filter.type === 'combine') {
 		const { _nodeId, ...rest } = filter;
-		return { ...rest, filtere: filter.filtere.map(tilApiFilter) };
+		return { ...rest, filtere: filter.filtere.map(fjernNodeIdFraFilter) };
 	}
 	const { _nodeId, ...rest } = filter;
 	return rest;
@@ -72,7 +55,7 @@ export function tilApiQuery(query: IdentifiedOppgaveQuery): OppgaveQuery {
 	const { _nodeId, ...rest } = query;
 	return {
 		...rest,
-		filtere: query.filtere.map(tilApiFilter),
+		filtere: query.filtere.map(fjernNodeIdFraFilter),
 		select: query.select.map(fjernNodeId),
 		order: query.order.map(fjernNodeId),
 	};
