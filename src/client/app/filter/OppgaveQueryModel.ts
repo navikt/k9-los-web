@@ -10,7 +10,7 @@ import {
 import { FeltverdiOppgavefilter, OppgaveQuery } from './filterTsTypes';
 
 export default class OppgaveQueryModel {
-	private oppgaveQuery: IdentifiedOppgaveQuery;
+	private readonly oppgaveQuery: IdentifiedOppgaveQuery;
 
 	private errors: { _nodeId: string; felt: string; message: string }[] = [];
 
@@ -84,12 +84,12 @@ export default class OppgaveQueryModel {
 	}
 
 	getById(nodeId: string) {
-		const selected = this.oppgaveQuery.select.find((f) => f.id === nodeId);
+		const selected = this.oppgaveQuery.select.find((f) => f._nodeId === nodeId);
 		if (selected) {
 			return selected;
 		}
 
-		const ordered = this.oppgaveQuery.order.find((f) => f.id === nodeId);
+		const ordered = this.oppgaveQuery.order.find((f) => f._nodeId === nodeId);
 		if (ordered) {
 			return ordered;
 		}
@@ -133,7 +133,7 @@ export default class OppgaveQueryModel {
 				operator: 'EQUALS',
 				verdi: null,
 				...data,
-			} as IdentifiedOppgavefilter);
+			});
 		} else {
 			node.filtere
 				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
@@ -185,7 +185,7 @@ export default class OppgaveQueryModel {
 
 	addEnkelSelectFelt() {
 		this.oppgaveQuery.select.push({
-			id: uuid(),
+			_nodeId: uuid(),
 			type: 'enkel',
 			område: null,
 			kode: null,
@@ -194,7 +194,7 @@ export default class OppgaveQueryModel {
 	}
 
 	removeSelectFelt(id: string) {
-		const index = this.oppgaveQuery.select.findIndex((f) => f.id === id);
+		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === id);
 		if (index >= 0) {
 			this.oppgaveQuery.select.splice(index, 1);
 		}
@@ -202,7 +202,7 @@ export default class OppgaveQueryModel {
 	}
 
 	updateEnkelSelectFelt(id: string, data) {
-		const index = this.oppgaveQuery.select.findIndex((f) => f.id === id);
+		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === id);
 		if (index >= 0) {
 			this.oppgaveQuery.select[index] = data;
 		}
@@ -217,7 +217,7 @@ export default class OppgaveQueryModel {
 
 	addEnkelOrderFelt(data = {}) {
 		this.oppgaveQuery.order.push({
-			id: uuid(),
+			_nodeId: uuid(),
 			type: 'enkel',
 			område: null,
 			kode: null,
@@ -228,7 +228,7 @@ export default class OppgaveQueryModel {
 	}
 
 	removeOrderFelt(id: string) {
-		const index = this.oppgaveQuery.order.findIndex((f) => f.id === id);
+		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === id);
 		if (index >= 0) {
 			this.oppgaveQuery.order.splice(index, 1);
 		}
@@ -241,7 +241,7 @@ export default class OppgaveQueryModel {
 	}
 
 	updateEnkelOrderFelt(id: string, data) {
-		const index = this.oppgaveQuery.order.findIndex((f) => f.id === id);
+		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === id);
 		if (index >= 0) {
 			this.oppgaveQuery.order[index] = data;
 		}

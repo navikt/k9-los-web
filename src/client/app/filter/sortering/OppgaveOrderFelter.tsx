@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core/dist/types';
 import {
 	SortableContext,
 	sortableKeyboardCoordinates,
@@ -11,12 +12,13 @@ import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icon
 import { Button, Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import { Oppgavefelt } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
 import { feltverdiKey, kodeFraKey, områdeFraKey } from '../utils';
 import * as styles from './OppgaveOrderFelter.css';
 
 const SortableOrderField = ({ felt, felter, onUpdateKode, onUpdateDirection, onRemove }) => {
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt.id });
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
@@ -36,7 +38,7 @@ const SortableOrderField = ({ felt, felter, onUpdateKode, onUpdateDirection, onR
 				onChange={(event) => onUpdateKode(felt.id, event.target.value)}
 			>
 				<option value="">Velg felt</option>
-				{felter.map((feltdefinisjon) => (
+				{felter.map((feltdefinisjon: Oppgavefelt) => (
 					<option key={feltverdiKey(feltdefinisjon)} value={feltverdiKey(feltdefinisjon)}>
 						{feltdefinisjon.visningsnavn}
 					</option>
@@ -76,7 +78,7 @@ const OppgaveOrderFelter = () => {
 		}),
 	);
 
-	const handleRemoveFelt = (feltId) => {
+	const handleRemoveFelt = (feltId: string) => {
 		updateQuery([removeSortering(feltId)]);
 	};
 
@@ -84,7 +86,7 @@ const OppgaveOrderFelter = () => {
 		updateQuery([addSortering()]);
 	};
 
-	const handleUpdateKode = (feltId, value) => {
+	const handleUpdateKode = (feltId: string, value: string) => {
 		updateQuery([
 			updateSortering(feltId, {
 				område: områdeFraKey(value),
@@ -93,7 +95,7 @@ const OppgaveOrderFelter = () => {
 		]);
 	};
 
-	const handleUpdateDirection = (feltId, direction) => {
+	const handleUpdateDirection = (feltId: string, direction: string) => {
 		updateQuery([
 			updateSortering(feltId, {
 				økende: direction === 'true',
@@ -101,13 +103,13 @@ const OppgaveOrderFelter = () => {
 		]);
 	};
 
-	const handleDragEnd = (event) => {
+	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
 		if (!over || active.id === over.id) return;
 
 		const orderFields = oppgaveQuery?.order ?? [];
-		const oldIndex = orderFields.findIndex((f) => f.id === active.id);
-		const newIndex = orderFields.findIndex((f) => f.id === over.id);
+		const oldIndex = orderFields.findIndex((f) => f._nodeId === active.id);
+		const newIndex = orderFields.findIndex((f) => f._nodeId === over.id);
 		if (oldIndex === -1 || newIndex === -1) return;
 
 		updateQuery([moveSortering(oldIndex, newIndex)]);
@@ -118,10 +120,10 @@ const OppgaveOrderFelter = () => {
 	return (
 		<div>
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-				<SortableContext items={orderFields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+				<SortableContext items={orderFields.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
 					{orderFields.map((felt) => (
 						<SortableOrderField
-							key={felt.id}
+							key={felt._nodeId}
 							felt={felt}
 							felter={felter}
 							onUpdateKode={handleUpdateKode}

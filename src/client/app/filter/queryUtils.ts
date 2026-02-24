@@ -98,7 +98,7 @@ const addSortering =
 	};
 
 const updateSortering =
-	(id, newData) =>
+	(id: string, newData) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newOppgaveQueryModel = new OppgaveQueryModel(model);
 		const orderToUpdate = newOppgaveQueryModel.getById(id);

@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
+import { DragEndEvent } from '@dnd-kit/core/dist/types';
 import {
 	SortableContext,
 	sortableKeyboardCoordinates,
@@ -11,6 +12,8 @@ import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icon
 import { Button, Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import { WithNodeId } from 'filter/filterFrontendTypes';
+import { EnkelSelectFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 import { feltverdiKey } from '../utils';
 import * as styles from './OppgaveSelectFelter.css';
@@ -37,7 +40,7 @@ const SortableField = ({ felt, felter, onUpdate, onRemove }) => {
 				onChange={(event) => onUpdate(felt, event.target.value)}
 			>
 				<option value="">Velg felt</option>
-				{felter.map((feltdefinisjon) => (
+				{felter.map((feltdefinisjon: Oppgavefelt) => (
 					<option key={feltverdiKey(feltdefinisjon)} value={feltverdiKey(feltdefinisjon)}>
 						{feltdefinisjon.visningsnavn}
 					</option>
@@ -64,25 +67,25 @@ const OppgaveSelectFelter = () => {
 		}),
 	);
 
-	const handleRemove = (felt) => {
-		updateQuery([removeSelectFelt(felt.id)]);
+	const handleRemove = (felt: WithNodeId<EnkelSelectFelt>) => {
+		updateQuery([removeSelectFelt(felt._nodeId)]);
 	};
 
 	const handleAdd = () => {
 		updateQuery([addSelectFelt()]);
 	};
 
-	const handleUpdate = (felt, newValue) => {
-		updateQuery([updateSelectFelt(felt.id, newValue)]);
+	const handleUpdate = (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => {
+		updateQuery([updateSelectFelt(felt._nodeId, newValue)]);
 	};
 
-	const handleDragEnd = (event) => {
+	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
 		if (!over || active.id === over.id) return;
 
 		const selectFields = oppgaveQuery?.select ?? [];
-		const oldIndex = selectFields.findIndex((f) => f.id === active.id);
-		const newIndex = selectFields.findIndex((f) => f.id === over.id);
+		const oldIndex = selectFields.findIndex((f) => f._nodeId === active.id);
+		const newIndex = selectFields.findIndex((f) => f._nodeId === over.id);
 		if (oldIndex === -1 || newIndex === -1) return;
 
 		updateQuery([moveSelectFelt(oldIndex, newIndex)]);
@@ -93,9 +96,15 @@ const OppgaveSelectFelter = () => {
 	return (
 		<div>
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-				<SortableContext items={selectFields.map((f) => f.id)} strategy={verticalListSortingStrategy}>
+				<SortableContext items={selectFields.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
 					{selectFields.map((felt) => (
-						<SortableField key={felt.id} felt={felt} felter={felter} onUpdate={handleUpdate} onRemove={handleRemove} />
+						<SortableField
+							key={felt._nodeId}
+							felt={felt}
+							felter={felter}
+							onUpdate={handleUpdate}
+							onRemove={handleRemove}
+						/>
 					))}
 				</SortableContext>
 			</DndContext>

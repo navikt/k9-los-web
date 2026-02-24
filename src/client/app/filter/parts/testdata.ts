@@ -12,7 +12,6 @@ export const oppgaveQueryForDuration: OppgaveQuery = {
 	],
 	select: [
 		{
-			id: '77530d5d-0ec6-4a1e-aa5d-ea27a5a30655',
 			type: 'enkel',
 			område: 'K9',
 			kode: OppgavefilterKode.AkkumulertVentetidSaksbehandlerForTidligereVersjoner,
@@ -136,7 +135,6 @@ export const oppgaveQueryForDate: OppgaveQuery = {
 	],
 	select: [
 		{
-			id: '6a87800f-1d70-4e7e-a414-81a6607fd173',
 			type: 'enkel',
 			område: 'K9',
 			kode: OppgavefilterKode.MottattDato,

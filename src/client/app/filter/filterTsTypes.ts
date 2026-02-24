@@ -23,7 +23,6 @@ export type OppgaveQuery = {
 
 export type EnkelOrderFelt = {
 	type: 'enkel';
-	id: string;
 	område: string;
 	kode: string;
 	økende: boolean;
@@ -31,7 +30,6 @@ export type EnkelOrderFelt = {
 
 export type EnkelSelectFelt = {
 	type: 'enkel';
-	id: string;
 	område: string;
 	kode: string;
 };

@@ -302,8 +302,8 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery(
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: 'saksnummer' as any },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'oppgavestatus' as any },
+					{ type: 'enkel', område: 'K9', kode: 'saksnummer' },
+					{ type: 'enkel', område: 'K9', kode: 'oppgavestatus' },
 				],
 			);
 
@@ -317,8 +317,8 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery(
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: '' as any },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'saksnummer' as any },
+					{ type: 'enkel', område: 'K9', kode: '' },
+					{ type: 'enkel', område: 'K9', kode: 'saksnummer' },
 				],
 			);
 
@@ -341,8 +341,8 @@ describe('queryBeskrivelseUtils', () => {
 				[],
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: 'mottattDato' as any, økende: true },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'saksnummer' as any, økende: false },
+					{ type: 'enkel', område: 'K9', kode: 'mottattDato', økende: true },
+					{ type: 'enkel', område: 'K9', kode: 'saksnummer', økende: false },
 				],
 			);
 
@@ -360,8 +360,8 @@ describe('queryBeskrivelseUtils', () => {
 				[],
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: '' as any, økende: true },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'mottattDato' as any, økende: false },
+					{ type: 'enkel', område: 'K9', kode: '', økende: true },
+					{ type: 'enkel', område: 'K9', kode: 'mottattDato', økende: false },
 				],
 			);
 
@@ -379,13 +379,13 @@ describe('queryBeskrivelseUtils', () => {
 					{
 						type: 'feltverdi',
 						område: 'K9',
-						kode: 'oppgavestatus' as any,
+						kode: 'oppgavestatus',
 						operator: 'IN',
 						verdi: ['AAPEN'],
 					},
 				],
-				select: [{ type: 'enkel', id: '1', område: 'K9', kode: 'saksnummer' as any }],
-				order: [{ type: 'enkel', id: '1', område: 'K9', kode: 'mottattDato' as any, økende: true }],
+				select: [{ type: 'enkel', område: 'K9', kode: 'saksnummer' as any }],
+				order: [{ type: 'enkel', område: 'K9', kode: 'mottattDato' as any, økende: true }],
 				limit: 100,
 			};
 
