@@ -1,6 +1,7 @@
-import { OppgaveQuery, Oppgavefelt, OppgavefilterKode, Oppgaverad, TolkesSom } from 'filter/filterTsTypes';
+import { IdentifiedOppgaveQuery, tilIdentifiedQuery } from 'filter/filterFrontendTypes';
+import { Oppgavefelt, OppgavefilterKode, Oppgaverad, TolkesSom } from 'filter/filterTsTypes';
 
-export const oppgaveQueryForDuration: OppgaveQuery = {
+export const oppgaveQueryForDuration: IdentifiedOppgaveQuery = tilIdentifiedQuery({
 	filtere: [
 		{
 			type: 'feltverdi',
@@ -19,7 +20,7 @@ export const oppgaveQueryForDuration: OppgaveQuery = {
 	],
 	order: [],
 	limit: 10,
-};
+});
 
 export const oppgaverMedDuration: Oppgaverad[] = [
 	{
@@ -123,7 +124,7 @@ export const oppgaverMedDuration: Oppgaverad[] = [
 		],
 	},
 ];
-export const oppgaveQueryForDate: OppgaveQuery = {
+export const oppgaveQueryForDate: IdentifiedOppgaveQuery = tilIdentifiedQuery({
 	filtere: [
 		{
 			type: 'feltverdi',
@@ -142,7 +143,7 @@ export const oppgaveQueryForDate: OppgaveQuery = {
 	],
 	order: [],
 	limit: 10,
-};
+});
 export const oppgaverMedDate: Oppgaverad[] = [
 	{
 		id: '1',

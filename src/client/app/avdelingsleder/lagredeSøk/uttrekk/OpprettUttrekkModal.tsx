@@ -91,7 +91,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 							<Box marginBlock="space-12" asChild>
 								<List size="small">
 									{selectFelterMedNavn.map((felt) => (
-										<List.Item key={felt._nodeId}>{felt.visningsnavn}</List.Item>
+										<List.Item key={`${felt.område}.${felt.kode}`}>{felt.visningsnavn}</List.Item>
 									))}
 								</List>
 							</Box>
@@ -102,7 +102,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 									<Box marginBlock="space-12" asChild>
 										<List size="small">
 											{orderFelterMedNavn.map((felt) => (
-												<List.Item key={felt.id}>
+												<List.Item key={`${felt.område}.${felt.kode}`}>
 													{felt.visningsnavn} ({felt.økende ? 'økende' : 'synkende'})
 												</List.Item>
 											))}

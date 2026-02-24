@@ -1,5 +1,12 @@
 import { v4 as uuid } from 'uuid';
-import { CombineOppgavefilter, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter } from './filterTsTypes';
+import {
+	CombineOppgavefilter,
+	EnkelOrderFelt,
+	EnkelSelectFelt,
+	FeltverdiOppgavefilter,
+	OppgaveQuery,
+	Oppgavefilter,
+} from './filterTsTypes';
 
 export type WithNodeIdField<T, X extends keyof T> = T & { _nodeId: string };
 
@@ -17,7 +24,15 @@ export type IdentifiedCombineOppgavefilter = WithNodeId<Omit<CombineOppgavefilte
 
 export type IdentifiedOppgavefilter = IdentifiedFeltverdiOppgavefilter | IdentifiedCombineOppgavefilter;
 
-export type IdentifiedOppgaveQuery = WithNodeIdRecursive<OppgaveQuery>;
+export type IdentifiedOppgaveQuery = {
+	_nodeId: string;
+	filtere: IdentifiedOppgavefilter[];
+	select: WithNodeId<EnkelSelectFelt>[];
+	order: WithNodeId<EnkelOrderFelt>[];
+	limit: number;
+};
+
+// export type IdentifiedOppgaveQuery = WithNodeIdRecursive<OppgaveQuery>;
 
 export function tilIdentifiedFilter(filter: Oppgavefilter): IdentifiedOppgavefilter {
 	if (filter.type === 'combine') {
