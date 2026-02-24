@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { FunctionComponent, useContext } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import { DragEndEvent } from '@dnd-kit/core/dist/types';
 import {
@@ -18,8 +18,13 @@ import { addSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } fro
 import { feltverdiKey } from '../utils';
 import * as styles from './OppgaveSelectFelter.css';
 
-const SortableField = ({ felt, felter, onUpdate, onRemove }) => {
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt.id });
+const SortableField: FunctionComponent<{
+	felt: WithNodeId<EnkelSelectFelt>;
+	felter: Oppgavefelt[];
+	onUpdate: (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => void;
+	onRemove: (felt: WithNodeId<EnkelSelectFelt>) => void;
+}> = ({ felt, felter, onUpdate, onRemove }) => {
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
