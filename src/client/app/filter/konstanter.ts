@@ -1,6 +1,6 @@
 import { OppgavefilterKode } from './filterTsTypes';
 
-export const kriterierSomSkalGrupperes = [
+export const kriterierSomSkalGrupperes: string[] = [
 	OppgavefilterKode.Aksjonspunkt,
 	OppgavefilterKode.LøsbartAksjonspunkt,
 	OppgavefilterKode.AktivtAksjonspunkt,

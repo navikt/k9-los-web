@@ -13,7 +13,7 @@ import { generateId } from './idGenerator';
 
 interface Props {
 	oppgavefilter: FeltverdiOppgavefilter;
-	paakrevdeKoder: OppgavefilterKode[];
+	paakrevdeKoder: string[];
 	readOnly: boolean;
 }
 

@@ -11,8 +11,8 @@ export const KøKriterieEditorContent = ({
 	paakrevdeKoder,
 	readOnlyKoder,
 }: {
-	paakrevdeKoder?: OppgavefilterKode[];
-	readOnlyKoder?: OppgavefilterKode[];
+	paakrevdeKoder?: string[];
+	readOnlyKoder?: string[];
 }) => {
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
@@ -50,8 +50,8 @@ interface OwnProps {
 	avbryt: () => void;
 	initialQuery?: OppgaveQuery;
 	tittel: string;
-	paakrevdeKoder?: OppgavefilterKode[];
-	readOnlyKoder?: OppgavefilterKode[];
+	paakrevdeKoder?: string[];
+	readOnlyKoder?: string[];
 	visSortering?: boolean;
 	hovedknappTekst: string;
 }

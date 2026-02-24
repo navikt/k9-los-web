@@ -5,7 +5,7 @@ export type Oppgavefilter = {
 export type FeltverdiOppgavefilter = Oppgavefilter & {
 	id: string;
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	operator: string;
 	verdi: string[];
 };
@@ -35,7 +35,7 @@ export type OrderFelt = {
 export type EnkelOrderFelt = OrderFelt & {
 	id: string;
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	økende: boolean;
 };
 
@@ -46,12 +46,12 @@ export type SelectFelt = {
 export type EnkelSelectFelt = SelectFelt & {
 	id: string;
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 };
 
 export type Oppgavefeltverdi = {
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	verdi: string | string[];
 };
 
@@ -75,9 +75,10 @@ export enum TolkesSom {
 	Timestamp = 'Timestamp',
 	Integer = 'Integer',
 }
+
 export type Oppgavefelt = {
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	visningsnavn: string;
 	beskrivelse?: string;
 	kokriterie: boolean;
@@ -86,15 +87,8 @@ export type Oppgavefelt = {
 	verdiforklaringer: Verdiforklaring[] | null;
 };
 
-/*
-	TODO: finne en annen løsning på dette.
-	Backend anser denne listen som dynamisk og vi mottar alle disse kodene via API
-	og må derfor ha en liste som er lik backend sin liste.
-
-	Denne ligger lagret i frontend fordi:
-	- vi noen a kodene til å sette påkrevde felter på toppnivå i kriterier for oppgavekøer.
-	- vi bruker noen av kodene til å vite når vi skal vise aksjonspunktvelgeren når man lager query.
-*/
+// Kjente kode-verdier fra backend, brukes til sammenligning der frontend trenger spesifikk logikk.
+// kode-feltet i typene er string fordi backend anser listen som dynamisk.
 export enum OppgavefilterKode {
 	AkkumulertVentetidAnnet = 'akkumulertVentetidAnnet',
 	AkkumulertVentetidAnnetForTidligereVersjoner = 'akkumulertVentetidAnnetForTidligereVersjoner',

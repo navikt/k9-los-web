@@ -12,7 +12,7 @@ import { comboboxSeparatorStyle, COMBOBOX_SEPARATOR_VALUE, feltverdiKey, kodeFra
 interface Props {
 	oppgavefilter: FeltverdiOppgavefilter;
 	addGruppeOperation: (model: OppgaveQuery) => OppgaveQuery;
-	paakrevdeKoder: OppgavefilterKode[];
+	paakrevdeKoder: string[];
 }
 
 const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }: Props) => {

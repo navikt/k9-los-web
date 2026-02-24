@@ -13,8 +13,8 @@ interface OppgavefilterPanelProps {
 	oppgavefilter: FeltverdiOppgavefilter | CombineOppgavefilter;
 	addGruppeOperation?: (model: OppgaveQuery) => OppgaveQuery;
 	køvisning?: boolean;
-	paakrevdeKoder?: OppgavefilterKode[];
-	readOnlyKoder?: OppgavefilterKode[];
+	paakrevdeKoder?: string[];
+	readOnlyKoder?: string[];
 }
 
 /* eslint-disable @typescript-eslint/no-use-before-define */
