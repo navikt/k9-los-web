@@ -3,7 +3,6 @@ import { OppgaveQuery, Oppgavefelt, OppgavefilterKode, Oppgaverad, TolkesSom } f
 export const oppgaveQueryForDuration: OppgaveQuery = {
 	filtere: [
 		{
-			id: '9c826b1e-35f3-416f-a4b2-7c0862e90c9b',
 			type: 'feltverdi',
 			område: 'K9',
 			kode: OppgavefilterKode.AkkumulertVentetidSaksbehandlerForTidligereVersjoner,
@@ -21,7 +20,6 @@ export const oppgaveQueryForDuration: OppgaveQuery = {
 	],
 	order: [],
 	limit: 10,
-	id: 'ba50126a-5e5e-4c24-86ea-0255af308837',
 };
 
 export const oppgaverMedDuration: Oppgaverad[] = [
@@ -126,10 +124,9 @@ export const oppgaverMedDuration: Oppgaverad[] = [
 		],
 	},
 ];
-export const oppgaveQueryForDate = {
+export const oppgaveQueryForDate: OppgaveQuery = {
 	filtere: [
 		{
-			id: 'eb02fb7d-af6f-4844-a8e7-b68d4d4ac57a',
 			type: 'feltverdi',
 			område: 'K9',
 			kode: OppgavefilterKode.MottattDato,
@@ -147,7 +144,6 @@ export const oppgaveQueryForDate = {
 	],
 	order: [],
 	limit: 10,
-	id: '4d552437-e47e-44a9-9239-99c8f2ea4963',
 };
 export const oppgaverMedDate: Oppgaverad[] = [
 	{

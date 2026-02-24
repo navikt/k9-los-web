@@ -7,6 +7,7 @@ import { FilterContext } from './FilterContext';
 import * as styles from './KøKriterieEditorProvider.css';
 import OppgaveQueryModel from './OppgaveQueryModel';
 import { OppgaveQuery } from './filterTsTypes';
+import { tilApiQuery } from './filterFrontendTypes';
 import { QueryFunction, applyFunctions } from './queryUtils';
 import EnkelSortering from './sortering/EnkelSortering';
 
@@ -31,7 +32,7 @@ const KøKriterieEditorProvider = ({
 	const [queryErrors, setQueryErrors] = useState([]);
 	const [shouldRevalidate, setShouldRevalidate] = useState(false);
 	const [oppgaveQuery, setOppgaveQuery] = useState(
-		initialQuery ? new OppgaveQueryModel(initialQuery).toOppgaveQuery() : new OppgaveQueryModel().toOppgaveQuery(),
+		initialQuery ? new OppgaveQueryModel(initialQuery).toIdentifiedQuery() : new OppgaveQueryModel().toIdentifiedQuery(),
 	);
 	const [antallOppgaver, setAntallOppgaver] = useState<number>();
 
@@ -58,7 +59,7 @@ const KøKriterieEditorProvider = ({
 	const { felter } = React.useContext(AppContext);
 
 	const validerQuery = (feilmelding: string, onSuccess: () => void) => {
-		validerMutate(oppgaveQuery, {
+		validerMutate(tilApiQuery(oppgaveQuery), {
 			onSuccess: (valideringOK) => {
 				const model = new OppgaveQueryModel(oppgaveQuery);
 				model.validate();
@@ -85,7 +86,7 @@ const KøKriterieEditorProvider = ({
 
 	const hentAntall = () => {
 		validerQuery('Kriteriene er ikke gyldige. Kan ikke hente antall oppgaver.', () => {
-			hentAntallMutate(oppgaveQuery, {
+			hentAntallMutate(tilApiQuery(oppgaveQuery), {
 				onSuccess: (respons) => {
 					if (respons !== undefined) {
 						setAntallOppgaver(respons);
@@ -100,7 +101,7 @@ const KøKriterieEditorProvider = ({
 
 	const validerOgLagre = () => {
 		validerQuery('Kriteriene er ikke gyldige. Kriterier for kø kan ikke lagres.', () => {
-			lagre(oppgaveQuery);
+			lagre(tilApiQuery(oppgaveQuery));
 		});
 	};
 

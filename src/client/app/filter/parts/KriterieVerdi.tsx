@@ -12,6 +12,7 @@ import {
 } from '@navikt/ds-react';
 import GruppertKriterieVelger from 'avdelingsleder/behandlingskoerV3/components/AksjonspunktVelger';
 import { FilterContext } from 'filter/FilterContext';
+import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { FeltverdiOppgavefilter, Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
 import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
@@ -22,7 +23,7 @@ import MultiSelectKriterie from './MultiSelectKriterie';
 const useChangeValue = (oppgavefilter, updateQuery) => (value) => {
 	const trimmedValue = typeof value === 'string' ? value.trim() : value;
 	updateQuery([
-		updateFilter(oppgavefilter.id, {
+		updateFilter(oppgavefilter._nodeId, {
 			verdi: trimmedValue,
 		}),
 	]);
@@ -34,11 +35,11 @@ const KriterieVerdi = ({
 	readOnly,
 }: {
 	feltdefinisjon?: Oppgavefelt;
-	oppgavefilter: FeltverdiOppgavefilter;
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
 	readOnly?: boolean;
 }) => {
 	const { updateQuery, errors } = useContext(FilterContext);
-	const errorMessage = errors.find((e) => e.id === oppgavefilter.id && e.felt === 'verdi')?.message;
+	const errorMessage = errors.find((e) => e._nodeId === oppgavefilter._nodeId && e.felt === 'verdi')?.message;
 
 	const handleChangeValue = useChangeValue(oppgavefilter, updateQuery);
 
@@ -46,7 +47,7 @@ const KriterieVerdi = ({
 		const mappedValues: (string | null)[] = mapStringToBooleanArray(values);
 
 		updateQuery([
-			updateFilter(oppgavefilter.id, {
+			updateFilter(oppgavefilter._nodeId, {
 				verdi: mappedValues,
 			}),
 		]);

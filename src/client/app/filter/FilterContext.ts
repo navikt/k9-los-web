@@ -1,11 +1,11 @@
 import React from 'react';
-import { OppgaveQuery } from './filterTsTypes';
+import { IdentifiedOppgaveQuery } from './filterFrontendTypes';
 import { QueryFunction } from './queryUtils';
 
 export type FilterContextType = {
-	oppgaveQuery: OppgaveQuery;
+	oppgaveQuery: IdentifiedOppgaveQuery;
 	updateQuery: (operations: Array<QueryFunction>) => void;
-	errors: { id: string; felt: string; message: string }[];
+	errors: { _nodeId: string; felt: string; message: string }[];
 	readOnly?: boolean;
 };
 

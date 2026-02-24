@@ -5,9 +5,9 @@ import {
 	EnkelOrderFelt,
 	EnkelSelectFelt,
 	FeltverdiOppgavefilter,
-	FilterType,
 	OppgaveQuery,
 	Oppgavefelt,
+	Oppgavefilter,
 	TolkesSom,
 } from './filterTsTypes';
 import { OPERATORS } from './utils';
@@ -125,15 +125,15 @@ function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: O
 	};
 }
 
-function isFeltverdiOppgavefilter(filter: FilterType): filter is FeltverdiOppgavefilter {
+function isFeltverdiOppgavefilter(filter: Oppgavefilter): filter is FeltverdiOppgavefilter {
 	return filter.type === 'feltverdi';
 }
 
-function isCombineOppgavefilter(filter: FilterType): filter is CombineOppgavefilter {
+function isCombineOppgavefilter(filter: Oppgavefilter): filter is CombineOppgavefilter {
 	return filter.type === 'combine';
 }
 
-function traverserFiltere(filtere: FilterType[], felter: Oppgavefelt[]): FilterBeskrivelse[] {
+function traverserFiltere(filtere: Oppgavefilter[], felter: Oppgavefelt[]): FilterBeskrivelse[] {
 	const beskrivelser: FilterBeskrivelse[] = [];
 
 	for (const filter of filtere) {

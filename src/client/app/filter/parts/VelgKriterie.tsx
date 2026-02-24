@@ -5,13 +5,14 @@ import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
-import { FeltverdiOppgavefilter, OppgaveQuery, Oppgavefelt, OppgavefilterKode } from 'filter/filterTsTypes';
-import { removeFilter, updateFilter } from 'filter/queryUtils';
-import { comboboxSeparatorStyle, COMBOBOX_SEPARATOR_VALUE, feltverdiKey, kodeFraKey } from 'filter/utils';
+import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
+import { FeltverdiOppgavefilter, Oppgavefelt, OppgavefilterKode } from 'filter/filterTsTypes';
+import { QueryFunction, removeFilter, updateFilter } from 'filter/queryUtils';
+import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle, feltverdiKey, kodeFraKey } from 'filter/utils';
 
 interface Props {
-	oppgavefilter: FeltverdiOppgavefilter;
-	addGruppeOperation: (model: OppgaveQuery) => OppgaveQuery;
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
+	addGruppeOperation: QueryFunction;
 	paakrevdeKoder: string[];
 }
 
@@ -26,7 +27,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 	const errorMessage =
 		klikketLeggTilUtenÅVelgeKriterie && !valgtKriterie
 			? 'Du må velge et kriterie'
-			: errors.find((e) => e.id === oppgavefilter.id && e.felt === 'kode')?.message;
+			: errors.find((e) => e._nodeId === oppgavefilter._nodeId && e.felt === 'kode')?.message;
 
 	const kriterierSomKanVelges =
 		paakrevdeKoder.length > 0 ? felter.filter((kriterie) => paakrevdeKoder.some((v) => v !== kriterie.kode)) : felter;
@@ -68,7 +69,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 
 		if (typeof kriterie === 'string') {
 			if (kriterie === '__gruppe') {
-				const operations = [removeFilter(oppgavefilter.id), addGruppeOperation];
+				const operations = [removeFilter(oppgavefilter._nodeId), addGruppeOperation];
 				updateQuery(operations);
 				return;
 			}
@@ -78,7 +79,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 		const { område, kode } = kriterie;
 
 		const updateData = { område, kode, verdi: undefined };
-		updateQuery([updateFilter(oppgavefilter.id, updateData)]);
+		updateQuery([updateFilter(oppgavefilter._nodeId, updateData)]);
 	};
 
 	return (
@@ -98,7 +99,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 					<Button variant="primary" size="small" onClick={() => leggTil(valgtKriterie)}>
 						Legg til
 					</Button>
-					<Button variant="secondary" size="small" onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}>
+					<Button variant="secondary" size="small" onClick={() => updateQuery([removeFilter(oppgavefilter._nodeId)])}>
 						Avbryt
 					</Button>
 				</div>

@@ -4,14 +4,16 @@ import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label, ToggleGroup } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import { addFilter, addGruppe, removeFilter, updateFilter } from 'filter/queryUtils';
-import { CombineOppgavefilter, FeltverdiOppgavefilter, OppgaveQuery, OppgavefilterKode } from '../filterTsTypes';
+import { IdentifiedCombineOppgavefilter, IdentifiedOppgavefilter } from '../filterFrontendTypes';
+import { OppgavefilterKode } from '../filterTsTypes';
+import { QueryFunction } from '../queryUtils';
 import Kriterie from './Kriterie';
 import VelgKriterie from './VelgKriterie';
 import * as filterGruppeStyles from './filterGruppe.css';
 
 interface OppgavefilterPanelProps {
-	oppgavefilter: FeltverdiOppgavefilter | CombineOppgavefilter;
-	addGruppeOperation?: (model: OppgaveQuery) => OppgaveQuery;
+	oppgavefilter: IdentifiedOppgavefilter;
+	addGruppeOperation?: QueryFunction;
 	køvisning?: boolean;
 	paakrevdeKoder?: string[];
 	readOnlyKoder?: string[];
@@ -27,7 +29,7 @@ const OppgavefilterPanel = ({
 }: OppgavefilterPanelProps) => {
 	const { readOnly: contextReadOnly } = useContext(FilterContext);
 
-	if (oppgavefilter.type === 'feltverdi' && 'kode' in oppgavefilter && oppgavefilter.kode === null) {
+	if (oppgavefilter.type === 'feltverdi' && oppgavefilter.kode === null) {
 		return (
 			<VelgKriterie
 				oppgavefilter={oppgavefilter}
@@ -37,7 +39,7 @@ const OppgavefilterPanel = ({
 		);
 	}
 
-	if (oppgavefilter.type === 'feltverdi' && 'operator' in oppgavefilter) {
+	if (oppgavefilter.type === 'feltverdi') {
 		return (
 			<Kriterie
 				oppgavefilter={oppgavefilter}
@@ -46,21 +48,21 @@ const OppgavefilterPanel = ({
 			/>
 		);
 	}
-	if (oppgavefilter.type === 'combine' && 'combineOperator' in oppgavefilter) {
+	if (oppgavefilter.type === 'combine') {
 		return <FilterGruppe oppgavefilter={oppgavefilter} køvisning={køvisning} />;
 	}
 
-	throw new Error(`Unhandled type: ${oppgavefilter.type}`);
+	throw new Error(`Unhandled type: ${(oppgavefilter as any).type}`);
 };
 
 interface FilterGruppeProps {
-	oppgavefilter: CombineOppgavefilter;
+	oppgavefilter: IdentifiedCombineOppgavefilter;
 	køvisning: boolean;
 }
 const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 	const { updateQuery, readOnly } = useContext(FilterContext);
 	const handleToggle = (value: string) => {
-		updateQuery([updateFilter(oppgavefilter.id, { combineOperator: value })]);
+		updateQuery([updateFilter(oppgavefilter._nodeId, { combineOperator: value })]);
 	};
 	return (
 		<div className="rounded-sm border-solid border-[1px] border-ax-bg-accent-strong p-4">
@@ -84,16 +86,16 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 						size="small"
 						variant="tertiary"
 						className="ml-auto"
-						onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}
+						onClick={() => updateQuery([removeFilter(oppgavefilter._nodeId)])}
 					/>
 				)}
 			</div>
 			<div className="flex flex-col gap-4">
 				{oppgavefilter.filtere.map((item) => (
 					<OppgavefilterPanel
-						key={item.id}
+						key={item._nodeId}
 						oppgavefilter={item}
-						addGruppeOperation={addGruppe(oppgavefilter.id)}
+						addGruppeOperation={addGruppe(oppgavefilter._nodeId)}
 						køvisning={køvisning}
 					/>
 				))}
@@ -104,7 +106,7 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 					icon={<PlusCircleIcon aria-hidden />}
 					variant="tertiary"
 					size="small"
-					onClick={() => updateQuery([addFilter(oppgavefilter.id)])}
+					onClick={() => updateQuery([addFilter(oppgavefilter._nodeId)])}
 				>
 					Legg til nytt kriterie
 				</Button>

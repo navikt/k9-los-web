@@ -5,6 +5,7 @@ import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { removeFilter } from 'filter/queryUtils';
+import { IdentifiedFeltverdiOppgavefilter } from '../filterFrontendTypes';
 import { FeltverdiOppgavefilter, OppgavefilterKode } from '../filterTsTypes';
 import { Aksjonspunktvisning } from './Aksjonspunktvisning';
 import KriterieOperator from './KriterieOperator';
@@ -12,7 +13,7 @@ import KriterieVerdi from './KriterieVerdi';
 import { generateId } from './idGenerator';
 
 interface Props {
-	oppgavefilter: FeltverdiOppgavefilter;
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
 	paakrevdeKoder: string[];
 	readOnly: boolean;
 }
@@ -50,7 +51,7 @@ const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnl
 							icon={<TrashIcon />}
 							size="small"
 							variant="tertiary"
-							onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}
+							onClick={() => updateQuery([removeFilter(oppgavefilter._nodeId)])}
 						/>
 					</div>
 				)}

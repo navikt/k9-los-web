@@ -1,61 +1,61 @@
 import OppgaveQueryModel from './OppgaveQueryModel';
-import { OppgaveQuery } from './filterTsTypes';
+import { IdentifiedOppgaveQuery } from './filterFrontendTypes';
 import { kodeFraKey, områdeFraKey } from './utils';
 
 // -------------------- Filter Manipulations --------------------
 
 const removeFilter =
-	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(nodeId: string) =>
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.removeFilter(id).toOppgaveQuery();
+		return newModel.removeFilter(nodeId).toIdentifiedQuery();
 	};
 
 const addFilter =
-	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(nodeId: string) =>
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.addFilter(id).toOppgaveQuery();
+		return newModel.addFilter(nodeId).toIdentifiedQuery();
 	};
 
 const updateFilter =
-	(id: string, newData) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(nodeId: string, newData) =>
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const oppgaveQueryModel = new OppgaveQueryModel(model);
-		const filterToUpdate = oppgaveQueryModel.getById(id);
+		const filterToUpdate = oppgaveQueryModel.getById(nodeId);
 		const updatedData = { ...filterToUpdate, ...newData };
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.updateFilter(id, updatedData).toOppgaveQuery();
+		return newModel.updateFilter(nodeId, updatedData).toIdentifiedQuery();
 	};
 
 // -------------------- Group Manipulations --------------------
 
 const addGruppe =
-	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(nodeId: string) =>
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.addGruppe(id).toOppgaveQuery();
+		return newModel.addGruppe(nodeId).toIdentifiedQuery();
 	};
 
 // -------------------- Select Felt Manipulations --------------------
 
 const removeSelectFelt =
 	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.removeSelectFelt(id).toOppgaveQuery();
+		return newModel.removeSelectFelt(id).toIdentifiedQuery();
 	};
 
 const addSelectFelt =
 	() =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.addEnkelSelectFelt().toOppgaveQuery();
+		return newModel.addEnkelSelectFelt().toIdentifiedQuery();
 	};
 
 const updateSelectFelt =
 	(id: string, verdi) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const oppgaveQueryModel = new OppgaveQueryModel(model);
 		const selectToUpdate = oppgaveQueryModel.getById(id);
 		const data = {
@@ -64,60 +64,60 @@ const updateSelectFelt =
 			kode: kodeFraKey(verdi),
 		};
 		const newModel = new OppgaveQueryModel(model).updateEnkelSelectFelt(id, data);
-		return newModel.toOppgaveQuery();
+		return newModel.toIdentifiedQuery();
 	};
 
 const moveSelectFelt =
 	(fromIndex: number, toIndex: number) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.moveSelectFelt(fromIndex, toIndex).toOppgaveQuery();
+		return newModel.moveSelectFelt(fromIndex, toIndex).toIdentifiedQuery();
 	};
 
 // -------------------- Order Manipulations --------------------
 
 const removeSortering =
 	(id) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.removeOrderFelt(id).toOppgaveQuery();
+		return newModel.removeOrderFelt(id).toIdentifiedQuery();
 	};
 
 const resetSortering =
 	() =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel({ ...model, order: [] });
-		return newModel.toOppgaveQuery();
+		return newModel.toIdentifiedQuery();
 	};
 
 const addSortering =
 	(data?: any) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.addEnkelOrderFelt(data).toOppgaveQuery();
+		return newModel.addEnkelOrderFelt(data).toIdentifiedQuery();
 	};
 
 const updateSortering =
 	(id, newData) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newOppgaveQueryModel = new OppgaveQueryModel(model);
 		const orderToUpdate = newOppgaveQueryModel.getById(id);
 		const updatedData = { ...orderToUpdate, ...newData };
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.updateEnkelOrderFelt(id, updatedData).toOppgaveQuery();
+		return newModel.updateEnkelOrderFelt(id, updatedData).toIdentifiedQuery();
 	};
 
 const moveSortering =
 	(fromIndex: number, toIndex: number) =>
-	(model: OppgaveQuery): OppgaveQuery => {
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.moveOrderFelt(fromIndex, toIndex).toOppgaveQuery();
+		return newModel.moveOrderFelt(fromIndex, toIndex).toIdentifiedQuery();
 	};
 
 // -------------------- Helpers --------------------
 
-export type QueryFunction = (query: OppgaveQuery) => OppgaveQuery;
-const applyFunctions = (initialValue: OppgaveQuery, fns: Array<QueryFunction>) =>
+export type QueryFunction = (query: IdentifiedOppgaveQuery) => IdentifiedOppgaveQuery;
+const applyFunctions = (initialValue: IdentifiedOppgaveQuery, fns: Array<QueryFunction>) =>
 	fns.reduce((acc, fn) => fn(acc), initialValue);
 
 // -------------------- Export --------------------

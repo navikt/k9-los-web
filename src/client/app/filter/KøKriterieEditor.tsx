@@ -21,10 +21,10 @@ export const KøKriterieEditorContent = ({
 			<div className="flex flex-col gap-4">
 				{oppgaveQuery.filtere.map((item) => (
 					<OppgavefilterPanel
-						key={item.id}
+						key={item._nodeId}
 						køvisning
 						oppgavefilter={item}
-						addGruppeOperation={addGruppe(oppgaveQuery.id)}
+						addGruppeOperation={addGruppe(oppgaveQuery._nodeId)}
 						paakrevdeKoder={paakrevdeKoder}
 						readOnlyKoder={readOnlyKoder}
 					/>
@@ -36,7 +36,7 @@ export const KøKriterieEditorContent = ({
 					icon={<PlusCircleIcon aria-hidden />}
 					variant="tertiary"
 					size="small"
-					onClick={() => updateQuery([addFilter(oppgaveQuery.id)])}
+					onClick={() => updateQuery([addFilter(oppgaveQuery._nodeId)])}
 				>
 					Legg til nytt kriterie
 				</Button>

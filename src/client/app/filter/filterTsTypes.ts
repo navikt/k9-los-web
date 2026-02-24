@@ -1,49 +1,36 @@
-export type Oppgavefilter = {
-	type: string;
-};
-
-export type FeltverdiOppgavefilter = Oppgavefilter & {
-	id: string;
+export type FeltverdiOppgavefilter = {
+	type: 'feltverdi';
 	område: string;
 	kode: string;
 	operator: string;
 	verdi: string[];
 };
 
-export type CombineOppgavefilter = Oppgavefilter &
-	FilterContainer & {
-		combineOperator: string;
-	};
-
-export type FilterType = FeltverdiOppgavefilter | CombineOppgavefilter;
-
-export type FilterContainer = {
-	id: string;
-	filtere: FilterType[];
+export type CombineOppgavefilter = {
+	type: 'combine';
+	combineOperator: string;
+	filtere: Oppgavefilter[];
 };
 
-export type OppgaveQuery = FilterContainer & {
+export type Oppgavefilter = FeltverdiOppgavefilter | CombineOppgavefilter;
+
+export type OppgaveQuery = {
+	filtere: Oppgavefilter[];
 	select: EnkelSelectFelt[];
 	order: EnkelOrderFelt[];
 	limit: number;
 };
 
-export type OrderFelt = {
-	type: string;
-};
-
-export type EnkelOrderFelt = OrderFelt & {
+export type EnkelOrderFelt = {
+	type: 'enkel';
 	id: string;
 	område: string;
 	kode: string;
 	økende: boolean;
 };
 
-export type SelectFelt = {
-	type: string;
-};
-
-export type EnkelSelectFelt = SelectFelt & {
+export type EnkelSelectFelt = {
+	type: 'enkel';
 	id: string;
 	område: string;
 	kode: string;
@@ -89,6 +76,8 @@ export type Oppgavefelt = {
 
 // Kjente kode-verdier fra backend, brukes til sammenligning der frontend trenger spesifikk logikk.
 // kode-feltet i typene er string fordi backend anser listen som dynamisk.
+// Ignorer unused global symbols, denne lista trenger ikke være uttømmende eller minimal
+// noinspection JSUnusedGlobalSymbols
 export enum OppgavefilterKode {
 	AkkumulertVentetidAnnet = 'akkumulertVentetidAnnet',
 	AkkumulertVentetidAnnetForTidligereVersjoner = 'akkumulertVentetidAnnetForTidligereVersjoner',

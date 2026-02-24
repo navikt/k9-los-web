@@ -12,7 +12,7 @@ interface OwnProps {
 }
 
 const KøKriterieViewer = ({ query, tittel }: OwnProps) => {
-	const oppgaveQuery = useMemo(() => new OppgaveQueryModel(query).toOppgaveQuery(), [query]);
+	const oppgaveQuery = useMemo(() => new OppgaveQueryModel(query).toIdentifiedQuery(), [query]);
 
 	const { felter } = React.useContext(AppContext);
 
@@ -38,7 +38,7 @@ const KøKriterieViewer = ({ query, tittel }: OwnProps) => {
 				</Heading>
 				<div className="flex flex-col gap-4">
 					{oppgaveQuery.filtere.map((item) => (
-						<OppgavefilterPanel key={item.id} køvisning oppgavefilter={item} />
+						<OppgavefilterPanel key={item._nodeId} køvisning oppgavefilter={item} />
 					))}
 				</div>
 			</div>

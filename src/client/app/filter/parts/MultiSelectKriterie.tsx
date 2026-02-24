@@ -4,13 +4,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { FilterContext } from 'filter/FilterContext';
+import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
-import { comboboxSeparatorStyle, COMBOBOX_SEPARATOR_VALUE } from 'filter/utils';
+import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 
 interface Props {
 	feltdefinisjon?: Oppgavefelt;
-	oppgavefilter: FeltverdiOppgavefilter;
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
 	error?: string;
 	readOnly?: boolean;
 }
@@ -66,9 +67,9 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 		}
 		const verdi = feltdefinisjon?.verdiforklaringer.find((v) => v.verdi === option)?.verdi;
 		if (isSelected) {
-			updateQuery([updateFilter(oppgavefilter.id, { verdi: [...(oppgavefilter?.verdi || []), verdi] })]);
+			updateQuery([updateFilter(oppgavefilter._nodeId, { verdi: [...(oppgavefilter?.verdi || []), verdi] })]);
 		} else {
-			updateQuery([updateFilter(oppgavefilter.id, { verdi: verdier?.filter((o) => o !== verdi) })]);
+			updateQuery([updateFilter(oppgavefilter._nodeId, { verdi: verdier?.filter((o) => o !== verdi) })]);
 		}
 	};
 	return (
