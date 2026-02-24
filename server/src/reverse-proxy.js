@@ -120,8 +120,8 @@ const timedOut = function (req, res, next) {
 const setup = (router) => {
 	log.info('Setting up proxies...');
 	config.reverseProxyConfig.apis.forEach((api) => {
-		router.use(`${api.path}/*`, timedOut, proxy(api.url, proxyOptions(api)));
-		log.info(`Proxy set up: ${api.path}/* -> ${api.url}`);
+		router.use(`${api.path}/{*splat}`, timedOut, proxy(api.url, proxyOptions(api)));
+		log.info(`Proxy set up: ${api.path}/{*splat} -> ${api.url}`);
 	});
 };
 

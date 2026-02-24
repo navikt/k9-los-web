@@ -127,7 +127,12 @@ async function startApp() {
 			res.sendFile('index.html', { root: rootDir });
 		});
 
-		server.listen(port, () => logger.info(`Listening on port ${port}`));
+		server.listen(port, (error) => {
+			if (error) {
+				throw error;
+			}
+			logger.info(`Listening on port ${port}`);
+		});
 	} catch (error) {
 		logger.error('Error during start-up: ', error);
 	}
