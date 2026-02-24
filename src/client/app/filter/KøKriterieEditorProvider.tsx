@@ -6,8 +6,8 @@ import { useHentAntallOppgaver, useValiderOppgaveQuery } from 'api/queries/oppga
 import { FilterContext } from './FilterContext';
 import * as styles from './KøKriterieEditorProvider.css';
 import OppgaveQueryModel from './OppgaveQueryModel';
+import { WithNodeId, fjernNodeIdFraQuery } from './filterFrontendTypes';
 import { OppgaveQuery } from './filterTsTypes';
-import { tilApiQuery } from './filterFrontendTypes';
 import { QueryFunction, applyFunctions } from './queryUtils';
 import EnkelSortering from './sortering/EnkelSortering';
 
@@ -29,10 +29,12 @@ const KøKriterieEditorProvider = ({
 	children,
 }: OwnProps) => {
 	const [queryErrorMessage, setQueryErrorMessage] = useState(null);
-	const [queryErrors, setQueryErrors] = useState([]);
+	const [queryErrors, setQueryErrors] = useState<WithNodeId<{ _nodeId: string; felt: string; message: string }>[]>([]);
 	const [shouldRevalidate, setShouldRevalidate] = useState(false);
 	const [oppgaveQuery, setOppgaveQuery] = useState(
-		initialQuery ? new OppgaveQueryModel(initialQuery).toIdentifiedQuery() : new OppgaveQueryModel().toIdentifiedQuery(),
+		initialQuery
+			? new OppgaveQueryModel(initialQuery).toIdentifiedQuery()
+			: new OppgaveQueryModel().toIdentifiedQuery(),
 	);
 	const [antallOppgaver, setAntallOppgaver] = useState<number>();
 
@@ -59,7 +61,7 @@ const KøKriterieEditorProvider = ({
 	const { felter } = React.useContext(AppContext);
 
 	const validerQuery = (feilmelding: string, onSuccess: () => void) => {
-		validerMutate(tilApiQuery(oppgaveQuery), {
+		validerMutate(fjernNodeIdFraQuery(oppgaveQuery), {
 			onSuccess: (valideringOK) => {
 				const model = new OppgaveQueryModel(oppgaveQuery);
 				model.validate();
@@ -86,7 +88,7 @@ const KøKriterieEditorProvider = ({
 
 	const hentAntall = () => {
 		validerQuery('Kriteriene er ikke gyldige. Kan ikke hente antall oppgaver.', () => {
-			hentAntallMutate(tilApiQuery(oppgaveQuery), {
+			hentAntallMutate(fjernNodeIdFraQuery(oppgaveQuery), {
 				onSuccess: (respons) => {
 					if (respons !== undefined) {
 						setAntallOppgaver(respons);
@@ -101,7 +103,7 @@ const KøKriterieEditorProvider = ({
 
 	const validerOgLagre = () => {
 		validerQuery('Kriteriene er ikke gyldige. Kriterier for kø kan ikke lagres.', () => {
-			lagre(tilApiQuery(oppgaveQuery));
+			lagre(fjernNodeIdFraQuery(oppgaveQuery));
 		});
 	};
 

@@ -20,12 +20,11 @@ export type IdentifiedOppgaveQuery = WithNodeIdRecursive<OppgaveQuery>;
 export function tilIdentifiedFilter(filter: Oppgavefilter): IdentifiedOppgavefilter {
 	if (filter.type === 'combine') {
 		return {
-			...filter,
-			_nodeId: uuid(),
+			...tilIdentified(filter),
 			filtere: filter.filtere.map(tilIdentifiedFilter),
 		};
 	}
-	return { ...filter, _nodeId: uuid() };
+	return tilIdentified(filter);
 }
 
 export function tilIdentified<T>(uident: T): WithNodeId<T> {
@@ -44,14 +43,12 @@ export function tilIdentifiedQuery(query: OppgaveQuery): IdentifiedOppgaveQuery 
 
 export function fjernNodeIdFraFilter(filter: IdentifiedOppgavefilter): Oppgavefilter {
 	if (filter.type === 'combine') {
-		const { _nodeId, ...rest } = filter;
-		return { ...rest, filtere: filter.filtere.map(fjernNodeIdFraFilter) };
+		return { ...fjernNodeId(filter), filtere: filter.filtere.map(fjernNodeIdFraFilter) };
 	}
-	const { _nodeId, ...rest } = filter;
-	return rest;
+	return fjernNodeId(filter);
 }
 
-export function tilApiQuery(query: IdentifiedOppgaveQuery): OppgaveQuery {
+export function fjernNodeIdFraQuery(query: IdentifiedOppgaveQuery): OppgaveQuery {
 	const { _nodeId, ...rest } = query;
 	return {
 		...rest,

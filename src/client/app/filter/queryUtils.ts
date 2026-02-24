@@ -19,7 +19,7 @@ const addFilter =
 	};
 
 const updateFilter =
-	(nodeId: string, newData) =>
+	(nodeId: string, newData: any) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const oppgaveQueryModel = new OppgaveQueryModel(model);
 		const filterToUpdate = oppgaveQueryModel.getById(nodeId);
@@ -54,7 +54,7 @@ const addSelectFelt =
 	};
 
 const updateSelectFelt =
-	(id: string, verdi) =>
+	(id: string, verdi: string) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const oppgaveQueryModel = new OppgaveQueryModel(model);
 		const selectToUpdate = oppgaveQueryModel.getById(id);
@@ -77,10 +77,10 @@ const moveSelectFelt =
 // -------------------- Order Manipulations --------------------
 
 const removeSortering =
-	(id) =>
+	(nodeId: string) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.removeOrderFelt(id).toIdentifiedQuery();
+		return newModel.removeOrderFelt(nodeId).toIdentifiedQuery();
 	};
 
 const resetSortering =

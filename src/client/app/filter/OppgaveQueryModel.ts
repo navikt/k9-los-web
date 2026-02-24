@@ -3,8 +3,9 @@ import {
 	IdentifiedCombineOppgavefilter,
 	IdentifiedOppgaveQuery,
 	IdentifiedOppgavefilter,
+	WithNodeId,
+	fjernNodeIdFraQuery,
 	isIdentifiedQuery,
-	tilApiQuery,
 	tilIdentifiedQuery,
 } from './filterFrontendTypes';
 import { FeltverdiOppgavefilter, OppgaveQuery } from './filterTsTypes';
@@ -12,7 +13,7 @@ import { FeltverdiOppgavefilter, OppgaveQuery } from './filterTsTypes';
 export default class OppgaveQueryModel {
 	private readonly oppgaveQuery: IdentifiedOppgaveQuery;
 
-	private errors: { _nodeId: string; felt: string; message: string }[] = [];
+	private errors: WithNodeId<{ _nodeId: string; felt: string; message: string }>[] = [];
 
 	constructor(oppgaveQuery?: OppgaveQuery | IdentifiedOppgaveQuery) {
 		if (oppgaveQuery == null) {
@@ -35,7 +36,7 @@ export default class OppgaveQueryModel {
 	}
 
 	toOppgaveQuery(): OppgaveQuery {
-		return tilApiQuery(this.oppgaveQuery);
+		return fjernNodeIdFraQuery(this.oppgaveQuery);
 	}
 
 	toIdentifiedQuery(): IdentifiedOppgaveQuery {
@@ -227,8 +228,8 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	removeOrderFelt(id: string) {
-		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === id);
+	removeOrderFelt(nodeId: string) {
+		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
 			this.oppgaveQuery.order.splice(index, 1);
 		}
@@ -240,8 +241,8 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	updateEnkelOrderFelt(id: string, data) {
-		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === id);
+	updateEnkelOrderFelt(nodeId: string, data: any) {
+		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
 			this.oppgaveQuery.order[index] = data;
 		}

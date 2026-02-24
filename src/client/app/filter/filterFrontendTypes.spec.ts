@@ -1,4 +1,9 @@
-import { fjernNodeIdFraFilter, tilApiQuery, tilIdentifiedFilter, tilIdentifiedQuery } from './filterFrontendTypes';
+import {
+	fjernNodeIdFraFilter,
+	fjernNodeIdFraQuery,
+	tilIdentifiedFilter,
+	tilIdentifiedQuery,
+} from './filterFrontendTypes';
 import {
 	CombineOppgavefilter,
 	EnkelOrderFelt,
@@ -72,7 +77,7 @@ describe('filterFrontendTypes konvertering', () => {
 			expect(identified.order[0].økende).toBe(true);
 
 			// Roundtrip tilbake til OppgaveQuery
-			const roundtripped = tilApiQuery(identified);
+			const roundtripped = fjernNodeIdFraQuery(identified);
 			expect(roundtripped).toEqual(query);
 		});
 
