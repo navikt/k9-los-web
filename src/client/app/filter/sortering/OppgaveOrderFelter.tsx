@@ -90,7 +90,7 @@ const OppgaveOrderFelter = () => {
 	};
 
 	const handleAddFelt = () => {
-		updateQuery([addSortering()]);
+		updateQuery([addSortering(null)]);
 	};
 
 	const handleUpdateKode = (nodeId: string, value: string) => {

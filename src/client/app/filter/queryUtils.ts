@@ -1,5 +1,6 @@
+import { EnkelOrderFelt, EnkelSelectFelt } from 'filter/filterTsTypes';
 import OppgaveQueryModel from './OppgaveQueryModel';
-import { IdentifiedOppgaveQuery } from './filterFrontendTypes';
+import { IdentifiedOppgaveQuery, WithNodeId } from './filterFrontendTypes';
 import { kodeFraKey, områdeFraKey } from './utils';
 
 // -------------------- Filter Manipulations --------------------
@@ -57,8 +58,8 @@ const updateSelectFelt =
 	(id: string, verdi: string) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const oppgaveQueryModel = new OppgaveQueryModel(model);
-		const selectToUpdate = oppgaveQueryModel.getById(id);
-		const data = {
+		const selectToUpdate = oppgaveQueryModel.getById(id) as WithNodeId<EnkelSelectFelt>;
+		const data: WithNodeId<EnkelSelectFelt> = {
 			...selectToUpdate,
 			område: områdeFraKey(verdi),
 			kode: kodeFraKey(verdi),
@@ -91,20 +92,20 @@ const resetSortering =
 	};
 
 const addSortering =
-	(data?: any) =>
+	(data: EnkelOrderFelt | null) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newModel = new OppgaveQueryModel(model);
 		return newModel.addEnkelOrderFelt(data).toIdentifiedQuery();
 	};
 
 const updateSortering =
-	(id: string, newData) =>
+	(nodeId: string, newData: Partial<EnkelOrderFelt>) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
 		const newOppgaveQueryModel = new OppgaveQueryModel(model);
-		const orderToUpdate = newOppgaveQueryModel.getById(id);
+		const orderToUpdate = newOppgaveQueryModel.getById(nodeId) as EnkelOrderFelt;
 		const updatedData = { ...orderToUpdate, ...newData };
 		const newModel = new OppgaveQueryModel(model);
-		return newModel.updateEnkelOrderFelt(id, updatedData).toIdentifiedQuery();
+		return newModel.updateEnkelOrderFelt(nodeId, updatedData).toIdentifiedQuery();
 	};
 
 const moveSortering =
