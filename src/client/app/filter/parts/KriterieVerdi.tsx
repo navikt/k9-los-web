@@ -268,7 +268,7 @@ const KriterieVerdi = ({
 			size="small"
 			hideLabel
 			error={errorMessage}
-			value={oppgavefilter.verdi[0]}
+			value={oppgavefilter.verdi ? oppgavefilter.verdi[0] : undefined}
 			onChange={(e) =>
 				updateQuery([
 					updateFilter(oppgavefilter._nodeId, {
