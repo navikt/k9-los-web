@@ -14,7 +14,7 @@ import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelSelectFelt, Oppgavefelt } from 'filter/filterTsTypes';
-import { addSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
+import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 import { feltverdiKey } from '../utils';
 import * as styles from './OppgaveSelectFelter.css';
 
@@ -77,11 +77,11 @@ const OppgaveSelectFelter = () => {
 	};
 
 	const handleAdd = () => {
-		updateQuery([addSelectFelt()]);
+		updateQuery([addEnkelSelectFelt()]);
 	};
 
 	const handleUpdate = (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => {
-		updateQuery([updateSelectFelt(felt._nodeId, newValue)]);
+		updateQuery([updateSelectFelt(felt._nodeId, { kode: newValue })]);
 	};
 
 	const handleDragEnd = (event: DragEndEvent) => {

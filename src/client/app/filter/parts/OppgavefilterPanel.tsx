@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label, ToggleGroup } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
-import { addFilter, addGruppe, removeFilter, updateFilter } from 'filter/queryUtils';
+import { addFeltverdiFilter, addGruppeFilter, removeFilter, updateFilter } from 'filter/queryUtils';
 import { IdentifiedCombineOppgavefilter, IdentifiedOppgavefilter } from '../filterFrontendTypes';
 import { OppgavefilterKode } from '../filterTsTypes';
 import { QueryFunction } from '../queryUtils';
@@ -95,7 +95,7 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 					<OppgavefilterPanel
 						key={item._nodeId}
 						oppgavefilter={item}
-						addGruppeOperation={addGruppe(oppgavefilter._nodeId)}
+						addGruppeOperation={addGruppeFilter(oppgavefilter._nodeId)}
 						køvisning={køvisning}
 					/>
 				))}
@@ -106,7 +106,7 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 					icon={<PlusCircleIcon aria-hidden />}
 					variant="tertiary"
 					size="small"
-					onClick={() => updateQuery([addFilter(oppgavefilter._nodeId)])}
+					onClick={() => updateQuery([addFeltverdiFilter(oppgavefilter._nodeId)])}
 				>
 					Legg til nytt kriterie
 				</Button>

@@ -8,19 +8,14 @@ import {
 	isIdentifiedQuery,
 	tilIdentifiedQuery,
 } from './filterFrontendTypes';
-import {
-	EnkelOrderFelt,
-	EnkelSelectFelt,
-	FeltverdiOppgavefilter,
-	OppgaveQuery,
-	Oppgavefelt,
-	Oppgavefilter,
-} from './filterTsTypes';
+import { EnkelOrderFelt, EnkelSelectFelt, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter } from './filterTsTypes';
+
+const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 export default class OppgaveQueryModel {
 	private readonly oppgaveQuery: IdentifiedOppgaveQuery;
 
-	private errors: WithNodeId<{ _nodeId: string; felt: string; message: string }>[] = [];
+	private errors: WithNodeId<{ felt: string; message: string }>[] = [];
 
 	constructor(oppgaveQuery?: OppgaveQuery | IdentifiedOppgaveQuery) {
 		if (oppgaveQuery == null) {
@@ -33,7 +28,7 @@ export default class OppgaveQueryModel {
 			return;
 		}
 
-		const cloned = JSON.parse(JSON.stringify(oppgaveQuery));
+		const cloned = deepClone(oppgaveQuery);
 		this.oppgaveQuery = isIdentifiedQuery(cloned) ? cloned : tilIdentifiedQuery(cloned);
 	}
 
@@ -123,11 +118,11 @@ export default class OppgaveQueryModel {
 		return null;
 	}
 
-	addFilter(nodeId: string) {
-		return this.internalAddFilter(this.oppgaveQuery, nodeId, {});
+	addFeltverdiFilter(nodeId: string) {
+		return this.internalAddFeltverdiFilter(this.oppgaveQuery, nodeId, {});
 	}
 
-	private internalAddFilter(
+	private internalAddFeltverdiFilter(
 		node: IdentifiedOppgaveQuery | IdentifiedCombineOppgavefilter,
 		nodeId: string,
 		data: Partial<FeltverdiOppgavefilter>,
@@ -145,22 +140,23 @@ export default class OppgaveQueryModel {
 		} else {
 			node.filtere
 				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
-				.forEach((f) => this.internalAddFilter(f, nodeId, data));
+				.forEach((f) => this.internalAddFeltverdiFilter(f, nodeId, data));
 		}
 		return this;
 	}
 
-	updateFilter(nodeId: string, data: Partial<IdentifiedOppgavefilter>) {
+	updateFilter(nodeId: string, data: Partial<Oppgavefilter>) {
 		return this.internalUpdateFilter(this.oppgaveQuery, nodeId, data);
 	}
 
 	private internalUpdateFilter(
 		node: IdentifiedOppgaveQuery | IdentifiedCombineOppgavefilter,
 		nodeId: string,
-		data: Partial<IdentifiedOppgavefilter>,
+		data: Partial<Oppgavefilter>,
 	) {
 		const index = node.filtere.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
+			// caster fordi node.filtere[index] og data ikke nødvendigvis er av samme type
 			node.filtere[index] = { ...node.filtere[index], ...data } as IdentifiedOppgavefilter;
 		} else {
 			node.filtere
@@ -170,7 +166,7 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	addGruppe(nodeId: string) {
+	addGruppeFilter(nodeId: string) {
 		return this.internalAddGruppe(this.oppgaveQuery, nodeId);
 	}
 
@@ -209,10 +205,10 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	updateEnkelSelectFelt(id: string, data: WithNodeId<EnkelSelectFelt>) {
-		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === id);
+	updateEnkelSelectFelt(nodeId: string, data: Partial<EnkelSelectFelt>) {
+		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
-			this.oppgaveQuery.select[index] = data;
+			this.oppgaveQuery.select[index] = { ...this.oppgaveQuery.select[index], ...data };
 		}
 		return this;
 	}
@@ -251,10 +247,10 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	updateEnkelOrderFelt(nodeId: string, data: EnkelOrderFelt) {
+	updateEnkelOrderFelt(nodeId: string, data: Partial<EnkelOrderFelt>) {
 		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
-			this.oppgaveQuery.order[index] = { ...data, _nodeId: nodeId };
+			this.oppgaveQuery.order[index] = { ...this.oppgaveQuery.order[index], ...data };
 		}
 		return this;
 	}
