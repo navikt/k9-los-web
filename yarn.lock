@@ -4943,15 +4943,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chai@npm:5.2.2":
-  version: 5.2.2
-  resolution: "@types/chai@npm:5.2.2"
-  dependencies:
-    "@types/deep-eql": "npm:*"
-  checksum: 10/de425e7b02cc1233a93923866e019dffbafa892774813940b780ebb1ac9f8a8c57b7438c78686bf4e5db05cd3fc8a970fedf6b83638543995ecca88ef2060668
-  languageName: node
-  linkType: hard
-
 "@types/chai@npm:^5.2.2":
   version: 5.2.3
   resolution: "@types/chai@npm:5.2.3"
@@ -7052,13 +7043,6 @@ __metadata:
   version: 1.0.30001766
   resolution: "caniuse-lite@npm:1.0.30001766"
   checksum: 10/0edeb69bdb741c98deda609b75e35e5c31e944537e9873ea89a4cf9e9baa3e158675b224951a6f3a212d1f0c328a8494ace323c551ca1fa58ce4915562c4e4d3
-  languageName: node
-  linkType: hard
-
-"chai@npm:6.2.2":
-  version: 6.2.2
-  resolution: "chai@npm:6.2.2"
-  checksum: 10/13cda42cc40aa46da04a41cf7e5c61df6b6ae0b4e8a8c8b40e04d6947e4d7951377ea8c14f9fa7fe5aaa9e8bd9ba414f11288dc958d4cee6f5221b9436f2778f
   languageName: node
   linkType: hard
 
@@ -12248,7 +12232,6 @@ __metadata:
     "@testing-library/react": "npm:16.3.2"
     "@testing-library/user-event": "npm:14.6.1"
     "@trivago/prettier-plugin-sort-imports": "npm:5.2.2"
-    "@types/chai": "npm:5.2.2"
     "@types/history": "npm:5.0.0"
     "@types/jest": "npm:29.5.14"
     "@types/lodash": "npm:4.17.20"
@@ -12263,7 +12246,6 @@ __metadata:
     babel-jest: "npm:30.2.0"
     babel-loader: "npm:10.0.0"
     babel-runtime: "npm:6.26.0"
-    chai: "npm:6.2.2"
     circular-dependency-plugin: "npm:5.2.2"
     classnames: "npm:2.5.1"
     copy-webpack-plugin: "npm:13.0.1"
@@ -12320,7 +12302,6 @@ __metadata:
     postcss-less: "npm:6.0.0"
     postcss-loader: "npm:8.2.0"
     prettier: "npm:3.8.1"
-    prop-types: "npm:15.8.1"
     react: "npm:19.2.0"
     react-collapse: "npm:5.1.1"
     react-dom: "npm:19.2.0"
@@ -14750,7 +14731,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:15.8.1, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
