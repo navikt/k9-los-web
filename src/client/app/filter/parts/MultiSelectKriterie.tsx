@@ -1,11 +1,9 @@
-/* eslint-disable react/jsx-pascal-case */
-/* eslint-disable camelcase */
 import React, { useContext, useEffect, useState } from 'react';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
+import { Oppgavefelt } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 
