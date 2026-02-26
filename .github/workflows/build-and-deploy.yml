@@ -39,6 +39,8 @@ jobs:
           cache: yarn
       - name: Installere dependencies
         run: yarn workspaces focus k9-los-web
+      - name: Kompiler TypeScript
+        run: yarn run ts-check
       - name: Tester
         run: yarn test --maxWorkers=2
       - name: Bygge kode
