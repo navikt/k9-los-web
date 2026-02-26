@@ -1,133 +1,64 @@
 import OppgaveQueryModel from './OppgaveQueryModel';
-import { OppgaveQuery } from './filterTsTypes';
-import { kodeFraKey, områdeFraKey } from './utils';
+import { IdentifiedOppgaveQuery } from './filterFrontendTypes';
+
+type ModelMethods = {
+	[K in keyof OppgaveQueryModel]: OppgaveQueryModel[K] extends (...args: any[]) => OppgaveQueryModel ? K : never;
+}[keyof OppgaveQueryModel];
+
+const withMethod =
+	<M extends ModelMethods>(method: M) =>
+	(...args: Parameters<OppgaveQueryModel[M]>) =>
+	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
+		// @ts-expect-error "TS2556: A spread argument must either have a tuple type or be passed to a rest parameter." Løses kanskje i nyere TypeScript?packa
+		return new OppgaveQueryModel(model)[method](...args).toIdentifiedQuery();
+	};
 
 // -------------------- Filter Manipulations --------------------
 
-const removeFilter =
-	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.removeFilter(id).toOppgaveQuery();
-	};
+const addFeltverdiFilter = withMethod('addFeltverdiFilter');
 
-const addFilter =
-	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.addFilter(id).toOppgaveQuery();
-	};
+const addGruppeFilter = withMethod('addGruppeFilter');
 
-const updateFilter =
-	(id: string, newData) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const oppgaveQueryModel = new OppgaveQueryModel(model);
-		const filterToUpdate = oppgaveQueryModel.getById(id);
-		const updatedData = { ...filterToUpdate, ...newData };
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.updateFilter(id, updatedData).toOppgaveQuery();
-	};
+const updateFilter = withMethod('updateFilter');
 
-// -------------------- Group Manipulations --------------------
-
-const addGruppe =
-	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.addGruppe(id).toOppgaveQuery();
-	};
+const removeFilter = withMethod('removeFilter');
 
 // -------------------- Select Felt Manipulations --------------------
 
-const removeSelectFelt =
-	(id: string) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.removeSelectFelt(id).toOppgaveQuery();
-	};
+const removeSelectFelt = withMethod('removeSelectFelt');
 
-const addSelectFelt =
-	() =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.addEnkelSelectFelt().toOppgaveQuery();
-	};
+const addEnkelSelectFelt = withMethod('addEnkelSelectFelt');
 
-const updateSelectFelt =
-	(id: string, verdi) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const oppgaveQueryModel = new OppgaveQueryModel(model);
-		const selectToUpdate = oppgaveQueryModel.getById(id);
-		const data = {
-			...selectToUpdate,
-			område: områdeFraKey(verdi),
-			kode: kodeFraKey(verdi),
-		};
-		const newModel = new OppgaveQueryModel(model).updateEnkelSelectFelt(id, data);
-		return newModel.toOppgaveQuery();
-	};
+const updateSelectFelt = withMethod('updateEnkelSelectFelt');
 
-const moveSelectFelt =
-	(fromIndex: number, toIndex: number) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.moveSelectFelt(fromIndex, toIndex).toOppgaveQuery();
-	};
+const moveSelectFelt = withMethod('moveSelectFelt');
 
 // -------------------- Order Manipulations --------------------
 
-const removeSortering =
-	(id) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.removeOrderFelt(id).toOppgaveQuery();
-	};
+const removeSortering = withMethod('removeOrderFelt');
 
-const resetSortering =
-	() =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel({ ...model, order: [] });
-		return newModel.toOppgaveQuery();
-	};
+const resetSortering = withMethod('nullstillOrderFelt');
 
-const addSortering =
-	(data?: any) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.addEnkelOrderFelt(data).toOppgaveQuery();
-	};
+const addSortering = withMethod('addEnkelOrderFelt');
 
-const updateSortering =
-	(id, newData) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newOppgaveQueryModel = new OppgaveQueryModel(model);
-		const orderToUpdate = newOppgaveQueryModel.getById(id);
-		const updatedData = { ...orderToUpdate, ...newData };
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.updateEnkelOrderFelt(id, updatedData).toOppgaveQuery();
-	};
+const updateSortering = withMethod('updateEnkelOrderFelt');
 
-const moveSortering =
-	(fromIndex: number, toIndex: number) =>
-	(model: OppgaveQuery): OppgaveQuery => {
-		const newModel = new OppgaveQueryModel(model);
-		return newModel.moveOrderFelt(fromIndex, toIndex).toOppgaveQuery();
-	};
+const moveSortering = withMethod('moveOrderFelt');
 
 // -------------------- Helpers --------------------
 
-export type QueryFunction = (query: OppgaveQuery) => OppgaveQuery;
-const applyFunctions = (initialValue: OppgaveQuery, fns: Array<QueryFunction>) =>
+export type QueryFunction = (query: IdentifiedOppgaveQuery) => IdentifiedOppgaveQuery;
+const applyFunctions = (initialValue: IdentifiedOppgaveQuery, fns: Array<QueryFunction>) =>
 	fns.reduce((acc, fn) => fn(acc), initialValue);
 
 // -------------------- Export --------------------
 
 export {
 	removeFilter,
-	addGruppe,
-	addFilter,
+	addGruppeFilter,
+	addFeltverdiFilter,
 	removeSelectFelt,
-	addSelectFelt,
+	addEnkelSelectFelt,
 	updateFilter,
 	updateSelectFelt,
 	moveSelectFelt,

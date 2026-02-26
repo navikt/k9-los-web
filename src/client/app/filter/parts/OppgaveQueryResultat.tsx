@@ -1,12 +1,13 @@
 import React from 'react';
 import { Table } from '@navikt/ds-react';
-import { OppgaveQuery, Oppgavefelt, Oppgaverad } from 'filter/filterTsTypes';
+import { IdentifiedOppgaveQuery } from 'filter/filterFrontendTypes';
+import { Oppgavefelt, Oppgaverad } from 'filter/filterTsTypes';
 import { visningsnavnForFelt } from '../utils';
 import OppgaveFeltVisning from './OppgaveFeltVisning';
 
 interface Props {
 	felter: Oppgavefelt[];
-	oppgaveQuery: OppgaveQuery;
+	oppgaveQuery: IdentifiedOppgaveQuery;
 	oppgaver: Oppgaverad[];
 }
 
@@ -17,7 +18,7 @@ const OppgaveQueryResultat = ({ felter, oppgaveQuery, oppgaver }: Props) => (
 				{oppgaveQuery.select?.map(
 					(felt) =>
 						felt.kode && (
-							<Table.HeaderCell scope="col" key={felt.id}>
+							<Table.HeaderCell scope="col" key={felt._nodeId}>
 								{visningsnavnForFelt(felter, felt.område, felt.kode)}
 							</Table.HeaderCell>
 						),

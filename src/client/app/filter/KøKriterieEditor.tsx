@@ -5,14 +5,14 @@ import { FilterContext } from 'filter/FilterContext';
 import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
 import { OppgaveQuery, OppgavefilterKode } from './filterTsTypes';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
-import { addFilter, addGruppe } from './queryUtils';
+import { addFeltverdiFilter, addGruppeFilter } from './queryUtils';
 
 export const KøKriterieEditorContent = ({
 	paakrevdeKoder,
 	readOnlyKoder,
 }: {
-	paakrevdeKoder?: OppgavefilterKode[];
-	readOnlyKoder?: OppgavefilterKode[];
+	paakrevdeKoder?: string[];
+	readOnlyKoder?: string[];
 }) => {
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
@@ -21,10 +21,10 @@ export const KøKriterieEditorContent = ({
 			<div className="flex flex-col gap-4">
 				{oppgaveQuery.filtere.map((item) => (
 					<OppgavefilterPanel
-						key={item.id}
+						key={item._nodeId}
 						køvisning
 						oppgavefilter={item}
-						addGruppeOperation={addGruppe(oppgaveQuery.id)}
+						addGruppeOperation={addGruppeFilter(oppgaveQuery._nodeId)}
 						paakrevdeKoder={paakrevdeKoder}
 						readOnlyKoder={readOnlyKoder}
 					/>
@@ -36,7 +36,7 @@ export const KøKriterieEditorContent = ({
 					icon={<PlusCircleIcon aria-hidden />}
 					variant="tertiary"
 					size="small"
-					onClick={() => updateQuery([addFilter(oppgaveQuery.id)])}
+					onClick={() => updateQuery([addFeltverdiFilter(oppgaveQuery._nodeId)])}
 				>
 					Legg til nytt kriterie
 				</Button>
@@ -50,8 +50,8 @@ interface OwnProps {
 	avbryt: () => void;
 	initialQuery?: OppgaveQuery;
 	tittel: string;
-	paakrevdeKoder?: OppgavefilterKode[];
-	readOnlyKoder?: OppgavefilterKode[];
+	paakrevdeKoder?: string[];
+	readOnlyKoder?: string[];
 	visSortering?: boolean;
 	hovedknappTekst: string;
 }

@@ -20,7 +20,7 @@ const EnkelSortering = () => {
 	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 		const payload = mapKodeTilSorteringParams(e.target.value as SORTERING_ALTERNATIVER);
 		if (payload) {
-			updateQuery([resetSortering(), addSortering(payload)]);
+			updateQuery([resetSortering(), addSortering({ type: 'enkel', ...payload })]);
 		}
 	};
 

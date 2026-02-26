@@ -12,56 +12,51 @@ import {
 } from '@navikt/ds-react';
 import GruppertKriterieVelger from 'avdelingsleder/behandlingskoerV3/components/AksjonspunktVelger';
 import { FilterContext } from 'filter/FilterContext';
-import { FeltverdiOppgavefilter, Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
+import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
+import { Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
 import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS, calculateDays, mapBooleanToStringArray, mapStringToBooleanArray } from 'filter/utils';
-import { enkeltverdi } from 'utils/enkeltverdi';
 import MultiSelectKriterie from './MultiSelectKriterie';
-
-const useChangeValue = (oppgavefilter, updateQuery) => (value) => {
-	const trimmedValue = typeof value === 'string' ? value.trim() : value;
-	updateQuery([
-		updateFilter(oppgavefilter.id, {
-			verdi: trimmedValue,
-		}),
-	]);
-};
 
 const KriterieVerdi = ({
 	feltdefinisjon,
 	oppgavefilter,
 	readOnly,
 }: {
-	feltdefinisjon?: Oppgavefelt;
-	oppgavefilter: FeltverdiOppgavefilter;
+	feltdefinisjon: Oppgavefelt;
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
 	readOnly?: boolean;
 }) => {
 	const { updateQuery, errors } = useContext(FilterContext);
-	const errorMessage = errors.find((e) => e.id === oppgavefilter.id && e.felt === 'verdi')?.message;
-
-	const handleChangeValue = useChangeValue(oppgavefilter, updateQuery);
+	const errorMessage = errors.find((e) => e._nodeId === oppgavefilter._nodeId && e.felt === 'verdi')?.message;
 
 	const handleChangeBoolean = (values: string[]) => {
 		const mappedValues: (string | null)[] = mapStringToBooleanArray(values);
 
 		updateQuery([
-			updateFilter(oppgavefilter.id, {
+			updateFilter(oppgavefilter._nodeId, {
 				verdi: mappedValues,
 			}),
 		]);
 	};
-	const onDateChange = (date) => {
+
+	const onDateChange = (date: Date) => {
 		if (!date) {
 			return;
 		}
 		const timezoneOffset = date.getTimezoneOffset() * 60000;
 		const newDate = new Date(date.getTime() - timezoneOffset).toISOString().split('T')[0];
-		handleChangeValue(newDate);
+
+		updateQuery([
+			updateFilter(oppgavefilter._nodeId, {
+				verdi: [newDate],
+			}),
+		]);
 	};
 	const initialDate =
-		oppgavefilter.verdi && dayjs(new Date(enkeltverdi(oppgavefilter.verdi))).isValid()
-			? new Date(enkeltverdi(oppgavefilter.verdi))
+		oppgavefilter.verdi && dayjs(new Date(oppgavefilter.verdi[0])).isValid()
+			? new Date(oppgavefilter.verdi[0])
 			: undefined;
 	const { datepickerProps, inputProps } = useDatepicker({
 		fromDate: new Date('23 2017'),
@@ -72,17 +67,27 @@ const KriterieVerdi = ({
 	const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newDays = parseFloat(e.target.value);
 		const newDuration = dayjs.duration(newDays, 'days').toISOString();
-		handleChangeValue([newDuration]);
+
+		updateQuery([
+			updateFilter(oppgavefilter._nodeId, {
+				verdi: [newDuration],
+			}),
+		]);
 	};
 
-	const onRangeChange = (range) => {
+	const onRangeChange = (range: { from: Date | undefined; to?: Date | undefined }) => {
 		if (!range.from || !range.to) {
 			return;
 		}
 		const timezoneOffset = range.from.getTimezoneOffset() * 60000;
 		const newFrom = new Date(range.from.getTime() - timezoneOffset).toISOString().split('T')[0];
 		const newTo = new Date(range.to.getTime() - timezoneOffset).toISOString().split('T')[0];
-		handleChangeValue([newFrom, newTo]);
+
+		updateQuery([
+			updateFilter(oppgavefilter._nodeId, {
+				verdi: [newFrom, newTo],
+			}),
+		]);
 	};
 	const initialFromDate =
 		oppgavefilter.verdi && dayjs(new Date(oppgavefilter.verdi[0])).isValid()
@@ -104,7 +109,13 @@ const KriterieVerdi = ({
 	if (kriterierSomSkalGrupperes.includes(feltdefinisjon?.kode)) {
 		return (
 			<GruppertKriterieVelger
-				onChange={handleChangeValue}
+				onChange={(value) => {
+					updateQuery([
+						updateFilter(oppgavefilter._nodeId, {
+							verdi: value,
+						}),
+					]);
+				}}
 				feltdefinisjon={feltdefinisjon}
 				oppgavefilter={oppgavefilter}
 				error={errorMessage}
@@ -120,8 +131,14 @@ const KriterieVerdi = ({
 				label="Personbeskyttelse"
 				hideLabel
 				size="small"
-				value={enkeltverdi(oppgavefilter.verdi)}
-				onChange={(e) => handleChangeValue(e.target.value)}
+				value={oppgavefilter.verdi[0]}
+				onChange={(e) =>
+					updateQuery([
+						updateFilter(oppgavefilter._nodeId, {
+							verdi: [e.target.value],
+						}),
+					])
+				}
 				error={errorMessage}
 				readOnly={readOnly}
 			>
@@ -207,7 +224,13 @@ const KriterieVerdi = ({
 				size="small"
 				hideLegend
 				legend={feltdefinisjon.visningsnavn}
-				onChange={handleChangeValue}
+				onChange={(value: string[]) => {
+					updateQuery([
+						updateFilter(oppgavefilter._nodeId, {
+							verdi: value,
+						}),
+					]);
+				}}
 				value={oppgavefilter.verdi}
 				error={errorMessage}
 				readOnly={readOnly}
@@ -245,8 +268,14 @@ const KriterieVerdi = ({
 			size="small"
 			hideLabel
 			error={errorMessage}
-			value={enkeltverdi(oppgavefilter.verdi)}
-			onChange={(e) => handleChangeValue(e.target.value)}
+			value={oppgavefilter.verdi ? oppgavefilter.verdi[0] : undefined}
+			onChange={(e) =>
+				updateQuery([
+					updateFilter(oppgavefilter._nodeId, {
+						verdi: [e.target.value],
+					}),
+				])
+			}
 		/>
 	);
 };

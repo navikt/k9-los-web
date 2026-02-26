@@ -1,26 +1,27 @@
 import React, { useContext, useMemo } from 'react';
+import { v4 as uuid } from 'uuid';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import { Oppgavefelt } from 'filter/filterTsTypes';
 import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { removeFilter } from 'filter/queryUtils';
-import { FeltverdiOppgavefilter, OppgavefilterKode } from '../filterTsTypes';
+import { IdentifiedFeltverdiOppgavefilter } from '../filterFrontendTypes';
 import { Aksjonspunktvisning } from './Aksjonspunktvisning';
 import KriterieOperator from './KriterieOperator';
 import KriterieVerdi from './KriterieVerdi';
-import { generateId } from './idGenerator';
 
 interface Props {
-	oppgavefilter: FeltverdiOppgavefilter;
-	paakrevdeKoder: OppgavefilterKode[];
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
+	paakrevdeKoder: string[];
 	readOnly: boolean;
 }
 
-const erAksjonspunktFelt = (feltdefinisjon) => kriterierSomSkalGrupperes.includes(feltdefinisjon.kode);
+const harFeltGruppering = (feltdefinisjon: Oppgavefelt) => kriterierSomSkalGrupperes.includes(feltdefinisjon.kode);
 
 const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnly = false }) => {
-	const testID = useMemo(() => generateId(), []);
+	const testID = useMemo(() => uuid(), []);
 
 	const { updateQuery } = useContext(FilterContext);
 	const { felter: kriterierSomKanVelges } = useContext(AppContext);
@@ -50,12 +51,12 @@ const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnl
 							icon={<TrashIcon />}
 							size="small"
 							variant="tertiary"
-							onClick={() => updateQuery([removeFilter(oppgavefilter.id)])}
+							onClick={() => updateQuery([removeFilter(oppgavefilter._nodeId)])}
 						/>
 					</div>
 				)}
 			</div>
-			{feltdefinisjon && erAksjonspunktFelt(feltdefinisjon) && (
+			{feltdefinisjon && harFeltGruppering(feltdefinisjon) && (
 				<Aksjonspunktvisning oppgavefilter={oppgavefilter} feltdefinisjon={feltdefinisjon} readOnly={readOnly} />
 			)}
 		</div>

@@ -1,36 +1,35 @@
 import { v4 as uuid } from 'uuid';
 import {
-	CombineOppgavefilter,
-	FeltverdiOppgavefilter,
-	FilterContainer,
-	FilterType,
-	OppgaveQuery,
-} from './filterTsTypes';
+	IdentifiedCombineOppgavefilter,
+	IdentifiedOppgaveQuery,
+	IdentifiedOppgavefilter,
+	WithNodeId,
+	fjernNodeIdFraQuery,
+	isIdentifiedQuery,
+	tilIdentifiedQuery,
+} from './filterFrontendTypes';
+import { EnkelOrderFelt, EnkelSelectFelt, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter } from './filterTsTypes';
+
+const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 export default class OppgaveQueryModel {
-	private oppgaveQuery: OppgaveQuery;
+	private readonly oppgaveQuery: IdentifiedOppgaveQuery;
 
-	private errors: { id: string; felt: string; message: string }[] = [];
+	private errors: WithNodeId<{ felt: string; message: string }>[] = [];
 
-	constructor(oppgaveQuery?: OppgaveQuery) {
-		let newOppgaveQuery = oppgaveQuery;
-		if (newOppgaveQuery == null) {
-			newOppgaveQuery = {
+	constructor(oppgaveQuery?: OppgaveQuery | IdentifiedOppgaveQuery) {
+		if (oppgaveQuery == null) {
+			this.oppgaveQuery = tilIdentifiedQuery({
 				filtere: [],
 				select: [],
 				order: [],
 				limit: 10,
-				id: '',
-			};
+			});
+			return;
 		}
 
-		newOppgaveQuery = JSON.parse(JSON.stringify(newOppgaveQuery));
-
-		if (!newOppgaveQuery.id) {
-			this.oppgaveQuery = OppgaveQueryModel.updateIdentities(newOppgaveQuery);
-		} else {
-			this.oppgaveQuery = newOppgaveQuery;
-		}
+		const cloned = deepClone(oppgaveQuery);
+		this.oppgaveQuery = isIdentifiedQuery(cloned) ? cloned : tilIdentifiedQuery(cloned);
 	}
 
 	updateLimit(limit: number) {
@@ -38,52 +37,25 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	private static updateIdentities(oppgaveQuery: OppgaveQuery): OppgaveQuery;
-
-	private static updateIdentities(oppgaveQuery: CombineOppgavefilter): CombineOppgavefilter;
-
-	private static updateIdentities(oppgaveQuery: FilterContainer): FilterContainer;
-
-	private static updateIdentities(oppgaveQuery: OppgaveQuery | CombineOppgavefilter | FilterContainer) {
-		const updatedQuery = { ...oppgaveQuery, id: uuid() };
-		if ('filtere' in updatedQuery) {
-			updatedQuery.filtere = updatedQuery.filtere.map((f) => {
-				const updatedFilter = { ...f, id: uuid() } as FilterType;
-				if (updatedFilter.filtere) {
-					updatedFilter.filtere = updatedFilter.filtere.map(OppgaveQueryModel.updateIdentities);
-				}
-				return updatedFilter;
-			});
-		}
-		if ('select' in updatedQuery) {
-			updatedQuery.select = updatedQuery.select.map((f) => ({ ...f, id: uuid() }));
-		}
-		if ('order' in updatedQuery) {
-			updatedQuery.order = updatedQuery.order.map((f) => ({ ...f, id: uuid() }));
-		}
-		return updatedQuery;
+	toOppgaveQuery(): OppgaveQuery {
+		return fjernNodeIdFraQuery(this.oppgaveQuery);
 	}
 
-	toOppgaveQuery(): OppgaveQuery {
+	toIdentifiedQuery(): IdentifiedOppgaveQuery {
 		return this.oppgaveQuery;
 	}
 
-	private internalValidate(filtere: FilterType[]) {
+	private internalValidate(filtere: IdentifiedOppgavefilter[]) {
 		filtere.forEach((f) => {
-			if ('kode' in f && f.kode == null) {
-				this.errors.push({ id: f.id, felt: 'kode', message: 'Du må velge et kriterie' });
+			if (f.type === 'feltverdi' && f.kode == null) {
+				this.errors.push({ _nodeId: f._nodeId, felt: 'kode', message: 'Du må velge et kriterie' });
 			}
-			if ('kode' in f) {
-				if (
-					f.verdi === null ||
-					f.verdi === undefined ||
-					f.verdi === '' ||
-					(Array.isArray(f.verdi) && f.verdi.length === 0)
-				) {
-					this.errors.push({ id: f.id, felt: 'verdi', message: 'Du må fylle ut en verdi' });
+			if (f.type === 'feltverdi') {
+				if (f.verdi === null || f.verdi === undefined || (Array.isArray(f.verdi) && f.verdi.length === 0)) {
+					this.errors.push({ _nodeId: f._nodeId, felt: 'verdi', message: 'Du må fylle ut en verdi' });
 				}
 			}
-			if ('combineOperator' in f) {
+			if (f.type === 'combine') {
 				this.internalValidate(f.filtere);
 			}
 		});
@@ -98,63 +70,66 @@ export default class OppgaveQueryModel {
 		return this.errors;
 	}
 
-	removeFilter(id) {
-		return this.internalRemoveFilter(this.oppgaveQuery, id);
+	removeFilter(nodeId: string) {
+		return this.internalRemoveFilter(this.oppgaveQuery, nodeId);
 	}
 
-	private internalRemoveFilter(oppgaveQuery, id) {
-		const index = oppgaveQuery.filtere.findIndex((f) => f.id === id);
+	private internalRemoveFilter(node: IdentifiedOppgaveQuery | IdentifiedCombineOppgavefilter, nodeId: string) {
+		const index = node.filtere.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
-			oppgaveQuery.filtere.splice(index, 1);
+			node.filtere.splice(index, 1);
 		} else {
-			oppgaveQuery.filtere.filter((f) => f.filtere).forEach((f) => this.internalRemoveFilter(f, id));
+			node.filtere
+				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
+				.forEach((f) => this.internalRemoveFilter(f, nodeId));
 		}
 		return this;
 	}
 
-	getById(id: string) {
-		const selected = this.oppgaveQuery.select.find((f) => f.id === id);
+	getById(nodeId: string): WithNodeId<EnkelSelectFelt | EnkelOrderFelt | Oppgavefilter> | null {
+		const selected = this.oppgaveQuery.select.find((f) => f._nodeId === nodeId);
 		if (selected) {
 			return selected;
 		}
 
-		const ordered = this.oppgaveQuery.order.find((f) => f.id === id);
+		const ordered = this.oppgaveQuery.order.find((f) => f._nodeId === nodeId);
 		if (ordered) {
 			return ordered;
 		}
 
-		return this.internalGetById(this.oppgaveQuery, id);
+		return this.internalGetById(this.oppgaveQuery, nodeId);
 	}
 
-	private internalGetById(oppgaveQuery: OppgaveQuery, id: string): OppgaveQuery | null {
-		if (oppgaveQuery.id === id) {
-			return oppgaveQuery;
-		}
-		if (oppgaveQuery.filtere == null) {
-			return null;
-		}
-
-		for (const f of oppgaveQuery.filtere) {
-			if (f.id === id) {
+	private internalGetById(
+		node: IdentifiedOppgaveQuery | IdentifiedCombineOppgavefilter,
+		nodeId: string,
+	): IdentifiedOppgavefilter | null {
+		for (const f of node.filtere) {
+			if (f._nodeId === nodeId) {
 				return f;
 			}
-			const result = this.internalGetById(f, id);
-			if (result != null) {
-				return result;
+			if (f.type === 'combine') {
+				const result = this.internalGetById(f, nodeId);
+				if (result != null) {
+					return result;
+				}
 			}
 		}
-
 		return null;
 	}
 
-	addFilter(id, data?: any) {
-		return this.internalAddFilter(this.oppgaveQuery, id, data);
+	addFeltverdiFilter(nodeId: string) {
+		return this.internalAddFeltverdiFilter(this.oppgaveQuery, nodeId, {});
 	}
 
-	private internalAddFilter(oppgaveQuery, id, data = {}) {
-		if (oppgaveQuery.id === id) {
-			oppgaveQuery.filtere.push({
-				id: uuid(),
+	private internalAddFeltverdiFilter(
+		node: IdentifiedOppgaveQuery | IdentifiedCombineOppgavefilter,
+		nodeId: string,
+		data: Partial<FeltverdiOppgavefilter>,
+	) {
+		if (node._nodeId === nodeId) {
+			node.filtere.push({
+				_nodeId: uuid(),
 				type: 'feltverdi',
 				område: null,
 				kode: null,
@@ -163,51 +138,58 @@ export default class OppgaveQueryModel {
 				...data,
 			});
 		} else {
-			oppgaveQuery.filtere.filter((f) => f.filtere).forEach((f) => this.internalAddFilter(f, id));
+			node.filtere
+				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
+				.forEach((f) => this.internalAddFeltverdiFilter(f, nodeId, data));
 		}
 		return this;
 	}
 
-	updateFilter(id, data) {
-		return this.internalUpdateFilter(this.oppgaveQuery, id, data);
+	updateFilter(nodeId: string, data: Partial<Oppgavefilter>) {
+		return this.internalUpdateFilter(this.oppgaveQuery, nodeId, data);
 	}
 
 	private internalUpdateFilter(
-		oppgaveQuery: OppgaveQuery | CombineOppgavefilter | FeltverdiOppgavefilter,
-		id: string,
-		data: FeltverdiOppgavefilter | CombineOppgavefilter,
+		node: IdentifiedOppgaveQuery | IdentifiedCombineOppgavefilter,
+		nodeId: string,
+		data: Partial<Oppgavefilter>,
 	) {
-		const newOppgaveQuery = { ...oppgaveQuery };
-		const index = newOppgaveQuery.filtere.findIndex((f) => f.id === id);
+		const index = node.filtere.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
-			newOppgaveQuery.filtere[index] = data;
+			// caster fordi node.filtere[index] og data ikke nødvendigvis er av samme type
+			node.filtere[index] = { ...node.filtere[index], ...data } as IdentifiedOppgavefilter;
 		} else {
-			newOppgaveQuery.filtere.filter((f) => f.filtere).forEach((f) => this.internalUpdateFilter(f, id, data));
+			node.filtere
+				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
+				.forEach((f) => this.internalUpdateFilter(f, nodeId, data));
 		}
 		return this;
 	}
 
-	addGruppe(id) {
-		return this.internalAddGruppe(this.oppgaveQuery, id);
+	addGruppeFilter(nodeId: string) {
+		return this.internalAddGruppe(this.oppgaveQuery, nodeId);
 	}
 
-	private internalAddGruppe(oppgaveQuery, id) {
-		if (oppgaveQuery.id === id) {
-			oppgaveQuery.filtere.push({
-				id: uuid(),
+	private internalAddGruppe(node: IdentifiedOppgaveQuery | IdentifiedCombineOppgavefilter, nodeId: string) {
+		if (node._nodeId === nodeId) {
+			const parentOperator = 'combineOperator' in node ? node.combineOperator : undefined;
+			node.filtere.push({
+				_nodeId: uuid(),
 				type: 'combine',
-				combineOperator: !oppgaveQuery.combineOperator || oppgaveQuery.combineOperator === 'AND' ? 'OR' : 'AND',
+				combineOperator: !parentOperator || parentOperator === 'AND' ? 'OR' : 'AND',
 				filtere: [],
 			});
 		} else {
-			oppgaveQuery.filtere.filter((f) => f.filtere != null).forEach((f) => this.internalAddGruppe(f, id));
+			node.filtere
+				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
+				.forEach((f) => this.internalAddGruppe(f, nodeId));
 		}
 		return this;
 	}
 
 	addEnkelSelectFelt() {
 		this.oppgaveQuery.select.push({
-			id: uuid(),
+			_nodeId: uuid(),
 			type: 'enkel',
 			område: null,
 			kode: null,
@@ -215,18 +197,18 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	removeSelectFelt(id) {
-		const index = this.oppgaveQuery.select.findIndex((f) => f.id === id);
+	removeSelectFelt(id: string) {
+		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === id);
 		if (index >= 0) {
 			this.oppgaveQuery.select.splice(index, 1);
 		}
 		return this;
 	}
 
-	updateEnkelSelectFelt(id, data) {
-		const index = this.oppgaveQuery.select.findIndex((f) => f.id === id);
+	updateEnkelSelectFelt(nodeId: string, data: Partial<EnkelSelectFelt>) {
+		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
-			this.oppgaveQuery.select[index] = data;
+			this.oppgaveQuery.select[index] = { ...this.oppgaveQuery.select[index], ...data };
 		}
 		return this;
 	}
@@ -237,20 +219,23 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	addEnkelOrderFelt(data = {}) {
-		this.oppgaveQuery.order.push({
-			id: uuid(),
-			type: 'enkel',
-			område: null,
-			kode: null,
-			økende: true,
-			...data,
-		});
+	addEnkelOrderFelt(data: EnkelOrderFelt | null) {
+		const newOrder: EnkelOrderFelt =
+			data == null
+				? {
+						type: 'enkel',
+						område: null,
+						kode: null,
+						økende: true,
+					}
+				: data;
+
+		this.oppgaveQuery.order.push({ _nodeId: uuid(), ...newOrder });
 		return this;
 	}
 
-	removeOrderFelt(id) {
-		const index = this.oppgaveQuery.order.findIndex((f) => f.id === id);
+	removeOrderFelt(nodeId: string) {
+		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
 			this.oppgaveQuery.order.splice(index, 1);
 		}
@@ -262,10 +247,10 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	updateEnkelOrderFelt(id, data) {
-		const index = this.oppgaveQuery.order.findIndex((f) => f.id === id);
+	updateEnkelOrderFelt(nodeId: string, data: Partial<EnkelOrderFelt>) {
+		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === nodeId);
 		if (index >= 0) {
-			this.oppgaveQuery.order[index] = data;
+			this.oppgaveQuery.order[index] = { ...this.oppgaveQuery.order[index], ...data };
 		}
 		return this;
 	}

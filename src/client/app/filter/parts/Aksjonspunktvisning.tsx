@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { FilterContext } from 'filter/FilterContext';
-import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
+import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
+import { Oppgavefelt } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import { SelectedValues } from 'sharedComponents/searchWithDropdown/SelectedValues';
 
 interface Props {
-	oppgavefilter: FeltverdiOppgavefilter;
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
 	feltdefinisjon: Oppgavefelt;
 	readOnly?: boolean;
 }
@@ -32,7 +33,7 @@ export const Aksjonspunktvisning = ({ oppgavefilter, feltdefinisjon, readOnly }:
 
 	const update = (value: string[]) => {
 		updateQuery([
-			updateFilter(oppgavefilter.id, {
+			updateFilter(oppgavefilter._nodeId, {
 				verdi: value,
 			}),
 		]);
@@ -47,5 +48,11 @@ export const Aksjonspunktvisning = ({ oppgavefilter, feltdefinisjon, readOnly }:
 		update([]);
 	};
 
-	return <SelectedValues values={values} remove={readOnly ? undefined : remove} removeAllValues={readOnly ? undefined : removeAllValues} />;
+	return (
+		<SelectedValues
+			values={values}
+			remove={readOnly ? undefined : remove}
+			removeAllValues={readOnly ? undefined : removeAllValues}
+		/>
+	);
 };

@@ -1,57 +1,42 @@
-export type Oppgavefilter = {
-	type: string;
-};
-
-export type FeltverdiOppgavefilter = Oppgavefilter & {
-	id: string;
+export type FeltverdiOppgavefilter = {
+	type: 'feltverdi';
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	operator: string;
 	verdi: string[];
 };
 
-export type CombineOppgavefilter = Oppgavefilter &
-	FilterContainer & {
-		combineOperator: string;
-	};
-
-export type FilterType = FeltverdiOppgavefilter | CombineOppgavefilter;
-
-export type FilterContainer = {
-	id: string;
-	filtere: FilterType[];
+export type CombineOppgavefilter = {
+	type: 'combine';
+	combineOperator: string;
+	filtere: Oppgavefilter[];
 };
 
-export type OppgaveQuery = FilterContainer & {
+export type Oppgavefilter = FeltverdiOppgavefilter | CombineOppgavefilter;
+
+export type OppgaveQuery = {
+	filtere: Oppgavefilter[];
 	select: EnkelSelectFelt[];
 	order: EnkelOrderFelt[];
 	limit: number;
 };
 
-export type OrderFelt = {
-	type: string;
-};
-
-export type EnkelOrderFelt = OrderFelt & {
-	id: string;
+export type EnkelOrderFelt = {
+	type: 'enkel';
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	økende: boolean;
 };
 
-export type SelectFelt = {
-	type: string;
-};
-
-export type EnkelSelectFelt = SelectFelt & {
-	id: string;
+export type EnkelSelectFelt = {
+	type: 'enkel';
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 };
 
 export type Oppgavefeltverdi = {
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	verdi: string | string[];
 };
 
@@ -75,9 +60,10 @@ export enum TolkesSom {
 	Timestamp = 'Timestamp',
 	Integer = 'Integer',
 }
+
 export type Oppgavefelt = {
 	område: string;
-	kode: OppgavefilterKode;
+	kode: string;
 	visningsnavn: string;
 	beskrivelse?: string;
 	kokriterie: boolean;
@@ -86,22 +72,24 @@ export type Oppgavefelt = {
 	verdiforklaringer: Verdiforklaring[] | null;
 };
 
-/*
-	TODO: finne en annen løsning på dette.
-	Backend anser denne listen som dynamisk og vi mottar alle disse kodene via API
-	og må derfor ha en liste som er lik backend sin liste.
-
-	Denne ligger lagret i frontend fordi:
-	- vi noen a kodene til å sette påkrevde felter på toppnivå i kriterier for oppgavekøer.
-	- vi bruker noen av kodene til å vite når vi skal vise aksjonspunktvelgeren når man lager query.
-*/
+// Kjente kode-verdier fra backend, brukes til sammenligning der frontend trenger spesifikk logikk.
+// kode-feltet i typene er string fordi backend anser listen som dynamisk.
+// Ignorer unused global symbols, denne lista trenger ikke være uttømmende eller minimal
+// noinspection JSUnusedGlobalSymbols
 export enum OppgavefilterKode {
 	AkkumulertVentetidAnnet = 'akkumulertVentetidAnnet',
+	AkkumulertVentetidAnnetForTidligereVersjoner = 'akkumulertVentetidAnnetForTidligereVersjoner',
 	AkkumulertVentetidAnnetIkkeSaksbehandlingstid = 'akkumulertVentetidAnnetIkkeSaksbehandlingstid',
+	AkkumulertVentetidAnnetIkkeSaksbehandlingstidForTidligereVersjoner = 'akkumulertVentetidAnnetIkkeSaksbehandlingstidForTidligereVersjoner',
 	AkkumulertVentetidArbeidsgiver = 'akkumulertVentetidArbeidsgiver',
+	AkkumulertVentetidArbeidsgiverForTidligereVersjoner = 'akkumulertVentetidArbeidsgiverForTidligereVersjoner',
 	AkkumulertVentetidSaksbehandler = 'akkumulertVentetidSaksbehandler',
 	AkkumulertVentetidSøker = 'akkumulertVentetidSøker',
+	AkkumulertVentetidSøkerForTidligereVersjoner = 'akkumulertVentetidSøkerForTidligereVersjoner',
 	AkkumulertVentetidTekniskFeil = 'akkumulertVentetidTekniskFeil',
+	AkkumulertVentetidTekniskFeilForTidligereVersjoner = 'akkumulertVentetidTekniskFeilForTidligereVersjoner',
+	AkkumulertVentetidSaksbehandlerForTidligereVersjoner = 'akkumulertVentetidSaksbehandlerForTidligereVersjoner',
+	AktorId = 'aktorId',
 	Aksjonspunkt = 'aksjonspunkt',
 	AktivtAksjonspunkt = 'aktivtAksjonspunkt',
 	AktivVentefrist = 'aktivVentefrist',
@@ -132,8 +120,10 @@ export enum OppgavefilterKode {
 	Oppgavesaksbehandlingstid = 'oppgavesaksbehandlingstid',
 	Oppgavestatus = 'oppgavestatus',
 	Oppgavetype = 'oppgavetype',
+	PleietrengendeAktorId = 'pleietrengendeAktorId',
 	PåklagdBehandlingUuid = 'påklagdBehandlingUuid',
 	RegistrertDato = 'registrertDato',
+	RelatertPartAktorid = 'relatertPartAktorid',
 	Resultattype = 'resultattype',
 	Saksnummer = 'saksnummer',
 	TidSidenMottattDato = 'tidSidenMottattDato',

@@ -2,11 +2,18 @@ import React, { useContext, useEffect, useMemo } from 'react';
 import { Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { FeltverdiOppgavefilter, TolkesSom } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS, operatorsFraTolkesSom } from 'filter/utils';
 
-function KriterieOperator({ oppgavefilter, readOnly }: { oppgavefilter: FeltverdiOppgavefilter; readOnly: boolean }) {
+function KriterieOperator({
+	oppgavefilter,
+	readOnly,
+}: {
+	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
+	readOnly: boolean;
+}) {
 	const { updateQuery } = useContext(FilterContext);
 	const { felter: kriterierSomKanVelges } = useContext(AppContext);
 
@@ -48,7 +55,7 @@ function KriterieOperator({ oppgavefilter, readOnly }: { oppgavefilter: Feltverd
 	useEffect(() => {
 		if (!readOnly && operators.length && !operators.includes(oppgavefilter.operator)) {
 			updateQuery([
-				updateFilter(oppgavefilter.id, {
+				updateFilter(oppgavefilter._nodeId, {
 					operator: operators[0],
 				}),
 			]);
@@ -64,7 +71,7 @@ function KriterieOperator({ oppgavefilter, readOnly }: { oppgavefilter: Feltverd
 		const switchingFromInterval = oppgavefilter.operator === OPERATORS.INTERVAL && newOperator !== OPERATORS.INTERVAL;
 
 		updateQuery([
-			updateFilter(oppgavefilter.id, {
+			updateFilter(oppgavefilter._nodeId, {
 				operator: newOperator,
 				...(switchingFromInterval && { verdi: oppgavefilter.verdi?.slice(0, 1) ?? [] }),
 			}),

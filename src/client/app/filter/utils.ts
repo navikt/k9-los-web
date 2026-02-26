@@ -81,12 +81,12 @@ export const visningsnavnForFelt = (felter: Oppgavefelt[], område: string, kode
 	return kode;
 };
 
-export function områdeFraKey(key) {
+export function områdeFraKey(key: string) {
 	const område = key.split('__')[0];
 	return område.length > 0 ? område : null;
 }
 
-export function kodeFraKey(key) {
+export function kodeFraKey(key: string) {
 	return key.split('__')[1];
 }
 

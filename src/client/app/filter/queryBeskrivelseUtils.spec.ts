@@ -90,7 +90,6 @@ describe('queryBeskrivelseUtils', () => {
 		select: EnkelSelectFelt[] = [],
 		order: EnkelOrderFelt[] = [],
 	): OppgaveQuery => ({
-		id: 'root',
 		filtere,
 		select,
 		order,
@@ -108,7 +107,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'oppgavestatus' as any,
 					operator: 'IN',
@@ -129,7 +127,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'personbeskyttelse' as any,
 					operator: 'NOT_IN',
@@ -147,7 +144,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'hastesak' as any,
 					operator: 'IN',
@@ -164,7 +160,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'mottattDato' as any,
 					operator: 'GREATER_THAN_OR_EQUALS',
@@ -182,7 +177,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'mottattDato' as any,
 					operator: 'LESS_THAN_OR_EQUALS',
@@ -199,7 +193,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'mottattDato' as any,
 					operator: 'INTERVAL',
@@ -216,7 +209,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'akkumulertVentetid' as any,
 					operator: 'LESS_THAN_OR_EQUALS',
@@ -234,7 +226,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'K9',
 					kode: 'oppgavestatus' as any,
 					operator: 'IN',
@@ -251,7 +242,6 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					id: '1',
 					område: 'UKJENT',
 					kode: 'ukjentFelt' as any,
 					operator: 'EQUALS',
@@ -266,16 +256,13 @@ describe('queryBeskrivelseUtils', () => {
 
 		it('should handle nested combine filters', () => {
 			const query: OppgaveQuery = {
-				id: 'root',
 				filtere: [
 					{
 						type: 'combine',
-						id: 'combine1',
 						combineOperator: 'AND',
 						filtere: [
 							{
 								type: 'feltverdi',
-								id: '1',
 								område: 'K9',
 								kode: 'oppgavestatus' as any,
 								operator: 'IN',
@@ -283,7 +270,6 @@ describe('queryBeskrivelseUtils', () => {
 							},
 							{
 								type: 'feltverdi',
-								id: '2',
 								område: 'K9',
 								kode: 'hastesak' as any,
 								operator: 'IN',
@@ -316,8 +302,8 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery(
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: 'saksnummer' as any },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'oppgavestatus' as any },
+					{ type: 'enkel', område: 'K9', kode: 'saksnummer' },
+					{ type: 'enkel', område: 'K9', kode: 'oppgavestatus' },
 				],
 			);
 
@@ -331,8 +317,8 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery(
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: '' as any },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'saksnummer' as any },
+					{ type: 'enkel', område: 'K9', kode: '' },
+					{ type: 'enkel', område: 'K9', kode: 'saksnummer' },
 				],
 			);
 
@@ -355,8 +341,8 @@ describe('queryBeskrivelseUtils', () => {
 				[],
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: 'mottattDato' as any, økende: true },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'saksnummer' as any, økende: false },
+					{ type: 'enkel', område: 'K9', kode: 'mottattDato', økende: true },
+					{ type: 'enkel', område: 'K9', kode: 'saksnummer', økende: false },
 				],
 			);
 
@@ -374,8 +360,8 @@ describe('queryBeskrivelseUtils', () => {
 				[],
 				[],
 				[
-					{ type: 'enkel', id: '1', område: 'K9', kode: '' as any, økende: true },
-					{ type: 'enkel', id: '2', område: 'K9', kode: 'mottattDato' as any, økende: false },
+					{ type: 'enkel', område: 'K9', kode: '', økende: true },
+					{ type: 'enkel', område: 'K9', kode: 'mottattDato', økende: false },
 				],
 			);
 
@@ -389,19 +375,17 @@ describe('queryBeskrivelseUtils', () => {
 	describe('utledQueryBeskrivelse', () => {
 		it('should return complete query description', () => {
 			const query: OppgaveQuery = {
-				id: 'root',
 				filtere: [
 					{
 						type: 'feltverdi',
-						id: '1',
 						område: 'K9',
-						kode: 'oppgavestatus' as any,
+						kode: 'oppgavestatus',
 						operator: 'IN',
 						verdi: ['AAPEN'],
 					},
 				],
-				select: [{ type: 'enkel', id: '1', område: 'K9', kode: 'saksnummer' as any }],
-				order: [{ type: 'enkel', id: '1', område: 'K9', kode: 'mottattDato' as any, økende: true }],
+				select: [{ type: 'enkel', område: 'K9', kode: 'saksnummer' as any }],
+				order: [{ type: 'enkel', område: 'K9', kode: 'mottattDato' as any, økende: true }],
 				limit: 100,
 			};
 
