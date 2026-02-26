@@ -19,7 +19,7 @@ import MissingPage from './MissingPage';
 
 const SentryRoutes = withSentryReactRouterV6Routing(Routes);
 const Home: FunctionComponent = () => {
-	const { data } = useQuery<{ felter: Oppgavefelt[] }>({
+	const { data, isSuccess: harHentetFelter } = useQuery<{ felter: Oppgavefelt[] }>({
 		queryKey: [apiPaths.hentOppgaveFelter],
 	});
 	const { data: saksbehandler } = useInnloggetSaksbehandler();
@@ -40,6 +40,10 @@ const Home: FunctionComponent = () => {
 	}, [queryClient, saksbehandler?.brukerIdent, saksbehandler?.kanOppgavestyre]);
 
 	const contextValues = useMemo(() => ({ felter: data?.felter || [] }), [data]);
+
+	if (!harHentetFelter) {
+		return null;
+	}
 
 	return (
 		<div className="mt-5">

@@ -40,8 +40,8 @@ function finnFeltdefinisjon(felter: Oppgavefelt[], område: string, kode: string
 }
 
 function hentVisningsnavn(felter: Oppgavefelt[], område: string, kode: string): string {
-	const feltdef = finnFeltdefinisjon(felter, område, kode);
-	return feltdef?.visningsnavn || `${område || ''}.${kode}`;
+	const feltdefinisjon = finnFeltdefinisjon(felter, område, kode);
+	return feltdefinisjon?.visningsnavn ?? kode;
 }
 
 function formaterDuration(verdi: string): string {
@@ -96,15 +96,21 @@ function formaterVerdier(verdier: string[], feltdef: Oppgavefelt | undefined): s
 	return verdier.map((v) => formaterVerdi(v, feltdef));
 }
 
-function operatorPrefiks(operator: string, verdier: string[]): string | undefined {
+function operatorPrefiks(tolkesSom: TolkesSom, operator: string, verdier: string[]): string | undefined {
 	if (operator === OPERATORS.NOT_EQUALS || operator === OPERATORS.NOT_IN) {
 		return `ikke ${verdier.join(', ')}`;
 	}
-	if (operator === OPERATORS.LESS_THAN_OR_EQUALS) {
+	if (operator === OPERATORS.LESS_THAN_OR_EQUALS && tolkesSom === TolkesSom.Timestamp) {
 		return `t.o.m. ${verdier[0] ?? ''}`.trim();
 	}
-	if (operator === OPERATORS.GREATER_THAN_OR_EQUALS) {
+	if (operator === OPERATORS.LESS_THAN_OR_EQUALS && tolkesSom !== TolkesSom.Timestamp) {
+		return `<= ${verdier[0] ?? ''}`.trim();
+	}
+	if (operator === OPERATORS.GREATER_THAN_OR_EQUALS && tolkesSom === TolkesSom.Timestamp) {
 		return `f.o.m. ${verdier[0] ?? ''}`.trim();
+	}
+	if (operator === OPERATORS.GREATER_THAN_OR_EQUALS && tolkesSom !== TolkesSom.Timestamp) {
+		return `>= ${verdier[0] ?? ''}`.trim();
 	}
 	if (operator === OPERATORS.INTERVAL && verdier.length >= 2) {
 		return `${verdier[0]} – ${verdier[1]}`;
@@ -113,10 +119,10 @@ function operatorPrefiks(operator: string, verdier: string[]): string | undefine
 }
 
 function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
-	const feltdef = finnFeltdefinisjon(felter, filter.område, filter.kode);
+	const feltdefinisjon = finnFeltdefinisjon(felter, filter.område, filter.kode);
 	const feltnavn = hentVisningsnavn(felter, filter.område, filter.kode);
-	const verdier = formaterVerdier(filter.verdi || [], feltdef);
-	const prefiks = operatorPrefiks(filter.operator, verdier);
+	const verdier = formaterVerdier(filter.verdi || [], feltdefinisjon);
+	const prefiks = operatorPrefiks(feltdefinisjon.tolkes_som, filter.operator, verdier);
 
 	return {
 		feltnavn,
@@ -162,28 +168,14 @@ function beskrivelseForOrderFelt(orderFelt: EnkelOrderFelt, felter: Oppgavefelt[
 	};
 }
 
-export function utledQueryBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): OppgaveQueryBeskrivelse {
-	const filtere = traverserFiltere(query.filtere || [], felter);
-
-	const select = (query.select || []).filter((s) => s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
-
-	const order = (query.order || []).filter((o) => o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
-
-	return {
-		filtere,
-		select,
-		order,
-	};
-}
-
 export function utledFilterBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): FilterBeskrivelse[] {
-	return traverserFiltere(query.filtere || [], felter);
+	return traverserFiltere(query.filtere, felter);
 }
 
 export function utledSelectBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): SelectBeskrivelse[] {
-	return (query.select || []).filter((s) => s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
+	return query.select.filter((s) => s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
 }
 
 export function utledOrderBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): OrderBeskrivelse[] {
-	return (query.order || []).filter((o) => o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
+	return query.order.filter((o) => o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
 }

@@ -15,7 +15,6 @@ import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelSelectFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
-import { feltverdiKey } from '../utils';
 import * as styles from './OppgaveSelectFelter.css';
 
 const SortableField: FunctionComponent<{
@@ -41,12 +40,12 @@ const SortableField: FunctionComponent<{
 				hideLabel
 				label="Velg felt"
 				className={styles.noGap}
-				value={feltverdiKey(felt)}
+				value={felt.kode}
 				onChange={(event) => onUpdate(felt, event.target.value)}
 			>
 				<option value="">Velg felt</option>
 				{felter.map((feltdefinisjon: Oppgavefelt) => (
-					<option key={feltverdiKey(feltdefinisjon)} value={feltverdiKey(feltdefinisjon)}>
+					<option key={feltdefinisjon.kode} value={feltdefinisjon.kode}>
 						{feltdefinisjon.visningsnavn}
 					</option>
 				))}
@@ -81,7 +80,15 @@ const OppgaveSelectFelter = () => {
 	};
 
 	const handleUpdate = (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => {
-		updateQuery([updateSelectFelt(felt._nodeId, { kode: newValue })]);
+		const oppgavefelt = felter.find((f) => f.kode === newValue);
+		if (oppgavefelt) {
+			updateQuery([
+				updateSelectFelt(felt._nodeId, {
+					kode: oppgavefelt.kode,
+					område: oppgavefelt.område,
+				}),
+			]);
+		}
 	};
 
 	const handleDragEnd = (event: DragEndEvent) => {
@@ -96,13 +103,11 @@ const OppgaveSelectFelter = () => {
 		updateQuery([moveSelectFelt(oldIndex, newIndex)]);
 	};
 
-	const selectFields = oppgaveQuery?.select ?? [];
-
 	return (
 		<div>
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-				<SortableContext items={selectFields.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
-					{selectFields.map((felt) => (
+				<SortableContext items={oppgaveQuery.select.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
+					{oppgaveQuery.select.map((felt) => (
 						<SortableField
 							key={felt._nodeId}
 							felt={felt}

@@ -1,14 +1,12 @@
-/* eslint-disable react/jsx-pascal-case */
-/* eslint-disable camelcase */
 import React, { useContext, useEffect, useState } from 'react';
 import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { FeltverdiOppgavefilter, Oppgavefelt, OppgavefilterKode } from 'filter/filterTsTypes';
+import { Oppgavefelt } from 'filter/filterTsTypes';
 import { QueryFunction, removeFilter, updateFilter } from 'filter/queryUtils';
-import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle, feltverdiKey, kodeFraKey } from 'filter/utils';
+import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 
 interface Props {
 	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
@@ -36,10 +34,10 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 		const primærvalg = kriterierSomKanVelges?.filter((v) => v.kokriterie);
 		const avanserteValg = kriterierSomKanVelges?.filter((v) => !v.kokriterie);
 
-		const optionsList = primærvalg.map((v) => ({ value: feltverdiKey(v), label: v.visningsnavn }));
+		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
 		if (avanserteValg?.length > 0) {
 			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
-			optionsList.push(...avanserteValg.map((v) => ({ value: feltverdiKey(v), label: v.visningsnavn })));
+			optionsList.push(...avanserteValg.map((v) => ({ value: v.kode, label: v.visningsnavn })));
 		}
 		optionsList.push({ label: 'Gruppe', value: '__gruppe' });
 		return optionsList;
@@ -56,8 +54,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 			return;
 		}
 
-		const kode = kodeFraKey(value);
-		const kriterie = kriterierSomKanVelges.find((k) => k.kode === kode);
+		const kriterie = kriterierSomKanVelges.find((k) => k.kode === value);
 		setValgtKriterie(kriterie);
 	};
 

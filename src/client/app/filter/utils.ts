@@ -43,10 +43,6 @@ export const OPERATORS = {
 	INTERVAL: 'INTERVAL',
 };
 
-export function feltverdiKey(item) {
-	return `${item.område !== null ? item.område : ''}__${item.kode}`;
-}
-
 export const operatorsFraTolkesSom = (tolkesSom: string, antallVerdiforklaringer = 0) => {
 	switch (tolkesSom) {
 		case TolkesSom.String:
@@ -81,15 +77,6 @@ export const visningsnavnForFelt = (felter: Oppgavefelt[], område: string, kode
 	return kode;
 };
 
-export function områdeFraKey(key: string) {
-	const område = key.split('__')[0];
-	return område.length > 0 ? område : null;
-}
-
-export function kodeFraKey(key: string) {
-	return key.split('__')[1];
-}
-
 export const mapBooleanToStringArray = (values: (string | null)[]): string[] =>
 	values.map((value) => {
 		if (value === 'true') {
@@ -114,7 +101,8 @@ export const mapStringToBooleanArray = (values: string[]): (string | null)[] =>
 
 export const calculateDays = (verdi: string[]): number | undefined => {
 	if (!verdi || verdi.length === 0) return undefined;
-	const totalDays = verdi.reduce((acc, curr) => {
+
+	return verdi.reduce((acc, curr) => {
 		if (typeof curr === 'string' && dayjs(curr).isValid()) {
 			const days = dayjs.duration(dayjs(curr).diff(dayjs().startOf('day'))).asDays();
 			return Number.isNaN(days) ? acc : acc + days;
@@ -122,5 +110,4 @@ export const calculateDays = (verdi: string[]): number | undefined => {
 		const days = dayjs.duration(curr).asDays();
 		return Number.isNaN(days) ? acc : acc + days;
 	}, 0);
-	return totalDays;
 };

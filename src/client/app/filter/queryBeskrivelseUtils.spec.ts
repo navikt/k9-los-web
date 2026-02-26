@@ -14,7 +14,6 @@ import {
 	SelectBeskrivelse,
 	utledFilterBeskrivelse,
 	utledOrderBeskrivelse,
-	utledQueryBeskrivelse,
 	utledSelectBeskrivelse,
 } from './queryBeskrivelseUtils';
 
@@ -369,35 +368,6 @@ describe('queryBeskrivelseUtils', () => {
 
 			expect(result).toHaveLength(1);
 			expect(result[0].feltnavn).toBe('Mottatt dato');
-		});
-	});
-
-	describe('utledQueryBeskrivelse', () => {
-		it('should return complete query description', () => {
-			const query: OppgaveQuery = {
-				filtere: [
-					{
-						type: 'feltverdi',
-						område: 'K9',
-						kode: 'oppgavestatus',
-						operator: 'IN',
-						verdi: ['AAPEN'],
-					},
-				],
-				select: [{ type: 'enkel', område: 'K9', kode: 'saksnummer' as any }],
-				order: [{ type: 'enkel', område: 'K9', kode: 'mottattDato' as any, økende: true }],
-				limit: 100,
-			};
-
-			const result = utledQueryBeskrivelse(query, felter);
-
-			expect(result.filtere).toHaveLength(1);
-			expect(result.filtere[0].feltnavn).toBe('Oppgavestatus');
-			expect(result.select).toHaveLength(1);
-			expect(result.select[0].feltnavn).toBe('Saksnummer');
-			expect(result.order).toHaveLength(1);
-			expect(result.order[0].feltnavn).toBe('Mottatt dato');
-			expect(result.order[0].økende).toBe(true);
 		});
 	});
 });

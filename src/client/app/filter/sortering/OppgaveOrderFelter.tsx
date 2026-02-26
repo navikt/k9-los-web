@@ -15,7 +15,6 @@ import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelOrderFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
-import { feltverdiKey, kodeFraKey, områdeFraKey } from '../utils';
 import * as styles from './OppgaveOrderFelter.css';
 
 const SortableOrderField: FunctionComponent<{
@@ -41,12 +40,12 @@ const SortableOrderField: FunctionComponent<{
 			<Select
 				label=""
 				className={styles.noGap}
-				value={feltverdiKey(felt)}
+				value={felt.kode}
 				onChange={(event) => onUpdateKode(felt._nodeId, event.target.value)}
 			>
 				<option value="">Velg felt</option>
 				{felter.map((feltdefinisjon: Oppgavefelt) => (
-					<option key={feltverdiKey(feltdefinisjon)} value={feltverdiKey(feltdefinisjon)}>
+					<option key={feltdefinisjon.kode} value={feltdefinisjon.kode}>
 						{feltdefinisjon.visningsnavn}
 					</option>
 				))}
@@ -94,12 +93,15 @@ const OppgaveOrderFelter = () => {
 	};
 
 	const handleUpdateKode = (nodeId: string, value: string) => {
-		updateQuery([
-			updateSortering(nodeId, {
-				område: områdeFraKey(value),
-				kode: kodeFraKey(value),
-			}),
-		]);
+		const oppgavefelt = felter.find((f) => f.kode === value);
+		if (oppgavefelt) {
+			updateQuery([
+				updateSortering(nodeId, {
+					område: oppgavefelt.område,
+					kode: oppgavefelt.kode,
+				}),
+			]);
+		}
 	};
 
 	const handleUpdateDirection = (nodeId: string, direction: 'true' | 'false') => {

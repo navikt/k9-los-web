@@ -6,9 +6,9 @@ interface OwnProps {
 }
 
 const InnloggetSaksbehandlerResolver: FunctionComponent<OwnProps> = ({ children }) => {
-	const { isLoading } = useInnloggetSaksbehandler();
+	const { isSuccess } = useInnloggetSaksbehandler();
 
-	if (isLoading) {
+	if (!isSuccess) {
 		return null;
 	}
 
