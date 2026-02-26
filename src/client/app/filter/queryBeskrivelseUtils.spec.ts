@@ -22,7 +22,7 @@ dayjs.extend(durationPlugin);
 describe('queryBeskrivelseUtils', () => {
 	const felter: Oppgavefelt[] = [
 		{
-			område: 'K9',
+			område: null,
 			kode: 'oppgavestatus',
 			visningsnavn: 'Oppgavestatus',
 			kokriterie: false,
@@ -35,7 +35,7 @@ describe('queryBeskrivelseUtils', () => {
 			],
 		},
 		{
-			område: 'K9',
+			område: null,
 			kode: 'personbeskyttelse',
 			visningsnavn: 'Personbeskyttelse',
 			kokriterie: false,
@@ -106,8 +106,8 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					område: 'K9',
-					kode: 'oppgavestatus' as any,
+					område: null,
+					kode: 'oppgavestatus',
 					operator: 'IN',
 					verdi: ['AAPEN', 'VENTER'],
 				},
@@ -126,8 +126,8 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					område: 'K9',
-					kode: 'personbeskyttelse' as any,
+					område: null,
+					kode: 'personbeskyttelse',
 					operator: 'NOT_IN',
 					verdi: ['KODE7', 'EGEN_ANSATT'],
 				},
@@ -209,7 +209,7 @@ describe('queryBeskrivelseUtils', () => {
 				{
 					type: 'feltverdi',
 					område: 'K9',
-					kode: 'akkumulertVentetid' as any,
+					kode: 'akkumulertVentetid',
 					operator: 'LESS_THAN_OR_EQUALS',
 					verdi: ['P2DT5H'],
 				},
@@ -218,7 +218,7 @@ describe('queryBeskrivelseUtils', () => {
 			const result = utledFilterBeskrivelse(query, felter);
 
 			expect(result[0].verdier).toEqual(['2d 5t']);
-			expect(result[0].operatorPrefiks).toBe('t.o.m. 2d 5t');
+			expect(result[0].operatorPrefiks).toBe('<= 2d 5t');
 		});
 
 		it('should skip filters without values', () => {
@@ -250,7 +250,7 @@ describe('queryBeskrivelseUtils', () => {
 
 			const result = utledFilterBeskrivelse(query, felter);
 
-			expect(result[0].feltnavn).toBe('UKJENT.ukjentFelt');
+			expect(result[0].feltnavn).toBe('ukjentFelt');
 		});
 
 		it('should handle nested combine filters', () => {
@@ -262,15 +262,15 @@ describe('queryBeskrivelseUtils', () => {
 						filtere: [
 							{
 								type: 'feltverdi',
-								område: 'K9',
-								kode: 'oppgavestatus' as any,
+								område: null,
+								kode: 'oppgavestatus',
 								operator: 'IN',
 								verdi: ['AAPEN'],
 							},
 							{
 								type: 'feltverdi',
 								område: 'K9',
-								kode: 'hastesak' as any,
+								kode: 'hastesak',
 								operator: 'IN',
 								verdi: ['true'],
 							},
@@ -302,7 +302,7 @@ describe('queryBeskrivelseUtils', () => {
 				[],
 				[
 					{ type: 'enkel', område: 'K9', kode: 'saksnummer' },
-					{ type: 'enkel', område: 'K9', kode: 'oppgavestatus' },
+					{ type: 'enkel', område: null, kode: 'oppgavestatus' },
 				],
 			);
 

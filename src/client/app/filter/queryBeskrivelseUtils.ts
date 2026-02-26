@@ -92,11 +92,11 @@ function formaterVerdi(verdi: string, feltdef: Oppgavefelt | undefined): string 
 	return verdi;
 }
 
-function formaterVerdier(verdier: string[], feltdef: Oppgavefelt | undefined): string[] {
-	return verdier.map((v) => formaterVerdi(v, feltdef));
+function formaterVerdier(verdier: string[], feltdefinisjon: Oppgavefelt | undefined): string[] {
+	return verdier.map((v) => formaterVerdi(v, feltdefinisjon));
 }
 
-function operatorPrefiks(tolkesSom: TolkesSom, operator: string, verdier: string[]): string | undefined {
+function operatorPrefiks(tolkesSom: TolkesSom | undefined, operator: string, verdier: string[]): string | undefined {
 	if (operator === OPERATORS.NOT_EQUALS || operator === OPERATORS.NOT_IN) {
 		return `ikke ${verdier.join(', ')}`;
 	}
@@ -121,8 +121,8 @@ function operatorPrefiks(tolkesSom: TolkesSom, operator: string, verdier: string
 function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
 	const feltdefinisjon = finnFeltdefinisjon(felter, filter.område, filter.kode);
 	const feltnavn = hentVisningsnavn(felter, filter.område, filter.kode);
-	const verdier = formaterVerdier(filter.verdi || [], feltdefinisjon);
-	const prefiks = operatorPrefiks(feltdefinisjon.tolkes_som, filter.operator, verdier);
+	const verdier = formaterVerdier(filter.verdi, feltdefinisjon);
+	const prefiks = operatorPrefiks(feltdefinisjon?.tolkes_som, filter.operator, verdier);
 
 	return {
 		feltnavn,
