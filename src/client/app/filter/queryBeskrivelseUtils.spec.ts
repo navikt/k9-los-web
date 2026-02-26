@@ -119,10 +119,11 @@ describe('queryBeskrivelseUtils', () => {
 			expect(result[0]).toEqual<FilterBeskrivelse>({
 				feltnavn: 'Oppgavestatus',
 				verdier: ['Åpen', 'Venter'],
+				sammenføyning: { separator: ', ' },
 			});
 		});
 
-		it('should set operatorPrefiks to "ikke" for NOT_IN operator', () => {
+		it('should set sammenføyning prefiks to "ikke" for NOT_IN operator', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
@@ -135,7 +136,7 @@ describe('queryBeskrivelseUtils', () => {
 
 			const result = utledFilterBeskrivelse(query, felter);
 
-			expect(result[0].operatorPrefiks).toBe('ikke Kode 7, Egen ansatt');
+			expect(result[0].sammenføyning).toEqual({ prefiks: 'ikke ', separator: ', ' });
 			expect(result[0].verdier).toEqual(['Kode 7', 'Egen ansatt']);
 		});
 
@@ -169,7 +170,7 @@ describe('queryBeskrivelseUtils', () => {
 			const result = utledFilterBeskrivelse(query, felter);
 
 			expect(result[0].verdier).toEqual(['15.01.2024']);
-			expect(result[0].operatorPrefiks).toBe('f.o.m. 15.01.2024');
+			expect(result[0].sammenføyning).toEqual({ prefiks: 'f.o.m. ' });
 		});
 
 		it('should add t.o.m. prefix for LESS_THAN_OR_EQUALS timestamp', () => {
@@ -185,7 +186,7 @@ describe('queryBeskrivelseUtils', () => {
 
 			const result = utledFilterBeskrivelse(query, felter);
 
-			expect(result[0].operatorPrefiks).toBe('t.o.m. 13.02.2026');
+			expect(result[0].sammenføyning).toEqual({ prefiks: 't.o.m. ' });
 		});
 
 		it('should add tankestrek for INTERVAL timestamp', () => {
@@ -201,7 +202,7 @@ describe('queryBeskrivelseUtils', () => {
 
 			const result = utledFilterBeskrivelse(query, felter);
 
-			expect(result[0].operatorPrefiks).toBe('01.02.2026 – 13.02.2026');
+			expect(result[0].sammenføyning).toEqual({ separator: ' – ' });
 		});
 
 		it('should format duration values', () => {
@@ -218,7 +219,7 @@ describe('queryBeskrivelseUtils', () => {
 			const result = utledFilterBeskrivelse(query, felter);
 
 			expect(result[0].verdier).toEqual(['2d 5t']);
-			expect(result[0].operatorPrefiks).toBe('<= 2d 5t');
+			expect(result[0].sammenføyning).toEqual({ prefiks: '<= ' });
 		});
 
 		it('should skip filters without values', () => {
@@ -284,9 +285,9 @@ describe('queryBeskrivelseUtils', () => {
 
 			const result = utledFilterBeskrivelse(query, felter);
 
-			expect(result).toHaveLength(2);
-			expect(result[0].feltnavn).toBe('Oppgavestatus');
-			expect(result[1].feltnavn).toBe('Hastesak');
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Gruppe');
+			expect(result[0].verdier).toEqual(['Oppgavestatus', 'Hastesak']);
 		});
 	});
 

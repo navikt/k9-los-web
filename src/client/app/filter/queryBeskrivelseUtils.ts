@@ -14,10 +14,15 @@ import { OPERATORS } from './utils';
 
 dayjs.extend(durationPlugin);
 
+export interface FilterBeskrivelseSammenføyning {
+	prefiks?: string;
+	separator?: string;
+}
+
 export interface FilterBeskrivelse {
 	feltnavn: string;
 	verdier: string[];
-	operatorPrefiks?: string;
+	sammenføyning: FilterBeskrivelseSammenføyning;
 }
 
 export interface SelectBeskrivelse {
@@ -27,12 +32,6 @@ export interface SelectBeskrivelse {
 export interface OrderBeskrivelse {
 	feltnavn: string;
 	økende: boolean;
-}
-
-export interface OppgaveQueryBeskrivelse {
-	filtere: FilterBeskrivelse[];
-	select: SelectBeskrivelse[];
-	order: OrderBeskrivelse[];
 }
 
 function finnFeltdefinisjon(felter: Oppgavefelt[], område: string, kode: string): Oppgavefelt | undefined {
@@ -93,41 +92,68 @@ function formaterVerdi(verdi: string, feltdef: Oppgavefelt | undefined): string 
 }
 
 function formaterVerdier(verdier: string[], feltdefinisjon: Oppgavefelt | undefined): string[] {
+	if (verdier.length >= 10) {
+		return [`${verdier.length} kriterier`];
+	}
 	return verdier.map((v) => formaterVerdi(v, feltdefinisjon));
 }
 
-function operatorPrefiks(tolkesSom: TolkesSom | undefined, operator: string, verdier: string[]): string | undefined {
+function bestemSammenføyning(tolkesSom: TolkesSom | undefined, operator: string): FilterBeskrivelseSammenføyning {
+	if (operator === 'OR') {
+		return { separator: ' eller ' };
+	}
+	if (operator === 'AND') {
+		return { separator: ' og ' };
+	}
 	if (operator === OPERATORS.NOT_EQUALS || operator === OPERATORS.NOT_IN) {
-		return `ikke ${verdier.join(', ')}`;
+		return { prefiks: 'ikke ', separator: ', ' };
 	}
 	if (operator === OPERATORS.LESS_THAN_OR_EQUALS && tolkesSom === TolkesSom.Timestamp) {
-		return `t.o.m. ${verdier[0] ?? ''}`.trim();
+		return { prefiks: 't.o.m. ' };
 	}
 	if (operator === OPERATORS.LESS_THAN_OR_EQUALS && tolkesSom !== TolkesSom.Timestamp) {
-		return `<= ${verdier[0] ?? ''}`.trim();
+		return { prefiks: '<= ' };
+	}
+	if (operator === OPERATORS.LESS_THAN) {
+		return { prefiks: '< ' };
 	}
 	if (operator === OPERATORS.GREATER_THAN_OR_EQUALS && tolkesSom === TolkesSom.Timestamp) {
-		return `f.o.m. ${verdier[0] ?? ''}`.trim();
+		return { prefiks: 'f.o.m. ' };
 	}
 	if (operator === OPERATORS.GREATER_THAN_OR_EQUALS && tolkesSom !== TolkesSom.Timestamp) {
-		return `>= ${verdier[0] ?? ''}`.trim();
+		return { prefiks: '>= ' };
 	}
-	if (operator === OPERATORS.INTERVAL && verdier.length >= 2) {
-		return `${verdier[0]} – ${verdier[1]}`;
+	if (operator === OPERATORS.GREATER_THAN) {
+		return { prefiks: '> ' };
 	}
-	return undefined;
+	if (operator === OPERATORS.INTERVAL) {
+		return { separator: ' – ' };
+	}
+	return { separator: ', ' };
 }
 
 function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
 	const feltdefinisjon = finnFeltdefinisjon(felter, filter.område, filter.kode);
 	const feltnavn = hentVisningsnavn(felter, filter.område, filter.kode);
 	const verdier = formaterVerdier(filter.verdi, feltdefinisjon);
-	const prefiks = operatorPrefiks(feltdefinisjon?.tolkes_som, filter.operator, verdier);
+	const sammenføyning = bestemSammenføyning(feltdefinisjon?.tolkes_som, filter.operator);
 
 	return {
 		feltnavn,
 		verdier,
-		...(prefiks !== undefined && { operatorPrefiks: prefiks }),
+		sammenføyning,
+	};
+}
+
+function beskrivelseForCombineFilter(filter: CombineOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
+	const feltnavn = 'Gruppe';
+	const verdier = traverserFiltere(filter.filtere, felter).map(({ feltnavn }) => feltnavn);
+	const prefiks = bestemSammenføyning(undefined, filter.combineOperator);
+
+	return {
+		feltnavn,
+		verdier,
+		sammenføyning: prefiks,
 	};
 }
 
@@ -148,7 +174,7 @@ function traverserFiltere(filtere: Oppgavefilter[], felter: Oppgavefelt[]): Filt
 				beskrivelser.push(beskrivelseForFeltverdiFilter(filter, felter));
 			}
 		} else if (isCombineOppgavefilter(filter)) {
-			beskrivelser.push(...traverserFiltere(filter.filtere, felter));
+			beskrivelser.push(beskrivelseForCombineFilter(filter, felter));
 		}
 	}
 
