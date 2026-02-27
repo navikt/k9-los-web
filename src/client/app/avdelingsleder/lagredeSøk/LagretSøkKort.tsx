@@ -213,19 +213,28 @@ export function LagretSøkKort({
 	const { felter } = useContext(AppContext);
 	const [endrerTittel, setEndrerTittel] = useState(false);
 	const [expanded, setExpanded] = useState(false);
+	const [collapsed, setCollapsed] = useState(true);
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
+	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
 
 	return (
 		<div className="rounded-md p-3 mb-2 bg-ax-neutral-100 border-solid border-1 border-ax-neutral-200 flex flex-col gap-2">
 			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
 			<div className="w-full flex items-center justify-between gap-2">
 				<div className="flex items-center gap-2 min-w-0 flex-1">
+					<Button
+						title={collapsed ? 'Utvid søk' : 'Kollaps søk'}
+						size="xsmall"
+						variant="tertiary-neutral"
+						icon={collapsed ? <ChevronRightIcon fontSize="1.5rem" /> : <ChevronDownIcon fontSize="1.5rem" />}
+						onClick={() => setCollapsed(!collapsed)}
+					/>
 					<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-ax-neutral-700 flex-shrink-0" />
-					{endrerTittel ? (
+					{!collapsed && endrerTittel ? (
 						<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 					) : (
 						<div className="flex items-center gap-1">
@@ -234,111 +243,138 @@ export function LagretSøkKort({
 							) : (
 								<span className="italic text-ax-neutral-600">Ingen tittel</span>
 							)}
-							<Button
-								title={harEgendefinertTittel ? 'Endre tittel' : 'Sett tittel'}
-								size="xsmall"
-								variant="tertiary"
-								icon={<PencilIcon />}
-								onClick={() => setEndrerTittel(true)}
-							/>
+							{!collapsed && (
+								<Button
+									title={harEgendefinertTittel ? 'Endre tittel' : 'Sett tittel'}
+									size="xsmall"
+									variant="tertiary"
+									icon={<PencilIcon />}
+									onClick={() => setEndrerTittel(true)}
+								/>
+							)}
 						</div>
 					)}
 				</div>
-				<div className="flex gap-2 flex-shrink-0">
-					<Button
-						variant="tertiary"
-						size="small"
-						onClick={() => {
-							const tittelEllerQueryBeskrivelse = lagretSøk.tittel || `lagret søk med id ${lagretSøk.id}`;
-							kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${tittelEllerQueryBeskrivelse}` });
-						}}
-						icon={<FilesIcon />}
-					>
-						Kopier
-					</Button>
-					{harUttrekk ? (
-						<ModalButton
-							renderButton={({ openModal }) => (
-								<Button variant="tertiary" size="small" onClick={openModal} icon={<TrashIcon />}>
-									Slett
-								</Button>
-							)}
-							renderModal={({ open, closeModal }) => (
-								<SlettLagretSøkModal
-									lagretSøk={lagretSøk}
-									antallUttrekk={uttrekk.length}
-									open={open}
-									closeModal={closeModal}
-								/>
-							)}
-						/>
-					) : (
-						<Button variant="tertiary" size="small" onClick={() => slettLagretSøk(lagretSøk.id)} icon={<TrashIcon />}>
-							Slett
-						</Button>
-					)}
-				</div>
-			</div>
-
-			{/* Rad 2: KriterieBoks, FelterBoks, SorteringBoks */}
-			<div className="w-full flex gap-2">
-				<KriterierBoks queryBeskrivelse={utledFilterBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-				<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-				<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-			</div>
-
-			{/* Rad 3: Antall oppgaver */}
-			<div className="w-full text-md text-ax-neutral-800">
-				{antallLoading ? (
-					<Skeleton variant="text" width={100} className="inline-block" />
-				) : (
-					<>
-						<span className="font-medium">Antall oppgaver: </span>
-						{antall !== undefined ? `${antall}` : '-'}
-					</>
-				)}
-			</div>
-
-			{/* Rad 4: Uttrekk-visning */}
-			<div className="w-full">
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button icon={<PlayIcon />} variant="secondary" size="small" onClick={openModal}>
-							Gjør uttrekk
-						</Button>
-					)}
-					renderModal={({ open, closeModal }) => (
-						<OpprettUttrekkModal
-							lagretSøk={lagretSøk}
-							open={open}
-							closeModal={() => {
-								setExpanded(true);
-								closeModal();
-							}}
-						/>
-					)}
-				/>
-				{harUttrekk && (
-					<div className="mt-4">
+				{!collapsed && (
+					<div className="flex gap-2 flex-shrink-0">
 						<Button
-							className="pl-0"
 							variant="tertiary"
 							size="small"
-							onClick={() => setExpanded(!expanded)}
-							icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+							onClick={() => {
+								const tittelEllerQueryBeskrivelse = lagretSøk.tittel || `lagret søk med id ${lagretSøk.id}`;
+								kopierLagretSøk({ id: lagretSøk.id, tittel: `Kopi av: ${tittelEllerQueryBeskrivelse}` });
+							}}
+							icon={<FilesIcon />}
 						>
-							{expanded ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
+							Kopier
 						</Button>
-						{expanded && (
-							<div className="mt-2">
-								{uttrekk.map((u) => (
-									<UttrekkKort key={u.id} uttrekk={u} />
-								))}
-							</div>
+						{harUttrekk ? (
+							<ModalButton
+								renderButton={({ openModal }) => (
+									<Button variant="tertiary" size="small" onClick={openModal} icon={<TrashIcon />}>
+										Slett
+									</Button>
+								)}
+								renderModal={({ open, closeModal }) => (
+									<SlettLagretSøkModal
+										lagretSøk={lagretSøk}
+										antallUttrekk={uttrekk.length}
+										open={open}
+										closeModal={closeModal}
+									/>
+								)}
+							/>
+						) : (
+							<Button variant="tertiary" size="small" onClick={() => slettLagretSøk(lagretSøk.id)} icon={<TrashIcon />}>
+								Slett
+							</Button>
 						)}
 					</div>
 				)}
 			</div>
+
+			{collapsed ? (
+				<div className="w-full text-sm text-ax-neutral-700 flex flex-col gap-0.5">
+					{filterBeskrivelse && filterBeskrivelse.length > 0 && (
+						<div>
+							<span className="font-medium">Kriterier: </span>
+							{filterBeskrivelse.map((f) => f.feltnavn).join(', ')}
+						</div>
+					)}
+					<div>
+						{antallLoading ? (
+							<Skeleton variant="text" width={100} className="inline-block" />
+						) : (
+							<>
+								<span className="font-medium">Antall oppgaver: </span>
+								{antall !== undefined ? `${antall}` : '-'}
+							</>
+						)}
+					</div>
+				</div>
+			) : (
+				<>
+					{/* Rad 2: KriterieBoks, FelterBoks, SorteringBoks */}
+					<div className="w-full flex gap-2">
+						<KriterierBoks queryBeskrivelse={filterBeskrivelse} lagretSøk={lagretSøk} />
+						<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+						<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
+					</div>
+
+					{/* Rad 3: Antall oppgaver */}
+					<div className="w-full text-md text-ax-neutral-800">
+						{antallLoading ? (
+							<Skeleton variant="text" width={100} className="inline-block" />
+						) : (
+							<>
+								<span className="font-medium">Antall oppgaver: </span>
+								{antall !== undefined ? `${antall}` : '-'}
+							</>
+						)}
+					</div>
+
+					{/* Rad 4: Uttrekk-visning */}
+					<div className="w-full">
+						<ModalButton
+							renderButton={({ openModal }) => (
+								<Button icon={<PlayIcon />} variant="secondary" size="small" onClick={openModal}>
+									Gjør uttrekk
+								</Button>
+							)}
+							renderModal={({ open, closeModal }) => (
+								<OpprettUttrekkModal
+									lagretSøk={lagretSøk}
+									open={open}
+									closeModal={() => {
+										setExpanded(true);
+										closeModal();
+									}}
+								/>
+							)}
+						/>
+						{harUttrekk && (
+							<div className="mt-4">
+								<Button
+									className="pl-0"
+									variant="tertiary"
+									size="small"
+									onClick={() => setExpanded(!expanded)}
+									icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+								>
+									{expanded ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
+								</Button>
+								{expanded && (
+									<div className="mt-2">
+										{uttrekk.map((u) => (
+											<UttrekkKort key={u.id} uttrekk={u} />
+										))}
+									</div>
+								)}
+							</div>
+						)}
+					</div>
+				</>
+			)}
 		</div>
 	);
 }
