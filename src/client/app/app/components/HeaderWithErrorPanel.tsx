@@ -14,9 +14,9 @@ const endringsloggBackendUrl = (() => {
 	if (window.location.hostname.includes('localhost')) {
 		return '/api/endringslogg';
 	} else if (window.location.hostname.includes('dev')) {
-		return 'https://familie-endringslogg.intern.dev.nav.no';
+		return 'https://endringslogg.intern.dev.nav.no';
 	} else {
-		return 'https://familie-endringslogg.intern.nav.no';
+		return 'https://endringslogg.intern.nav.no';
 	}
 })();
 
