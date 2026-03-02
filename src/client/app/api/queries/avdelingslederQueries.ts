@@ -329,7 +329,7 @@ export const useKopierLagretSøk = (callback?: (id: number) => void) => {
 	return useMutation({
 		mutationFn: (data: { id: number; tittel: string }) =>
 			axiosInstance.post(apiPaths.kopierLagretSøk(data.id.toString()), { tittel: data.tittel }).then((res) => res.data),
-		onSuccess: ({ id }) =>
+		onSuccess: (id) =>
 			queryClient
 				.invalidateQueries({
 					queryKey: [apiPaths.hentLagredeSøk],

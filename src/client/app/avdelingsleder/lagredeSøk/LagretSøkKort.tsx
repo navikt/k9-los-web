@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import {
 	ChevronDownIcon,
 	ChevronRightIcon,
-	FilesIcon,
 	FilterIcon,
 	PencilIcon,
 	PlayIcon,
@@ -12,14 +11,9 @@ import {
 } from '@navikt/aksel-icons';
 import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import {
-	LagretSøk,
-	Uttrekk,
-	useEndreLagretSøk,
-	useSlettLagretSøk,
-} from 'api/queries/avdelingslederQueries';
+import { LagretSøk, Uttrekk, useEndreLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
-import { KopierLagretSøkModal } from 'avdelingsleder/lagredeSøk/KopierLagretSøkModal';
+import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
 import { SlettLagretSøkModal } from 'avdelingsleder/lagredeSøk/SlettLagretSøkModal';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
@@ -219,6 +213,12 @@ export function LagretSøkKort({
 	const [lagretSøkKollapset, setLagretSøkKollapset] = useState(!initiallyExpanded);
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 
+	useEffect(() => {
+		if (initiallyExpanded) {
+			setLagretSøkKollapset(false);
+		}
+	}, [initiallyExpanded]);
+
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
@@ -258,21 +258,7 @@ export function LagretSøkKort({
 				</div>
 				{!lagretSøkKollapset && (
 					<div className="flex gap-2 flex-shrink-0">
-						<ModalButton
-							renderButton={({ openModal }) => (
-								<Button variant="tertiary" size="small" onClick={openModal} icon={<FilesIcon />}>
-									Kopier
-								</Button>
-							)}
-							renderModal={({ open, closeModal }) => (
-								<KopierLagretSøkModal
-									lagretSøk={lagretSøk}
-									open={open}
-									closeModal={closeModal}
-									onNyOpprettet={(id) => onNyOpprettet?.(id)}
-								/>
-							)}
-						/>
+						<KopierLagretSøkDialog lagretSøk={lagretSøk} onNyOpprettet={(id) => onNyOpprettet?.(id)} />
 						{harUttrekk ? (
 							<ModalButton
 								renderButton={({ openModal }) => (
