@@ -4,7 +4,6 @@ import {
 	ChevronRightIcon,
 	FilesIcon,
 	FilterIcon,
-	MagnifyingGlassIcon,
 	PencilIcon,
 	PlayIcon,
 	SortDownIcon,
@@ -212,8 +211,8 @@ export function LagretSøkKort({
 }) {
 	const { felter } = useContext(AppContext);
 	const [endrerTittel, setEndrerTittel] = useState(false);
-	const [expanded, setExpanded] = useState(false);
-	const [collapsed, setCollapsed] = useState(true);
+	const [uttrekkEkspandert, setUttrekkEkspandert] = useState(false);
+	const [lagretSøkKollapset, setLagretSøkKollapset] = useState(true);
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 
@@ -227,14 +226,13 @@ export function LagretSøkKort({
 			<div className="w-full flex items-center justify-between gap-2">
 				<div className="flex items-center gap-2 min-w-0 flex-1">
 					<Button
-						title={collapsed ? 'Utvid søk' : 'Kollaps søk'}
+						title={lagretSøkKollapset ? 'Utvid søk' : 'Kollaps søk'}
 						size="xsmall"
 						variant="tertiary-neutral"
-						icon={collapsed ? <ChevronRightIcon fontSize="1.5rem" /> : <ChevronDownIcon fontSize="1.5rem" />}
-						onClick={() => setCollapsed(!collapsed)}
+						icon={lagretSøkKollapset ? <ChevronRightIcon fontSize="1.5rem" /> : <ChevronDownIcon fontSize="1.5rem" />}
+						onClick={() => setLagretSøkKollapset(!lagretSøkKollapset)}
 					/>
-					<MagnifyingGlassIcon aria-hidden fontSize="1.5rem" className="text-ax-neutral-700 flex-shrink-0" />
-					{!collapsed && endrerTittel ? (
+					{!lagretSøkKollapset && endrerTittel ? (
 						<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 					) : (
 						<div className="flex items-center gap-1">
@@ -243,7 +241,7 @@ export function LagretSøkKort({
 							) : (
 								<span className="italic text-ax-neutral-600">Ingen tittel</span>
 							)}
-							{!collapsed && (
+							{!lagretSøkKollapset && (
 								<Button
 									title={harEgendefinertTittel ? 'Endre tittel' : 'Sett tittel'}
 									size="xsmall"
@@ -255,7 +253,7 @@ export function LagretSøkKort({
 						</div>
 					)}
 				</div>
-				{!collapsed && (
+				{!lagretSøkKollapset && (
 					<div className="flex gap-2 flex-shrink-0">
 						<Button
 							variant="tertiary"
@@ -293,7 +291,7 @@ export function LagretSøkKort({
 				)}
 			</div>
 
-			{collapsed ? (
+			{lagretSøkKollapset ? (
 				<div className="w-full text-sm text-ax-neutral-700 flex flex-col gap-0.5">
 					{filterBeskrivelse && filterBeskrivelse.length > 0 && (
 						<div>
@@ -346,7 +344,7 @@ export function LagretSøkKort({
 									lagretSøk={lagretSøk}
 									open={open}
 									closeModal={() => {
-										setExpanded(true);
+										setUttrekkEkspandert(true);
 										closeModal();
 									}}
 								/>
@@ -358,12 +356,12 @@ export function LagretSøkKort({
 									className="pl-0"
 									variant="tertiary"
 									size="small"
-									onClick={() => setExpanded(!expanded)}
-									icon={expanded ? <ChevronDownIcon /> : <ChevronRightIcon />}
+									onClick={() => setUttrekkEkspandert(!uttrekkEkspandert)}
+									icon={uttrekkEkspandert ? <ChevronDownIcon /> : <ChevronRightIcon />}
 								>
-									{expanded ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
+									{uttrekkEkspandert ? 'Skjul uttrekk' : `Vis uttrekk (${uttrekk.length})`}
 								</Button>
-								{expanded && (
+								{uttrekkEkspandert && (
 									<div className="mt-2">
 										{uttrekk.map((u) => (
 											<UttrekkKort key={u.id} uttrekk={u} />
