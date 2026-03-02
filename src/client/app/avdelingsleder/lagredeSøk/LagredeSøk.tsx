@@ -11,6 +11,7 @@ export function LagredeSøk() {
 	const { data: uttrekk } = useHentAlleUttrekk();
 	const { data: defaultQuery } = useHentLagredeSøkDefaultQuery();
 	const [visOpprettModal, setVisOpprettModal] = useState(false);
+	const [nyligOpprettetId, setNyligOpprettetId] = useState<number | null>(null);
 
 	// Finn uttrekk som ikke har tilhørende lagret søk (foreldreløse)
 	const lagretSøkIder = new Set(data?.map((s) => s.id) ?? []);
@@ -49,6 +50,7 @@ export function LagredeSøk() {
 					initialQuery={defaultQuery}
 					open
 					closeModal={() => setVisOpprettModal(false)}
+					onNyOpprettet={setNyligOpprettetId}
 				/>
 			)}
 			{isError && (
@@ -59,7 +61,9 @@ export function LagredeSøk() {
 					</Alert>
 				</div>
 			)}
-			{isSuccess && data.length > 0 && <LagredeSøkTabell lagredeSøk={data} uttrekk={uttrekk ?? []} />}
+			{isSuccess && data.length > 0 && (
+				<LagredeSøkTabell lagredeSøk={data} uttrekk={uttrekk ?? []} nyligOpprettetId={nyligOpprettetId} />
+			)}
 			{isSuccess && data.length === 0 && (
 				<div>
 					<i>Du har ingen lagrede søk ennå</i>

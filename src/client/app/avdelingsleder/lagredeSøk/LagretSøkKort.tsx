@@ -203,16 +203,18 @@ export function LagretSøkKort({
 	antall,
 	antallLoading,
 	uttrekk,
+	initiallyExpanded,
 }: {
 	lagretSøk: LagretSøk;
 	antall: number | undefined;
 	antallLoading: boolean;
 	uttrekk: Uttrekk[];
+	initiallyExpanded?: boolean;
 }) {
 	const { felter } = useContext(AppContext);
 	const [endrerTittel, setEndrerTittel] = useState(false);
 	const [uttrekkEkspandert, setUttrekkEkspandert] = useState(false);
-	const [lagretSøkKollapset, setLagretSøkKollapset] = useState(true);
+	const [lagretSøkKollapset, setLagretSøkKollapset] = useState(!initiallyExpanded);
 	const { mutate: kopierLagretSøk } = useKopierLagretSøk();
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 

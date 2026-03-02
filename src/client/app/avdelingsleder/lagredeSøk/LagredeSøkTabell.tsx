@@ -5,7 +5,7 @@ import { LagretSøk, Uttrekk } from 'api/queries/avdelingslederQueries';
 import { LagretSøkKort } from 'avdelingsleder/lagredeSøk/LagretSøkKort';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
-export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[]; uttrekk: Uttrekk[] }) {
+export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[]; uttrekk: Uttrekk[]; nyligOpprettetId?: number | null }) {
 	const antallQueries = useQueries({
 		queries: props.lagredeSøk.map((søk) => ({
 			queryKey: [apiPaths.hentAntallLagretSøk(søk.id.toString())],
@@ -25,6 +25,7 @@ export function LagredeSøkTabell(props: { lagredeSøk: LagretSøk[]; uttrekk: U
 					antall={antallQueries[index]?.data}
 					antallLoading={antallQueries[index]?.isLoading ?? false}
 					uttrekk={uttrekkPerLagretSøk(lagretSøk.id)}
+					initiallyExpanded={lagretSøk.id === props.nyligOpprettetId}
 				/>
 			))}
 		</div>

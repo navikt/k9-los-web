@@ -13,6 +13,7 @@ import { RenderModalProps } from 'sharedComponents/ModalButton';
 type EndreKriterierProps = RenderModalProps & {
 	tittel: string;
 	modalTab?: 'kriterier' | 'felter' | 'sortering';
+	onNyOpprettet?: (id: number) => void;
 } & ({ lagretSøk: LagretSøk; initialQuery?: never } | { initialQuery: OppgaveQuery; lagretSøk?: never });
 
 export function EndreKriterierLagretSøkModal({
@@ -22,9 +23,13 @@ export function EndreKriterierLagretSøkModal({
 	open,
 	closeModal,
 	modalTab,
+	onNyOpprettet,
 }: EndreKriterierProps) {
 	const { mutate: endreLagretSøk } = useEndreLagretSøk(closeModal);
-	const { mutate: nyttLagretSøk } = useNyttLagretSøk(closeModal);
+	const { mutate: nyttLagretSøk } = useNyttLagretSøk((id) => {
+		closeModal();
+		onNyOpprettet?.(id);
+	});
 
 	const query = lagretSøk?.query ?? initialQuery;
 
