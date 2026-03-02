@@ -225,11 +225,24 @@ export function LagretSøkKort({
 
 	return (
 		<div
-			className={`rounded-md p-3 mb-2 border-solid flex flex-col gap-2 border-1 ${
+			className={`rounded-md mb-2 border-solid flex flex-col border-1 ${
 				lagretSøkKollapset
-					? 'bg-ax-bg-neutral-soft border-ax-border-neutral-subtle'
-					: 'bg-ax-bg-accent-soft border-ax-border-accent-subtle'
+					? 'bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-6)] gap-[var(--ax-space-2)] cursor-pointer'
+					: 'bg-ax-bg-accent-soft border-ax-border-accent-subtle p-[var(--ax-space-12)] gap-[var(--ax-space-8)]'
 			}`}
+			{...(lagretSøkKollapset
+				? {
+						onClick: () => setLagretSøkKollapset(false),
+						onKeyDown: (e: React.KeyboardEvent) => {
+							if (e.key === 'Enter' || e.key === ' ') {
+								e.preventDefault();
+								setLagretSøkKollapset(false);
+							}
+						},
+						role: 'button',
+						tabIndex: 0,
+					}
+				: {})}
 		>
 			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
 			<div className="w-full flex items-center justify-between gap-2">
@@ -239,16 +252,19 @@ export function LagretSøkKort({
 						size="xsmall"
 						variant="tertiary-neutral"
 						icon={lagretSøkKollapset ? <ChevronRightIcon fontSize="1.5rem" /> : <ChevronDownIcon fontSize="1.5rem" />}
-						onClick={() => setLagretSøkKollapset(!lagretSøkKollapset)}
+						onClick={(e) => {
+							e.stopPropagation();
+							setLagretSøkKollapset(!lagretSøkKollapset);
+						}}
 					/>
 					{!lagretSøkKollapset && endrerTittel ? (
 						<EndreTittel lagretSøk={lagretSøk} ikkeIEndreModusLenger={() => setEndrerTittel(false)} />
 					) : (
 						<div className="flex items-center gap-1">
 							{harEgendefinertTittel ? (
-								<span className="font-medium">{lagretSøk.tittel}</span>
+								<span className={`font-medium ${lagretSøkKollapset ? 'text-ax-small' : ''}`}>{lagretSøk.tittel}</span>
 							) : (
-								<span className="italic text-ax-neutral-600">Ingen tittel</span>
+								<span className={`italic text-ax-neutral-600 ${lagretSøkKollapset ? 'text-ax-small' : ''}`}>Ingen tittel</span>
 							)}
 							{!lagretSøkKollapset && (
 								<Button
@@ -291,7 +307,7 @@ export function LagretSøkKort({
 			</div>
 
 			{lagretSøkKollapset ? (
-				<div className="w-full text-sm text-ax-neutral-700 flex flex-col gap-0.5">
+				<div className="w-full text-ax-small text-ax-neutral-700 flex flex-col">
 					{filterBeskrivelse && filterBeskrivelse.length > 0 && (
 						<div>
 							<span className="font-medium">Kriterier: </span>
