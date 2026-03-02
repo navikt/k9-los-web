@@ -224,7 +224,13 @@ export function LagretSøkKort({
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
 
 	return (
-		<div className="rounded-md p-3 mb-2 bg-ax-neutral-100 border-solid border-1 border-ax-neutral-200 flex flex-col gap-2">
+		<div
+			className={`rounded-md p-3 mb-2 border-solid flex flex-col gap-2 border-1 ${
+				lagretSøkKollapset
+					? 'bg-ax-bg-neutral-soft border-ax-border-neutral-subtle'
+					: 'bg-ax-bg-accent-soft border-ax-border-accent-subtle'
+			}`}
+		>
 			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
 			<div className="w-full flex items-center justify-between gap-2">
 				<div className="flex items-center gap-2 min-w-0 flex-1">
