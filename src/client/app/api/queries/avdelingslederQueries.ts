@@ -323,19 +323,19 @@ export const useEndreLagretSøk = (callback?: () => void) => {
 	});
 };
 
-export const useKopierLagretSøk = (callback?: () => void) => {
+export const useKopierLagretSøk = (callback?: (id: number) => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: (data: { id: number; tittel: string }) =>
-			axiosInstance.post(apiPaths.kopierLagretSøk(data.id.toString()), { tittel: data.tittel }),
-		onSuccess: () =>
+			axiosInstance.post(apiPaths.kopierLagretSøk(data.id.toString()), { tittel: data.tittel }).then((res) => res.data),
+		onSuccess: ({ id }) =>
 			queryClient
 				.invalidateQueries({
 					queryKey: [apiPaths.hentLagredeSøk],
 				})
 				.then(() => {
-					if (callback) callback();
+					if (callback) callback(id);
 				}),
 	});
 };

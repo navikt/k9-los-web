@@ -62,7 +62,12 @@ export function LagredeSøk() {
 				</div>
 			)}
 			{isSuccess && data.length > 0 && (
-				<LagredeSøkTabell lagredeSøk={data} uttrekk={uttrekk ?? []} nyligOpprettetId={nyligOpprettetId} />
+				<LagredeSøkTabell
+					lagredeSøk={data}
+					uttrekk={uttrekk ?? []}
+					nyligOpprettetId={nyligOpprettetId}
+					onNyOpprettet={setNyligOpprettetId}
+				/>
 			)}
 			{isSuccess && data.length === 0 && (
 				<div>
