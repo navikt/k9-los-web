@@ -227,7 +227,7 @@ export function LagretSøkKort({
 		<div
 			className={`rounded-md mb-2 border-solid flex flex-col border-1 ${
 				lagretSøkKollapset
-					? 'bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-6)] gap-[var(--ax-space-2)] cursor-pointer'
+					? 'bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-8)] gap-[var(--ax-space-2)] cursor-pointer'
 					: 'bg-ax-bg-accent-soft border-ax-border-accent-subtle p-[var(--ax-space-12)] gap-[var(--ax-space-8)]'
 			}`}
 			{...(lagretSøkKollapset
@@ -262,9 +262,13 @@ export function LagretSøkKort({
 					) : (
 						<div className="flex items-center gap-1">
 							{harEgendefinertTittel ? (
-								<span className={`font-medium ${lagretSøkKollapset ? 'text-ax-small' : ''}`}>{lagretSøk.tittel}</span>
+								<span className={`${lagretSøkKollapset ? 'text-ax-neutral-800 text-ax-medium' : ''}`}>
+									{lagretSøk.tittel}
+								</span>
 							) : (
-								<span className={`italic text-ax-neutral-600 ${lagretSøkKollapset ? 'text-ax-small' : ''}`}>Ingen tittel</span>
+								<span className={`italic text-ax-neutral-600 ${lagretSøkKollapset ? 'text-ax-medium' : ''}`}>
+									Ingen tittel
+								</span>
 							)}
 							{!lagretSøkKollapset && (
 								<Button
@@ -379,7 +383,7 @@ export function LagretSøkKort({
 								{uttrekkEkspandert && (
 									<div className="mt-2">
 										{uttrekk.map((u) => (
-											<UttrekkKort key={u.id} uttrekk={u} />
+											<UttrekkKort key={u.id} uttrekk={u} lagretSøk={lagretSøk} />
 										))}
 									</div>
 								)}

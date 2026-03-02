@@ -397,7 +397,6 @@ export interface Uttrekk {
 	opprettetTidspunkt: string;
 	status: UttrekkStatus;
 	query: OppgaveQuery;
-	queryBeskrivelse: string;
 	lagretSøkId: number;
 	typeKjøring: TypeKjøring;
 	antall: number | null;
