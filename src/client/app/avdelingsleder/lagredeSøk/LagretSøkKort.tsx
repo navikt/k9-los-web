@@ -222,27 +222,38 @@ export function LagretSøkKort({
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
 
+	const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		// Siden denne eventhandleren legges på hele div-en må det gjøres sjekker på at man klikker direkte på div-en
+		if (!e.currentTarget.contains(e.target as Node)) return;
+		if ((e.target as HTMLElement).closest('button, a')) return;
+		setLagretSøkKollapset(false);
+	};
+
+	const handleCardKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		// Siden denne eventhandleren legges på hele div-en må det gjøres sjekker på at man trykker direkte på div-en
+		if (e.target !== e.currentTarget) return;
+		if (!e.currentTarget.contains(e.target as Node)) return;
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			setLagretSøkKollapset(false);
+		}
+	};
+
 	return (
 		<div
 			className={`rounded-md mb-2 border-solid flex flex-col border-1 ${
 				lagretSøkKollapset
-					? 'hover:drop-shadow-sm bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-8)] gap-[var(--ax-space-2)]'
+					? 'cursor-pointer hover:drop-shadow-sm bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-8)] gap-[var(--ax-space-2)]'
 					: 'bg-ax-bg-accent-soft border-ax-border-accent-subtle p-[var(--ax-space-12)] gap-[var(--ax-space-8)]'
 			}`}
 			{...(lagretSøkKollapset
-				? {}
-				: // {
-					// 		onClick: () => setLagretSøkKollapset(false),
-					// 		onKeyDown: (e: React.KeyboardEvent) => {
-					// 			if (e.key === 'Enter' || e.key === ' ') {
-					// 				e.preventDefault();
-					// 				setLagretSøkKollapset(false);
-					// 			}
-					// 		},
-					// 		role: 'button',
-					// 		tabIndex: 0,
-					// 	}
-					{})}
+				? {
+						onClick: handleCardClick,
+						onKeyDown: handleCardKeyDown,
+						role: 'button' as const,
+						tabIndex: 0,
+					}
+				: {})}
 		>
 			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
 			<div className="w-full flex items-center justify-between gap-2">
