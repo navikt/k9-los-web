@@ -292,20 +292,18 @@ export const useOpprettLagretSøk = (callback?: () => void) => {
 	});
 };
 
-export const useNyttLagretSøk = (callback?: () => void) => {
+export const useNyttLagretSøk = (callback?: (id: number) => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: (data: NyttLagretSøkRequest) =>
 			axiosInstance.post(apiPaths.nyttLagretSøk, data).then((res) => res.data),
-		onSuccess: () =>
-			queryClient
-				.invalidateQueries({
-					queryKey: [apiPaths.hentLagredeSøk],
-				})
-				.then(() => {
-					if (callback) callback();
-				}),
+		onSuccess: async (id: number) => {
+			await queryClient.invalidateQueries({
+				queryKey: [apiPaths.hentLagredeSøk],
+			});
+			if (callback) callback(id);
+		},
 	});
 };
 
@@ -325,19 +323,19 @@ export const useEndreLagretSøk = (callback?: () => void) => {
 	});
 };
 
-export const useKopierLagretSøk = (callback?: () => void) => {
+export const useKopierLagretSøk = (callback?: (id: number) => void) => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: (data: { id: number; tittel: string }) =>
-			axiosInstance.post(apiPaths.kopierLagretSøk(data.id.toString()), { tittel: data.tittel }),
-		onSuccess: () =>
+			axiosInstance.post(apiPaths.kopierLagretSøk(data.id.toString()), { tittel: data.tittel }).then((res) => res.data),
+		onSuccess: (id) =>
 			queryClient
 				.invalidateQueries({
 					queryKey: [apiPaths.hentLagredeSøk],
 				})
 				.then(() => {
-					if (callback) callback();
+					if (callback) callback(id);
 				}),
 	});
 };
@@ -399,7 +397,6 @@ export interface Uttrekk {
 	opprettetTidspunkt: string;
 	status: UttrekkStatus;
 	query: OppgaveQuery;
-	queryBeskrivelse: string;
 	lagretSøkId: number;
 	typeKjøring: TypeKjøring;
 	antall: number | null;
