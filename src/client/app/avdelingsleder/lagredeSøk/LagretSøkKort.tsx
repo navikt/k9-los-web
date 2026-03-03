@@ -7,14 +7,13 @@ import {
 	PlayIcon,
 	SortDownIcon,
 	TableIcon,
-	TrashIcon,
 } from '@navikt/aksel-icons';
 import { Button, Skeleton, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { LagretSøk, Uttrekk, useEndreLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, Uttrekk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
-import { SlettLagretSøkModal } from 'avdelingsleder/lagredeSøk/SlettLagretSøkModal';
+import { SlettLagretSøkDialog } from 'avdelingsleder/lagredeSøk/SlettLagretSøkDialog';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 import {
@@ -211,8 +210,6 @@ export function LagretSøkKort({
 	const [endrerTittel, setEndrerTittel] = useState(false);
 	const [uttrekkEkspandert, setUttrekkEkspandert] = useState(false);
 	const [lagretSøkKollapset, setLagretSøkKollapset] = useState(!initiallyExpanded);
-	const { mutate: slettLagretSøk } = useSlettLagretSøk();
-
 	useEffect(() => {
 		if (initiallyExpanded) {
 			setLagretSøkKollapset(false);
@@ -222,20 +219,6 @@ export function LagretSøkKort({
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
-
-	const sletteKnapp = (onClick: any) => (
-		<Button
-			variant="tertiary"
-			size="small"
-			onClick={(e) => {
-				e.stopPropagation();
-				onClick();
-			}}
-			icon={<TrashIcon />}
-		>
-			Slett
-		</Button>
-	);
 
 	return (
 		<div
@@ -301,21 +284,7 @@ export function LagretSøkKort({
 					{!lagretSøkKollapset && (
 						<KopierLagretSøkDialog lagretSøk={lagretSøk} onNyOpprettet={(id) => onNyOpprettet?.(id)} />
 					)}
-					{harUttrekk ? (
-						<ModalButton
-							renderButton={({ openModal }) => sletteKnapp(openModal)}
-							renderModal={({ open, closeModal }) => (
-								<SlettLagretSøkModal
-									lagretSøk={lagretSøk}
-									antallUttrekk={uttrekk.length}
-									open={open}
-									closeModal={closeModal}
-								/>
-							)}
-						/>
-					) : (
-						sletteKnapp(() => slettLagretSøk(lagretSøk.id))
-					)}
+					<SlettLagretSøkDialog lagretSøk={lagretSøk} antallUttrekk={uttrekk.length} />
 				</div>
 			</div>
 
