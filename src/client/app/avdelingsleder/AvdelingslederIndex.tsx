@@ -24,10 +24,11 @@ import BehandlingskoerIndex from './behandlingskoerV3/BehandlingskoerIndex';
 import SaksbehandlereTabell from './bemanning/components/SaksbehandlereTabell';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgang from './components/IkkeTilgang';
+import { Location } from 'history';
 
 const classNames = classnames.bind(styles);
 
-const renderAvdelingslederPanel = (avdelingslederPanel) => {
+const renderAvdelingslederPanel = (avdelingslederPanel: string) => {
 	switch (avdelingslederPanel) {
 		case AvdelingslederPanels.BEHANDLINGSKOER_V3:
 			return <BehandlingskoerIndex />;
@@ -102,7 +103,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 		isQueryParam: true,
 	});
 
-	const getPanelFromUrlOrDefault = (loc) => {
+	const getPanelFromUrlOrDefault = (loc: Location) => {
 		const panelFromUrl = parseQueryString(loc.search);
 		return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER_V3;
 	};

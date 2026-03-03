@@ -30,3 +30,5 @@ jest_cache
 /test-results/
 
 *storybook.log
+
+.vscode
