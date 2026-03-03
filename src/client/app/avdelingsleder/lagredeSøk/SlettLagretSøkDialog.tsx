@@ -15,7 +15,6 @@ export function SlettLagretSøkDialog({ lagretSøk, antallUttrekk }: SlettLagret
 	const { mutate: slettUttrekkForLagretSøk, isPending: slettUttrekkPending } = useSlettUttrekkForLagretSøk();
 
 	const isPending = slettLagretSøkPending || slettUttrekkPending;
-	const harUttrekk = antallUttrekk > 0;
 
 	const handleSlettMedUttrekk = () => {
 		slettUttrekkForLagretSøk(lagretSøk.id, {
@@ -25,7 +24,7 @@ export function SlettLagretSøkDialog({ lagretSøk, antallUttrekk }: SlettLagret
 		});
 	};
 
-	const handleSlett = () => {
+	const handleSlettUtenUttrekk = () => {
 		slettLagretSøk(lagretSøk.id);
 	};
 
@@ -36,32 +35,18 @@ export function SlettLagretSøkDialog({ lagretSøk, antallUttrekk }: SlettLagret
 					Slett
 				</Button>
 			</Dialog.Trigger>
-			<Dialog.Popup width="small">
+			<Dialog.Popup width="medium">
 				<Dialog.Header>
 					<Dialog.Title>Slett lagret søk</Dialog.Title>
 				</Dialog.Header>
-				<Dialog.Body>
-					{harUttrekk ? (
-						<>Dette lagrede søket har {antallUttrekk} tilknyttede uttrekk. Hva ønsker du å gjøre?</>
-					) : (
-						'Hva ønsker du å gjøre?'
-					)}
-				</Dialog.Body>
+				<Dialog.Body>Dette lagrede søket har {antallUttrekk} tilknyttede uttrekk. Hva ønsker du å gjøre?</Dialog.Body>
 				<Dialog.Footer>
-					{harUttrekk ? (
-						<>
-							<Button data-color="danger" variant="primary" onClick={handleSlettMedUttrekk} loading={isPending}>
-								Slett søk og uttrekk
-							</Button>
-							<Button variant="secondary" onClick={handleSlett} loading={isPending}>
-								Slett søk, behold uttrekk
-							</Button>
-						</>
-					) : (
-						<Button data-color="danger" variant="primary" onClick={handleSlett} loading={isPending}>
-							Slett søk
-						</Button>
-					)}
+					<Button data-color="danger" variant="primary" onClick={handleSlettMedUttrekk} loading={isPending}>
+						Slett søk og uttrekk
+					</Button>
+					<Button variant="secondary" onClick={handleSlettUtenUttrekk} loading={isPending}>
+						Slett søk, behold uttrekk
+					</Button>
 					<Dialog.CloseTrigger>
 						<Button variant="tertiary" disabled={isPending}>
 							Avbryt
