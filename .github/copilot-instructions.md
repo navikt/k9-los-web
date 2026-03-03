@@ -1,3 +1,9 @@
+# Designsystem
+
+Appen bruker Aksels designsystem https://aksel.nav.no/ Foretrekk komponenter herfra, beta-komponenter er også ok.
+Foretrekk Aksels CSS-klasser over rene Tailwind-klasser.
+
+
 # Testinstruksjoner for k9-los-web
 
 Dette prosjektet bruker Jest for testing. Testfiler ligger i `src/` og følger navnekonvensjonen `*.spec.ts` eller `*.spec.tsx`.

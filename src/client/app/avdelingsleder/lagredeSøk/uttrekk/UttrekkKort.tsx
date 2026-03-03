@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import _ from 'lodash';
 import {
 	ClockDashedIcon,
 	DownloadIcon,
@@ -11,7 +12,7 @@ import {
 } from '@navikt/aksel-icons';
 import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
 import { UttrekkResultatModal } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatModal';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
@@ -69,7 +70,7 @@ function getStatusIcon(status: UttrekkStatus) {
 	}
 }
 
-export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
+export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretSøk?: LagretSøk }) {
 	const [kjøretid, setKjøretid] = useState('');
 	const oppdaterKjøretid = () => setKjøretid(calculateDuration(uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt));
 
@@ -78,6 +79,8 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 	// Oppdater kjøretid ved statusendring og hvert sekund hvis uttrekket kjører
 	useEffect(oppdaterKjøretid, [uttrekk.status]);
 	useInterval(oppdaterKjøretid, uttrekk.status === UttrekkStatus.KJØRER ? 1000 : null);
+
+	const kriterierErForskjellige = !_.isEqual(uttrekk.query, lagretSøk.query);
 
 	const kanLasteNed =
 		uttrekk.status === UttrekkStatus.FULLFØRT &&
@@ -103,27 +106,29 @@ export function UttrekkKort({ uttrekk }: { uttrekk: Uttrekk }) {
 					</div>
 				</div>
 				<div className="flex items-center gap-1 flex-shrink-0">
-					<ModalButton
-						renderButton={({ openModal }) => (
-							<Button icon={<TasklistIcon />} size="small" variant="tertiary" onClick={openModal}>
-								Vis kriterier
-							</Button>
-						)}
-						renderModal={({ open, closeModal }) => (
-							<Modal
-								closeOnBackdropClick
-								header={{ heading: 'Kriterier brukt i uttrekket' }}
-								width={700}
-								open={open}
-								onClose={closeModal}
-							>
-								<BodyShort className="p-4">
-									Uttrekket ble gjort med kriteriene under. Du kan ikke endre kriteriene her.
-								</BodyShort>
-								<KøKriterieViewer query={uttrekk.query} tittel="Kriterier" />
-							</Modal>
-						)}
-					/>
+					{kriterierErForskjellige && (
+						<ModalButton
+							renderButton={({ openModal }) => (
+								<Button icon={<TasklistIcon />} size="small" variant="tertiary" onClick={openModal}>
+									Vis kriterier
+								</Button>
+							)}
+							renderModal={({ open, closeModal }) => (
+								<Modal
+									closeOnBackdropClick
+									header={{ heading: 'Kriterier brukt i uttrekket' }}
+									width={700}
+									open={open}
+									onClose={closeModal}
+								>
+									<BodyShort className="p-4">
+										Uttrekket ble gjort med kriteriene under. Du kan ikke endre kriteriene her.
+									</BodyShort>
+									<KøKriterieViewer query={uttrekk.query} tittel="Kriterier" />
+								</Modal>
+							)}
+						/>
+					)}
 					{kanLasteNed && (
 						<>
 							<ModalButton
