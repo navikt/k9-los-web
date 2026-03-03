@@ -227,7 +227,7 @@ export function LagretSøkKort({
 		<div
 			className={`rounded-md mb-2 border-solid flex flex-col border-1 ${
 				lagretSøkKollapset
-					? 'bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-8)] gap-[var(--ax-space-2)] cursor-pointer'
+					? 'hover:drop-shadow-sm bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-8)] gap-[var(--ax-space-2)] cursor-pointer'
 					: 'bg-ax-bg-accent-soft border-ax-border-accent-subtle p-[var(--ax-space-12)] gap-[var(--ax-space-8)]'
 			}`}
 			{...(lagretSøkKollapset
