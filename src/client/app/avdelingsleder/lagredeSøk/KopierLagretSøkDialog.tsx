@@ -32,10 +32,7 @@ export function KopierLagretSøkDialog({ lagretSøk, onNyOpprettet }: Props) {
 			</Dialog.Trigger>
 			<Dialog.Popup width="small">
 				<Dialog.Header>
-					<Dialog.Title>Kopier lagret søk</Dialog.Title>
-					<Dialog.Description>
-						{harTittel ? `Lag kopi av lagret søk med tittel '${lagretSøk.tittel}'.` : 'Lag kopi av lagret søk.'}
-					</Dialog.Description>
+					<Dialog.Title>{harTittel ? `Kopier lagret søk '${lagretSøk.tittel}'` : 'Kopier lagret søk'}</Dialog.Title>
 				</Dialog.Header>
 				<Dialog.Body>
 					<TextField

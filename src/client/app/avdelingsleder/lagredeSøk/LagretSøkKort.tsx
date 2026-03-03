@@ -14,7 +14,7 @@ import AppContext from 'app/AppContext';
 import { LagretSøk, Uttrekk, useEndreLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
-import { SlettLagretSøkModal } from 'avdelingsleder/lagredeSøk/SlettLagretSøkModal';
+import { SlettLagretSøkDialog } from 'avdelingsleder/lagredeSøk/SlettLagretSøkDialog';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 import {
@@ -211,35 +211,46 @@ export function LagretSøkKort({
 	const [endrerTittel, setEndrerTittel] = useState(false);
 	const [uttrekkEkspandert, setUttrekkEkspandert] = useState(false);
 	const [lagretSøkKollapset, setLagretSøkKollapset] = useState(!initiallyExpanded);
-	const { mutate: slettLagretSøk } = useSlettLagretSøk();
-
 	useEffect(() => {
 		if (initiallyExpanded) {
 			setLagretSøkKollapset(false);
 		}
 	}, [initiallyExpanded]);
 
+	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
+
+	const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+		// Siden denne eventhandleren legges på hele div-en må det gjøres sjekker på at man klikker direkte på div-en
+		if (!e.currentTarget.contains(e.target as Node)) return;
+		if ((e.target as HTMLElement).closest('button, a')) return;
+		setLagretSøkKollapset(false);
+	};
+
+	const handleCardKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		// Siden denne eventhandleren legges på hele div-en må det gjøres sjekker på at man trykker direkte på div-en
+		if (e.target !== e.currentTarget) return;
+		if (!e.currentTarget.contains(e.target as Node)) return;
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			setLagretSøkKollapset(false);
+		}
+	};
 
 	return (
 		<div
 			className={`rounded-md mb-2 border-solid flex flex-col border-1 ${
 				lagretSøkKollapset
-					? 'hover:drop-shadow-sm bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-8)] gap-[var(--ax-space-2)] cursor-pointer'
+					? 'cursor-pointer hover:drop-shadow-sm bg-ax-bg-neutral-soft border-ax-border-neutral-subtle p-[var(--ax-space-8)] gap-[var(--ax-space-2)]'
 					: 'bg-ax-bg-accent-soft border-ax-border-accent-subtle p-[var(--ax-space-12)] gap-[var(--ax-space-8)]'
 			}`}
 			{...(lagretSøkKollapset
 				? {
-						onClick: () => setLagretSøkKollapset(false),
-						onKeyDown: (e: React.KeyboardEvent) => {
-							if (e.key === 'Enter' || e.key === ' ') {
-								e.preventDefault();
-								setLagretSøkKollapset(false);
-							}
-						},
-						role: 'button',
+						onClick: handleCardClick,
+						onKeyDown: handleCardKeyDown,
+						role: 'button' as const,
 						tabIndex: 0,
 					}
 				: {})}
@@ -282,32 +293,18 @@ export function LagretSøkKort({
 						</div>
 					)}
 				</div>
-				{!lagretSøkKollapset && (
-					<div className="flex gap-2 flex-shrink-0">
+				<div className="flex gap-2 flex-shrink-0">
+					{!lagretSøkKollapset && (
 						<KopierLagretSøkDialog lagretSøk={lagretSøk} onNyOpprettet={(id) => onNyOpprettet?.(id)} />
-						{harUttrekk ? (
-							<ModalButton
-								renderButton={({ openModal }) => (
-									<Button variant="tertiary" size="small" onClick={openModal} icon={<TrashIcon />}>
-										Slett
-									</Button>
-								)}
-								renderModal={({ open, closeModal }) => (
-									<SlettLagretSøkModal
-										lagretSøk={lagretSøk}
-										antallUttrekk={uttrekk.length}
-										open={open}
-										closeModal={closeModal}
-									/>
-								)}
-							/>
-						) : (
-							<Button variant="tertiary" size="small" onClick={() => slettLagretSøk(lagretSøk.id)} icon={<TrashIcon />}>
-								Slett
-							</Button>
-						)}
-					</div>
-				)}
+					)}
+					{harUttrekk ? (
+						<SlettLagretSøkDialog lagretSøk={lagretSøk} antallUttrekk={uttrekk.length} />
+					) : (
+						<Button variant="tertiary" size="small" onClick={() => slettLagretSøk(lagretSøk.id)} icon={<TrashIcon />}>
+							Slett
+						</Button>
+					)}
+				</div>
 			</div>
 
 			{lagretSøkKollapset ? (
