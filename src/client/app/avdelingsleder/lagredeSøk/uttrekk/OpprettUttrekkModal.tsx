@@ -1,9 +1,16 @@
 import React, { useContext, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import _ from 'lodash';
 import { XMarkIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Box, Button, Detail, Heading, List, Modal, TextField } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Detail, Heading, Label, Modal, TextField } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { LagretSøk, TypeKjøring, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, TypeKjøring, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
+import { FilterContext, FilterContextType } from 'filter/FilterContext';
+import OppgaveQueryModel from 'filter/OppgaveQueryModel';
+import { fjernNodeIdFraQuery, IdentifiedOppgaveQuery } from 'filter/filterFrontendTypes';
+import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
+import { applyFunctions, QueryFunction } from 'filter/queryUtils';
+import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
 
 interface OpprettUttrekkModalProps {
 	lagretSøk: LagretSøk;
@@ -12,42 +19,40 @@ interface OpprettUttrekkModalProps {
 }
 
 export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUttrekkModalProps) {
-	const { mutate, isPending, isError } = useOpprettUttrekk(() => {
+	const { mutate: opprettUttrekk, isPending: opprettIsPending, isError: opprettIsError } = useOpprettUttrekk(() => {
 		closeModal();
 	});
 
+	const { mutate: endreLagretSøk, isPending: endreIsPending } = useEndreLagretSøk();
+
 	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
 
-	const feltdefinisjoner = useContext(AppContext).felter;
-
-	// Bestem type basert på om det finnes select-felter
-	const typeKjoring = lagretSøk.query.select.length > 0 ? TypeKjøring.OPPGAVER : TypeKjøring.ANTALL;
-
-	// Hent visningsnavn for select-feltene
-	const selectFelterMedNavn = useMemo(
-		() =>
-			lagretSøk.query.select.map((selectFelt) => {
-				const feltdef = feltdefinisjoner.find((f) => f.område === selectFelt.område && f.kode === selectFelt.kode);
-				return {
-					...selectFelt,
-					visningsnavn: feltdef?.visningsnavn || `${selectFelt.område}.${selectFelt.kode}`,
-				};
-			}),
-		[lagretSøk.query.select, feltdefinisjoner],
+	const [oppgaveQuery, setOppgaveQuery] = useState<IdentifiedOppgaveQuery>(() =>
+		new OppgaveQueryModel(lagretSøk.query).toIdentifiedQuery(),
 	);
 
-	// Hent visningsnavn for order-feltene
-	const orderFelterMedNavn = useMemo(
-		() =>
-			lagretSøk.query.order.map((orderFelt) => {
-				const feltdef = feltdefinisjoner.find((f) => f.område === orderFelt.område && f.kode === orderFelt.kode);
-				return {
-					...orderFelt,
-					visningsnavn: feltdef?.visningsnavn || `${orderFelt.område}.${orderFelt.kode}`,
-				};
-			}),
-		[lagretSøk.query.order, feltdefinisjoner],
+	// Resynk lokal state når modalen åpnes med ny lagretSøk
+	const [prevLagretSøkVersjon, setPrevLagretSøkVersjon] = useState(lagretSøk.versjon);
+	if (lagretSøk.versjon !== prevLagretSøkVersjon) {
+		setPrevLagretSøkVersjon(lagretSøk.versjon);
+		setOppgaveQuery(new OppgaveQueryModel(lagretSøk.query).toIdentifiedQuery());
+	}
+
+	const updateQuery = (operations: Array<QueryFunction>) => {
+		setOppgaveQuery((prev) => applyFunctions(prev, operations));
+	};
+
+	const filterContextValues: FilterContextType = useMemo(
+		() => ({
+			oppgaveQuery,
+			updateQuery,
+			errors: [],
+		}),
+		[oppgaveQuery],
 	);
+
+	const localQuery = fjernNodeIdFraQuery(oppgaveQuery);
+	const typeKjoring = localQuery.select.length > 0 ? TypeKjøring.OPPGAVER : TypeKjøring.ANTALL;
 
 	const {
 		handleSubmit,
@@ -61,18 +66,41 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 		},
 	});
 
+	const isPending = opprettIsPending || endreIsPending;
+
 	const onSubmit = (data: { limit?: number | null; offset?: number | null }) => {
-		mutate({
-			lagretSokId: lagretSøk.id,
-			typeKjoring,
-			limit: data.limit || null,
-			offset: data.offset || null,
-		});
+		const selectEndret = !_.isEqual(localQuery.select, lagretSøk.query.select);
+		const orderEndret = !_.isEqual(localQuery.order, lagretSøk.query.order);
+
+		const doOpprettUttrekk = () => {
+			opprettUttrekk({
+				lagretSokId: lagretSøk.id,
+				typeKjoring,
+				limit: data.limit || null,
+				offset: data.offset || null,
+			});
+		};
+
+		if (selectEndret || orderEndret) {
+			endreLagretSøk(
+				{
+					id: lagretSøk.id,
+					tittel: lagretSøk.tittel,
+					beskrivelse: lagretSøk.beskrivelse,
+					query: { ...lagretSøk.query, select: localQuery.select, order: localQuery.order },
+					versjon: lagretSøk.versjon,
+				},
+				{ onSuccess: doOpprettUttrekk },
+			);
+		} else {
+			doOpprettUttrekk();
+		}
 	};
 
 	const handleClose = () => {
 		reset();
 		setVisAvgrensningsinnstillinger(false);
+		setOppgaveQuery(new OppgaveQueryModel(lagretSøk.query).toIdentifiedQuery());
 		closeModal();
 	};
 
@@ -85,40 +113,24 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 			</Modal.Header>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<Modal.Body>
-					{lagretSøk.query.select.length > 0 ? (
-						<>
-							<BodyShort>Uttrekket vil inneholde følgende felter:</BodyShort>
-							<Box marginBlock="space-12" asChild>
-								<List size="small">
-									{selectFelterMedNavn.map((felt) => (
-										<List.Item key={`${felt.område}.${felt.kode}`}>{felt.visningsnavn}</List.Item>
-									))}
-								</List>
-							</Box>
-
-							{orderFelterMedNavn.length > 0 && (
-								<>
-									<BodyShort className="mt-5">Uttrekket vil sorteres etter:</BodyShort>
-									<Box marginBlock="space-12" asChild>
-										<List size="small">
-											{orderFelterMedNavn.map((felt) => (
-												<List.Item key={`${felt.område}.${felt.kode}`}>
-													{felt.visningsnavn} ({felt.økende ? 'økende' : 'synkende'})
-												</List.Item>
-											))}
-										</List>
-									</Box>
-								</>
+					<FilterContext.Provider value={filterContextValues}>
+						<div className="mb-6">
+							<Label spacing>Felter som vises i søkeresultat</Label>
+							<OppgaveSelectFelter />
+							{localQuery.select.length === 0 && (
+								<BodyShort size="small" className="text-ax-neutral-600 mt-1">
+									Ingen felter valgt. Uttrekket vil kun inneholde antall oppgaver.
+								</BodyShort>
 							)}
-						</>
-					) : (
-						<Alert variant="warning">
-							Ingen felter er valgt for uttrekk. Uttrekket vil kun inneholde antall oppgaver som matcher søket. Du kan
-							legge til felter ved å klikke på &#34;Endre&#34; under &#34;Felter&#34;.
-						</Alert>
-					)}
+						</div>
 
-					<div className="mt-5">
+						<div className="mb-6">
+							<Label spacing>Sortering</Label>
+							<OppgaveOrderFelter />
+						</div>
+					</FilterContext.Provider>
+
+					<div>
 						{!visAvgrensningsinnstillinger ? (
 							<div className="rounded-md bg-ax-neutral-200 p-2">
 								<Detail>For å begrense antall resultater kan det legges til en avgrensning.</Detail>
@@ -173,14 +185,14 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 						)}
 					</div>
 
-					{isError && (
+					{opprettIsError && (
 						<Alert variant="error" className="mt-4">
 							Noe gikk galt ved opprettelse av uttrekk. Prøv igjen senere.
 						</Alert>
 					)}
 				</Modal.Body>
 				<Modal.Footer>
-					<Button type="submit" disabled={isPending}>
+					<Button type="submit" disabled={isPending} loading={isPending}>
 						Opprett uttrekk
 					</Button>
 					<Button type="button" variant="secondary" onClick={handleClose} disabled={isPending}>

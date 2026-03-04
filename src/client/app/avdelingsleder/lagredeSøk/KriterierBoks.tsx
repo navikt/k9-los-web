@@ -12,7 +12,7 @@ export function KriterierBoks({
 	lagretSøk: LagretSøk;
 }) {
 	return (
-		<QueryBoks ikon={<FilterIcon />} lagretSøk={lagretSøk} modalTab="kriterier" className="w-1/2">
+		<QueryBoks ikon={<FilterIcon />} lagretSøk={lagretSøk} modalTab="kriterier" className="w-full">
 			{queryBeskrivelse && queryBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{queryBeskrivelse.map((filter) => (

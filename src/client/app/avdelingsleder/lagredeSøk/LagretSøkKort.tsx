@@ -4,14 +4,12 @@ import { Button, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { LagretSøk, Uttrekk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreTittel } from 'avdelingsleder/lagredeSøk/EndreTittel';
-import { FelterBoks } from 'avdelingsleder/lagredeSøk/FelterBoks';
 import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
 import { KriterierBoks } from 'avdelingsleder/lagredeSøk/KriterierBoks';
 import { SlettLagretSøkDialog } from 'avdelingsleder/lagredeSøk/SlettLagretSøkDialog';
-import { SorteringBoks } from 'avdelingsleder/lagredeSøk/SorteringBoks';
 import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
-import { utledFilterBeskrivelse, utledOrderBeskrivelse, utledSelectBeskrivelse } from 'filter/queryBeskrivelseUtils';
+import { utledFilterBeskrivelse } from 'filter/queryBeskrivelseUtils';
 import ModalButton from 'sharedComponents/ModalButton';
 
 export function LagretSøkKort({
@@ -150,11 +148,9 @@ export function LagretSøkKort({
 				</div>
 			) : (
 				<>
-					{/* Rad 2: KriterieBoks, FelterBoks, SorteringBoks */}
-					<div className="w-full flex gap-2">
+					{/* Rad 2: KriterieBoks */}
+					<div className="w-full">
 						<KriterierBoks queryBeskrivelse={filterBeskrivelse} lagretSøk={lagretSøk} />
-						<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-						<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
 					</div>
 
 					{/* Rad 3: Antall oppgaver */}
