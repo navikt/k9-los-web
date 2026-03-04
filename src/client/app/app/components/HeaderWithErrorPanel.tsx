@@ -13,11 +13,11 @@ const endringsloggBackendUrl = (() => {
 	// I påvente av oppsett for proxy settes url direkte her
 	if (window.location.hostname.includes('localhost')) {
 		return '/api/endringslogg';
-	} else if (window.location.hostname.includes('dev')) {
-		return 'https://familie-endringslogg.intern.dev.nav.no';
-	} else {
-		return 'https://familie-endringslogg.intern.nav.no';
 	}
+	if (window.location.hostname.includes('dev')) {
+		return 'https://endringslogg.intern.dev.nav.no';
+	}
+	return 'https://endringslogg.intern.nav.no';
 })();
 
 const HeaderWithErrorPanel: FunctionComponent = () => {
