@@ -1,196 +1,21 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {
-	ChevronDownIcon,
-	ChevronRightIcon,
-	FilterIcon,
-	PencilIcon,
-	PlayIcon,
-	SortDownIcon,
-	TableIcon,
-	TrashIcon,
-} from '@navikt/aksel-icons';
-import { Button, Skeleton, TextField } from '@navikt/ds-react';
+import { CalculatorIcon, ChevronDownIcon, ChevronRightIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
+import { Button, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { LagretSøk, Uttrekk, useEndreLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
-import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
-import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
-import { SlettLagretSøkDialog } from 'avdelingsleder/lagredeSøk/SlettLagretSøkDialog';
-import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
-import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 import {
-	FilterBeskrivelse as FilterBeskrivelseType,
-	OrderBeskrivelse,
-	SelectBeskrivelse,
-	utledFilterBeskrivelse,
-	utledOrderBeskrivelse,
-	utledSelectBeskrivelse,
-} from 'filter/queryBeskrivelseUtils';
-import ModalButton from 'sharedComponents/ModalButton';
-
-function QueryBoks({
-	ikon,
-	lagretSøk,
-	modalTab,
-	className,
-	children,
-}: {
-	ikon: React.ReactNode;
-	lagretSøk: LagretSøk;
-	modalTab?: 'kriterier' | 'felter' | 'sortering';
-	className?: string;
-	children: React.ReactNode;
-}) {
-	const tittel = modalTab.charAt(0).toUpperCase() + modalTab.slice(1);
-	return (
-		<div className={`rounded-md p-2 border-solid border-[2px] border-ax-neutral-300 ${className || ''}`}>
-			<div className="flex justify-between items-center gap-2">
-				<div className="text-sm text-ax-neutral-800 flex items-center gap-1 font-medium">
-					{ikon} {tittel}
-				</div>
-				<ModalButton
-					renderButton={({ openModal }) => (
-						<Button variant="tertiary" size="xsmall" onClick={openModal}>
-							Endre {modalTab}
-						</Button>
-					)}
-					renderModal={({ open, closeModal }) => (
-						<EndreKriterierLagretSøkModal
-							modalTab={modalTab}
-							tittel={`${tittel} for lagret søk`}
-							lagretSøk={lagretSøk}
-							open={open}
-							closeModal={closeModal}
-						/>
-					)}
-				/>
-			</div>
-			{children || <p className="text-ax-neutral-600 italic mt-1">Ingen {modalTab} valgt</p>}
-		</div>
-	);
-}
-
-function KriterierBoks({
-	queryBeskrivelse,
-	lagretSøk,
-}: {
-	queryBeskrivelse: FilterBeskrivelseType[];
-	lagretSøk: LagretSøk;
-}) {
-	return (
-		<QueryBoks ikon={<FilterIcon />} lagretSøk={lagretSøk} modalTab="kriterier" className="w-1/2">
-			{queryBeskrivelse && queryBeskrivelse.length > 0 && (
-				<div className="flex flex-col gap-0.5 text-base mt-1">
-					{queryBeskrivelse.map((filter) => (
-						<div className="leading-normal" key={filter.feltnavn}>
-							<span className="font-ax-bold text-ax-neutral-800">{filter.feltnavn}</span>:{' '}
-							{filter.sammenføyning.prefiks ?? ''}
-							{filter.verdier.join(filter.sammenføyning.separator)}
-						</div>
-					))}
-				</div>
-			)}
-		</QueryBoks>
-	);
-}
-
-function FelterBoks({
-	selectBeskrivelse,
-	lagretSøk,
-}: {
-	selectBeskrivelse: SelectBeskrivelse[];
-	lagretSøk: LagretSøk;
-}) {
-	return (
-		<QueryBoks ikon={<TableIcon />} lagretSøk={lagretSøk} modalTab="felter" className="w-1/4">
-			{selectBeskrivelse && selectBeskrivelse.length > 0 && (
-				<div className="flex flex-col gap-0.5 text-base mt-1">
-					{selectBeskrivelse.map((select) => (
-						<div className="leading-normal" key={select.feltnavn}>
-							{select.feltnavn}
-						</div>
-					))}
-				</div>
-			)}
-		</QueryBoks>
-	);
-}
-
-function SorteringBoks({
-	orderBeskrivelse,
-	lagretSøk,
-}: {
-	orderBeskrivelse: OrderBeskrivelse[];
-	lagretSøk: LagretSøk;
-}) {
-	return (
-		<QueryBoks ikon={<SortDownIcon />} lagretSøk={lagretSøk} modalTab="sortering" className="w-1/4">
-			{orderBeskrivelse && orderBeskrivelse.length > 0 && (
-				<div className="flex flex-col gap-0.5 text-base mt-1">
-					{orderBeskrivelse.map((order) => (
-						<div className="leading-normal" key={order.feltnavn}>
-							{order.feltnavn} ({order.økende ? 'økende' : 'synkende'})
-						</div>
-					))}
-				</div>
-			)}
-		</QueryBoks>
-	);
-}
-
-function EndreTittel({
-	lagretSøk,
-	ikkeIEndreModusLenger,
-}: {
-	lagretSøk: LagretSøk;
-	ikkeIEndreModusLenger: () => void;
-}) {
-	const { mutate, isPending, isError } = useEndreLagretSøk(ikkeIEndreModusLenger);
-	const [tittel, setTittel] = useState(lagretSøk.tittel);
-	const [feilmelding, setFeilmelding] = useState('');
-
-	useEffect(() => {
-		if (isError) {
-			setFeilmelding('Noe gikk galt ved lagring av søk. Prøv å oppfrisk siden.');
-		}
-	}, [isError]);
-
-	return (
-		<form
-			className="flex gap-2 items-start"
-			onSubmit={(event) => {
-				event.preventDefault();
-				mutate({ ...lagretSøk, tittel });
-			}}
-			onReset={(event) => {
-				event.preventDefault();
-				mutate({ ...lagretSøk, tittel: '' });
-			}}
-		>
-			<TextField
-				label="Tittel"
-				hideLabel
-				value={tittel}
-				onChange={(event) => setTittel(event.target.value)}
-				error={feilmelding}
-				htmlSize={40}
-				maxLength={100}
-				size="small"
-				autoFocus
-			/>
-			<Button variant="secondary" disabled={isPending} type="submit" size="small">
-				Lagre
-			</Button>
-			{lagretSøk.tittel.length > 0 && (
-				<Button variant="secondary" disabled={isPending} type="reset" size="small">
-					Fjern tittel
-				</Button>
-			)}
-			<Button variant="tertiary" disabled={isPending} type="button" onClick={ikkeIEndreModusLenger} size="small">
-				Avbryt
-			</Button>
-		</form>
-	);
-}
+	LagretSøk,
+	TypeKjøring,
+	Uttrekk,
+	useOpprettUttrekk,
+	useSlettLagretSøk,
+} from 'api/queries/avdelingslederQueries';
+import { EndreTittel } from 'avdelingsleder/lagredeSøk/EndreTittel';
+import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
+import { KriterierBoks } from 'avdelingsleder/lagredeSøk/KriterierBoks';
+import { SlettLagretSøkDialog } from 'avdelingsleder/lagredeSøk/SlettLagretSøkDialog';
+import { OpprettUttrekkDialog } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkDialog';
+import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
+import { utledFilterBeskrivelse } from 'filter/queryBeskrivelseUtils';
 
 export function LagretSøkKort({
 	lagretSøk,
@@ -218,6 +43,9 @@ export function LagretSøkKort({
 	}, [initiallyExpanded]);
 
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
+	const { mutate: opprettAntallUttrekk, isPending: opprettAntallIsPending } = useOpprettUttrekk(() => {
+		setUttrekkEkspandert(true);
+	});
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
@@ -328,11 +156,9 @@ export function LagretSøkKort({
 				</div>
 			) : (
 				<>
-					{/* Rad 2: KriterieBoks, FelterBoks, SorteringBoks */}
-					<div className="w-full flex gap-2">
+					{/* Rad 2: KriterieBoks */}
+					<div className="w-full">
 						<KriterierBoks queryBeskrivelse={filterBeskrivelse} lagretSøk={lagretSøk} />
-						<FelterBoks selectBeskrivelse={utledSelectBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
-						<SorteringBoks orderBeskrivelse={utledOrderBeskrivelse(lagretSøk.query, felter)} lagretSøk={lagretSøk} />
 					</div>
 
 					{/* Rad 3: Antall oppgaver */}
@@ -349,23 +175,28 @@ export function LagretSøkKort({
 
 					{/* Rad 4: Uttrekk-visning */}
 					<div className="w-full">
-						<ModalButton
-							renderButton={({ openModal }) => (
-								<Button icon={<PlayIcon />} variant="secondary" size="small" onClick={openModal}>
-									Gjør uttrekk
-								</Button>
-							)}
-							renderModal={({ open, closeModal }) => (
-								<OpprettUttrekkModal
-									lagretSøk={lagretSøk}
-									open={open}
-									closeModal={() => {
-										setUttrekkEkspandert(true);
-										closeModal();
-									}}
-								/>
-							)}
-						/>
+						<div className="flex gap-2">
+							<OpprettUttrekkDialog
+								lagretSøk={lagretSøk}
+								antall={antall}
+								onOpprettet={() => setUttrekkEkspandert(true)}
+							/>
+							<Button
+								icon={<CalculatorIcon />}
+								variant="secondary"
+								size="small"
+								onClick={() =>
+									opprettAntallUttrekk({
+										lagretSokId: lagretSøk.id,
+										typeKjoring: TypeKjøring.ANTALL,
+									})
+								}
+								loading={opprettAntallIsPending}
+								disabled={opprettAntallIsPending}
+							>
+								Gjør antalluttrekk
+							</Button>
+						</div>
 						{harUttrekk && (
 							<div className="mt-4">
 								<Button

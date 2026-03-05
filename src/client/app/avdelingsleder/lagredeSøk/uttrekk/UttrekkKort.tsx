@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import {
+	CalculatorIcon,
 	ClockDashedIcon,
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
 	EyeIcon,
-	FileTextIcon,
 	InformationSquareIcon,
+	TableIcon,
 	TasklistIcon,
 	TrashIcon,
 } from '@navikt/aksel-icons';
 import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { LagretSøk, Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, TypeKjøring, Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
 import { UttrekkResultatModal } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatModal';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
@@ -20,21 +21,33 @@ import ModalButton from 'sharedComponents/ModalButton';
 import { assertNever } from 'utils/assert-never';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 
+function getTypeLabel(typeKjøring: TypeKjøring): string {
+	switch (typeKjøring) {
+		case TypeKjøring.OPPGAVER:
+			return 'Oppgaveuttrekk';
+		case TypeKjøring.ANTALL:
+			return 'Antalluttrekk';
+		default:
+			return assertNever(typeKjøring);
+	}
+}
+
 function getStatusText(uttrekk: Uttrekk): React.ReactNode {
+	const typeLabel = getTypeLabel(uttrekk.typeKjøring);
 	switch (uttrekk.status) {
 		case UttrekkStatus.OPPRETTET:
-			return 'Venter på å kjøre';
+			return <>{typeLabel} &ndash; Venter på å kjøre</>;
 		case UttrekkStatus.KJØRER:
-			return 'Kjører nå';
+			return <>{typeLabel} &ndash; Kjører nå</>;
 		case UttrekkStatus.FULLFØRT:
 			return (
 				<>
-					<span className="font-medium">Antall oppgaver: </span>
+					{typeLabel} &ndash; <span className="font-medium">Antall oppgaver: </span>
 					{uttrekk.antall}
 				</>
 			);
 		case UttrekkStatus.FEILET:
-			return 'Feilet';
+			return <>{typeLabel} &ndash; Feilet</>;
 		default:
 			return assertNever(uttrekk.status);
 	}
@@ -55,18 +68,22 @@ function getStatusColor(status: UttrekkStatus): string {
 	}
 }
 
-function getStatusIcon(status: UttrekkStatus) {
-	switch (status) {
+function getStatusIcon(uttrekk: Uttrekk) {
+	switch (uttrekk.status) {
 		case UttrekkStatus.OPPRETTET:
 			return <ClockDashedIcon aria-hidden fontSize="1.5rem" />;
 		case UttrekkStatus.KJØRER:
 			return <Loader size="medium" />;
 		case UttrekkStatus.FULLFØRT:
-			return <FileTextIcon aria-hidden fontSize="1.5rem" />;
+			return uttrekk.typeKjøring === TypeKjøring.OPPGAVER ? (
+				<TableIcon aria-hidden fontSize="1.5rem" />
+			) : (
+				<CalculatorIcon aria-hidden fontSize="1.5rem" />
+			);
 		case UttrekkStatus.FEILET:
 			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
 		default:
-			return assertNever(status);
+			return assertNever(uttrekk.status);
 	}
 }
 
@@ -80,7 +97,7 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 	useEffect(oppdaterKjøretid, [uttrekk.status]);
 	useInterval(oppdaterKjøretid, uttrekk.status === UttrekkStatus.KJØRER ? 1000 : null);
 
-	const kriterierErForskjellige = !_.isEqual(uttrekk.query, lagretSøk?.query);
+	const kriterierErForskjellige = !_.isEqual(uttrekk.query.filtere, lagretSøk?.query.filtere);
 
 	const kanLasteNed =
 		uttrekk.status === UttrekkStatus.FULLFØRT &&
@@ -94,7 +111,7 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 		<div className={`rounded-md py-2 px-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
 			<div className="flex items-center justify-between gap-3">
 				<div className="flex items-center gap-3 flex-1">
-					<div className="flex-shrink-0 flex items-center">{getStatusIcon(uttrekk.status)}</div>
+					<div className="flex-shrink-0 flex items-center">{getStatusIcon(uttrekk)}</div>
 					<div className="flex items-center gap-3">
 						<div>{getStatusText(uttrekk)}</div>
 						<div className="text-sm text-ax-neutral-700">

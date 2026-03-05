@@ -23,18 +23,12 @@ export default class OppgaveQueryModel {
 				filtere: [],
 				select: [],
 				order: [],
-				limit: 10,
 			});
 			return;
 		}
 
 		const cloned = deepClone(oppgaveQuery);
 		this.oppgaveQuery = isIdentifiedQuery(cloned) ? cloned : tilIdentifiedQuery(cloned);
-	}
-
-	updateLimit(limit: number) {
-		this.oppgaveQuery.limit = limit;
-		return this;
 	}
 
 	toOppgaveQuery(): OppgaveQuery {
@@ -45,7 +39,7 @@ export default class OppgaveQueryModel {
 		return this.oppgaveQuery;
 	}
 
-	private internalValidate(filtere: IdentifiedOppgavefilter[]) {
+	private internalValidateFilters(filtere: IdentifiedOppgavefilter[]) {
 		filtere.forEach((f) => {
 			if (f.type === 'feltverdi' && f.kode == null) {
 				this.errors.push({ _nodeId: f._nodeId, felt: 'kode', message: 'Du må velge et kriterie' });
@@ -56,13 +50,22 @@ export default class OppgaveQueryModel {
 				}
 			}
 			if (f.type === 'combine') {
-				this.internalValidate(f.filtere);
+				this.internalValidateFilters(f.filtere);
+			}
+		});
+	}
+
+	private internalValidateSelect(select: WithNodeId<EnkelSelectFelt>[]) {
+		select.forEach((s) => {
+			if (s.kode == null) {
+				this.errors.push({ _nodeId: s._nodeId, felt: 'kode', message: 'Du må velge et felt' });
 			}
 		});
 	}
 
 	validate() {
-		this.internalValidate(this.oppgaveQuery.filtere);
+		this.internalValidateFilters(this.oppgaveQuery.filtere);
+		this.internalValidateSelect(this.oppgaveQuery.select);
 		return this;
 	}
 

@@ -42,7 +42,6 @@ const query: OppgaveQuery = {
 	filtere: [feltverdiFilter, combineFilter],
 	select: [selectFelt],
 	order: [orderFelt],
-	limit: 10,
 };
 
 describe('filterFrontendTypes konvertering', () => {
@@ -52,7 +51,6 @@ describe('filterFrontendTypes konvertering', () => {
 
 			// Toppnivå har _nodeId
 			expect(identified._nodeId).toBeDefined();
-			expect(identified.limit).toBe(10);
 
 			// FeltverdiOppgavefilter har _nodeId
 			const identFeltverdi = identified.filtere[0];

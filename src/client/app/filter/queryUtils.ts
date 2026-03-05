@@ -9,7 +9,7 @@ const withMethod =
 	<M extends ModelMethods>(method: M) =>
 	(...args: Parameters<OppgaveQueryModel[M]>) =>
 	(model: IdentifiedOppgaveQuery): IdentifiedOppgaveQuery => {
-		// @ts-expect-error "TS2556: A spread argument must either have a tuple type or be passed to a rest parameter." Løses kanskje i nyere TypeScript?packa
+		// @ts-expect-error "TS2556: A spread argument must either have a tuple type or be passed to a rest parameter." Løses kanskje i nyere versjoner av TypeScript?
 		return new OppgaveQueryModel(model)[method](...args).toIdentifiedQuery();
 	};
 

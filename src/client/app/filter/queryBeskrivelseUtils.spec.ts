@@ -92,7 +92,6 @@ describe('queryBeskrivelseUtils', () => {
 		filtere,
 		select,
 		order,
-		limit: 100,
 	});
 
 	describe('utledFilterBeskrivelse', () => {
@@ -280,7 +279,6 @@ describe('queryBeskrivelseUtils', () => {
 				],
 				select: [],
 				order: [],
-				limit: 100,
 			};
 
 			const result = utledFilterBeskrivelse(query, felter);

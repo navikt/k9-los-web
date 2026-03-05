@@ -142,13 +142,7 @@ const OppgaveOrderFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			<Button
-				className={styles.orderLeggTil}
-				icon={<PlusCircleIcon aria-hidden />}
-				size="small"
-				variant="tertiary"
-				onClick={handleAddFelt}
-			>
+			<Button icon={<PlusCircleIcon aria-hidden />} size="small" variant="tertiary" onClick={handleAddFelt}>
 				Legg til sortering
 			</Button>
 		</div>

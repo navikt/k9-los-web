@@ -119,7 +119,7 @@ const OppgaveSelectFelter = () => {
 				</SortableContext>
 			</DndContext>
 			<Button icon={<PlusCircleIcon aria-hidden />} size="small" variant="tertiary" onClick={handleAdd}>
-				Legg til felt som skal vises i søkeresultat
+				Legg til kolonne
 			</Button>
 		</div>
 	);

@@ -18,7 +18,6 @@ export type OppgaveQuery = {
 	filtere: Oppgavefilter[];
 	select: EnkelSelectFelt[];
 	order: EnkelOrderFelt[];
-	limit: number;
 };
 
 export type EnkelOrderFelt = {
@@ -30,7 +29,7 @@ export type EnkelOrderFelt = {
 
 export type EnkelSelectFelt = {
 	type: 'enkel';
-	område: string;
+	område: string | null;
 	kode: string;
 };
 
