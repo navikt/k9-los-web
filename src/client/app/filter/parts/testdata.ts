@@ -141,7 +141,6 @@ export const oppgaveQueryForDate: IdentifiedOppgaveQuery = tilIdentifiedQuery({
 		},
 	],
 	order: [],
-	limit: 10,
 });
 export const oppgaverMedDate: Oppgaverad[] = [
 	{

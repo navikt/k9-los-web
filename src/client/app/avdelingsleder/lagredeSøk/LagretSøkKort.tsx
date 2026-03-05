@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { ChevronDownIcon, ChevronRightIcon, PencilIcon, PlayIcon, TrashIcon } from '@navikt/aksel-icons';
+import { CalculatorIcon, ChevronDownIcon, ChevronRightIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { LagretSøk, Uttrekk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, TypeKjøring, Uttrekk, useOpprettUttrekk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreTittel } from 'avdelingsleder/lagredeSøk/EndreTittel';
 import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
 import { KriterierBoks } from 'avdelingsleder/lagredeSøk/KriterierBoks';
 import { SlettLagretSøkDialog } from 'avdelingsleder/lagredeSøk/SlettLagretSøkDialog';
-import { OpprettUttrekkModal } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkModal';
+import { OpprettUttrekkDialog } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkDialog';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 import { utledFilterBeskrivelse } from 'filter/queryBeskrivelseUtils';
-import ModalButton from 'sharedComponents/ModalButton';
 
 export function LagretSøkKort({
 	lagretSøk,
@@ -38,6 +37,12 @@ export function LagretSøkKort({
 	}, [initiallyExpanded]);
 
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
+	const {
+		mutate: opprettAntallUttrekk,
+		isPending: opprettAntallIsPending,
+	} = useOpprettUttrekk(() => {
+		setUttrekkEkspandert(true);
+	});
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
@@ -167,23 +172,28 @@ export function LagretSøkKort({
 
 					{/* Rad 4: Uttrekk-visning */}
 					<div className="w-full">
-						<ModalButton
-							renderButton={({ openModal }) => (
-								<Button icon={<PlayIcon />} variant="secondary" size="small" onClick={openModal}>
-									Gjør uttrekk
-								</Button>
-							)}
-							renderModal={({ open, closeModal }) => (
-								<OpprettUttrekkModal
-									lagretSøk={lagretSøk}
-									open={open}
-									closeModal={() => {
-										setUttrekkEkspandert(true);
-										closeModal();
-									}}
-								/>
-							)}
-						/>
+						<div className="flex gap-2">
+							<OpprettUttrekkDialog
+								lagretSøk={lagretSøk}
+								antall={antall}
+								onOpprettet={() => setUttrekkEkspandert(true)}
+							/>
+							<Button
+								icon={<CalculatorIcon />}
+								variant="secondary"
+								size="small"
+								onClick={() =>
+									opprettAntallUttrekk({
+										lagretSokId: lagretSøk.id,
+										typeKjoring: TypeKjøring.ANTALL,
+									})
+								}
+								loading={opprettAntallIsPending}
+								disabled={opprettAntallIsPending}
+							>
+								Antallssjekk
+							</Button>
+						</div>
 						{harUttrekk && (
 							<div className="mt-4">
 								<Button
