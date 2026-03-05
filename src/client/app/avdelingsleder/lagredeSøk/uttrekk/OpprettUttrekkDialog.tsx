@@ -194,38 +194,44 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 											/>
 										</div>
 									)}
-									<div className="flex gap-4">
-										<TextField
-											{...register('limit', {
-												min: {
-													value: 1,
-													message: 'Maksimalt antall rader må være minst 1',
-												},
-												max: {
-													value: 50000,
-													message: 'Avgrensning kan ikke være større enn 50 000',
-												},
-												valueAsNumber: true,
-												...(erStortUttrekk && {
-													required: 'Avgrensning er påkrevd for store uttrekk',
-												}),
-											})}
-											error={errors.limit?.message}
-											label="Maksimalt antall rader som skal hentes"
-											type="number"
-										/>
-										<TextField
-											{...register('offset', {
-												min: {
-													value: 0,
-													message: 'Antall rader som skal hoppes over må være minst 0',
-												},
-												valueAsNumber: true,
-											})}
-											error={errors.offset?.message}
-											label="Antall rader som skal hoppes over"
-											type="number"
-										/>
+									<div className="flex gap-4 items-start">
+										<div className="w-1/2">
+											<TextField
+												{...register('limit', {
+													min: {
+														value: 1,
+														message: 'Maksimalt antall rader må være minst 1',
+													},
+													max: {
+														value: 50000,
+														message: 'Avgrensning kan ikke være større enn 50 000',
+													},
+													valueAsNumber: true,
+													...(erStortUttrekk && {
+														required: 'Avgrensning er påkrevd for store uttrekk',
+													}),
+												})}
+												size="small"
+												error={errors.limit?.message}
+												label="Maksimalt antall rader som skal hentes"
+												type="number"
+											/>
+										</div>
+										<div className="w-1/2">
+											<TextField
+												{...register('offset', {
+													min: {
+														value: 0,
+														message: 'Antall rader som skal hoppes over må være minst 0',
+													},
+													valueAsNumber: true,
+												})}
+												size="small"
+												error={errors.offset?.message}
+												label="Antall rader som skal hoppes over"
+												type="number"
+											/>
+										</div>
 									</div>
 								</div>
 							)}
