@@ -1,10 +1,6 @@
 .orderEnkelFelt {
 	display: flex;
 	align-items: center;
-	margin-top: var(--ax-space-8);
-}
-.orderLeggTil {
-	margin-top: var(--ax-space-16);
 }
 .noGap {
 	gap: 0;

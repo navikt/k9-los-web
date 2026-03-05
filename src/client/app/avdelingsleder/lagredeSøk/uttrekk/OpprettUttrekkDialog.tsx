@@ -2,7 +2,17 @@ import React, { useState } from 'react';
 import { Watch, useForm } from 'react-hook-form';
 import _ from 'lodash';
 import { TableIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Detail, Dialog, Label, TextField } from '@navikt/ds-react';
+import {
+	Alert,
+	BodyShort,
+	Button,
+	Detail,
+	Dialog,
+	ErrorMessage,
+	InlineMessage,
+	Label,
+	TextField,
+} from '@navikt/ds-react';
 import { LagretSøk, TypeKjøring, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import { FilterContext, FilterContextType } from 'filter/FilterContext';
 import OppgaveQueryModel from 'filter/OppgaveQueryModel';
@@ -60,7 +70,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	const onSubmit = (data: { query: IdentifiedOppgaveQuery; limit?: number | null; offset?: number | null }) => {
 		if (data.query.select.length === 0) {
-			setError('query', { type: 'custom', message: 'Velg minst ett felt for uttrekket' });
+			setError('query', { type: 'custom', message: 'Velg minst én kolonne for uttrekket' });
 			return;
 		}
 
@@ -123,36 +133,21 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 			<Dialog.Popup width="medium">
 				<Dialog.Header>
 					<Dialog.Title>
-						Gjør uttrekk av oppgaver for{' '}
-						{lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
+						Gjør uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
 					</Dialog.Title>
 				</Dialog.Header>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Dialog.Body>
-						{antall !== undefined && (
-							<BodyShort spacing>
-								Uttrekket vil gjøres på <strong>{antall.toLocaleString('nb-NO')}</strong> oppgaver.
-							</BodyShort>
-						)}
+						<BodyShort spacing>
+							Uttrekket vil gjøres på <strong>{antall.toLocaleString('nb-NO')}</strong> oppgaver. Velg minst én kolonne
+							som skal være med i resultatet.
+						</BodyShort>
 
 						<FilterContext.Provider value={filterContextValues}>
 							<div className="mb-6">
-								<Label spacing>Felter som skal være med i uttrekket</Label>
+								<Label spacing>Kolonner</Label>
 								<OppgaveSelectFelter />
-								<Watch
-									control={control}
-									name="query"
-									render={(query) =>
-										query.select.length === 0 ? (
-											<BodyShort
-												size="small"
-												className={`mt-1 ${errors.query ? 'text-ax-danger-700' : 'text-ax-neutral-600'}`}
-											>
-												{errors.query?.message || 'Ingen felter valgt. Velg minst ett felt.'}
-											</BodyShort>
-										) : null
-									}
-								/>
+								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
 							</div>
 
 							<div className="mb-6">
@@ -244,7 +239,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 					</Dialog.Body>
 					<Dialog.Footer>
 						<Button type="submit" disabled={isPending} loading={isPending}>
-							Opprett uttrekk
+							Gjør uttrekk
 						</Button>
 						<Dialog.CloseTrigger>
 							<Button variant="secondary" type="button" disabled={isPending}>

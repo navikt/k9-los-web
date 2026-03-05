@@ -97,7 +97,7 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 	useEffect(oppdaterKjøretid, [uttrekk.status]);
 	useInterval(oppdaterKjøretid, uttrekk.status === UttrekkStatus.KJØRER ? 1000 : null);
 
-	const kriterierErForskjellige = !_.isEqual(uttrekk.query, lagretSøk?.query);
+	const kriterierErForskjellige = !_.isEqual(uttrekk.query.filtere, lagretSøk?.query.filtere);
 
 	const kanLasteNed =
 		uttrekk.status === UttrekkStatus.FULLFØRT &&
