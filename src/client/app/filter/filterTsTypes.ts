@@ -18,7 +18,6 @@ export type OppgaveQuery = {
 	filtere: Oppgavefilter[];
 	select: EnkelSelectFelt[];
 	order: EnkelOrderFelt[];
-	limit: number;
 };
 
 export type EnkelOrderFelt = {

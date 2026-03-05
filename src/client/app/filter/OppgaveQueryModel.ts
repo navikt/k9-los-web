@@ -23,18 +23,12 @@ export default class OppgaveQueryModel {
 				filtere: [],
 				select: [],
 				order: [],
-				limit: 10,
 			});
 			return;
 		}
 
 		const cloned = deepClone(oppgaveQuery);
 		this.oppgaveQuery = isIdentifiedQuery(cloned) ? cloned : tilIdentifiedQuery(cloned);
-	}
-
-	updateLimit(limit: number) {
-		this.oppgaveQuery.limit = limit;
-		return this;
 	}
 
 	toOppgaveQuery(): OppgaveQuery {

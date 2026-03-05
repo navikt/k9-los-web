@@ -19,7 +19,6 @@ export const oppgaveQueryForDuration: IdentifiedOppgaveQuery = tilIdentifiedQuer
 		},
 	],
 	order: [],
-	limit: 10,
 });
 
 export const oppgaverMedDuration: Oppgaverad[] = [

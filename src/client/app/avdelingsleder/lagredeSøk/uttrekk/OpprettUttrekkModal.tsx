@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Watch, useForm } from 'react-hook-form';
 import _ from 'lodash';
 import { XMarkIcon } from '@navikt/aksel-icons';
 import { Alert, BodyShort, Button, Detail, Heading, Label, Modal, TextField } from '@navikt/ds-react';
@@ -7,9 +7,10 @@ import AppContext from 'app/AppContext';
 import { LagretSøk, TypeKjøring, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import { FilterContext, FilterContextType } from 'filter/FilterContext';
 import OppgaveQueryModel from 'filter/OppgaveQueryModel';
-import { fjernNodeIdFraQuery, IdentifiedOppgaveQuery } from 'filter/filterFrontendTypes';
+import { IdentifiedOppgaveQuery, fjernNodeIdFraQuery } from 'filter/filterFrontendTypes';
+import { EnkelOrderFelt, EnkelSelectFelt } from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
-import { applyFunctions, QueryFunction } from 'filter/queryUtils';
+import { QueryFunction, applyFunctions } from 'filter/queryUtils';
 import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
 
 interface OpprettUttrekkModalProps {
@@ -19,63 +20,51 @@ interface OpprettUttrekkModalProps {
 }
 
 export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUttrekkModalProps) {
-	const { mutate: opprettUttrekk, isPending: opprettIsPending, isError: opprettIsError } = useOpprettUttrekk(() => {
+	const {
+		mutate: opprettUttrekk,
+		isPending: opprettIsPending,
+		isError: opprettIsError,
+	} = useOpprettUttrekk(() => {
 		closeModal();
 	});
+
+	const { felter } = useContext(AppContext);
 
 	const { mutate: endreLagretSøk, isPending: endreIsPending } = useEndreLagretSøk();
 
 	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
 
-	const [oppgaveQuery, setOppgaveQuery] = useState<IdentifiedOppgaveQuery>(() =>
-		new OppgaveQueryModel(lagretSøk.query).toIdentifiedQuery(),
-	);
-
-	// Resynk lokal state når modalen åpnes med ny lagretSøk
-	const [prevLagretSøkVersjon, setPrevLagretSøkVersjon] = useState(lagretSøk.versjon);
-	if (lagretSøk.versjon !== prevLagretSøkVersjon) {
-		setPrevLagretSøkVersjon(lagretSøk.versjon);
-		setOppgaveQuery(new OppgaveQueryModel(lagretSøk.query).toIdentifiedQuery());
-	}
-
-	const updateQuery = (operations: Array<QueryFunction>) => {
-		setOppgaveQuery((prev) => applyFunctions(prev, operations));
-	};
-
-	const filterContextValues: FilterContextType = useMemo(
-		() => ({
-			oppgaveQuery,
-			updateQuery,
-			errors: [],
-		}),
-		[oppgaveQuery],
-	);
-
-	const localQuery = fjernNodeIdFraQuery(oppgaveQuery);
-	const typeKjoring = localQuery.select.length > 0 ? TypeKjøring.OPPGAVER : TypeKjøring.ANTALL;
-
 	const {
+		control,
 		handleSubmit,
 		reset,
 		register,
+		getValues,
+		setValue,
 		formState: { errors },
-	} = useForm<{ limit?: number | null; offset?: number | null }>({
+	} = useForm<{ query: IdentifiedOppgaveQuery; limit?: number | null; offset?: number | null }>({
 		defaultValues: {
+			query: new OppgaveQueryModel(lagretSøk.query).toIdentifiedQuery(),
 			limit: null,
 			offset: null,
 		},
 	});
 
+	const updateQuery = (operations: Array<QueryFunction>) => {
+		setValue('query', applyFunctions(getValues('query'), operations));
+	};
+
 	const isPending = opprettIsPending || endreIsPending;
 
-	const onSubmit = (data: { limit?: number | null; offset?: number | null }) => {
-		const selectEndret = !_.isEqual(localQuery.select, lagretSøk.query.select);
-		const orderEndret = !_.isEqual(localQuery.order, lagretSøk.query.order);
+	const onSubmit = (data: { query: IdentifiedOppgaveQuery; limit?: number | null; offset?: number | null }) => {
+		const query = fjernNodeIdFraQuery(data.query);
+		const selectEndret = !_.isEqual(query.select, lagretSøk.query.select);
+		const orderEndret = !_.isEqual(query.order, lagretSøk.query.order);
 
 		const doOpprettUttrekk = () => {
 			opprettUttrekk({
 				lagretSokId: lagretSøk.id,
-				typeKjoring,
+				typeKjoring: TypeKjøring.OPPGAVER,
 				limit: data.limit || null,
 				offset: data.offset || null,
 			});
@@ -87,7 +76,7 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 					id: lagretSøk.id,
 					tittel: lagretSøk.tittel,
 					beskrivelse: lagretSøk.beskrivelse,
-					query: { ...lagretSøk.query, select: localQuery.select, order: localQuery.order },
+					query,
 					versjon: lagretSøk.versjon,
 				},
 				{ onSuccess: doOpprettUttrekk },
@@ -100,8 +89,13 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 	const handleClose = () => {
 		reset();
 		setVisAvgrensningsinnstillinger(false);
-		setOppgaveQuery(new OppgaveQueryModel(lagretSøk.query).toIdentifiedQuery());
 		closeModal();
+	};
+
+	const filterContextValues: FilterContextType = {
+		oppgaveQuery: getValues('query'),
+		updateQuery,
+		errors: [],
 	};
 
 	return (
@@ -117,11 +111,17 @@ export function OpprettUttrekkModal({ lagretSøk, open, closeModal }: OpprettUtt
 						<div className="mb-6">
 							<Label spacing>Felter som vises i søkeresultat</Label>
 							<OppgaveSelectFelter />
-							{localQuery.select.length === 0 && (
-								<BodyShort size="small" className="text-ax-neutral-600 mt-1">
-									Ingen felter valgt. Uttrekket vil kun inneholde antall oppgaver.
-								</BodyShort>
-							)}
+							<Watch
+								control={control}
+								name="query"
+								render={(query) =>
+									query.select.length === 0 ? (
+										<BodyShort size="small" className="text-ax-neutral-600 mt-1">
+											Ingen felter valgt. Uttrekket vil kun inneholde antall oppgaver.
+										</BodyShort>
+									) : null
+								}
+							/>
 						</div>
 
 						<div className="mb-6">
