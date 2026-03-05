@@ -117,13 +117,13 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<Dialog.Trigger>
 				<Button icon={<TableIcon />} variant="secondary" size="small">
-					Oppgaveuttrekk
+					Gjør oppgaveuttrekk
 				</Button>
 			</Dialog.Trigger>
 			<Dialog.Popup width="medium">
 				<Dialog.Header>
 					<Dialog.Title>
-						Opprett oppgaveuttrekk for{' '}
+						Gjør uttrekk av oppgaver for{' '}
 						{lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
 					</Dialog.Title>
 				</Dialog.Header>
@@ -164,16 +164,13 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						<div>
 							{erStortUttrekk && (
 								<Alert variant="warning" className="mb-4">
-									Dette er et stort uttrekk ({antall?.toLocaleString('nb-NO')} oppgaver). Avgrensning
-									er påkrevd.
+									Dette er et stort uttrekk ({antall?.toLocaleString('nb-NO')} oppgaver). Avgrensning er påkrevd.
 								</Alert>
 							)}
 
 							{!visAvgrensning ? (
 								<div className="rounded-md bg-ax-neutral-200 p-2">
-									<Detail>
-										For å begrense antall resultater kan det legges til en avgrensning.
-									</Detail>
+									<Detail>For å begrense antall resultater kan det legges til en avgrensning.</Detail>
 									<Button
 										className="mt-1 p-0"
 										variant="tertiary"

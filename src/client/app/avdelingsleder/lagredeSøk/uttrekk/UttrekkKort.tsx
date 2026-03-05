@@ -26,7 +26,7 @@ function getTypeLabel(typeKjøring: TypeKjøring): string {
 		case TypeKjøring.OPPGAVER:
 			return 'Oppgaveuttrekk';
 		case TypeKjøring.ANTALL:
-			return 'Antallssjekk';
+			return 'Antalluttrekk';
 		default:
 			return assertNever(typeKjøring);
 	}

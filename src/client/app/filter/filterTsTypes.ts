@@ -29,7 +29,7 @@ export type EnkelOrderFelt = {
 
 export type EnkelSelectFelt = {
 	type: 'enkel';
-	område: string;
+	område: string | null;
 	kode: string;
 };
 
