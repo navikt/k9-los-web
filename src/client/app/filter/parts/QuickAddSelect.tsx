@@ -67,10 +67,10 @@ const QuickAddSelect = () => {
 				<button
 					key={kode}
 					type="button"
-					className="inline-flex items-center gap-1 rounded-md border border-dashed border-ax-neutral-400 bg-transparent px-2 py-0.5 text-small text-ax-neutral-700 hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200"
+					className="inline-flex items-center gap-0.5 rounded-md border border-dashed border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 text-xsmall font-semibold text-ax-neutral-700 hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200"
 					onClick={() => handleAdd(kode)}
 				>
-					<PlusIcon aria-hidden className="shrink-0" height="1rem" width="1rem" />
+					<PlusIcon aria-hidden className="shrink-0" height="0.875rem" width="0.875rem" />
 					{visningsnavn}
 				</button>
 			))}
