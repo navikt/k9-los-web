@@ -154,7 +154,14 @@ const OppgaveOrderFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			<Button className="self-start" icon={<PlusCircleIcon aria-hidden />} size="small" variant="tertiary" onClick={handleAddFelt}>
+			{orderFields.length === 0 && <div className="text-ax-neutral-500 italic text-md">Ingen sortering lagt til</div>}
+			<Button
+				className="self-start -m-1 px-1"
+				icon={<PlusCircleIcon aria-hidden />}
+				size="small"
+				variant="tertiary"
+				onClick={handleAddFelt}
+			>
 				Legg til sortering
 			</Button>
 		</VStack>

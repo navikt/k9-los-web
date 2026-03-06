@@ -128,8 +128,11 @@ const OppgaveSelectFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
+			{oppgaveQuery.select.length === 0 && (
+				<div className="text-ax-neutral-500 italic text-md">Ingen kolonner lagt til</div>
+			)}
 			<Button
-				className="self-start"
+				className="self-start -ml-1 px-1"
 				icon={<PlusCircleIcon aria-hidden />}
 				size="small"
 				variant="tertiary"

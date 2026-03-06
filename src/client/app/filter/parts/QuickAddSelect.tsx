@@ -47,7 +47,7 @@ const QuickAddSelect = () => {
 	if (tilgjengelige.length === 0) return null;
 
 	return (
-		<div className="ml-3 mt-3">
+		<div className="mt-2">
 			<div className="flex flex-wrap gap-2">
 				{tilgjengelige.map(({ kode, visningsnavn }) => (
 					<button

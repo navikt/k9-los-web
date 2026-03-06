@@ -22,6 +22,8 @@ import QuickAddSelect from 'filter/parts/QuickAddSelect';
 import { QueryFunction, applyFunctions } from 'filter/queryUtils';
 import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
 import QuickAddOrder from 'filter/sortering/QuickAddOrder';
+import { QueryBoks } from '../QueryBoks';
+import { QueryBoksStyle } from '../QueryBoksStyle';
 
 interface OpprettUttrekkDialogProps {
 	lagretSøk: LagretSøk;
@@ -141,27 +143,34 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Dialog.Body>
 						<BodyShort className="mb-6">
-							Uttrekket vil gjøres på <strong>{antall.toLocaleString('nb-NO')}</strong> oppgaver. Velg minst én kolonne
+							Uttrekket vil gjøres på <strong>{antall?.toLocaleString('nb-NO')}</strong> oppgaver. Velg minst én kolonne
 							som skal være med i resultatet.
 						</BodyShort>
 
 						<FilterContext.Provider value={filterContextValues}>
-							<div className="mb-6">
+							<QueryBoksStyle ikon={<TableIcon />} tittel="Kolonner">
+								<OppgaveSelectFelter />
+								<QuickAddSelect />
+								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
+							</QueryBoksStyle>
+							{/* <div className="mb-6">
 								<div className="mb-2">
 									<Label>Kolonner</Label>
 								</div>
-								<OppgaveSelectFelter />
-								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
-								<QuickAddSelect />
-							</div>
+							</div> --> */}
 
-							<div className="mb-6">
+							<QueryBoksStyle ikon={<TableIcon />} tittel="Sortering">
+								<OppgaveOrderFelter />
+								<QuickAddOrder />
+							</QueryBoksStyle>
+
+							{/* <div className="mb-6">
 								<div className="mb-2">
 									<Label>Sortering</Label>
 								</div>
 								<OppgaveOrderFelter />
 								<QuickAddOrder />
-							</div>
+							</div> */}
 						</FilterContext.Provider>
 
 						<div>

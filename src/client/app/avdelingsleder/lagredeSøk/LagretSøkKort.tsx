@@ -162,7 +162,7 @@ export function LagretSøkKort({
 					</div>
 
 					{/* Rad 3: Antall oppgaver */}
-					<div className="w-full text-md text-ax-neutral-800">
+					<div className="text-md text-ax-neutral-800 mb-4">
 						{antallLoading ? (
 							<Skeleton variant="text" width={100} className="inline-block" />
 						) : (
@@ -174,7 +174,7 @@ export function LagretSøkKort({
 					</div>
 
 					{/* Rad 4: Uttrekk-visning */}
-					<div className="w-full">
+					<div className="">
 						<div className="flex gap-2">
 							<OpprettUttrekkDialog
 								lagretSøk={lagretSøk}
@@ -198,7 +198,7 @@ export function LagretSøkKort({
 							</Button>
 						</div>
 						{harUttrekk && (
-							<div className="mt-4">
+							<div className="mt-2">
 								<Button
 									className="pl-0"
 									variant="tertiary"
