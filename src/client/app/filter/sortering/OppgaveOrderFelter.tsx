@@ -9,7 +9,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Select, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
+import { Button, Select, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
@@ -32,16 +32,8 @@ const SortableOrderField: FunctionComponent<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const mapper = (feltdefinisjon: Oppgavefelt) => ({
-		value: feltdefinisjon.kode,
-		label: feltdefinisjon.visningsnavn,
-	});
-
-	const valgtFelt = felter.find((f) => f.kode === felt.kode);
-	const selectedOption = valgtFelt ? [mapper(valgtFelt)] : [];
-
 	const valgteFelterFraAndreRader = order.filter((o) => o._nodeId !== felt._nodeId && o.kode).map((o) => o.kode);
-	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode));
+	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
 
 	return (
 		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
@@ -54,24 +46,24 @@ const SortableOrderField: FunctionComponent<{
 			>
 				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
 			</button>
-			<div className="min-w-0 grow">
-				<UNSAFE_Combobox
-					hideLabel
-					label="Velg felt for sortering"
-					options={felter.map(mapper)}
-					selectedOptions={selectedOption}
-					filteredOptions={tilgjengeligeFelter.map(mapper)}
-					onToggleSelected={(option, isSelected) => {
-						if (isSelected) onUpdateKode(felt._nodeId, option);
-					}}
-					shouldAutocomplete
-					placeholder="Velg felt"
-				/>
-			</div>
-
+			<Select
+				hideLabel
+				label="Velg felt for sortering"
+				className="min-w-0 grow"
+				value={felt.kode}
+				onChange={(event) => onUpdateKode(felt._nodeId, event.target.value)}
+			>
+				<option value="">Velg felt</option>
+				{tilgjengeligeFelter.map((feltdefinisjon) => (
+					<option key={feltdefinisjon.kode} value={feltdefinisjon.kode}>
+						{feltdefinisjon.visningsnavn}
+					</option>
+				))}
+			</Select>
 			<Select
 				hideLabel
 				label="Retning"
+				className="shrink-0"
 				value={felt.økende.toString()}
 				onChange={(event) => onUpdateDirection(felt._nodeId, event.target.value)}
 			>

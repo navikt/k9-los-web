@@ -9,17 +9,12 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
+import { Button, Select, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelSelectFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
-
-const toOption = (feltdefinisjon: Oppgavefelt) => ({
-	value: feltdefinisjon.kode,
-	label: feltdefinisjon.visningsnavn,
-});
 
 const SortableField: FunctionComponent<{
 	felt: WithNodeId<EnkelSelectFelt>;
@@ -36,11 +31,8 @@ const SortableField: FunctionComponent<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const valgtFelt = felter.find((f) => f.kode === felt.kode);
-	const selectedOption = valgtFelt ? [toOption(valgtFelt)] : [];
-
 	const valgteFelterFraAndreRader = select.filter((s) => s._nodeId !== felt._nodeId && s.kode).map((s) => s.kode);
-	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode));
+	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
 
 	return (
 		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
@@ -53,20 +45,20 @@ const SortableField: FunctionComponent<{
 			>
 				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
 			</button>
-			<div className="min-w-0 grow">
-				<UNSAFE_Combobox
-					hideLabel
-					label="Velg felt"
-					options={felter.map(toOption)}
-					selectedOptions={selectedOption}
-					filteredOptions={tilgjengeligeFelter.map(toOption)}
-					onToggleSelected={(option, isSelected) => {
-						if (isSelected) onUpdate(felt, option);
-					}}
-					shouldAutocomplete
-					placeholder="Velg felt"
-				/>
-			</div>
+			<Select
+				hideLabel
+				label="Velg felt"
+				className="min-w-0 grow"
+				value={felt.kode}
+				onChange={(event) => onUpdate(felt, event.target.value)}
+			>
+				<option value="">Velg felt</option>
+				{tilgjengeligeFelter.map((feltdefinisjon) => (
+					<option key={feltdefinisjon.kode} value={feltdefinisjon.kode}>
+						{feltdefinisjon.visningsnavn}
+					</option>
+				))}
+			</Select>
 			<Button
 				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
 				size="medium"
