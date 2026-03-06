@@ -18,8 +18,10 @@ import { FilterContext, FilterContextType } from 'filter/FilterContext';
 import OppgaveQueryModel from 'filter/OppgaveQueryModel';
 import { IdentifiedOppgaveQuery, fjernNodeIdFraQuery } from 'filter/filterFrontendTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
+import QuickAddSelect from 'filter/parts/QuickAddSelect';
 import { QueryFunction, applyFunctions } from 'filter/queryUtils';
 import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
+import QuickAddOrder from 'filter/sortering/QuickAddOrder';
 
 interface OpprettUttrekkDialogProps {
 	lagretSøk: LagretSøk;
@@ -42,6 +44,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	const erStortUttrekk = antall !== undefined && antall > 10000;
 	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
+	const [resetKey, setResetKey] = useState(0);
 
 	const {
 		control,
@@ -111,6 +114,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				offset: null,
 			});
 			setVisAvgrensningsinnstillinger(erStortUttrekk);
+			setResetKey((k) => k + 1);
 		}
 		setOpen(newOpen);
 	};
@@ -146,12 +150,14 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						<FilterContext.Provider value={filterContextValues}>
 							<div className="mb-6">
 								<Label>Kolonner</Label>
+								<QuickAddSelect key={`select-${resetKey}`} />
 								<OppgaveSelectFelter />
 								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
 							</div>
 
 							<div className="mb-6">
 								<Label>Sortering</Label>
+								<QuickAddOrder key={`order-${resetKey}`} />
 								<OppgaveOrderFelter />
 							</div>
 						</FilterContext.Provider>
