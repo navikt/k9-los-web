@@ -15,6 +15,7 @@ import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelOrderFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
+import QuickAddOrder from './QuickAddOrder';
 
 const SortableOrderField: FunctionComponent<{
 	felt: WithNodeId<EnkelOrderFelt>;
@@ -75,6 +76,7 @@ const SortableOrderField: FunctionComponent<{
 				</option>
 			</Select>
 			<Button
+				type="button"
 				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
 				size="medium"
 				variant="tertiary"
@@ -155,7 +157,9 @@ const OppgaveOrderFelter = () => {
 				</SortableContext>
 			</DndContext>
 			{orderFields.length === 0 && <div className="text-ax-neutral-500 italic text-md">Ingen sortering lagt til</div>}
+			<QuickAddOrder />
 			<Button
+				type="button"
 				className="self-start -m-1 px-1"
 				icon={<PlusCircleIcon aria-hidden />}
 				size="small"

@@ -15,6 +15,7 @@ import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelSelectFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
+import QuickAddSelect from './QuickAddSelect';
 
 const SortableField: FunctionComponent<{
 	felt: WithNodeId<EnkelSelectFelt>;
@@ -131,7 +132,9 @@ const OppgaveSelectFelter = () => {
 			{oppgaveQuery.select.length === 0 && (
 				<div className="text-ax-neutral-500 italic text-md">Ingen kolonner lagt til</div>
 			)}
+			<QuickAddSelect />
 			<Button
+				type="button"
 				className="self-start -ml-1 px-1"
 				icon={<PlusCircleIcon aria-hidden />}
 				size="small"

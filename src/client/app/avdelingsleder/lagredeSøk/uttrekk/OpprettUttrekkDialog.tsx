@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Watch, useForm } from 'react-hook-form';
 import _ from 'lodash';
-import { TableIcon, XMarkIcon } from '@navikt/aksel-icons';
+import { ArrowsUpDownIcon, TableIcon, XMarkIcon } from '@navikt/aksel-icons';
 import {
 	Alert,
 	BodyShort,
@@ -16,7 +16,8 @@ import {
 import { LagretSøk, TypeKjøring, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import { FilterContext, FilterContextType } from 'filter/FilterContext';
 import OppgaveQueryModel from 'filter/OppgaveQueryModel';
-import { IdentifiedOppgaveQuery, fjernNodeIdFraQuery } from 'filter/filterFrontendTypes';
+import { IdentifiedOppgaveQuery, WithNodeId, fjernNodeId, fjernNodeIdFraQuery } from 'filter/filterFrontendTypes';
+import { EnkelOrderFelt, EnkelSelectFelt, OppgaveQuery } from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
 import QuickAddSelect from 'filter/parts/QuickAddSelect';
 import { QueryFunction, applyFunctions } from 'filter/queryUtils';
@@ -72,22 +73,25 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	const isPending = opprettIsPending || endreIsPending;
 
-	const onSubmit = (data: { query: IdentifiedOppgaveQuery; limit?: number | null; offset?: number | null }) => {
-		if (data.query.select.length === 0) {
-			setError('query', { type: 'custom', message: 'Velg minst én kolonne for uttrekket' });
+	const onSubmit = (data: { query: IdentifiedOppgaveQuery; limit?: number; offset?: number }) => {
+		const query = fjernNodeIdFraQuery(data.query);
+		const select = query.select.filter((s) => Boolean(s.kode));
+		const order = query.order.filter((o) => Boolean(o.kode));
+
+		if (select.length === 0) {
+			setError('query', { type: 'custom', message: 'Velg minst én kolonne' });
 			return;
 		}
 
-		const query = fjernNodeIdFraQuery(data.query);
-		const selectEndret = !_.isEqual(query.select, lagretSøk.query.select);
-		const orderEndret = !_.isEqual(query.order, lagretSøk.query.order);
+		const selectEndret = !_.isEqual(select, lagretSøk.query.select);
+		const orderEndret = !_.isEqual(order, lagretSøk.query.order);
 
 		const doOpprettUttrekk = () => {
 			opprettUttrekk({
 				lagretSokId: lagretSøk.id,
 				typeKjoring: TypeKjøring.OPPGAVER,
-				limit: data.limit || null,
-				offset: data.offset || null,
+				limit: data.limit,
+				offset: data.offset,
 			});
 		};
 
@@ -97,7 +101,11 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 					id: lagretSøk.id,
 					tittel: lagretSøk.tittel,
 					beskrivelse: lagretSøk.beskrivelse,
-					query,
+					query: {
+						...lagretSøk.query,
+						select,
+						order,
+					},
 					versjon: lagretSøk.versjon,
 				},
 				{ onSuccess: doOpprettUttrekk },
@@ -134,7 +142,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 					Gjør oppgaveuttrekk
 				</Button>
 			</Dialog.Trigger>
-			<Dialog.Popup width="medium">
+			<Dialog.Popup width="large">
 				<Dialog.Header>
 					<Dialog.Title>
 						Gjør uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
@@ -144,33 +152,17 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 					<Dialog.Body>
 						<BodyShort className="mb-6">
 							Uttrekket vil gjøres på <strong>{antall?.toLocaleString('nb-NO')}</strong> oppgaver. Velg minst én kolonne
-							som skal være med i resultatet.
+							som skal være med i resultatet. Sortering er valgfritt.
 						</BodyShort>
 
 						<FilterContext.Provider value={filterContextValues}>
 							<QueryBoksStyle ikon={<TableIcon />} tittel="Kolonner">
 								<OppgaveSelectFelter />
-								<QuickAddSelect />
-								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
-							</QueryBoksStyle>
-							{/* <div className="mb-6">
-								<div className="mb-2">
-									<Label>Kolonner</Label>
-								</div>
-							</div> --> */}
-
-							<QueryBoksStyle ikon={<TableIcon />} tittel="Sortering">
-								<OppgaveOrderFelter />
-								<QuickAddOrder />
 							</QueryBoksStyle>
 
-							{/* <div className="mb-6">
-								<div className="mb-2">
-									<Label>Sortering</Label>
-								</div>
+							<QueryBoksStyle ikon={<ArrowsUpDownIcon />} tittel="Sortering">
 								<OppgaveOrderFelter />
-								<QuickAddOrder />
-							</div> */}
+							</QueryBoksStyle>
 						</FilterContext.Provider>
 
 						<div>
@@ -259,6 +251,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 								Noe gikk galt ved opprettelse av uttrekk. Prøv igjen senere.
 							</Alert>
 						)}
+						{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
 					</Dialog.Body>
 					<Dialog.Footer>
 						<Button type="submit" disabled={isPending} loading={isPending}>
