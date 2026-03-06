@@ -9,6 +9,9 @@ const QUICK_ADD_KOLONNER: OppgavefilterKode[] = [
 	OppgavefilterKode.Saksnummer,
 	OppgavefilterKode.Ytelsestype,
 	OppgavefilterKode.AktivVenteårsak,
+	OppgavefilterKode.MottattDato,
+	OppgavefilterKode.Oppgavestatus,
+	OppgavefilterKode.TidSidenMottattDato,
 ];
 
 const QuickAddSelect = () => {
