@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { PlusIcon } from '@navikt/aksel-icons';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
@@ -18,30 +18,12 @@ const QuickAddSelect = () => {
 	const { felter } = useContext(AppContext);
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
-	const [bruktKoder, setBruktKoder] = useState<Set<string>>(
-		() => new Set(oppgaveQuery.select.filter((s) => s.kode).map((s) => s.kode)),
-	);
-
-	useEffect(() => {
-		const koder = oppgaveQuery.select.filter((s) => s.kode).map((s) => s.kode);
-		setBruktKoder((prev) => {
-			const next = new Set(prev);
-			let endret = false;
-			for (const k of koder) {
-				if (!next.has(k)) {
-					next.add(k);
-					endret = true;
-				}
-			}
-			return endret ? next : prev;
-		});
-	}, [oppgaveQuery.select]);
+	const valgteKoder = new Set(oppgaveQuery.select.filter((s) => s.kode).map((s) => s.kode));
 
 	const handleAdd = (kode: OppgavefilterKode) => {
 		const oppgavefelt = felter.find((f) => f.kode === kode);
 		if (!oppgavefelt) return;
 
-		setBruktKoder((prev) => new Set(prev).add(kode));
 		updateQuery([
 			addEnkelSelectFelt(),
 			(query) => {
@@ -54,7 +36,7 @@ const QuickAddSelect = () => {
 		]);
 	};
 
-	const tilgjengelige = QUICK_ADD_KOLONNER.filter((kode) => !bruktKoder.has(kode))
+	const tilgjengelige = QUICK_ADD_KOLONNER.filter((kode) => !valgteKoder.has(kode))
 		.map((kode) => {
 			const oppgavefelt = felter.find((f) => f.kode === kode);
 			if (!oppgavefelt) return null;

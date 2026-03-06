@@ -44,7 +44,6 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	const erStortUttrekk = antall !== undefined && antall > 10000;
 	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
-	const [resetKey, setResetKey] = useState(0);
 
 	const {
 		control,
@@ -114,7 +113,6 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				offset: null,
 			});
 			setVisAvgrensningsinnstillinger(erStortUttrekk);
-			setResetKey((k) => k + 1);
 		}
 		setOpen(newOpen);
 	};
@@ -154,7 +152,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 								</div>
 								<OppgaveSelectFelter />
 								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
-								<QuickAddSelect key={`select-${resetKey}`} />
+								<QuickAddSelect />
 							</div>
 
 							<div className="mb-6">
@@ -162,7 +160,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 									<Label>Sortering</Label>
 								</div>
 								<OppgaveOrderFelter />
-								<QuickAddOrder key={`order-${resetKey}`} />
+								<QuickAddOrder />
 							</div>
 						</FilterContext.Provider>
 

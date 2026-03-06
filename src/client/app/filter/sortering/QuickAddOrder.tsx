@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { FilterContext } from 'filter/FilterContext';
 import { OppgavefilterKode } from 'filter/filterTsTypes';
@@ -23,27 +23,9 @@ const QUICK_ADD_SORTERING: QuickAddOrderItem[] = [
 const QuickAddOrder = () => {
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
-	const [bruktKoder, setBruktKoder] = useState<Set<string>>(
-		() => new Set(oppgaveQuery.order.filter((o) => o.kode).map((o) => o.kode)),
-	);
-
-	useEffect(() => {
-		const koder = oppgaveQuery.order.filter((o) => o.kode).map((o) => o.kode);
-		setBruktKoder((prev) => {
-			const next = new Set(prev);
-			let endret = false;
-			for (const k of koder) {
-				if (!next.has(k)) {
-					next.add(k);
-					endret = true;
-				}
-			}
-			return endret ? next : prev;
-		});
-	}, [oppgaveQuery.order]);
+	const valgteKoder = new Set(oppgaveQuery.order.filter((o) => o.kode).map((o) => o.kode));
 
 	const handleAdd = (item: QuickAddOrderItem) => {
-		setBruktKoder((prev) => new Set(prev).add(item.kode));
 		updateQuery([
 			addSortering({
 				type: 'enkel',
@@ -54,7 +36,7 @@ const QuickAddOrder = () => {
 		]);
 	};
 
-	const tilgjengelige = QUICK_ADD_SORTERING.filter((item) => !bruktKoder.has(item.kode));
+	const tilgjengelige = QUICK_ADD_SORTERING.filter((item) => !valgteKoder.has(item.kode));
 
 	if (tilgjengelige.length === 0) return null;
 
