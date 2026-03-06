@@ -9,13 +9,12 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Button, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelSelectFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
-import * as styles from './OppgaveSelectFelter.css';
 
 const toOption = (feltdefinisjon: Oppgavefelt) => ({
 	value: feltdefinisjon.kode,
@@ -46,22 +45,30 @@ const SortableField: FunctionComponent<{
 	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode));
 
 	return (
-		<div ref={setNodeRef} style={style} className={styles.selectEnkelFelt}>
-			<button type="button" className={styles.dragHandle} {...attributes} {...listeners}>
+		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
+			<button
+				type="button"
+				className="shrink-0 flex items-center cursor-grab text-ax-neutral-700 hover:text-ax-neutral-1000"
+				style={{ appearance: 'none', background: 'none', border: 'none', padding: 0 }}
+				{...attributes}
+				{...listeners}
+			>
 				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
 			</button>
-			<UNSAFE_Combobox
-				hideLabel
-				label="Velg felt"
-				options={felter.map(toOption)}
-				selectedOptions={selectedOption}
-				filteredOptions={tilgjengeligeFelter.map(toOption)}
-				onToggleSelected={(option, isSelected) => {
-					if (isSelected) onUpdate(felt, option);
-				}}
-				shouldAutocomplete
-				placeholder="Velg felt"
-			/>
+			<div className="min-w-0 grow">
+				<UNSAFE_Combobox
+					hideLabel
+					label="Velg felt"
+					options={felter.map(toOption)}
+					selectedOptions={selectedOption}
+					filteredOptions={tilgjengeligeFelter.map(toOption)}
+					onToggleSelected={(option, isSelected) => {
+						if (isSelected) onUpdate(felt, option);
+					}}
+					shouldAutocomplete
+					placeholder="Velg felt"
+				/>
+			</div>
 			<Button
 				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
 				size="medium"
@@ -116,7 +123,7 @@ const OppgaveSelectFelter = () => {
 	};
 
 	return (
-		<div>
+		<VStack gap="space-8">
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
 				<SortableContext items={oppgaveQuery.select.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
 					{oppgaveQuery.select.map((felt) => (
@@ -131,10 +138,10 @@ const OppgaveSelectFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			<Button icon={<PlusCircleIcon aria-hidden />} size="small" variant="tertiary" onClick={handleAdd}>
+			<Button className="self-start" icon={<PlusCircleIcon aria-hidden />} size="small" variant="tertiary" onClick={handleAdd}>
 				Legg til kolonne
 			</Button>
-		</div>
+		</VStack>
 	);
 };
 
