@@ -149,14 +149,18 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 						<FilterContext.Provider value={filterContextValues}>
 							<div className="mb-6">
-								<Label className="mb-2">Kolonner</Label>
+								<div className="mb-2">
+									<Label>Kolonner</Label>
+								</div>
 								<OppgaveSelectFelter />
 								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
 								<QuickAddSelect key={`select-${resetKey}`} />
 							</div>
 
 							<div className="mb-6">
-								<Label className="mb-2">Sortering</Label>
+								<div className="mb-2">
+									<Label>Sortering</Label>
+								</div>
 								<OppgaveOrderFelter />
 								<QuickAddOrder key={`order-${resetKey}`} />
 							</div>

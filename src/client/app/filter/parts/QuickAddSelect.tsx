@@ -62,18 +62,21 @@ const QuickAddSelect = () => {
 	if (tilgjengelige.length === 0) return null;
 
 	return (
-		<div className="flex flex-wrap gap-2">
-			{tilgjengelige.map(({ kode, visningsnavn }) => (
-				<button
-					key={kode}
-					type="button"
-					className="inline-flex items-center gap-0.5 rounded-md border border-dashed border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 text-xsmall font-semibold text-ax-neutral-700 hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200"
-					onClick={() => handleAdd(kode)}
-				>
-					<PlusIcon aria-hidden className="shrink-0" height="0.875rem" width="0.875rem" />
-					{visningsnavn}
-				</button>
-			))}
+		<div className="ml-3 mt-3">
+			<div className="flex flex-wrap gap-2">
+				{tilgjengelige.map(({ kode, visningsnavn }) => (
+					<button
+						key={kode}
+						type="button"
+						className="cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 font-semibold text-ax-neutral-700 hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200"
+						style={{ fontSize: '0.9rem' }}
+						onClick={() => handleAdd(kode)}
+					>
+						<PlusIcon aria-hidden className="shrink-0" height="0.875rem" width="0.875rem" />
+						{visningsnavn}
+					</button>
+				))}
+			</div>
 		</div>
 	);
 };
