@@ -138,20 +138,20 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				</Dialog.Header>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Dialog.Body>
-						<BodyShort spacing>
+						<BodyShort className="mb-6">
 							Uttrekket vil gjøres på <strong>{antall.toLocaleString('nb-NO')}</strong> oppgaver. Velg minst én kolonne
 							som skal være med i resultatet.
 						</BodyShort>
 
 						<FilterContext.Provider value={filterContextValues}>
 							<div className="mb-6">
-								<Label spacing>Kolonner</Label>
+								<Label>Kolonner</Label>
 								<OppgaveSelectFelter />
 								{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
 							</div>
 
 							<div className="mb-6">
-								<Label spacing>Sortering</Label>
+								<Label>Sortering</Label>
 								<OppgaveOrderFelter />
 							</div>
 						</FilterContext.Provider>

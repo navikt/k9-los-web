@@ -39,9 +39,7 @@ const SortableField: FunctionComponent<{
 	const valgtFelt = felter.find((f) => f.kode === felt.kode);
 	const selectedOption = valgtFelt ? [toOption(valgtFelt)] : [];
 
-	const valgteFelterFraAndreRader = select
-		.filter((s) => s._nodeId !== felt._nodeId && s.kode)
-		.map((s) => s.kode);
+	const valgteFelterFraAndreRader = select.filter((s) => s._nodeId !== felt._nodeId && s.kode).map((s) => s.kode);
 	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode));
 
 	return (
@@ -138,7 +136,13 @@ const OppgaveSelectFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			<Button className="self-start" icon={<PlusCircleIcon aria-hidden />} size="small" variant="tertiary" onClick={handleAdd}>
+			<Button
+				className="self-start"
+				icon={<PlusCircleIcon aria-hidden />}
+				size="small"
+				variant="tertiary"
+				onClick={handleAdd}
+			>
 				Legg til kolonne
 			</Button>
 		</VStack>
