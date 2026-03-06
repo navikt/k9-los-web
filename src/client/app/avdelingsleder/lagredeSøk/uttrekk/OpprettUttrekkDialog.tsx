@@ -213,7 +213,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 												})}
 												size="small"
 												error={errors.limit?.message}
-												label="Maksimalt antall rader som skal hentes"
+												label="Maksimalt antall rader"
 												type="number"
 											/>
 										</div>

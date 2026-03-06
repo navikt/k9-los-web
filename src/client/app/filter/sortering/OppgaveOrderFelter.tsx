@@ -9,21 +9,21 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Select } from '@navikt/ds-react';
+import { Button, Select, UNSAFE_Combobox } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelOrderFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
-import * as styles from './OppgaveOrderFelter.css';
 
 const SortableOrderField: FunctionComponent<{
 	felt: WithNodeId<EnkelOrderFelt>;
+	order: WithNodeId<EnkelOrderFelt>[];
 	felter: Oppgavefelt[];
-	onUpdateKode: (nodeId: string, direction: string) => void;
+	onUpdateKode: (nodeId: string, kode: string) => void;
 	onUpdateDirection: (nodeId: string, direction: string) => void;
 	onRemove: (nodeId: string) => void;
-}> = ({ felt, felter, onUpdateKode, onUpdateDirection, onRemove }) => {
+}> = ({ felt, order, felter, onUpdateKode, onUpdateDirection, onRemove }) => {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
 
 	const style = {
@@ -32,27 +32,40 @@ const SortableOrderField: FunctionComponent<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
+	const mapper = (feltdefinisjon: Oppgavefelt) => ({
+		value: feltdefinisjon.kode,
+		label: feltdefinisjon.visningsnavn,
+	});
+
+	const valgtFelt = felter.find((f) => f.kode === felt.kode);
+	const selectedOption = valgtFelt ? [mapper(valgtFelt)] : [];
+
+	const valgteFelterFraAndreRader = order.filter((o) => o._nodeId !== felt._nodeId && o.kode).map((o) => o.kode);
+	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode));
+
 	return (
-		<div ref={setNodeRef} style={style} className={styles.orderEnkelFelt}>
-			<button type="button" className={styles.dragHandle} {...attributes} {...listeners}>
-				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
-			</button>
+		<div ref={setNodeRef} style={style} className="flex flex-1 gap-2 items-center">
+			<div>
+				<button type="button" className="border-0 cursor-grab text-ax-neutral-700" {...attributes} {...listeners}>
+					<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
+				</button>
+			</div>
+			<UNSAFE_Combobox
+				hideLabel
+				label="Velg felt for sortering"
+				options={felter.map(mapper)}
+				selectedOptions={selectedOption}
+				filteredOptions={tilgjengeligeFelter.map(mapper)}
+				onToggleSelected={(option, isSelected) => {
+					if (isSelected) onUpdateKode(felt._nodeId, option);
+				}}
+				shouldAutocomplete
+				placeholder="Velg felt"
+			/>
+
 			<Select
-				label=""
-				className={styles.noGap}
-				value={felt.kode}
-				onChange={(event) => onUpdateKode(felt._nodeId, event.target.value)}
-			>
-				<option value="">Velg felt</option>
-				{felter.map((feltdefinisjon: Oppgavefelt) => (
-					<option key={feltdefinisjon.kode} value={feltdefinisjon.kode}>
-						{feltdefinisjon.visningsnavn}
-					</option>
-				))}
-			</Select>
-			<Select
-				label=""
-				className={styles.orderDirection}
+				hideLabel
+				label="Retning"
 				value={felt.økende.toString()}
 				onChange={(event) => onUpdateDirection(felt._nodeId, event.target.value)}
 			>
@@ -92,8 +105,8 @@ const OppgaveOrderFelter = () => {
 		updateQuery([addSortering(null)]);
 	};
 
-	const handleUpdateKode = (nodeId: string, value: string) => {
-		const oppgavefelt = felter.find((f) => f.kode === value);
+	const handleUpdateKode = (nodeId: string, kode: string) => {
+		const oppgavefelt = felter.find((f) => f.kode === kode);
 		if (oppgavefelt) {
 			updateQuery([
 				updateSortering(nodeId, {
@@ -135,6 +148,7 @@ const OppgaveOrderFelter = () => {
 							key={felt._nodeId}
 							felt={felt}
 							felter={felter}
+							order={orderFields}
 							onUpdateKode={handleUpdateKode}
 							onUpdateDirection={handleUpdateDirection}
 							onRemove={handleRemoveFelt}
