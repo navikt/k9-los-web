@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Heading, HelpText } from '@navikt/ds-react';
-import { useHentAlleUttrekk, useHentLagredeSøk, useHentLagredeSøkDefaultQuery } from 'api/queries/avdelingslederQueries';
+import {
+	useHentAlleUttrekk,
+	useHentLagredeSøk,
+	useHentLagredeSøkDefaultQuery,
+} from 'api/queries/avdelingslederQueries';
 import { EndreKriterierLagretSøkModal } from 'avdelingsleder/lagredeSøk/EndreKriterierLagretSøkModal';
 import { LagredeSøkTabell } from 'avdelingsleder/lagredeSøk/LagredeSøkTabell';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
@@ -25,8 +29,8 @@ export function LagredeSøk() {
 					<HelpText>
 						<p>Dette er funksjonalitet under utvikling.</p>
 						<p>
-							Lagrede søk er personlige, og de vil ikke være synlige for andre. Man kan kun se antall oppgaver i et
-							lagret søk. Reserverte oppgaver telles med i antallet.
+							Lagrede søk er personlige, og de vil ikke være synlige for andre. Reserverte oppgaver telles med i
+							antallet.
 						</p>
 						<p className="mb-0">Muligheter for videre utvikling, som prioriteres etter behov:</p>
 						<ul className="mt-0.5">
