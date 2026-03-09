@@ -1,8 +1,11 @@
 import React from 'react';
-import { FilterIcon } from '@navikt/aksel-icons';
+import { FilterIcon, PencilIcon } from '@navikt/aksel-icons';
+import { Button } from '@navikt/ds-react';
 import { LagretSøk } from 'api/queries/avdelingslederQueries';
-import { QueryBoks } from 'avdelingsleder/lagredeSøk/QueryBoks';
 import { FilterBeskrivelse as FilterBeskrivelseType } from 'filter/queryBeskrivelseUtils';
+import ModalButton from 'sharedComponents/ModalButton';
+import { EndreKriterierLagretSøkModal } from './EndreKriterierLagretSøkModal';
+import { QueryBoksStyle } from './QueryBoksStyle';
 
 export function KriterierBoks({
 	queryBeskrivelse,
@@ -12,7 +15,27 @@ export function KriterierBoks({
 	lagretSøk: LagretSøk;
 }) {
 	return (
-		<QueryBoks ikon={<FilterIcon />} lagretSøk={lagretSøk} modalTab="kriterier" className="w-full">
+		<QueryBoksStyle
+			ikon={<FilterIcon />}
+			tittel="Kriterier"
+			knapp={
+				<ModalButton
+					renderButton={({ openModal }) => (
+						<Button variant="tertiary" size="small" icon={<PencilIcon />} onClick={openModal}>
+							Endre kriterier
+						</Button>
+					)}
+					renderModal={({ open, closeModal }) => (
+						<EndreKriterierLagretSøkModal
+							tittel={`Kriterier for lagret søk`}
+							lagretSøk={lagretSøk}
+							open={open}
+							closeModal={closeModal}
+						/>
+					)}
+				/>
+			}
+		>
 			{queryBeskrivelse && queryBeskrivelse.length > 0 && (
 				<div className="flex flex-col gap-0.5 text-base mt-1">
 					{queryBeskrivelse.map((filter) => (
@@ -24,6 +47,6 @@ export function KriterierBoks({
 					))}
 				</div>
 			)}
-		</QueryBoks>
+		</QueryBoksStyle>
 	);
 }

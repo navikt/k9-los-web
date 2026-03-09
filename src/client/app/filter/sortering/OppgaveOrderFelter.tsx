@@ -9,21 +9,22 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Select } from '@navikt/ds-react';
+import { Button, Select, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelOrderFelt, Oppgavefelt } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
-import * as styles from './OppgaveOrderFelter.css';
+import QuickAddOrder from './QuickAddOrder';
 
 const SortableOrderField: FunctionComponent<{
 	felt: WithNodeId<EnkelOrderFelt>;
+	order: WithNodeId<EnkelOrderFelt>[];
 	felter: Oppgavefelt[];
-	onUpdateKode: (nodeId: string, direction: string) => void;
+	onUpdateKode: (nodeId: string, kode: string) => void;
 	onUpdateDirection: (nodeId: string, direction: string) => void;
 	onRemove: (nodeId: string) => void;
-}> = ({ felt, felter, onUpdateKode, onUpdateDirection, onRemove }) => {
+}> = ({ felt, order, felter, onUpdateKode, onUpdateDirection, onRemove }) => {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
 
 	const style = {
@@ -32,27 +33,38 @@ const SortableOrderField: FunctionComponent<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
+	const valgteFelterFraAndreRader = order.filter((o) => o._nodeId !== felt._nodeId && o.kode).map((o) => o.kode);
+	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
+
 	return (
-		<div ref={setNodeRef} style={style} className={styles.orderEnkelFelt}>
-			<button type="button" className={styles.dragHandle} {...attributes} {...listeners}>
+		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
+			<button
+				type="button"
+				className="shrink-0 flex items-center cursor-grab text-ax-neutral-700 hover:text-ax-neutral-1000"
+				style={{ appearance: 'none', background: 'none', border: 'none', padding: 0 }}
+				{...attributes}
+				{...listeners}
+			>
 				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
 			</button>
 			<Select
-				label=""
-				className={styles.noGap}
+				hideLabel
+				label="Velg felt for sortering"
+				className="min-w-0 grow"
 				value={felt.kode}
 				onChange={(event) => onUpdateKode(felt._nodeId, event.target.value)}
 			>
 				<option value="">Velg felt</option>
-				{felter.map((feltdefinisjon: Oppgavefelt) => (
+				{tilgjengeligeFelter.map((feltdefinisjon) => (
 					<option key={feltdefinisjon.kode} value={feltdefinisjon.kode}>
 						{feltdefinisjon.visningsnavn}
 					</option>
 				))}
 			</Select>
 			<Select
-				label=""
-				className={styles.orderDirection}
+				hideLabel
+				label="Retning"
+				className="shrink-0"
 				value={felt.økende.toString()}
 				onChange={(event) => onUpdateDirection(felt._nodeId, event.target.value)}
 			>
@@ -64,6 +76,7 @@ const SortableOrderField: FunctionComponent<{
 				</option>
 			</Select>
 			<Button
+				type="button"
 				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
 				size="medium"
 				variant="tertiary"
@@ -92,8 +105,8 @@ const OppgaveOrderFelter = () => {
 		updateQuery([addSortering(null)]);
 	};
 
-	const handleUpdateKode = (nodeId: string, value: string) => {
-		const oppgavefelt = felter.find((f) => f.kode === value);
+	const handleUpdateKode = (nodeId: string, kode: string) => {
+		const oppgavefelt = felter.find((f) => f.kode === kode);
 		if (oppgavefelt) {
 			updateQuery([
 				updateSortering(nodeId, {
@@ -127,7 +140,7 @@ const OppgaveOrderFelter = () => {
 	const orderFields = oppgaveQuery?.order ?? [];
 
 	return (
-		<div>
+		<VStack gap="space-8">
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
 				<SortableContext items={orderFields.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
 					{orderFields.map((felt) => (
@@ -135,6 +148,7 @@ const OppgaveOrderFelter = () => {
 							key={felt._nodeId}
 							felt={felt}
 							felter={felter}
+							order={orderFields}
 							onUpdateKode={handleUpdateKode}
 							onUpdateDirection={handleUpdateDirection}
 							onRemove={handleRemoveFelt}
@@ -142,10 +156,19 @@ const OppgaveOrderFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			<Button icon={<PlusCircleIcon aria-hidden />} size="small" variant="tertiary" onClick={handleAddFelt}>
+			{orderFields.length === 0 && <div className="text-ax-neutral-500 italic text-md">Ingen sortering lagt til</div>}
+			<QuickAddOrder />
+			<Button
+				type="button"
+				className="self-start -m-1 px-1"
+				icon={<PlusCircleIcon aria-hidden />}
+				size="small"
+				variant="tertiary"
+				onClick={handleAddFelt}
+			>
 				Legg til sortering
 			</Button>
-		</div>
+		</VStack>
 	);
 };
 

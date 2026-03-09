@@ -24,9 +24,9 @@ import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 function getTypeLabel(typeKjøring: TypeKjøring): string {
 	switch (typeKjøring) {
 		case TypeKjøring.OPPGAVER:
-			return 'Oppgaveuttrekk';
+			return 'Oppgaver';
 		case TypeKjøring.ANTALL:
-			return 'Antalluttrekk';
+			return 'Antall';
 		default:
 			return assertNever(typeKjøring);
 	}

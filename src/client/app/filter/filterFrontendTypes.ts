@@ -58,7 +58,7 @@ export function fjernNodeIdFraQuery(query: IdentifiedOppgaveQuery): OppgaveQuery
 	};
 }
 
-function fjernNodeId<T extends object>(obj: WithNodeId<T>): Omit<T, '_nodeId'> {
+export function fjernNodeId<T extends object>(obj: WithNodeId<T>): Omit<T, '_nodeId'> {
 	const { _nodeId, ...rest } = obj;
 	return rest;
 }
