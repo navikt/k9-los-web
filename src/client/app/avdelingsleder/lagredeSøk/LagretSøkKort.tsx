@@ -78,12 +78,12 @@ export function LagretSøkKort({
 				? {
 						onClick: handleCardClick,
 						onKeyDown: handleCardKeyDown,
-						role: 'button' as const,
+						role: 'button',
 						tabIndex: 0,
 					}
 				: {})}
 		>
-			{/* Rad 1: Ikon, tittel, kopier/slett-knapper */}
+			{/* Rad 1: Tittel, kopier/slett-knapper */}
 			<div className="w-full flex items-center justify-between gap-2">
 				<div className="flex items-center gap-2 min-w-0 flex-1">
 					<Button
