@@ -3,10 +3,12 @@ import React from 'react';
 export function QueryBoksStyle({
 	ikon,
 	tittel,
+	knapp,
 	children,
 }: {
 	ikon: React.ReactNode;
 	tittel: string;
+	knapp?: React.ReactNode;
 	children: React.ReactNode;
 }) {
 	return (
@@ -15,6 +17,7 @@ export function QueryBoksStyle({
 				<div className="text-sm text-ax-neutral-800 flex items-center gap-1 font-medium">
 					{ikon} {tittel}
 				</div>
+				{knapp}
 			</div>
 			{children}
 		</div>

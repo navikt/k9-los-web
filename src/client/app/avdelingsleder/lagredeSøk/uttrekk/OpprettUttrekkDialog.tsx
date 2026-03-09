@@ -1,29 +1,15 @@
 import React, { useState } from 'react';
-import { Watch, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import _ from 'lodash';
 import { ArrowsUpDownIcon, TableIcon, XMarkIcon } from '@navikt/aksel-icons';
-import {
-	Alert,
-	BodyShort,
-	Button,
-	Detail,
-	Dialog,
-	ErrorMessage,
-	InlineMessage,
-	Label,
-	TextField,
-} from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Detail, Dialog, TextField } from '@navikt/ds-react';
 import { LagretSøk, TypeKjøring, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import { FilterContext, FilterContextType } from 'filter/FilterContext';
 import OppgaveQueryModel from 'filter/OppgaveQueryModel';
-import { IdentifiedOppgaveQuery, WithNodeId, fjernNodeId, fjernNodeIdFraQuery } from 'filter/filterFrontendTypes';
-import { EnkelOrderFelt, EnkelSelectFelt, OppgaveQuery } from 'filter/filterTsTypes';
+import { IdentifiedOppgaveQuery, fjernNodeIdFraQuery } from 'filter/filterFrontendTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
-import QuickAddSelect from 'filter/parts/QuickAddSelect';
 import { QueryFunction, applyFunctions } from 'filter/queryUtils';
 import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
-import QuickAddOrder from 'filter/sortering/QuickAddOrder';
-import { QueryBoks } from '../QueryBoks';
 import { QueryBoksStyle } from '../QueryBoksStyle';
 
 interface OpprettUttrekkDialogProps {
@@ -49,7 +35,6 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
 
 	const {
-		control,
 		handleSubmit,
 		reset,
 		register,
@@ -79,7 +64,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 		const order = query.order.filter((o) => Boolean(o.kode));
 
 		if (select.length === 0) {
-			setError('query', { type: 'custom', message: 'Velg minst én kolonne' });
+			setError('query', { type: 'custom', message: 'Uttrekket må ha minst én kolonne' });
 			return;
 		}
 
@@ -165,7 +150,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 							</QueryBoksStyle>
 						</FilterContext.Provider>
 
-						<div>
+						<div className="mb-2">
 							{erStortUttrekk && (
 								<Alert variant="warning" className="mb-4">
 									Dette er et stort uttrekk ({antall?.toLocaleString('nb-NO')} oppgaver). Avgrensning er påkrevd.
@@ -251,7 +236,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 								Noe gikk galt ved opprettelse av uttrekk. Prøv igjen senere.
 							</Alert>
 						)}
-						{errors.query && <ErrorMessage>{errors.query.message}</ErrorMessage>}
+						{errors.query && <Alert variant="error">{errors.query.message}</Alert>}
 					</Dialog.Body>
 					<Dialog.Footer>
 						<Button type="submit" disabled={isPending} loading={isPending}>
