@@ -1,5 +1,5 @@
 import React from 'react';
-import { FilterIcon } from '@navikt/aksel-icons';
+import { FilterIcon, PencilIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { LagretSøk } from 'api/queries/avdelingslederQueries';
 import { FilterBeskrivelse as FilterBeskrivelseType } from 'filter/queryBeskrivelseUtils';
@@ -21,7 +21,7 @@ export function KriterierBoks({
 			knapp={
 				<ModalButton
 					renderButton={({ openModal }) => (
-						<Button variant="tertiary" size="xsmall" onClick={openModal}>
+						<Button variant="tertiary" size="small" icon={<PencilIcon />} onClick={openModal}>
 							Endre kriterier
 						</Button>
 					)}
