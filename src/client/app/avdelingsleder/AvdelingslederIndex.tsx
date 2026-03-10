@@ -1,6 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import { NavLink } from 'react-router';
 import classnames from 'classnames/bind';
+import { Location } from 'history';
 import Panel from 'nav-frontend-paneler';
 import Tabs from 'nav-frontend-tabs';
 import { BarChartIcon, CircleSlashIcon, FileSearchIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
@@ -24,7 +25,6 @@ import BehandlingskoerIndex from './behandlingskoerV3/BehandlingskoerIndex';
 import SaksbehandlereTabell from './bemanning/components/SaksbehandlereTabell';
 import AvdelingslederDashboard from './components/AvdelingslederDashboard';
 import IkkeTilgang from './components/IkkeTilgang';
-import { Location } from 'history';
 
 const classNames = classnames.bind(styles);
 
@@ -123,7 +123,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 				<Heading size="large">Avdelingslederpanel</Heading>
 				<VerticalSpacer eightPx />
 				<FeatureSwitch
-					defaultValue={false}
+					defaultValue={true}
 					enabled={<StatusFordeling />}
 					disabled={<Status />}
 					switchLabel="Vis ny statuslinje"
