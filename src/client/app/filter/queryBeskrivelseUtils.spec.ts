@@ -217,7 +217,7 @@ describe('queryBeskrivelseUtils', () => {
 
 			const result = utledFilterBeskrivelse(query, felter);
 
-			expect(result[0].verdier).toEqual(['2d 5t']);
+			expect(result[0].verdier).toEqual(['2']);
 			expect(result[0].sammenføyning).toEqual({ prefiks: '<= ' });
 		});
 
@@ -225,8 +225,8 @@ describe('queryBeskrivelseUtils', () => {
 			const query = opprettQuery([
 				{
 					type: 'feltverdi',
-					område: 'K9',
-					kode: 'oppgavestatus' as any,
+					område: null,
+					kode: 'oppgavestatus',
 					operator: 'IN',
 					verdi: [],
 				},
@@ -242,7 +242,7 @@ describe('queryBeskrivelseUtils', () => {
 				{
 					type: 'feltverdi',
 					område: 'UKJENT',
-					kode: 'ukjentFelt' as any,
+					kode: 'ukjentFelt',
 					operator: 'EQUALS',
 					verdi: ['verdi1'],
 				},

@@ -53,6 +53,7 @@ export const operatorsFraTolkesSom = (tolkesSom: string, antallVerdiforklaringer
 		case TolkesSom.Boolean:
 			return [OPERATORS.IN];
 		case TolkesSom.Duration:
+			return [OPERATORS.LESS_THAN_OR_EQUALS, OPERATORS.GREATER_THAN_OR_EQUALS];
 		case TolkesSom.Timestamp:
 			return [OPERATORS.LESS_THAN_OR_EQUALS, OPERATORS.GREATER_THAN_OR_EQUALS, OPERATORS.INTERVAL];
 		case TolkesSom.Integer:

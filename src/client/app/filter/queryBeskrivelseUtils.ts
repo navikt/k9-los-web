@@ -45,15 +45,7 @@ function hentVisningsnavn(felter: Oppgavefelt[], område: string, kode: string):
 
 function formaterDuration(verdi: string): string {
 	const duration = dayjs.duration(verdi);
-	const dager = Math.floor(duration.asDays());
-	const timer = duration.hours() % 24;
-	if (dager > 0 && timer > 0) {
-		return `${dager}d ${timer}t`;
-	}
-	if (dager > 0) {
-		return `${dager}d`;
-	}
-	return `${timer}t`;
+	return `${Math.floor(duration.asDays())}`;
 }
 
 function formaterTimestamp(verdi: string): string {
