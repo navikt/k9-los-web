@@ -19,7 +19,6 @@ interface OpprettUttrekkDialogProps {
 }
 
 const maksAntallForUttrekk = 20000;
-const maksAntallLabel = 'Maksimalt antall rader';
 const hoppOverLabel = 'Antall rader som skal hoppes over';
 
 function alleOppgaverTekst(antall: number) {
@@ -228,7 +227,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 												})}
 												size="small"
 												error={errors.limit?.message}
-												label={maksAntallLabel}
+												label="Maksimalt antall rader"
 												type="number"
 											/>
 										</div>
