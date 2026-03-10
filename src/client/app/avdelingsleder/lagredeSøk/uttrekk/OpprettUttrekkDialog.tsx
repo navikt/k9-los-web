@@ -150,7 +150,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						Gjør uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
 					</Dialog.Title>
 				</Dialog.Header>
-				<form onSubmit={handleSubmit(onSubmit)}>
+				<form className="flex flex-col overflow-hidden min-h-0 flex-1" onSubmit={handleSubmit(onSubmit)}>
 					<Dialog.Body>
 						<BodyShort className="mb-6">
 							Uttrekket vil gjøres på <strong>{antall?.toLocaleString('nb-NO')}</strong> oppgaver. Velg minst én kolonne
