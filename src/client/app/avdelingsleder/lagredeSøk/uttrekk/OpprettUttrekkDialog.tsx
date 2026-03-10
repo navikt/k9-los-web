@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import _ from 'lodash';
 import { ArrowsUpDownIcon, TableIcon, XMarkIcon } from '@navikt/aksel-icons';
-import { Alert, BodyShort, Button, Detail, Dialog, TextField } from '@navikt/ds-react';
+import { Alert, BodyShort, Button, Detail, Dialog, HelpText, ReadMore, TextField } from '@navikt/ds-react';
 import { LagretSøk, TypeKjøring, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import { FilterContext, FilterContextType } from 'filter/FilterContext';
 import OppgaveQueryModel from 'filter/OppgaveQueryModel';
@@ -18,6 +18,24 @@ interface OpprettUttrekkDialogProps {
 	onOpprettet: () => void;
 }
 
+const maksAntallForUttrekk = 20000;
+const maksAntallLabel = 'Maksimalt antall rader';
+const hoppOverLabel = 'Antall rader som skal hoppes over';
+
+function alleOppgaverTekst(antall: number) {
+	const antallOmganger = Math.ceil(antall / maksAntallForUttrekk);
+	const offsets = Array.from({ length: antallOmganger }, (_, i) => i * maksAntallForUttrekk);
+
+	let formattedOffsets: string;
+	if (offsets.length > 4) {
+		formattedOffsets = `${offsets.slice(0, 4).join(', ')}, osv`;
+	} else {
+		formattedOffsets = [...offsets.slice(0, -2).map(String), offsets.slice(-2).join(' og ')].join(', ');
+	}
+
+	return `For å hente ut ${antall.toLocaleString('nb-NO')} oppgaver kan det gjøres uttrekk i ${antallOmganger} omganger. Sett da maksimalt antall ${maksAntallForUttrekk}, og hopp over henholdsvis ${formattedOffsets}.`;
+}
+
 export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: OpprettUttrekkDialogProps) {
 	const [open, setOpen] = useState(false);
 	const {
@@ -31,7 +49,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	const { mutate: endreLagretSøk, isPending: endreIsPending } = useEndreLagretSøk();
 
-	const erStortUttrekk = antall !== undefined && antall > 10000;
+	const uttrekketErForStort = antall !== undefined && antall > maksAntallForUttrekk;
 	const [visAvgrensningsinnstillinger, setVisAvgrensningsinnstillinger] = useState(false);
 
 	const {
@@ -107,7 +125,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				limit: null,
 				offset: null,
 			});
-			setVisAvgrensningsinnstillinger(erStortUttrekk);
+			setVisAvgrensningsinnstillinger(uttrekketErForStort);
 		}
 		setOpen(newOpen);
 	};
@@ -118,7 +136,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 		errors: [],
 	};
 
-	const visAvgrensning = visAvgrensningsinnstillinger || erStortUttrekk;
+	const visAvgrensning = visAvgrensningsinnstillinger || uttrekketErForStort;
 
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
@@ -151,9 +169,12 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						</FilterContext.Provider>
 
 						<div className="mb-2">
-							{erStortUttrekk && (
+							{uttrekketErForStort && (
 								<Alert variant="warning" className="mb-4">
-									Dette er et stort uttrekk ({antall?.toLocaleString('nb-NO')} oppgaver). Avgrensning er påkrevd.
+									Uttrekket er for stort, maksimalt antall er {maksAntallForUttrekk.toLocaleString('nb-NO')}. Du kan
+									enten endre kriterier for å snevre inn søket, fylle ut et maksimalt antall, eller hoppe over et antall
+									rader.
+									<ReadMore header={`For å hente ut alle oppgaver`}>{alleOppgaverTekst(antall)}</ReadMore>
 								</Alert>
 							)}
 
@@ -172,7 +193,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 								</div>
 							) : (
 								<div className="rounded-md bg-ax-neutral-200 p-2">
-									{!erStortUttrekk && (
+									{!uttrekketErForStort && (
 										<div className="float-right">
 											<Button
 												data-color="neutral"
@@ -197,17 +218,17 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 														message: 'Maksimalt antall rader må være minst 1',
 													},
 													max: {
-														value: 50000,
-														message: 'Avgrensning kan ikke være større enn 50 000',
+														value: maksAntallForUttrekk,
+														message: `Maksimalt antall rader kan ikke være større enn ${maksAntallForUttrekk.toLocaleString('nb-NO')}`,
 													},
 													valueAsNumber: true,
-													...(erStortUttrekk && {
+													...(uttrekketErForStort && {
 														required: 'Avgrensning er påkrevd for store uttrekk',
 													}),
 												})}
 												size="small"
 												error={errors.limit?.message}
-												label="Maksimalt antall rader"
+												label={maksAntallLabel}
 												type="number"
 											/>
 										</div>
@@ -222,7 +243,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 												})}
 												size="small"
 												error={errors.offset?.message}
-												label="Antall rader som skal hoppes over"
+												label={hoppOverLabel}
 												type="number"
 											/>
 										</div>
