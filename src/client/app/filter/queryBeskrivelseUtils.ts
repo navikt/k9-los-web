@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import durationPlugin from 'dayjs/plugin/duration';
+import 'utils/dateUtils';
 import {
 	CombineOppgavefilter,
 	EnkelOrderFelt,
@@ -11,8 +11,6 @@ import {
 	TolkesSom,
 } from './filterTsTypes';
 import { OPERATORS } from './utils';
-
-dayjs.extend(durationPlugin);
 
 export interface FilterBeskrivelseSammenføyning {
 	prefiks?: string;

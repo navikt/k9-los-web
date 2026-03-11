@@ -1,11 +1,15 @@
 import dayjs from 'dayjs';
+import durationPlugin from 'dayjs/plugin/duration';
 import isoWeek from 'dayjs/plugin/isoWeek';
+import 'dayjs/locale/nb';
+
+dayjs.extend(isoWeek);
+dayjs.extend(durationPlugin);
+dayjs.locale('nb');
 
 const DDMMYYYY_DATE_FORMAT = 'DD.MM.YYYY';
 const HHMM_TIME_FORMAT = 'HH:mm';
 const HHMMSS_TIME_FORMAT = 'HH:mm:ss';
-
-dayjs.extend(isoWeek);
 
 export const timeFormat = (date: string) => dayjs(date).format(HHMM_TIME_FORMAT);
 

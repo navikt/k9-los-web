@@ -1,10 +1,8 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import durationPlugin from 'dayjs/plugin/duration';
+import 'utils/dateUtils';
 import { Oppgavefelt, Oppgavefeltverdi, TolkesSom } from 'filter/filterTsTypes';
 import { kriterierSomSkalGrupperes } from 'filter/konstanter';
-
-dayjs.extend(durationPlugin);
 
 interface Props {
 	oppgaveFelter: Oppgavefelt[];
