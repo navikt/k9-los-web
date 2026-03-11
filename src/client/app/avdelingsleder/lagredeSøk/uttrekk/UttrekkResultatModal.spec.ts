@@ -109,6 +109,18 @@ describe('formatCelleVerdi', () => {
 		it('viser 0 for kort duration', () => {
 			expect(formatCelleVerdi('PT2H30M', feltdef, true)).toBe('0');
 		});
+
+		it('håndterer heltallsverdi (dager som tall)', () => {
+			expect(formatCelleVerdi(7, feltdef, true)).toBe('7');
+		});
+
+		it('håndterer heltallsverdi som streng', () => {
+			expect(formatCelleVerdi('14', feltdef, true)).toBe('14');
+		});
+
+		it('faller tilbake til råverdi ved ugyldig duration', () => {
+			expect(formatCelleVerdi('ugyldig', feltdef, true)).toBe('ugyldig');
+		});
 	});
 });
 
