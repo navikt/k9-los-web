@@ -1,19 +1,23 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import dayjs from 'dayjs';
+import durationPlugin from 'dayjs/plugin/duration';
+import 'dayjs/locale/nb';
 import { WrenchIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Loader, Modal, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { Uttrekk, UttrekkResultatCelle, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
 
+dayjs.extend(durationPlugin);
+dayjs.locale('nb');
+
 const PAGE_SIZE = 20;
 
-const timestampFormatter = new Intl.DateTimeFormat('nb-NO', {
-	day: 'numeric',
-	month: 'short',
-	year: 'numeric',
-	hour: '2-digit',
-	minute: '2-digit',
-});
+export function harFormatering(feltdef: Oppgavefelt | undefined): boolean {
+	if (!feltdef) return false;
+	if (feltdef.verdiforklaringer && feltdef.verdiforklaringer.length > 0) return true;
+	return [TolkesSom.Boolean, TolkesSom.Timestamp, TolkesSom.Duration].includes(feltdef.tolkes_som);
+}
 
 export function formatCelleVerdi(verdi: unknown, feltdef: Oppgavefelt | undefined, formater: boolean): string {
 	if (verdi === null || verdi === undefined || verdi === '') {
@@ -37,10 +41,24 @@ export function formatCelleVerdi(verdi: unknown, feltdef: Oppgavefelt | undefine
 	}
 
 	if (feltdef.tolkes_som === TolkesSom.Timestamp) {
-		const dato = new Date(String(verdi));
-		if (!Number.isNaN(dato.getTime())) {
-			return timestampFormatter.format(dato);
+		const dato = dayjs(String(verdi));
+		if (dato.isValid()) {
+			return dato.format('D. MMM YYYY, [kl.] HH:mm');
 		}
+	}
+
+	if (feltdef.tolkes_som === TolkesSom.Duration) {
+		const strVerdi = String(verdi);
+		const tall = Number(strVerdi);
+		if (!Number.isNaN(tall)) {
+			return `${Math.floor(tall)}`;
+		}
+		const dur = dayjs.duration(strVerdi);
+		const dager = dur.asDays();
+		if (!Number.isNaN(dager)) {
+			return `${Math.floor(dager)}`;
+		}
+		return strVerdi;
 	}
 
 	return String(verdi);
@@ -71,18 +89,23 @@ export function UttrekkResultatModal({
 
 	const { felter } = useContext(AppContext);
 
+	const formaterbare = useMemo(() => {
+		if (!data?.kolonner) return new Set<string>();
+		return new Set(data.kolonner.filter((k) => harFormatering(felter.find((f) => f.kode === k))));
+	}, [data?.kolonner, felter]);
+
 	const [formaterKolonner, setFormaterKolonner] = useState<Set<string>>(new Set());
 
 	useEffect(() => {
 		if (data?.kolonner) {
 			setFormaterKolonner((prev) => {
 				if (prev.size === 0) {
-					return new Set(data.kolonner);
+					return new Set(data.kolonner.filter((k) => formaterbare.has(k)));
 				}
 				return prev;
 			});
 		}
-	}, [data?.kolonner]);
+	}, [data?.kolonner, formaterbare]);
 
 	const toggleFormatering = (kolonne: string) => {
 		setFormaterKolonner((prev) => {
@@ -122,15 +145,19 @@ export function UttrekkResultatModal({
 								</ActionMenu.Trigger>
 								<ActionMenu.Content>
 									<ActionMenu.Group label="Formatér kolonner">
-										{data.kolonner.map((kolonne) => (
-											<ActionMenu.CheckboxItem
-												key={kolonne}
-												checked={formaterKolonner.has(kolonne)}
-												onCheckedChange={() => toggleFormatering(kolonne)}
-											>
-												{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
-											</ActionMenu.CheckboxItem>
-										))}
+										{data.kolonner.map((kolonne) => {
+											const kanFormateres = formaterbare.has(kolonne);
+											return (
+												<ActionMenu.CheckboxItem
+													key={kolonne}
+													checked={kanFormateres && formaterKolonner.has(kolonne)}
+													onCheckedChange={() => toggleFormatering(kolonne)}
+													disabled={!kanFormateres}
+												>
+													{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+												</ActionMenu.CheckboxItem>
+											);
+										})}
 									</ActionMenu.Group>
 								</ActionMenu.Content>
 							</ActionMenu>

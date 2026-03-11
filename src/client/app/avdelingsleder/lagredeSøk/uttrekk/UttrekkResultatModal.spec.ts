@@ -1,5 +1,5 @@
 import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
-import { formatCelleVerdi } from './UttrekkResultatModal';
+import { formatCelleVerdi, harFormatering } from './UttrekkResultatModal';
 
 function lagFeltdef(overrides: Partial<Oppgavefelt> = {}): Oppgavefelt {
 	return {
@@ -89,5 +89,58 @@ describe('formatCelleVerdi', () => {
 		it('viser verdi som streng', () => {
 			expect(formatCelleVerdi('en tekst', feltdef, true)).toBe('en tekst');
 		});
+
+		it('konverterer tall til streng', () => {
+			expect(formatCelleVerdi(42, feltdef, true)).toBe('42');
+		});
+	});
+
+	describe('duration', () => {
+		const feltdef = lagFeltdef({ tolkes_som: TolkesSom.Duration });
+
+		it('formaterer ISO-duration til antall dager', () => {
+			expect(formatCelleVerdi('PT48H', feltdef, true)).toBe('2');
+		});
+
+		it('formaterer duration med dager og timer', () => {
+			expect(formatCelleVerdi('P3DT12H', feltdef, true)).toBe('3');
+		});
+
+		it('viser 0 for kort duration', () => {
+			expect(formatCelleVerdi('PT2H30M', feltdef, true)).toBe('0');
+		});
+	});
+});
+
+describe('harFormatering', () => {
+	it('returnerer false for undefined feltdef', () => {
+		expect(harFormatering(undefined)).toBe(false);
+	});
+
+	it('returnerer true for felt med verdiforklaringer', () => {
+		const feltdef = lagFeltdef({
+			verdiforklaringer: [{ verdi: 'A', visningsnavn: 'Alfa', gruppering: undefined }],
+		});
+		expect(harFormatering(feltdef)).toBe(true);
+	});
+
+	it('returnerer true for Boolean-felt', () => {
+		expect(harFormatering(lagFeltdef({ tolkes_som: TolkesSom.Boolean }))).toBe(true);
+	});
+
+	it('returnerer true for Timestamp-felt', () => {
+		expect(harFormatering(lagFeltdef({ tolkes_som: TolkesSom.Timestamp }))).toBe(true);
+	});
+
+	it('returnerer true for Duration-felt', () => {
+		expect(harFormatering(lagFeltdef({ tolkes_som: TolkesSom.Duration }))).toBe(true);
+	});
+
+	it('returnerer false for vanlig String-felt uten verdiforklaringer', () => {
+		expect(harFormatering(lagFeltdef({ tolkes_som: TolkesSom.String }))).toBe(false);
+	});
+
+	it('returnerer false for Integer-felt uten verdiforklaringer', () => {
+		expect(harFormatering(lagFeltdef({ tolkes_som: TolkesSom.Integer }))).toBe(false);
 	});
 });
