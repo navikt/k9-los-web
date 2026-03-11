@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
-import durationPlugin from 'dayjs/plugin/duration';
 import 'dayjs/locale/nb';
-import { WrenchIcon } from '@navikt/aksel-icons';
+import durationPlugin from 'dayjs/plugin/duration';
+import { ChevronDownIcon, WrenchIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Loader, Modal, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { Uttrekk, UttrekkResultatCelle, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
@@ -95,12 +95,19 @@ export function UttrekkResultatModal({
 	}, [data?.kolonner, felter]);
 
 	const [formaterKolonner, setFormaterKolonner] = useState<Set<string>>(new Set());
+	const [synligeKolonner, setSynligeKolonner] = useState<Set<string>>(new Set());
 
 	useEffect(() => {
 		if (data?.kolonner) {
 			setFormaterKolonner((prev) => {
 				if (prev.size === 0) {
 					return new Set(data.kolonner.filter((k) => formaterbare.has(k)));
+				}
+				return prev;
+			});
+			setSynligeKolonner((prev) => {
+				if (prev.size === 0) {
+					return new Set(data.kolonner);
 				}
 				return prev;
 			});
@@ -118,6 +125,20 @@ export function UttrekkResultatModal({
 			return next;
 		});
 	};
+
+	const toggleSynlighet = (kolonne: string) => {
+		setSynligeKolonner((prev) => {
+			const next = new Set(prev);
+			if (next.has(kolonne)) {
+				next.delete(kolonne);
+			} else {
+				next.add(kolonne);
+			}
+			return next;
+		});
+	};
+
+	const visKolonner = data?.kolonner.filter((k) => synligeKolonner.has(k)) ?? [];
 
 	return (
 		<Modal
@@ -139,12 +160,12 @@ export function UttrekkResultatModal({
 						<div className="mb-2">
 							<ActionMenu>
 								<ActionMenu.Trigger>
-									<Button variant="tertiary" size="small" icon={<WrenchIcon aria-hidden />}>
-										Formatering
+									<Button variant="secondary" size="small" icon={<ChevronDownIcon aria-hidden />}>
+										Visningsinnstillinger
 									</Button>
 								</ActionMenu.Trigger>
 								<ActionMenu.Content>
-									<ActionMenu.Group label="Formatér kolonner">
+									<ActionMenu.Group label="Formater kolonner">
 										{data.kolonner.map((kolonne) => {
 											const kanFormateres = formaterbare.has(kolonne);
 											return (
@@ -159,6 +180,18 @@ export function UttrekkResultatModal({
 											);
 										})}
 									</ActionMenu.Group>
+									<ActionMenu.Divider />
+									<ActionMenu.Group label="Vis kolonner">
+										{data.kolonner.map((kolonne) => (
+											<ActionMenu.CheckboxItem
+												key={kolonne}
+												checked={synligeKolonner.has(kolonne)}
+												onCheckedChange={() => toggleSynlighet(kolonne)}
+											>
+												{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+											</ActionMenu.CheckboxItem>
+										))}
+									</ActionMenu.Group>
 								</ActionMenu.Content>
 							</ActionMenu>
 						</div>
@@ -166,7 +199,7 @@ export function UttrekkResultatModal({
 							<Table size="small">
 								<Table.Header>
 									<Table.Row>
-										{data.kolonner.map((kolonne) => (
+										{visKolonner.map((kolonne) => (
 											<Table.HeaderCell key={kolonne}>
 												{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
 											</Table.HeaderCell>
@@ -176,15 +209,17 @@ export function UttrekkResultatModal({
 								<Table.Body>
 									{data.rader.map((rad) => (
 										<Table.Row key={rad.id.eksternId}>
-											{rad.felter.map((celle, celleIdx) => {
-												const feltdef = finnFeltdef(felter, celle);
-												return (
-													// eslint-disable-next-line react/no-array-index-key
-													<Table.DataCell key={celleIdx}>
-														{formatCelleVerdi(celle.verdi, feltdef, formaterKolonner.has(celle.kode))}
-													</Table.DataCell>
-												);
-											})}
+											{rad.felter
+												.filter((celle) => synligeKolonner.has(celle.kode))
+												.map((celle, celleIdx) => {
+													const feltdef = finnFeltdef(felter, celle);
+													return (
+														// eslint-disable-next-line react/no-array-index-key
+														<Table.DataCell key={celleIdx}>
+															{formatCelleVerdi(celle.verdi, feltdef, formaterKolonner.has(celle.kode))}
+														</Table.DataCell>
+													);
+												})}
 										</Table.Row>
 									))}
 								</Table.Body>
