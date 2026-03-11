@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"@navikt/oasis": "3.8.0",
-		"axios": "1.13.5",
+		"axios": "1.13.6",
 		"connect-timeout": "1.9.1",
 		"cors": "2.8.6",
 		"dotenv": "17.3.1",
