@@ -1,15 +1,11 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
-import 'dayjs/locale/nb';
-import durationPlugin from 'dayjs/plugin/duration';
+import 'utils/dateUtils';
 import { ChevronDownIcon, WrenchIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Loader, Modal, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { Uttrekk, UttrekkResultatCelle, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
-
-dayjs.extend(durationPlugin);
-dayjs.locale('nb');
 
 const PAGE_SIZE = 20;
 
