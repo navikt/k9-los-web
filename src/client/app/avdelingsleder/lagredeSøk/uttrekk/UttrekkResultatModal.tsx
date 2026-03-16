@@ -11,7 +11,7 @@ const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25, 30, 35, 40];
 
 function calculateDefaultPageSize(): number {
 	// Gjetninger på overhead og høyde, må tilpasses hvis det skjer noen endringer
-	const overhead = 240;
+	const overhead = 200;
 	const rowHeight = 33;
 	const available = window.innerHeight - overhead;
 	const rows = Math.floor(available / rowHeight);
@@ -258,19 +258,22 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 									</Table.Body>
 								</Table>
 							</div>
-							{totalPages > 1 && (
-								<div className="flex justify-center mt-4">
-									<Pagination page={page} onPageChange={setPage} count={totalPages} size="small" />
-								</div>
-							)}
 						</>
 					)}
 					{data && data.rader.length === 0 && <BodyShort>Ingen rader i uttrekket.</BodyShort>}
 				</Dialog.Body>
 				<Dialog.Footer>
-					<Dialog.CloseTrigger>
-						<Button>Lukk</Button>
-					</Dialog.CloseTrigger>
+					<div className="grid grid-cols-[1fr_auto_1fr] items-center w-full">
+						<div />
+						<div>
+							{totalPages > 1 && <Pagination page={page} onPageChange={setPage} count={totalPages} size="small" />}
+						</div>
+						<div className="justify-self-end">
+							<Dialog.CloseTrigger>
+								<Button>Lukk</Button>
+							</Dialog.CloseTrigger>
+						</div>
+					</div>
 				</Dialog.Footer>
 			</Dialog.Popup>
 		</Dialog>
