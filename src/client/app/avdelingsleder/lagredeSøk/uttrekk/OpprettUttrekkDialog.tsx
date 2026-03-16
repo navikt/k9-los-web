@@ -144,7 +144,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 					Gjør oppgaveuttrekk
 				</Button>
 			</Dialog.Trigger>
-			<Dialog.Popup width="large">
+			<Dialog.Popup width="large" position="right">
 				<Dialog.Header>
 					<Dialog.Title>
 						Gjør uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
