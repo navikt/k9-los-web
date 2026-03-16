@@ -5,7 +5,6 @@ import {
 	ClockDashedIcon,
 	DownloadIcon,
 	ExclamationmarkTriangleIcon,
-	EyeIcon,
 	InformationSquareIcon,
 	TableIcon,
 	TasklistIcon,
@@ -14,7 +13,7 @@ import {
 import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { LagretSøk, TypeKjøring, Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
-import { UttrekkResultatModal } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatModal';
+import { UttrekkResultatDialog } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatModal';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
@@ -148,16 +147,7 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 					)}
 					{kanLasteNed && (
 						<>
-							<ModalButton
-								renderButton={({ openModal }) => (
-									<Button icon={<EyeIcon />} size="small" variant="tertiary" onClick={openModal}>
-										Vis resultat
-									</Button>
-								)}
-								renderModal={({ open, closeModal }) => (
-									<UttrekkResultatModal uttrekk={uttrekk} open={open} closeModal={closeModal} />
-								)}
-							/>
+							<UttrekkResultatDialog uttrekk={uttrekk} />
 							<Button
 								as="a"
 								size="small"
