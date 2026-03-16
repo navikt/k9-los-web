@@ -50,8 +50,8 @@ const berikMedAntallOppgaverIndividuelt = (køArray: OppgavekøV3Enkel[]) => {
 
 	const isSuccess = queries.every((query) => query.isSuccess);
 	const results = queries.map((query, index) => ({
-		...(køArray[index] || {}),
 		...query.data,
+		...(køArray[index] || {}),
 		isLoading: query.isLoading,
 		isError: query.isError,
 	}));

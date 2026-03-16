@@ -12,7 +12,7 @@ import { OppgavekøV3 } from 'types/OppgavekøV3Type';
 
 enum fieldnames {
 	TITTEL = 'tittel',
-	SAKSBEHANDLERE = 'saksbehandlere',
+	SAKSBEHANDLER_IDS = 'saksbehandlerIds',
 	OPPGAVE_QUERY = 'oppgaveQuery',
 	BESKRIVELSE = 'beskrivelse',
 	FRITT_VALG_AV_OPPGAVE = 'frittValgAvOppgave',
@@ -34,7 +34,7 @@ const saksbehandlereMapper = (saksbehandlere: Saksbehandler[]) => {
 	const isProd = window.location.hostname.includes('intern.nav.no');
 	if (isProd) {
 		return saksbehandlere.map((saksbehandler) => ({
-			value: saksbehandler.epost,
+			value: String(saksbehandler.id),
 			label: saksbehandler.navn || saksbehandler.epost,
 			group: relevanteEnheterForAvdelingsleder.find((enhet) => saksbehandler.enhet?.includes(enhet))
 				? saksbehandler.enhet?.replace('NAV', 'Nav')
@@ -42,7 +42,7 @@ const saksbehandlereMapper = (saksbehandlere: Saksbehandler[]) => {
 		}));
 	}
 	return saksbehandlere.map((saksbehandler) => ({
-		value: saksbehandler.epost,
+		value: String(saksbehandler.id),
 		label: saksbehandler.navn || saksbehandler.epost,
 		group: saksbehandler.enhet?.replace('NAV', 'Nav') || 'Ukjent enhet',
 	}));
@@ -54,7 +54,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 	const [visSuksess, setVisSuksess] = useState(false);
 	const defaultValues = {
 		[fieldnames.TITTEL]: kø?.tittel || '',
-		[fieldnames.SAKSBEHANDLERE]: kø?.saksbehandlere || [],
+		[fieldnames.SAKSBEHANDLER_IDS]: kø?.saksbehandlerIds?.map(String) || [],
 		[fieldnames.OPPGAVE_QUERY]: kø?.oppgaveQuery,
 		[fieldnames.BESKRIVELSE]: kø?.beskrivelse || '',
 		[fieldnames.FRITT_VALG_AV_OPPGAVE]: kø?.frittValgAvOppgave || false,
@@ -80,14 +80,17 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 
 	const formaterteSaksbehandlere = saksbehandlereMapper(alleSaksbehandlere);
 	const onSubmit = (data) => {
-		lagreMutation.mutate(data);
+		lagreMutation.mutate({
+			...data,
+			saksbehandlerIds: (data.saksbehandlerIds || []).map(Number),
+		});
 	};
 	const lagreIModal = (oppgaveQuery: OppgaveQuery) => {
 		onSubmit({ ...kø, ...formMethods.getValues(), oppgaveQuery });
 		setVisFilterModal(false);
 	};
 	const grupper = [...new Set(formaterteSaksbehandlere.map((oppgavekode) => oppgavekode.group))].sort();
-	const saksbehandlere = formMethods.watch(fieldnames.SAKSBEHANDLERE);
+	const saksbehandlere = formMethods.watch(fieldnames.SAKSBEHANDLER_IDS);
 	const feltdefinisjoner = useContext(AppContext).felter;
 	const overstyrteFeltdefinisjoner = useMemo(
 		() => ({
@@ -135,8 +138,8 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 					{alleSaksbehandlere.length === 0 && (
 						<>
 							Ingen saksbehandlere
-							{formMethods.getFieldState('saksbehandlere')?.error?.message && (
-								<ErrorMessage>{formMethods.getFieldState('saksbehandlere')?.error?.message}</ErrorMessage>
+							{formMethods.getFieldState('saksbehandlerIds')?.error?.message && (
+								<ErrorMessage>{formMethods.getFieldState('saksbehandlerIds')?.error?.message}</ErrorMessage>
 							)}
 						</>
 					)}
@@ -149,10 +152,10 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 							groups={grupper}
 							heading="Velg saksbehandlere"
 							updateSelection={(valgteSaksbehandlere) => {
-								formMethods.setValue(fieldnames.SAKSBEHANDLERE, valgteSaksbehandlere, { shouldDirty: true });
-								formMethods.trigger('saksbehandlere');
+								formMethods.setValue(fieldnames.SAKSBEHANDLER_IDS, valgteSaksbehandlere, { shouldDirty: true });
+								formMethods.trigger('saksbehandlerIds');
 							}}
-							error={formMethods.getFieldState('saksbehandlere')?.error?.message}
+							error={formMethods.getFieldState('saksbehandlerIds')?.error?.message}
 							selectedValues={saksbehandlere}
 							size="medium"
 						/>

@@ -17,6 +17,7 @@ export interface OppgavekøV3 {
 	beskrivelse: string;
 	oppgaveQuery: OppgaveQuery;
 	frittValgAvOppgave: boolean;
+	saksbehandlerIds: number[];
 	saksbehandlere: string[];
 	endretTidspunkt: string | undefined;
 	skjermet: boolean;
