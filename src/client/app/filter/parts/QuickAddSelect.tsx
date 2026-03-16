@@ -8,6 +8,8 @@ import { addEnkelSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 const QUICK_ADD_KOLONNER: OppgavefilterKode[] = [
 	OppgavefilterKode.Saksnummer,
 	OppgavefilterKode.Ytelsestype,
+	OppgavefilterKode.BehandlingTypekode,
+	OppgavefilterKode.Behandlingsårsak,
 	OppgavefilterKode.AktivVenteårsak,
 	OppgavefilterKode.MottattDato,
 	OppgavefilterKode.Oppgavestatus,

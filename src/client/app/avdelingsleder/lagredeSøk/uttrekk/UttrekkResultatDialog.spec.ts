@@ -1,5 +1,5 @@
 import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
-import { formatCelleVerdi, harFormatering } from './UttrekkResultatModal';
+import { formatCelleVerdi, harFormatering } from './UttrekkResultatDialog';
 
 function lagFeltdef(overrides: Partial<Oppgavefelt> = {}): Oppgavefelt {
 	return {
