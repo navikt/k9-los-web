@@ -160,7 +160,7 @@ describe('queryBeskrivelseUtils', () => {
 				{
 					type: 'feltverdi',
 					område: 'K9',
-					kode: 'mottattDato' as any,
+					kode: 'mottattDato',
 					operator: 'GREATER_THAN_OR_EQUALS',
 					verdi: ['2024-01-15T00:00:00'],
 				},
@@ -177,7 +177,7 @@ describe('queryBeskrivelseUtils', () => {
 				{
 					type: 'feltverdi',
 					område: 'K9',
-					kode: 'mottattDato' as any,
+					kode: 'mottattDato',
 					operator: 'LESS_THAN_OR_EQUALS',
 					verdi: ['2026-02-13T00:00:00'],
 				},
@@ -193,7 +193,7 @@ describe('queryBeskrivelseUtils', () => {
 				{
 					type: 'feltverdi',
 					område: 'K9',
-					kode: 'mottattDato' as any,
+					kode: 'mottattDato',
 					operator: 'INTERVAL',
 					verdi: ['2026-02-01T00:00:00', '2026-02-13T00:00:00'],
 				},

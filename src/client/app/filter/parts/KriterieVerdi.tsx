@@ -65,8 +65,8 @@ const KriterieVerdi = ({
 	});
 
 	const handleDaysChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const newDays = parseFloat(e.target.value);
-		const newDuration = dayjs.duration(newDays, 'days').toISOString();
+		const newDays = parseInt(e.target.value, 10);
+		const newDuration = Number.isNaN(newDays) ? 'P0D' : `P${newDays}D`;
 
 		updateQuery([
 			updateFilter(oppgavefilter._nodeId, {
