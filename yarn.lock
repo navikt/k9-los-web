@@ -12347,7 +12347,7 @@ __metadata:
     react: "npm:19.2.4"
     react-collapse: "npm:5.1.1"
     react-dom: "npm:19.2.4"
-    react-hook-form: "npm:7.71.2"
+    react-hook-form: "npm:7.72.0"
     react-idle-timer: "npm:5.7.2"
     react-router: "npm:7.13.1"
     storybook: "npm:10.2.19"
@@ -14942,12 +14942,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-hook-form@npm:7.71.2":
-  version: 7.71.2
-  resolution: "react-hook-form@npm:7.71.2"
+"react-hook-form@npm:7.72.0":
+  version: 7.72.0
+  resolution: "react-hook-form@npm:7.72.0"
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18 || ^19
-  checksum: 10/4cc90868016f8463463ea5d1812f9405832e02fdb12f18ff0262c6437e7a9cdfe6443a7f58decf903cb8f20bfd68c0ed419283b0d6be886f3e84dc4d14b0efa6
+  checksum: 10/25268c510aa5943adfeb2cffe497f5b4b506974f60b4404b42f1b73eaa6db63a1efdb51f3e5f0fa6c0239cbd0f66a2dddf06ec45141d1894a266e77e2dbefb2d
   languageName: node
   linkType: hard
 
