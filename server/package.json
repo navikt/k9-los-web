@@ -9,7 +9,7 @@
 	},
 	"dependencies": {
 		"@navikt/oasis": "3.8.0",
-		"axios": "1.13.6",
+		"axios": "1.14.0",
 		"connect-timeout": "1.9.1",
 		"cors": "2.8.6",
 		"dotenv": "17.3.1",
@@ -17,7 +17,7 @@
 		"express-http-proxy": "2.1.2",
 		"express-rate-limit": "8.3.1",
 		"helmet": "8.1.0",
-		"jose": "6.2.1",
+		"jose": "6.2.2",
 		"morgan": "1.10.1",
 		"node-cache": "5.1.2",
 		"winston": "3.19.0"
