@@ -14,7 +14,10 @@ const EnkelSortering = () => {
 			throw new Error('Kan ikke håndtere flere sorteringer');
 		}
 
-		return mapSorteringParamsTilKode(oppgaveQuery.order[0]);
+		const orderFelt = oppgaveQuery.order[0];
+		if (orderFelt.type !== 'enkel' || !orderFelt.kode) return undefined;
+
+		return mapSorteringParamsTilKode(orderFelt);
 	}, [oppgaveQuery]);
 
 	const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

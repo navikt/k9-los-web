@@ -1,3 +1,4 @@
+import { A } from 'react-router/dist/development/instrumentation--6Pioq_G';
 import {
 	DefaultError,
 	UseQueryOptions,
@@ -472,15 +473,25 @@ export const useSlettUttrekk = (callback?: () => void) => {
 	});
 };
 
-export interface UttrekkResultatCelle {
-	område: string | null;
-	kode: string;
-	verdi: unknown;
-}
+export type Aggregeringsfunksjon = 'ANTALL' | 'SUM' | 'MIN' | 'MAKS' | 'GJENNOMSNITT';
+
+export type UttrekkKolonne =
+	| {
+			område?: string;
+			kode: string;
+			verdi?: unknown;
+			funksjon: null;
+	  }
+	| {
+			område?: string;
+			kode?: string;
+			verdi: string;
+			funksjon: Aggregeringsfunksjon;
+	  };
 
 export interface UttrekkResultat {
 	kolonner: string[];
-	rader: { id: { eksternId: string }; felter: UttrekkResultatCelle[] }[];
+	rader: { id: string; kolonner: UttrekkKolonne[] }[];
 	totaltAntall: number;
 	offset: number;
 	limit: number;

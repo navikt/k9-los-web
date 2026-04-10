@@ -3,8 +3,14 @@ import dayjs from 'dayjs';
 import { ChevronDownIcon, EyeIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Dialog, Loader, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { Uttrekk, UttrekkResultatCelle, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
+import {
+	Aggregeringsfunksjon,
+	Uttrekk,
+	UttrekkKolonne,
+	useHentUttrekkResultat,
+} from 'api/queries/avdelingslederQueries';
 import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
+import { felter } from 'filter/parts/testdata';
 import 'utils/dateUtils';
 
 const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25, 30, 35, 40];
@@ -73,9 +79,42 @@ export function formatCelleVerdi(verdi: unknown, feltdef: Oppgavefelt | undefine
 	return String(verdi);
 }
 
-function finnFeltdef(felter: Oppgavefelt[], celle: UttrekkResultatCelle): Oppgavefelt | undefined {
-	if (celle.område) {
-		return felter.find((f) => f.område === celle.område && f.kode === celle.kode);
+function visningsnavnForAggregeringsfunksjon(funksjon: Aggregeringsfunksjon): string {
+	switch (funksjon) {
+		case 'ANTALL':
+			return 'Antall';
+		case 'GJENNOMSNITT':
+			return 'Gjennomsnitt';
+		case 'MAKS':
+			return 'Maks';
+		case 'SUM':
+			return 'Sum';
+		case 'MIN':
+			return 'Min';
+	}
+}
+
+function finnFeltdefForAggregert(
+	kode: string | undefined,
+	funksjon: Aggregeringsfunksjon,
+): Pick<Oppgavefelt, 'område' | 'kode' | 'visningsnavn'> | undefined {
+	const feltDef = kode ? felter.find((f) => f.kode === kode) : undefined;
+	if (!feltDef) return { visningsnavn: visningsnavnForAggregeringsfunksjon(funksjon), kode: '', område: '' };
+	return {
+		...feltDef,
+		visningsnavn: `${visningsnavnForAggregeringsfunksjon(funksjon)} av ${feltDef.visningsnavn}`,
+	};
+}
+
+function finnFeltdef(felter: Oppgavefelt[], celle: UttrekkKolonne): Oppgavefelt | undefined {
+	if (celle.funksjon) {
+		return {
+			...finnFeltdefForAggregert(celle.kode, celle.funksjon),
+			tolkes_som: TolkesSom.String,
+			verdiforklaringer: null,
+			verdiforklaringerErUttømmende: false,
+			kokriterie: false,
+		};
 	}
 	return felter.find((f) => f.kode === celle.kode);
 }
@@ -241,8 +280,8 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 									</Table.Header>
 									<Table.Body>
 										{data.rader.map((rad) => (
-											<Table.Row key={rad.id.eksternId}>
-												{rad.felter
+											<Table.Row key={rad.id}>
+												{rad.kolonner
 													.filter((celle) => synligeKolonner.has(celle.kode))
 													.map((celle, celleIdx) => {
 														const feltdef = finnFeltdef(felter, celle);

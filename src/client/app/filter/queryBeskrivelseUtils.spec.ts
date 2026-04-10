@@ -7,6 +7,9 @@ import {
 	OppgaveQuery,
 	Oppgavefelt,
 	TolkesSom,
+	SelectFelt,
+	OrderFelt,
+	AggregertFunksjon,
 } from './filterTsTypes';
 import {
 	FilterBeskrivelse,
@@ -86,8 +89,8 @@ describe('queryBeskrivelseUtils', () => {
 
 	const opprettQuery = (
 		filtere: FeltverdiOppgavefilter[] = [],
-		select: EnkelSelectFelt[] = [],
-		order: EnkelOrderFelt[] = [],
+		select: SelectFelt[] = [],
+		order: OrderFelt[] = [],
 	): OppgaveQuery => ({
 		filtere,
 		select,
@@ -367,6 +370,107 @@ describe('queryBeskrivelseUtils', () => {
 
 			expect(result).toHaveLength(1);
 			expect(result[0].feltnavn).toBe('Mottatt dato');
+		});
+	});
+
+	describe('aggregerte select-beskrivelser', () => {
+		it('should describe ANTALL without field', () => {
+			const query = opprettQuery(
+				[],
+				[{ type: 'aggregert', funksjon: AggregertFunksjon.ANTALL, område: null, kode: null }],
+			);
+
+			const result = utledSelectBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Antall');
+		});
+
+		it('should describe SUM with field', () => {
+			const query = opprettQuery(
+				[],
+				[{ type: 'aggregert', funksjon: AggregertFunksjon.SUM, område: 'K9', kode: 'saksnummer' }],
+			);
+
+			const result = utledSelectBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Sum(Saksnummer)');
+		});
+
+		it('should describe GJENNOMSNITT with unknown field', () => {
+			const query = opprettQuery(
+				[],
+				[{ type: 'aggregert', funksjon: AggregertFunksjon.GJENNOMSNITT, område: 'K9', kode: 'ukjentFelt' }],
+			);
+
+			const result = utledSelectBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Gjennomsnitt(ukjentFelt)');
+		});
+
+		it('should mix enkel and aggregert select descriptions', () => {
+			const query = opprettQuery(
+				[],
+				[
+					{ type: 'enkel', område: 'K9', kode: 'saksnummer' },
+					{ type: 'aggregert', funksjon: AggregertFunksjon.ANTALL, område: null, kode: null },
+					{ type: 'aggregert', funksjon: AggregertFunksjon.MAKS, område: 'K9', kode: 'mottattDato' },
+				],
+			);
+
+			const result = utledSelectBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(3);
+			expect(result[0].feltnavn).toBe('Saksnummer');
+			expect(result[1].feltnavn).toBe('Antall');
+			expect(result[2].feltnavn).toBe('Maks(Mottatt dato)');
+		});
+	});
+
+	describe('aggregerte order-beskrivelser', () => {
+		it('should describe aggregert order with direction', () => {
+			const query = opprettQuery(
+				[],
+				[],
+				[{ type: 'aggregert', funksjon: AggregertFunksjon.ANTALL, område: null, kode: null, økende: false }],
+			);
+
+			const result = utledOrderBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0]).toEqual({ feltnavn: 'Antall', økende: false });
+		});
+
+		it('should describe aggregert order with field', () => {
+			const query = opprettQuery(
+				[],
+				[],
+				[{ type: 'aggregert', funksjon: AggregertFunksjon.SUM, område: 'K9', kode: 'saksnummer', økende: true }],
+			);
+
+			const result = utledOrderBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0]).toEqual({ feltnavn: 'Sum(Saksnummer)', økende: true });
+		});
+
+		it('should mix enkel and aggregert order descriptions', () => {
+			const query = opprettQuery(
+				[],
+				[],
+				[
+					{ type: 'enkel', område: 'K9', kode: 'mottattDato', økende: true },
+					{ type: 'aggregert', funksjon: AggregertFunksjon.ANTALL, område: null, kode: null, økende: false },
+				],
+			);
+
+			const result = utledOrderBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(2);
+			expect(result[0]).toEqual({ feltnavn: 'Mottatt dato', økende: true });
+			expect(result[1]).toEqual({ feltnavn: 'Antall', økende: false });
 		});
 	});
 });

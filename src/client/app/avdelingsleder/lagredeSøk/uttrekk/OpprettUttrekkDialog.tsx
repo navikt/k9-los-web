@@ -77,8 +77,8 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	const onSubmit = (data: { query: IdentifiedOppgaveQuery; limit?: number; offset?: number }) => {
 		const query = fjernNodeIdFraQuery(data.query);
-		const select = query.select.filter((s) => Boolean(s.kode));
-		const order = query.order.filter((o) => Boolean(o.kode));
+		const select = query.select.filter((s) => s.type === 'aggregert' || Boolean(s.kode));
+		const order = query.order.filter((o) => o.type === 'aggregert' || Boolean(o.kode));
 
 		if (select.length === 0) {
 			setError('query', { type: 'custom', message: 'Uttrekket må ha minst én kolonne' });

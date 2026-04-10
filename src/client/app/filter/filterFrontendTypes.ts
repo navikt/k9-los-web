@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { CombineOppgavefilter, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter } from './filterTsTypes';
+import { CombineOppgavefilter, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter, SelectFelt, OrderFelt } from './filterTsTypes';
 
 export type WithNodeId<T> = T & { _nodeId: string };
 
@@ -53,8 +53,8 @@ export function fjernNodeIdFraQuery(query: IdentifiedOppgaveQuery): OppgaveQuery
 	return {
 		...rest,
 		filtere: query.filtere.map(fjernNodeIdFraFilter),
-		select: query.select.map(fjernNodeId),
-		order: query.order.map(fjernNodeId),
+		select: query.select.map(fjernNodeId) as SelectFelt[],
+		order: query.order.map(fjernNodeId) as OrderFelt[],
 	};
 }
 
