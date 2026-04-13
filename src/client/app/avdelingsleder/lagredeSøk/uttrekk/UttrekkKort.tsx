@@ -12,27 +12,26 @@ import {
 } from '@navikt/aksel-icons';
 import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { LagretSøk, TypeKjøring, Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import { LagretSøk, Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
 import { UttrekkResultatDialog } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatDialog';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
+import { OppgaveQuery } from 'filter/filterTsTypes';
 import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
 import { assertNever } from 'utils/assert-never';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 
-function getTypeLabel(typeKjøring: TypeKjøring): string {
-	switch (typeKjøring) {
-		case TypeKjøring.OPPGAVER:
-			return 'Oppgaver';
-		case TypeKjøring.ANTALL:
-			return 'Antall';
-		default:
-			return assertNever(typeKjøring);
-	}
+function utledUttrekkType(query: OppgaveQuery): 'antall' | 'gruppert' | 'oppgaver' {
+	const harAggregert = query.select.some((s) => s.type === 'aggregert');
+	const harEnkel = query.select.some((s) => s.type === 'enkel');
+	if (harAggregert && harEnkel) return 'gruppert';
+	if (harAggregert) return 'antall';
+	return 'oppgaver';
 }
 
 function getStatusText(uttrekk: Uttrekk): React.ReactNode {
-	const typeLabel = getTypeLabel(uttrekk.typeKjøring);
+	const type = utledUttrekkType(uttrekk.query);
+	const typeLabel = type === 'antall' ? 'Antall' : type === 'gruppert' ? 'Gruppert' : 'Oppgaver';
 	switch (uttrekk.status) {
 		case UttrekkStatus.OPPRETTET:
 			return <>{typeLabel} &ndash; Venter på å kjøre</>;
@@ -41,7 +40,7 @@ function getStatusText(uttrekk: Uttrekk): React.ReactNode {
 		case UttrekkStatus.FULLFØRT:
 			return (
 				<>
-					{typeLabel} &ndash; <span className="font-medium">Antall oppgaver: </span>
+					{typeLabel} &ndash; <span className="font-medium">{type === 'antall' ? 'Resultat:' : 'Antall rader:'} </span>
 					{uttrekk.antall}
 				</>
 			);
@@ -73,12 +72,14 @@ function getStatusIcon(uttrekk: Uttrekk) {
 			return <ClockDashedIcon aria-hidden fontSize="1.5rem" />;
 		case UttrekkStatus.KJØRER:
 			return <Loader size="medium" />;
-		case UttrekkStatus.FULLFØRT:
-			return uttrekk.typeKjøring === TypeKjøring.OPPGAVER ? (
-				<TableIcon aria-hidden fontSize="1.5rem" />
-			) : (
+		case UttrekkStatus.FULLFØRT: {
+			const type = utledUttrekkType(uttrekk.query);
+			return type === 'antall' ? (
 				<CalculatorIcon aria-hidden fontSize="1.5rem" />
+			) : (
+				<TableIcon aria-hidden fontSize="1.5rem" />
 			);
+		}
 		case UttrekkStatus.FEILET:
 			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
 		default:
@@ -98,11 +99,7 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 
 	const kriterierErForskjellige = !_.isEqual(uttrekk.query.filtere, lagretSøk?.query.filtere);
 
-	const kanLasteNed =
-		uttrekk.status === UttrekkStatus.FULLFØRT &&
-		uttrekk.typeKjøring === 'OPPGAVER' &&
-		uttrekk.antall !== null &&
-		uttrekk.antall > 0;
+	const kanLasteNed = uttrekk.status === UttrekkStatus.FULLFØRT && uttrekk.antall !== null && uttrekk.antall > 0;
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 	const kanViseFeilmelding = uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding;
 

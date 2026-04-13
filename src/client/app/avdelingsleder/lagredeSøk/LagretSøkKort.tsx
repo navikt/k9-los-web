@@ -1,14 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { CalculatorIcon, ChevronDownIcon, ChevronRightIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
+import { ChevronDownIcon, ChevronRightIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import {
-	LagretSøk,
-	TypeKjøring,
-	Uttrekk,
-	useOpprettUttrekk,
-	useSlettLagretSøk,
-} from 'api/queries/avdelingslederQueries';
+import { LagretSøk, Uttrekk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreTittel } from 'avdelingsleder/lagredeSøk/EndreTittel';
 import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
 import { KriterierBoks } from 'avdelingsleder/lagredeSøk/KriterierBoks';
@@ -43,9 +37,6 @@ export function LagretSøkKort({
 	}, [initiallyExpanded]);
 
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
-	const { mutate: opprettAntallUttrekk, isPending: opprettAntallIsPending } = useOpprettUttrekk(() => {
-		setUttrekkEkspandert(true);
-	});
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
@@ -181,21 +172,6 @@ export function LagretSøkKort({
 								antall={antall}
 								onOpprettet={() => setUttrekkEkspandert(true)}
 							/>
-							<Button
-								icon={<CalculatorIcon />}
-								variant="secondary"
-								size="small"
-								onClick={() =>
-									opprettAntallUttrekk({
-										lagretSokId: lagretSøk.id,
-										typeKjoring: TypeKjøring.ANTALL,
-									})
-								}
-								loading={opprettAntallIsPending}
-								disabled={opprettAntallIsPending}
-							>
-								Gjør antalluttrekk
-							</Button>
 						</div>
 						{harUttrekk && (
 							<div className="mt-2">

@@ -389,11 +389,6 @@ export enum UttrekkStatus {
 	FEILET = 'FEILET',
 }
 
-export enum TypeKjøring {
-	ANTALL = 'ANTALL',
-	OPPGAVER = 'OPPGAVER',
-}
-
 export interface Uttrekk {
 	id: number;
 	tittel: string;
@@ -401,7 +396,6 @@ export interface Uttrekk {
 	status: UttrekkStatus;
 	query: OppgaveQuery;
 	lagretSøkId: number;
-	typeKjøring: TypeKjøring;
 	antall: number | null;
 	feilmelding: string | null;
 	startetTidspunkt: string | null;
@@ -410,7 +404,6 @@ export interface Uttrekk {
 
 interface OpprettUttrekkRequest {
 	lagretSokId: number;
-	typeKjoring: TypeKjøring;
 	limit?: number | null;
 	offset?: number | null;
 }
