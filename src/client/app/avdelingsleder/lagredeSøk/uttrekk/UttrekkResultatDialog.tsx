@@ -4,12 +4,10 @@ import { ChevronDownIcon, EyeIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Dialog, Loader, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import {
-	Aggregeringsfunksjon,
 	Uttrekk,
-	UttrekkKolonne,
 	useHentUttrekkResultat,
 } from 'api/queries/avdelingslederQueries';
-import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
+import { AggregertFunksjon, AGGREGERT_FUNKSJON_VISNINGSNAVN, Oppgavefelt, SelectFelt, TolkesSom } from 'filter/filterTsTypes';
 import { felter } from 'filter/parts/testdata';
 import 'utils/dateUtils';
 
@@ -79,44 +77,36 @@ export function formatCelleVerdi(verdi: unknown, feltdef: Oppgavefelt | undefine
 	return String(verdi);
 }
 
-function visningsnavnForAggregeringsfunksjon(funksjon: Aggregeringsfunksjon): string {
-	switch (funksjon) {
-		case 'ANTALL':
-			return 'Antall';
-		case 'GJENNOMSNITT':
-			return 'Gjennomsnitt';
-		case 'MAKS':
-			return 'Maks';
-		case 'SUM':
-			return 'Sum';
-		case 'MIN':
-			return 'Min';
-	}
-}
-
 function finnFeltdefForAggregert(
 	kode: string | undefined,
-	funksjon: Aggregeringsfunksjon,
+	funksjon: AggregertFunksjon,
 ): Pick<Oppgavefelt, 'område' | 'kode' | 'visningsnavn'> | undefined {
+	const funksjonsNavn = AGGREGERT_FUNKSJON_VISNINGSNAVN[funksjon];
 	const feltDef = kode ? felter.find((f) => f.kode === kode) : undefined;
-	if (!feltDef) return { visningsnavn: visningsnavnForAggregeringsfunksjon(funksjon), kode: '', område: '' };
+	if (!feltDef) return { visningsnavn: funksjonsNavn, kode: '', område: '' };
 	return {
 		...feltDef,
-		visningsnavn: `${visningsnavnForAggregeringsfunksjon(funksjon)} av ${feltDef.visningsnavn}`,
+		visningsnavn: `${funksjonsNavn}: ${feltDef.visningsnavn}`,
 	};
 }
 
-function finnFeltdef(felter: Oppgavefelt[], celle: UttrekkKolonne): Oppgavefelt | undefined {
-	if (celle.funksjon) {
+function finnFeltdef(felter: Oppgavefelt[], kolonne: SelectFelt): Oppgavefelt | undefined {
+	if (kolonne.type === 'aggregert') {
 		return {
-			...finnFeltdefForAggregert(celle.kode, celle.funksjon),
+			...finnFeltdefForAggregert(kolonne.kode ?? undefined, kolonne.funksjon),
 			tolkes_som: TolkesSom.String,
 			verdiforklaringer: null,
 			verdiforklaringerErUttømmende: false,
 			kokriterie: false,
 		};
 	}
-	return felter.find((f) => f.kode === celle.kode);
+	return felter.find((f) => f.kode === kolonne.kode);
+}
+
+function kolonneVisningsnavn(kolonne: SelectFelt, felter: Oppgavefelt[]): string {
+	const feltdef = finnFeltdef(felter, kolonne);
+	if (feltdef) return feltdef.visningsnavn;
+	return kolonne.type === 'enkel' ? kolonne.kode : AGGREGERT_FUNKSJON_VISNINGSNAVN[kolonne.funksjon];
 }
 
 export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
@@ -132,31 +122,37 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 	const { felter } = useContext(AppContext);
 
 	const formaterbare = useMemo(() => {
-		if (!data?.kolonner) return new Set<string>();
-		return new Set(data.kolonner.filter((k) => harFormatering(felter.find((f) => f.kode === k))));
+		if (!data?.kolonner) return new Set<number>();
+		const result = new Set<number>();
+		data.kolonner.forEach((kolonne, idx) => {
+			if (harFormatering(finnFeltdef(felter, kolonne))) {
+				result.add(idx);
+			}
+		});
+		return result;
 	}, [data?.kolonner, felter]);
 
-	const [formaterKolonner, setFormaterKolonner] = useState<Set<string>>(new Set());
-	const [synligeKolonner, setSynligeKolonner] = useState<Set<string>>(new Set());
+	const [formaterKolonner, setFormaterKolonner] = useState<Set<number>>(new Set());
+	const [synligeKolonner, setSynligeKolonner] = useState<Set<number>>(new Set());
 
 	useEffect(() => {
 		if (data?.kolonner) {
 			setFormaterKolonner((prev) => {
 				if (prev.size === 0) {
-					return new Set(data.kolonner.filter((k) => formaterbare.has(k)));
+					return new Set(formaterbare);
 				}
 				return prev;
 			});
 			setSynligeKolonner((prev) => {
 				if (prev.size === 0) {
-					return new Set(data.kolonner);
+					return new Set(data.kolonner.map((_, i) => i));
 				}
 				return prev;
 			});
 		}
 	}, [data?.kolonner, formaterbare]);
 
-	const toggleFormatering = (kolonne: string) => {
+	const toggleFormatering = (kolonne: number) => {
 		setFormaterKolonner((prev) => {
 			const next = new Set(prev);
 			if (next.has(kolonne)) {
@@ -168,7 +164,7 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 		});
 	};
 
-	const toggleSynlighet = (kolonne: string) => {
+	const toggleSynlighet = (kolonne: number) => {
 		setSynligeKolonner((prev) => {
 			const next = new Set(prev);
 			if (next.has(kolonne)) {
@@ -193,7 +189,7 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 		setPage(1);
 	};
 
-	const visKolonner = data?.kolonner.filter((k) => synligeKolonner.has(k)) ?? [];
+	const visKolonneIndekser = data ? data.kolonner.map((_, i) => i).filter((i) => synligeKolonner.has(i)) : [];
 
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
@@ -227,29 +223,29 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 									</ActionMenu.RadioGroup>
 									<ActionMenu.Divider />
 									<ActionMenu.Group label="Formater kolonner">
-										{data.kolonner.map((kolonne) => {
-											const kanFormateres = formaterbare.has(kolonne);
+										{data.kolonner.map((kolonne, idx) => {
+											const kanFormateres = formaterbare.has(idx);
 											return (
 												<ActionMenu.CheckboxItem
-													key={kolonne}
-													checked={kanFormateres && formaterKolonner.has(kolonne)}
-													onCheckedChange={() => toggleFormatering(kolonne)}
+													key={idx}
+													checked={kanFormateres && formaterKolonner.has(idx)}
+													onCheckedChange={() => toggleFormatering(idx)}
 													disabled={!kanFormateres}
 												>
-													{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+													{kolonneVisningsnavn(kolonne, felter)}
 												</ActionMenu.CheckboxItem>
 											);
 										})}
 									</ActionMenu.Group>
 									<ActionMenu.Divider />
 									<ActionMenu.Group label="Vis kolonner">
-										{data.kolonner.map((kolonne) => (
+										{data.kolonner.map((kolonne, idx) => (
 											<ActionMenu.CheckboxItem
-												key={kolonne}
-												checked={synligeKolonner.has(kolonne)}
-												onCheckedChange={() => toggleSynlighet(kolonne)}
+												key={idx}
+												checked={synligeKolonner.has(idx)}
+												onCheckedChange={() => toggleSynlighet(idx)}
 											>
-												{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+												{kolonneVisningsnavn(kolonne, felter)}
 											</ActionMenu.CheckboxItem>
 										))}
 									</ActionMenu.Group>
@@ -271,9 +267,9 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 								<Table size="small">
 									<Table.Header>
 										<Table.Row>
-											{visKolonner.map((kolonne) => (
-												<Table.HeaderCell key={kolonne}>
-													{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+											{visKolonneIndekser.map((idx) => (
+												<Table.HeaderCell key={idx}>
+													{kolonneVisningsnavn(data.kolonner[idx], felter)}
 												</Table.HeaderCell>
 											))}
 										</Table.Row>
@@ -281,17 +277,14 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 									<Table.Body>
 										{data.rader.map((rad) => (
 											<Table.Row key={rad.id}>
-												{rad.kolonner
-													.filter((celle) => synligeKolonner.has(celle.kode))
-													.map((celle, celleIdx) => {
-														const feltdef = finnFeltdef(felter, celle);
-														return (
-															// eslint-disable-next-line react/no-array-index-key
-															<Table.DataCell key={celleIdx}>
-																{formatCelleVerdi(celle.verdi, feltdef, formaterKolonner.has(celle.kode))}
-															</Table.DataCell>
-														);
-													})}
+												{visKolonneIndekser.map((idx) => {
+													const feltdef = finnFeltdef(felter, data.kolonner[idx]);
+													return (
+														<Table.DataCell key={idx}>
+															{formatCelleVerdi(rad.kolonner[idx], feltdef, formaterKolonner.has(idx))}
+														</Table.DataCell>
+													);
+												})}
 											</Table.Row>
 										))}
 									</Table.Body>
