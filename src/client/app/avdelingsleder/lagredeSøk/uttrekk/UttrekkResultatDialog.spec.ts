@@ -8,6 +8,7 @@ function lagFeltdef(overrides: Partial<Oppgavefelt> = {}): Oppgavefelt {
 		visningsnavn: 'Testfelt',
 		kokriterie: false,
 		tolkes_som: TolkesSom.String,
+		listetype: false,
 		verdiforklaringerErUttømmende: false,
 		verdiforklaringer: null,
 		...overrides,
@@ -120,6 +121,47 @@ describe('formatCelleVerdi', () => {
 
 		it('faller tilbake til råverdi ved ugyldig duration', () => {
 			expect(formatCelleVerdi('ugyldig', feltdef, true)).toBe('ugyldig');
+		});
+	});
+
+	describe('listetype (array-verdier)', () => {
+		it('viser - for tomt array', () => {
+			expect(formatCelleVerdi([], undefined, true)).toBe('-');
+		});
+
+		it('viser enkeltverdi uten komma', () => {
+			expect(formatCelleVerdi(['ETTER_KLAGE'], undefined, true)).toBe('ETTER_KLAGE');
+		});
+
+		it('viser kommaseparerte verdier', () => {
+			expect(formatCelleVerdi(['ETTER_KLAGE', 'NY_SØKNAD'], undefined, true)).toBe('ETTER_KLAGE, NY_SØKNAD');
+		});
+
+		it('bruker verdiforklaringer for hvert element', () => {
+			const feltdef = lagFeltdef({
+				listetype: true,
+				verdiforklaringer: [
+					{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined },
+					{ verdi: 'OMP', visningsnavn: 'Omsorgspenger', gruppering: undefined },
+				],
+			});
+			expect(formatCelleVerdi(['PSB', 'OMP'], feltdef, true)).toBe('Pleiepenger sykt barn, Omsorgspenger');
+		});
+
+		it('blander forklarte og uforklarte verdier', () => {
+			const feltdef = lagFeltdef({
+				listetype: true,
+				verdiforklaringer: [{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined }],
+			});
+			expect(formatCelleVerdi(['PSB', 'UKJENT'], feltdef, true)).toBe('Pleiepenger sykt barn, UKJENT');
+		});
+
+		it('viser råverdier når formatering er avslått', () => {
+			const feltdef = lagFeltdef({
+				listetype: true,
+				verdiforklaringer: [{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined }],
+			});
+			expect(formatCelleVerdi(['PSB', 'OMP'], feltdef, false)).toBe('PSB, OMP');
 		});
 	});
 });
