@@ -475,7 +475,7 @@ export const useSlettUttrekk = (callback?: () => void) => {
 export interface UttrekkResultatCelle {
 	område: string | null;
 	kode: string;
-	verdi: unknown;
+	verdi: string | number | boolean | string[] | null;
 }
 
 export interface UttrekkResultat {

@@ -28,9 +28,20 @@ export function harFormatering(feltdef: Oppgavefelt | undefined): boolean {
 	return [TolkesSom.Boolean, TolkesSom.Timestamp, TolkesSom.Duration].includes(feltdef.tolkes_som);
 }
 
-export function formatCelleVerdi(verdi: unknown, feltdef: Oppgavefelt | undefined, formater: boolean): string {
+export function formatCelleVerdi(
+	verdi: string | number | boolean | string[] | null | undefined,
+	feltdef: Oppgavefelt | undefined,
+	formater: boolean,
+): string {
 	if (verdi === null || verdi === undefined || verdi === '') {
 		return '-';
+	}
+
+	if (Array.isArray(verdi)) {
+		if (verdi.length === 0) {
+			return '-';
+		}
+		return verdi.map((v) => formatCelleVerdi(v, feltdef, formater)).join(', ');
 	}
 
 	if (!formater || !feltdef) {

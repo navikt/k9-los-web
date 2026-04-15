@@ -67,6 +67,7 @@ export type Oppgavefelt = {
 	beskrivelse?: string;
 	kokriterie: boolean;
 	tolkes_som: TolkesSom;
+	listetype: boolean;
 	verdiforklaringerErUttømmende: boolean;
 	verdiforklaringer: Verdiforklaring[] | null;
 };
