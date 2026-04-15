@@ -3840,26 +3840,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/aksel@npm:8.7.0":
-  version: 8.7.0
-  resolution: "@navikt/aksel@npm:8.7.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Faksel%2F8.7.0%2Ff2022dfe8072d86f909f874afc400008521ef165"
+"@navikt/aksel@npm:8.9.1":
+  version: 8.9.1
+  resolution: "@navikt/aksel@npm:8.9.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Faksel%2F8.9.1%2F9ba223f4dfc2006143908d61fabce533713fcb47"
   dependencies:
-    "@navikt/ds-css": "npm:^8.7.0"
-    "@navikt/ds-tokens": "npm:^8.7.0"
+    "@navikt/ds-css": "npm:^8.9.1"
+    "@navikt/ds-tokens": "npm:^8.9.1"
     chalk: "npm:5.6.2"
     cli-progress: "npm:3.12.0"
     clipboardy: "npm:5.0.1"
     commander: "npm:14.0.3"
     enquirer: "npm:2.4.1"
     fast-glob: "npm:3.3.3"
-    figlet: "npm:1.8.0"
+    figlet: "npm:1.10.0"
     is-git-clean: "npm:1.1.0"
     jscodeshift: "npm:17.3.0"
     jscodeshift-add-imports: "npm:1.0.11"
     lodash: "npm:4.17.23"
   bin:
     aksel: dist/index.js
-  checksum: 10/593610e1b350d330db1599f140adc301a4bfe2223c9d6b955209ffa7be90d15e9d0808ee9a33222c1178961dc6fffe0d5a254f04f2f8b1e3e994263b326823f0
+  checksum: 10/64a2fe210f959ac1abba95c46c64fd9bf26e4f7d0cb05ed9975c5f606fa5a402395abd8c2e8deb9c14a7d8be011123cb115bcdc3ba8344025772f1392b8d950d
   languageName: node
   linkType: hard
 
@@ -3870,10 +3870,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@navikt/ds-css@npm:^8.7.0":
-  version: 8.8.0
-  resolution: "@navikt/ds-css@npm:8.8.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-css%2F8.8.0%2Fa54b515f23598d8b8e5850625b64b3a800221bca"
-  checksum: 10/10192fee1d76a640cd07af5b9c9df42eedb223ebdcf8deb0be82d902b0d0fffc8dbbfed70db1dd6b6e44c7414a72da36292f09497266a6d94192aaf453cc8177
+"@navikt/ds-css@npm:^8.9.1":
+  version: 8.9.1
+  resolution: "@navikt/ds-css@npm:8.9.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-css%2F8.9.1%2Ff827d1a6ff83ec30606991f5208ea37eb68f2362"
+  checksum: 10/9234b5dc78bdc1efa552ac7c19ea265b2b048a759b409cff46778b7b863e4fc71e9c87a95aa09463b5633344ce5ee52adb3e88628a813effd09d9890f06b9c22
   languageName: node
   linkType: hard
 
@@ -3913,6 +3913,13 @@ __metadata:
   version: 8.8.0
   resolution: "@navikt/ds-tokens@npm:8.8.0::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F8.8.0%2F1b64643ec409921069ede0fc5eab1850afa23393"
   checksum: 10/f3c32b5e12f1f1a09bc5c856a440f1e0940f3089bd535fd10fc035a4da6857309b1eaeac96b71eea385bddc009fe1b7385877628961f195172534d9e8b239f4b
+  languageName: node
+  linkType: hard
+
+"@navikt/ds-tokens@npm:^8.9.1":
+  version: 8.9.1
+  resolution: "@navikt/ds-tokens@npm:8.9.1::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40navikt%2Fds-tokens%2F8.9.1%2F961db4bb606a0858e6cd01292adff493f474b5da"
+  checksum: 10/3d70adcae75cb8abb573a19d5ac30d4d0b751fe55371772213039596f6a445572e5bf15e2ec0385a72798c17f64eadbdb95ed380a365cbb1b3a26a23e014e020
   languageName: node
   linkType: hard
 
@@ -7448,7 +7455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:14.0.3, commander@npm:^14.0.3":
+"commander@npm:14.0.3, commander@npm:^14.0.0, commander@npm:^14.0.3":
   version: 14.0.3
   resolution: "commander@npm:14.0.3"
   checksum: 10/dfa9ebe2a433d277de5cb0252d23b10a543d245d892db858d23b516336a835c50fd4f52bee4cd13c705cc8acb6f03dc632c73dd806f7d06d3353eb09953dd17a
@@ -9727,12 +9734,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"figlet@npm:1.8.0":
-  version: 1.8.0
-  resolution: "figlet@npm:1.8.0"
+"figlet@npm:1.10.0":
+  version: 1.10.0
+  resolution: "figlet@npm:1.10.0"
+  dependencies:
+    commander: "npm:^14.0.0"
   bin:
     figlet: bin/index.js
-  checksum: 10/e52933f9cba3c03c6f399763363502b6e6396d1ca6ca9d79cd8bd467aa85b64ee12c7b2cc5ae5901af5a6fe085414accac14890949130e908da8dd2a8bb8c8ac
+  checksum: 10/c0ab3499b424427d71ea90e6b2fd8d5c96e00a11ba86173884e4b14c9b908e0d78a1bb9ca58520445c586aa1b85596b9938aac4ae5b3d97311b70b2a7b547f9d
   languageName: node
   linkType: hard
 
@@ -12257,7 +12266,7 @@ __metadata:
     "@eslint/js": "npm:9.39.2"
     "@grafana/faro-web-sdk": "npm:1.19.0"
     "@grafana/faro-web-tracing": "npm:1.19.0"
-    "@navikt/aksel": "npm:8.7.0"
+    "@navikt/aksel": "npm:8.9.1"
     "@navikt/aksel-icons": "npm:8.7.0"
     "@navikt/ds-css": "npm:8.7.0"
     "@navikt/ds-react": "npm:8.7.0"
