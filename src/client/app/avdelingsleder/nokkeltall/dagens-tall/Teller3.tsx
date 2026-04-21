@@ -6,6 +6,7 @@ import { OppgaveQuery } from 'filter/filterTsTypes';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import * as styles from './teller3.css';
 
+// Ubrukt nå med grupperte queries. Hvis den skal beholdes må man bruke original query og legge på flere kriterier, som da blir forskjellig fra hva som er kjørt.
 function KildeViewer({
 	tittel,
 	linje,
@@ -81,24 +82,26 @@ const Teller: FunctionComponent<OwnProps> = ({ forklaring, tall }) => {
 				<div className={styles.tallramme}>
 					<p className={styles.beskrivelse}>{inngang.hovedtall.visningsnavn}</p>
 					<div className={styles.felt}>
-						<KildeViewer tittel={forklaring} linje={inngang.hovedtall}>
-							<p className={styles.tall}>{inngang.hovedtall.verdi}</p>
-						</KildeViewer>
+						{/* <KildeViewer tittel={forklaring} linje={inngang.hovedtall}> */}
+						<p className={styles.tall}>{inngang.hovedtall.verdi}</p>
+						{/* </KildeViewer> */}
 					</div>
 				</div>
 				<div className={styles.bredTallramme}>
 					<p className={styles.beskrivelse}>{ferdigstilt.hovedtall.visningsnavn}</p>
 					<div className={styles.fargetFelt}>
-						<KildeViewer tittel={forklaring} linje={ferdigstilt.hovedtall}>
-							<p className={styles.tall}>{ferdigstilt.hovedtall.verdi}</p>
-						</KildeViewer>
+						{/* <KildeViewer tittel={forklaring} linje={ferdigstilt.hovedtall}> */}
+						<p className={styles.tall}>{ferdigstilt.hovedtall.verdi}</p>
+						{/* </KildeViewer> */}
 					</div>
 					<div className={styles.nedbrytning}>
-						{ferdigstilt.linjer.map((linje) => (
-							<KildeViewer key={linje.visningsnavn} tittel={forklaring} linje={linje}>
-								<span className={styles.nedbrytningTekst}>{`${linje.verdi} ${linje.visningsnavn}`}</span>
-							</KildeViewer>
-						))}
+						{ferdigstilt.linjer.map((linje) => {
+							{
+								/* <KildeViewer key={linje.visningsnavn} tittel={forklaring} linje={linje}>
+							</KildeViewer> */
+							}
+							return <span className={styles.nedbrytningTekst}>{`${linje.verdi} ${linje.visningsnavn}`}</span>;
+						})}
 					</div>
 				</div>
 			</div>
