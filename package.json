@@ -114,7 +114,7 @@
 		"jest-environment-jsdom": "30.3.0",
 		"jest-fixed-jsdom": "0.0.11",
 		"jest-transform-stub": "2.0.0",
-		"jsdom": "27.4.0",
+		"jsdom": "29.0.0",
 		"less": "4.6.4",
 		"less-loader": "12.3.2",
 		"lint-staged": "16.4.0",
