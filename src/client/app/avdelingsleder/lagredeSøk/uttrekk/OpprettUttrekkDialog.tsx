@@ -16,6 +16,7 @@ import {
 	LayersIcon,
 	MenuHamburgerIcon,
 	PlusCircleIcon,
+	PlusIcon,
 	TableIcon,
 	TrashIcon,
 	XMarkIcon,
@@ -38,7 +39,14 @@ import { LagretSøk, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/a
 import { FilterContext, FilterContextType } from 'filter/FilterContext';
 import OppgaveQueryModel from 'filter/OppgaveQueryModel';
 import { IdentifiedOppgaveQuery, WithNodeId, fjernNodeIdFraQuery, tilIdentified } from 'filter/filterFrontendTypes';
-import { AggregertFunksjon, EnkelSelectFelt, OppgaveQuery, Oppgavefelt, SelectFelt } from 'filter/filterTsTypes';
+import {
+	AggregertFunksjon,
+	EnkelSelectFelt,
+	OppgaveQuery,
+	Oppgavefelt,
+	OppgavefilterKode,
+	SelectFelt,
+} from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
 import {
 	QueryFunction,
@@ -140,11 +148,54 @@ const SortableGroupByField: React.FC<{
 
 // --- Gruppert konfigurasjon ---
 
+const QUICK_ADD_GROUP_BY_KOLONNER: OppgavefilterKode[] = [
+	OppgavefilterKode.Ytelsestype,
+	OppgavefilterKode.BehandlingTypekode,
+	OppgavefilterKode.Behandlingsårsak,
+	OppgavefilterKode.AktivVenteårsak,
+	OppgavefilterKode.Oppgavestatus,
+];
+
+const QuickAddGroupBy: React.FC<{
+	groupByFelter: WithNodeId<EnkelSelectFelt>[];
+	oppgaveFelter: Oppgavefelt[];
+	onAdd: (kode: string) => void;
+}> = ({ groupByFelter, oppgaveFelter, onAdd }) => {
+	const valgteKoder = new Set(groupByFelter.filter((f) => f.kode).map((f) => f.kode));
+
+	const tilgjengelige = QUICK_ADD_GROUP_BY_KOLONNER.map((kode) => {
+		if (valgteKoder.has(kode)) return null;
+		const oppgavefelt = oppgaveFelter.find((f) => f.kode === kode);
+		if (!oppgavefelt) return null;
+		return { kode: kode as string, visningsnavn: oppgavefelt.visningsnavn };
+	}).filter((x): x is { kode: string; visningsnavn: string } => x !== null);
+
+	if (tilgjengelige.length === 0) return null;
+
+	return (
+		<div className="flex flex-wrap gap-2">
+			{tilgjengelige.map(({ kode, visningsnavn }) => (
+				<button
+					key={kode}
+					type="button"
+					className="cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 font-semibold text-ax-neutral-700 hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200"
+					style={{ fontSize: '0.9rem' }}
+					onClick={() => onAdd(kode)}
+				>
+					<PlusIcon aria-hidden className="shrink-0" height="0.875rem" width="0.875rem" />
+					{visningsnavn}
+				</button>
+			))}
+		</div>
+	);
+};
+
 function GruppertKonfig({
 	groupByFelter,
 	sortering,
 	oppgaveFelter,
 	onAddGroupBy,
+	onQuickAddGroupBy,
 	onUpdateGroupBy,
 	onRemoveGroupBy,
 	onMoveGroupBy,
@@ -155,6 +206,7 @@ function GruppertKonfig({
 	sortering: { felt: string; økende: boolean } | null;
 	oppgaveFelter: Oppgavefelt[];
 	onAddGroupBy: () => void;
+	onQuickAddGroupBy: (kode: string) => void;
 	onUpdateGroupBy: (nodeId: string, kode: string) => void;
 	onRemoveGroupBy: (nodeId: string) => void;
 	onMoveGroupBy: (oldIndex: number, newIndex: number) => void;
@@ -206,8 +258,9 @@ function GruppertKonfig({
 						</SortableContext>
 					</DndContext>
 					{groupByFelter.length === 0 && (
-						<div className="text-ax-neutral-500 italic text-md">Ingen felter lagt til</div>
+						<div className="text-ax-neutral-500 italic text-md">Ingen kolonner lagt til</div>
 					)}
+					<QuickAddGroupBy groupByFelter={groupByFelter} oppgaveFelter={oppgaveFelter} onAdd={onQuickAddGroupBy} />
 					<Button
 						type="button"
 						className="self-start -ml-1 px-1"
@@ -216,7 +269,7 @@ function GruppertKonfig({
 						variant="tertiary"
 						onClick={onAddGroupBy}
 					>
-						Legg til felt
+						Legg til kolonne
 					</Button>
 					{valideringsfeil && (
 						<Alert variant="error" size="small">
@@ -397,6 +450,16 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 	// --- Group-by handlers ---
 	const handleAddGroupBy = () => {
 		setGroupByFelter((prev) => [...prev, tilIdentified<EnkelSelectFelt>({ type: 'enkel', område: null, kode: null })]);
+		setGruppertValideringsfeil(null);
+	};
+
+	const handleQuickAddGroupBy = (kode: string) => {
+		const oppgavefelt = felter.find((f) => f.kode === kode);
+		if (!oppgavefelt) return;
+		setGroupByFelter((prev) => [
+			...prev,
+			tilIdentified<EnkelSelectFelt>({ type: 'enkel', område: oppgavefelt.område, kode: oppgavefelt.kode }),
+		]);
 		setGruppertValideringsfeil(null);
 	};
 
@@ -608,15 +671,12 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 							onChange={(val: UttrekkType) => handleTypeChange(val)}
 							className="mb-4"
 						>
-							<Radio
-								value="antall"
-								description="Teller opp alle oppgavene i søket og gir ett enkelt tall som resultat. Eksempel: «197 oppgaver»"
-							>
+							<Radio value="antall" description="Teller opp og gir ett enkelt tall som resultat.">
 								Antall
 							</Radio>
 							<Radio
 								value="gruppert"
-								description="Teller antall oppgaver per gruppe. Velg ett eller flere felter å gruppere etter. Eksempel: «Antall per ytelsestype»"
+								description="Teller antall per gruppe av ett eller flere felter. Eksempel: «Antall per ytelsestype»"
 							>
 								Gruppert
 							</Radio>
@@ -628,15 +688,6 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 							</Radio>
 						</RadioGroup>
 
-						{/* Antall-modus */}
-						{uttrekkType === 'antall' && (
-							<div className="rounded-md bg-ax-neutral-200 p-3">
-								<BodyShort>
-									Søket matcher <strong>{antall?.toLocaleString('nb-NO')}</strong> oppgaver.
-								</BodyShort>
-							</div>
-						)}
-
 						{/* Gruppert-modus */}
 						{uttrekkType === 'gruppert' && (
 							<GruppertKonfig
@@ -644,6 +695,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 								sortering={gruppertSortering}
 								oppgaveFelter={felter}
 								onAddGroupBy={handleAddGroupBy}
+								onQuickAddGroupBy={handleQuickAddGroupBy}
 								onUpdateGroupBy={handleUpdateGroupBy}
 								onRemoveGroupBy={handleRemoveGroupBy}
 								onMoveGroupBy={handleMoveGroupBy}

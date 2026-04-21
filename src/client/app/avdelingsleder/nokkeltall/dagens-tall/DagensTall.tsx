@@ -7,9 +7,9 @@ import Teller3 from './Teller3';
 
 const serieLabels: Record<string, string> = {
 	idag: 'I dag',
-	siste7Dager: 'Siste 7 dager',
-	siste14Dager: 'Siste 14 dager',
-	siste28Dager: 'Siste 28 dager',
+	sisteUke: 'Siste uke',
+	siste2Uker: 'Siste 2 uker',
+	siste4Uker: 'Siste 4 uker',
 };
 
 export default function DagensTall() {
@@ -25,13 +25,13 @@ export default function DagensTall() {
 	const aktivSerie = tilgjengeligeSerier.includes(valgtSerie) ? valgtSerie : tilgjengeligeSerier[0];
 
 	return (
-        <Box padding="space-16" borderWidth="1" borderColor="neutral">
-            <HStack align="center" justify="space-between">
+		<Box padding="space-16" borderWidth="1" borderColor="neutral">
+			<HStack align="center" justify="space-between">
 				<Heading size="small">Dagens tall</Heading>
 			</HStack>
-            <VerticalSpacer eightPx />
-            {!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
-            {data.oppdatertTidspunkt && (
+			<VerticalSpacer eightPx />
+			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
+			{data.oppdatertTidspunkt && (
 				<>
 					<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
 					<HStack className="mt-4 mb-6" gap="space-16">
@@ -64,6 +64,6 @@ export default function DagensTall() {
 					</HGrid>
 				</>
 			)}
-        </Box>
-    );
+		</Box>
+	);
 }
