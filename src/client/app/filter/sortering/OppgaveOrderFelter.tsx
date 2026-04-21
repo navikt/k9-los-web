@@ -13,13 +13,13 @@ import { Button, Select, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
-import { EnkelOrderFelt, Oppgavefelt } from 'filter/filterTsTypes';
+import { EnkelOrderFelt, Oppgavefelt, OrderFelt } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
 import QuickAddOrder from './QuickAddOrder';
 
-const SortableOrderField: FunctionComponent<{
+const SortableEnkelOrderField: FunctionComponent<{
 	felt: WithNodeId<EnkelOrderFelt>;
-	order: WithNodeId<EnkelOrderFelt>[];
+	order: WithNodeId<OrderFelt>[];
 	felter: Oppgavefelt[];
 	onUpdateKode: (nodeId: string, kode: string) => void;
 	onUpdateDirection: (nodeId: string, direction: string) => void;
@@ -33,7 +33,9 @@ const SortableOrderField: FunctionComponent<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const valgteFelterFraAndreRader = order.filter((o) => o._nodeId !== felt._nodeId && o.kode).map((o) => o.kode);
+	const valgteFelterFraAndreRader = order
+		.filter((o) => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode)
+		.map((o) => (o as WithNodeId<EnkelOrderFelt>).kode);
 	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
 
 	return (
@@ -101,7 +103,7 @@ const OppgaveOrderFelter = () => {
 		updateQuery([removeSortering(nodeId)]);
 	};
 
-	const handleAddFelt = () => {
+	const handleAddEnkelFelt = () => {
 		updateQuery([addSortering(null)]);
 	};
 
@@ -117,12 +119,8 @@ const OppgaveOrderFelter = () => {
 		}
 	};
 
-	const handleUpdateDirection = (nodeId: string, direction: 'true' | 'false') => {
-		updateQuery([
-			updateSortering(nodeId, {
-				økende: direction === 'true',
-			}),
-		]);
+	const handleUpdateDirection = (nodeId: string, direction: string) => {
+		updateQuery([updateSortering(nodeId, { økende: direction === 'true' })]);
 	};
 
 	const handleDragEnd = (event: DragEndEvent) => {
@@ -144,9 +142,9 @@ const OppgaveOrderFelter = () => {
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
 				<SortableContext items={orderFields.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
 					{orderFields.map((felt) => (
-						<SortableOrderField
+						<SortableEnkelOrderField
 							key={felt._nodeId}
-							felt={felt}
+							felt={felt as WithNodeId<EnkelOrderFelt>}
 							felter={felter}
 							order={orderFields}
 							onUpdateKode={handleUpdateKode}
@@ -158,16 +156,18 @@ const OppgaveOrderFelter = () => {
 			</DndContext>
 			{orderFields.length === 0 && <div className="text-ax-neutral-500 italic text-md">Ingen sortering lagt til</div>}
 			<QuickAddOrder />
-			<Button
-				type="button"
-				className="self-start -m-1 px-1"
-				icon={<PlusCircleIcon aria-hidden />}
-				size="small"
-				variant="tertiary"
-				onClick={handleAddFelt}
-			>
-				Legg til sortering
-			</Button>
+			<div className="flex gap-2">
+				<Button
+					type="button"
+					className="self-start -m-1 px-1"
+					icon={<PlusCircleIcon aria-hidden />}
+					size="small"
+					variant="tertiary"
+					onClick={handleAddEnkelFelt}
+				>
+					Legg til sortering
+				</Button>
+			</div>
 		</VStack>
 	);
 };

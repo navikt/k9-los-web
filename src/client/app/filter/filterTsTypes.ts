@@ -16,8 +16,8 @@ export type Oppgavefilter = FeltverdiOppgavefilter | CombineOppgavefilter;
 
 export type OppgaveQuery = {
 	filtere: Oppgavefilter[];
-	select: EnkelSelectFelt[];
-	order: EnkelOrderFelt[];
+	select: SelectFelt[];
+	order: OrderFelt[];
 };
 
 export type EnkelOrderFelt = {
@@ -32,6 +32,41 @@ export type EnkelSelectFelt = {
 	område: string | null;
 	kode: string;
 };
+
+export enum AggregertFunksjon {
+	ANTALL = 'ANTALL',
+	SUM = 'SUM',
+	MIN = 'MIN',
+	MAKS = 'MAKS',
+	GJENNOMSNITT = 'GJENNOMSNITT',
+}
+
+export const AGGREGERT_FUNKSJON_VISNINGSNAVN: Record<AggregertFunksjon, string> = {
+	[AggregertFunksjon.ANTALL]: 'Antall',
+	[AggregertFunksjon.SUM]: 'Sum',
+	[AggregertFunksjon.MIN]: 'Min',
+	[AggregertFunksjon.MAKS]: 'Maks',
+	[AggregertFunksjon.GJENNOMSNITT]: 'Gjennomsnitt',
+};
+
+export type AggregertSelectFelt = {
+	type: 'aggregert';
+	funksjon: AggregertFunksjon;
+	område?: string | null;
+	kode?: string | null;
+};
+
+export type SelectFelt = EnkelSelectFelt | AggregertSelectFelt;
+
+export type AggregertOrderFelt = {
+	type: 'aggregert';
+	funksjon: AggregertFunksjon;
+	område?: string | null;
+	kode?: string | null;
+	økende: boolean;
+};
+
+export type OrderFelt = EnkelOrderFelt | AggregertOrderFelt;
 
 export type Oppgavefeltverdi = {
 	område: string;

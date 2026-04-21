@@ -3,8 +3,11 @@ import dayjs from 'dayjs';
 import { ChevronDownIcon, EyeIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Dialog, Loader, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
-import { Uttrekk, UttrekkResultatCelle, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
-import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
+import {
+	Uttrekk,
+	useHentUttrekkResultat,
+} from 'api/queries/avdelingslederQueries';
+import { AggregertFunksjon, AGGREGERT_FUNKSJON_VISNINGSNAVN, Oppgavefelt, SelectFelt, TolkesSom } from 'filter/filterTsTypes';
 import 'utils/dateUtils';
 
 const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25, 30, 35, 40];
@@ -84,11 +87,40 @@ export function formatCelleVerdi(
 	return String(verdi);
 }
 
-function finnFeltdef(felter: Oppgavefelt[], celle: UttrekkResultatCelle): Oppgavefelt | undefined {
-	if (celle.område) {
-		return felter.find((f) => f.område === celle.område && f.kode === celle.kode);
+function finnFeltdefForAggregert(
+	felter: Oppgavefelt[],
+	kode: string | null | undefined,
+	funksjon: AggregertFunksjon,
+): Pick<Oppgavefelt, 'område' | 'kode' | 'visningsnavn'> {
+	const funksjonsNavn = AGGREGERT_FUNKSJON_VISNINGSNAVN[funksjon];
+	const feltDef = kode ? felter.find((f) => f.kode === kode) : undefined;
+	if (!feltDef) {
+		return { visningsnavn: kode ? `${funksjonsNavn}(${kode})` : funksjonsNavn, kode: kode ?? '', område: '' };
 	}
-	return felter.find((f) => f.kode === celle.kode);
+	return {
+		...feltDef,
+		visningsnavn: `${funksjonsNavn}(${feltDef.visningsnavn})`,
+	};
+}
+
+function finnFeltdef(felter: Oppgavefelt[], kolonne: SelectFelt): Oppgavefelt | undefined {
+	if (kolonne.type === 'aggregert') {
+		return {
+			...finnFeltdefForAggregert(felter, kolonne.kode, kolonne.funksjon),
+			tolkes_som: TolkesSom.String,
+			verdiforklaringer: null,
+			verdiforklaringerErUttømmende: false,
+			kokriterie: false,
+			listetype: false,
+		};
+	}
+	return felter.find((f) => f.kode === kolonne.kode);
+}
+
+function kolonneVisningsnavn(kolonne: SelectFelt, felter: Oppgavefelt[]): string {
+	const feltdef = finnFeltdef(felter, kolonne);
+	if (feltdef?.visningsnavn) return feltdef.visningsnavn;
+	return kolonne.type === 'enkel' ? kolonne.kode : AGGREGERT_FUNKSJON_VISNINGSNAVN[kolonne.funksjon];
 }
 
 export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
@@ -104,31 +136,37 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 	const { felter } = useContext(AppContext);
 
 	const formaterbare = useMemo(() => {
-		if (!data?.kolonner) return new Set<string>();
-		return new Set(data.kolonner.filter((k) => harFormatering(felter.find((f) => f.kode === k))));
+		if (!data?.kolonner) return new Set<number>();
+		const result = new Set<number>();
+		data.kolonner.forEach((kolonne, idx) => {
+			if (harFormatering(finnFeltdef(felter, kolonne))) {
+				result.add(idx);
+			}
+		});
+		return result;
 	}, [data?.kolonner, felter]);
 
-	const [formaterKolonner, setFormaterKolonner] = useState<Set<string>>(new Set());
-	const [synligeKolonner, setSynligeKolonner] = useState<Set<string>>(new Set());
+	const [formaterKolonner, setFormaterKolonner] = useState<Set<number>>(new Set());
+	const [synligeKolonner, setSynligeKolonner] = useState<Set<number>>(new Set());
 
 	useEffect(() => {
 		if (data?.kolonner) {
 			setFormaterKolonner((prev) => {
 				if (prev.size === 0) {
-					return new Set(data.kolonner.filter((k) => formaterbare.has(k)));
+					return new Set(formaterbare);
 				}
 				return prev;
 			});
 			setSynligeKolonner((prev) => {
 				if (prev.size === 0) {
-					return new Set(data.kolonner);
+					return new Set(data.kolonner.map((_, i) => i));
 				}
 				return prev;
 			});
 		}
 	}, [data?.kolonner, formaterbare]);
 
-	const toggleFormatering = (kolonne: string) => {
+	const toggleFormatering = (kolonne: number) => {
 		setFormaterKolonner((prev) => {
 			const next = new Set(prev);
 			if (next.has(kolonne)) {
@@ -140,7 +178,7 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 		});
 	};
 
-	const toggleSynlighet = (kolonne: string) => {
+	const toggleSynlighet = (kolonne: number) => {
 		setSynligeKolonner((prev) => {
 			const next = new Set(prev);
 			if (next.has(kolonne)) {
@@ -165,7 +203,7 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 		setPage(1);
 	};
 
-	const visKolonner = data?.kolonner.filter((k) => synligeKolonner.has(k)) ?? [];
+	const visKolonneIndekser = data ? data.kolonner.map((_, i) => i).filter((i) => synligeKolonner.has(i)) : [];
 
 	return (
 		<Dialog open={open} onOpenChange={handleOpenChange}>
@@ -199,29 +237,29 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 									</ActionMenu.RadioGroup>
 									<ActionMenu.Divider />
 									<ActionMenu.Group label="Formater kolonner">
-										{data.kolonner.map((kolonne) => {
-											const kanFormateres = formaterbare.has(kolonne);
+										{data.kolonner.map((kolonne, idx) => {
+											const kanFormateres = formaterbare.has(idx);
 											return (
 												<ActionMenu.CheckboxItem
-													key={kolonne}
-													checked={kanFormateres && formaterKolonner.has(kolonne)}
-													onCheckedChange={() => toggleFormatering(kolonne)}
+													key={idx}
+													checked={kanFormateres && formaterKolonner.has(idx)}
+													onCheckedChange={() => toggleFormatering(idx)}
 													disabled={!kanFormateres}
 												>
-													{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+													{kolonneVisningsnavn(kolonne, felter)}
 												</ActionMenu.CheckboxItem>
 											);
 										})}
 									</ActionMenu.Group>
 									<ActionMenu.Divider />
 									<ActionMenu.Group label="Vis kolonner">
-										{data.kolonner.map((kolonne) => (
+										{data.kolonner.map((kolonne, idx) => (
 											<ActionMenu.CheckboxItem
-												key={kolonne}
-												checked={synligeKolonner.has(kolonne)}
-												onCheckedChange={() => toggleSynlighet(kolonne)}
+												key={idx}
+												checked={synligeKolonner.has(idx)}
+												onCheckedChange={() => toggleSynlighet(idx)}
 											>
-												{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+												{kolonneVisningsnavn(kolonne, felter)}
 											</ActionMenu.CheckboxItem>
 										))}
 									</ActionMenu.Group>
@@ -243,27 +281,24 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 								<Table size="small">
 									<Table.Header>
 										<Table.Row>
-											{visKolonner.map((kolonne) => (
-												<Table.HeaderCell key={kolonne}>
-													{felter.find((f) => f.kode === kolonne)?.visningsnavn ?? kolonne}
+											{visKolonneIndekser.map((idx) => (
+												<Table.HeaderCell key={idx}>
+													{kolonneVisningsnavn(data.kolonner[idx], felter)}
 												</Table.HeaderCell>
 											))}
 										</Table.Row>
 									</Table.Header>
 									<Table.Body>
 										{data.rader.map((rad) => (
-											<Table.Row key={rad.id.eksternId}>
-												{rad.felter
-													.filter((celle) => synligeKolonner.has(celle.kode))
-													.map((celle, celleIdx) => {
-														const feltdef = finnFeltdef(felter, celle);
-														return (
-															// eslint-disable-next-line react/no-array-index-key
-															<Table.DataCell key={celleIdx}>
-																{formatCelleVerdi(celle.verdi, feltdef, formaterKolonner.has(celle.kode))}
-															</Table.DataCell>
-														);
-													})}
+											<Table.Row key={rad.id}>
+												{visKolonneIndekser.map((idx) => {
+													const feltdef = finnFeltdef(felter, data.kolonner[idx]);
+													return (
+														<Table.DataCell key={idx}>
+															{formatCelleVerdi(rad.kolonner[idx], feltdef, formaterKolonner.has(idx))}
+														</Table.DataCell>
+													);
+												})}
 											</Table.Row>
 										))}
 									</Table.Body>

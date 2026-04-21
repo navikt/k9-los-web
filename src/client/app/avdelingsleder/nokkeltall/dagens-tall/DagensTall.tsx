@@ -5,22 +5,33 @@ import { useHentDagensTall } from 'api/queries/avdelingslederQueries';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import Teller3 from './Teller3';
 
+const serieLabels: Record<string, string> = {
+	idag: 'I dag',
+	sisteUke: 'Siste uke',
+	siste2Uker: 'Siste 2 uker',
+	siste4Uker: 'Siste 4 uker',
+};
+
 export default function DagensTall() {
 	const [valgtHovedgruppe, setValgtHovedgruppe] = useState('ALLE');
 	const { data } = useHentDagensTall();
-	const [tidsområde, setTidsområde] = useState('I_DAG');
+	const [valgtSerie, setValgtSerie] = useState('idag');
 
 	// Henter alltid fra direkte fra cache, så bruker kort tid på loading
 	if (data === undefined) return null;
 
+	const filtrerteTall = data.tall.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe);
+	const tilgjengeligeSerier = filtrerteTall.length > 0 ? Object.keys(filtrerteTall[0].serier) : [];
+	const aktivSerie = tilgjengeligeSerier.includes(valgtSerie) ? valgtSerie : tilgjengeligeSerier[0];
+
 	return (
-        <Box padding="space-16" borderWidth="1" borderColor="neutral">
-            <HStack align="center" justify="space-between">
+		<Box padding="space-16" borderWidth="1" borderColor="neutral">
+			<HStack align="center" justify="space-between">
 				<Heading size="small">Dagens tall</Heading>
 			</HStack>
-            <VerticalSpacer eightPx />
-            {!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
-            {data.oppdatertTidspunkt && (
+			<VerticalSpacer eightPx />
+			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
+			{data.oppdatertTidspunkt && (
 				<>
 					<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
 					<HStack className="mt-4 mb-6" gap="space-16">
@@ -36,24 +47,23 @@ export default function DagensTall() {
 								</option>
 							))}
 						</Select>
-						<ToggleGroup value={tidsområde} onChange={(nyttTidsområde) => setTidsområde(nyttTidsområde)}>
-							<ToggleGroup.Item value="I_DAG" label="I dag" />
-							<ToggleGroup.Item value="SISTE_7" label="Siste 7 dager" />
+						<ToggleGroup value={aktivSerie} onChange={(nySerie) => setValgtSerie(nySerie)}>
+							{tilgjengeligeSerier.map((key) => (
+								<ToggleGroup.Item key={key} value={key} label={serieLabels[key] ?? key} />
+							))}
 						</ToggleGroup>
 					</HStack>
 					<HGrid gap="space-24" columns={{ md: 2, lg: 3, xl: 4 }}>
-						{data.tall
-							.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe)
-							.map((value) => (
-									<Teller3
-										key={value.undergruppe}
-										forklaring={data.undergrupper.find(({ kode }) => kode === value.undergruppe).navn}
-										tall={tidsområde === 'I_DAG' ? value.idag : value.siste7Dager}
-									/>
-								))}
+						{filtrerteTall.map((value) => (
+							<Teller3
+								key={value.undergruppe}
+								forklaring={data.undergrupper.find(({ kode }) => kode === value.undergruppe).navn}
+								tall={value.serier[aktivSerie]}
+							/>
+						))}
 					</HGrid>
 				</>
 			)}
-        </Box>
-    );
+		</Box>
+	);
 }

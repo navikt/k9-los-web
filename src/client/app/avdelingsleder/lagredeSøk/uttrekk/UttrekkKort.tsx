@@ -12,39 +12,60 @@ import {
 } from '@navikt/aksel-icons';
 import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
-import { LagretSøk, TypeKjøring, Uttrekk, UttrekkStatus, useSlettUttrekk } from 'api/queries/avdelingslederQueries';
+import {
+	LagretSøk,
+	Uttrekk,
+	UttrekkStatus,
+	useHentUttrekkResultat,
+	useSlettUttrekk,
+} from 'api/queries/avdelingslederQueries';
 import { UttrekkResultatDialog } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatDialog';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
+import { AggregertFunksjon, OppgaveQuery } from 'filter/filterTsTypes';
 import { useInterval } from 'hooks/UseInterval';
 import ModalButton from 'sharedComponents/ModalButton';
 import { assertNever } from 'utils/assert-never';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 
-function getTypeLabel(typeKjøring: TypeKjøring): string {
-	switch (typeKjøring) {
-		case TypeKjøring.OPPGAVER:
-			return 'Oppgaver';
-		case TypeKjøring.ANTALL:
-			return 'Antall';
-		default:
-			return assertNever(typeKjøring);
-	}
+function utledUttrekkType(query: OppgaveQuery): 'antall' | 'gruppert' | 'oppgaver' {
+	const harAggregert = query.select.some((s) => s.type === 'aggregert');
+	const harEnkel = query.select.some((s) => s.type === 'enkel');
+	if (harAggregert && harEnkel) return 'gruppert';
+	if (harAggregert) return 'antall';
+	return 'oppgaver';
 }
 
-function getStatusText(uttrekk: Uttrekk): React.ReactNode {
-	const typeLabel = getTypeLabel(uttrekk.typeKjøring);
+/**
+ * Sjekker om uttrekket har funksjon ANTALL som eneste select.
+ * Slike uttrekk produserer én rad med én kolonne, og resultatet vises inline
+ * istedenfor i tabell-dialog.
+ */
+function erKunAntallUttrekk(query: OppgaveQuery): boolean {
+	if (query.select.length !== 1) return false;
+	const select = query.select[0];
+	return select.type === 'aggregert' && select.funksjon === AggregertFunksjon.ANTALL;
+}
+
+function getStatusText(uttrekk: Uttrekk, antallVerdi: number | null): React.ReactNode {
+	const type = utledUttrekkType(uttrekk.query);
+	const typeLabel = type === 'antall' ? 'Antall' : type === 'gruppert' ? 'Gruppert' : 'Oppgaver';
 	switch (uttrekk.status) {
 		case UttrekkStatus.OPPRETTET:
 			return <>{typeLabel} &ndash; Venter på å kjøre</>;
 		case UttrekkStatus.KJØRER:
 			return <>{typeLabel} &ndash; Kjører nå</>;
-		case UttrekkStatus.FULLFØRT:
+		case UttrekkStatus.FULLFØRT: {
+			const erKunAntall = erKunAntallUttrekk(uttrekk.query);
+			// For uttrekk med ANTALL som eneste select: vis selve aggregat-verdien
+			// (hentet fra resultatet), ikke radantallet (som alltid er 1).
+			const visVerdi = erKunAntall ? antallVerdi : uttrekk.antall;
 			return (
 				<>
-					{typeLabel} &ndash; <span className="font-medium">Antall oppgaver: </span>
-					{uttrekk.antall}
+					{typeLabel} &ndash; <span className="font-medium">{type === 'antall' ? 'Resultat:' : 'Antall rader:'} </span>
+					{visVerdi ?? <Loader size="xsmall" />}
 				</>
 			);
+		}
 		case UttrekkStatus.FEILET:
 			return <>{typeLabel} &ndash; Feilet</>;
 		default:
@@ -73,12 +94,14 @@ function getStatusIcon(uttrekk: Uttrekk) {
 			return <ClockDashedIcon aria-hidden fontSize="1.5rem" />;
 		case UttrekkStatus.KJØRER:
 			return <Loader size="medium" />;
-		case UttrekkStatus.FULLFØRT:
-			return uttrekk.typeKjøring === TypeKjøring.OPPGAVER ? (
-				<TableIcon aria-hidden fontSize="1.5rem" />
-			) : (
+		case UttrekkStatus.FULLFØRT: {
+			const type = utledUttrekkType(uttrekk.query);
+			return type === 'antall' ? (
 				<CalculatorIcon aria-hidden fontSize="1.5rem" />
+			) : (
+				<TableIcon aria-hidden fontSize="1.5rem" />
 			);
+		}
 		case UttrekkStatus.FEILET:
 			return <ExclamationmarkTriangleIcon aria-hidden fontSize="1.5rem" />;
 		default:
@@ -98,13 +121,19 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 
 	const kriterierErForskjellige = !_.isEqual(uttrekk.query.filtere, lagretSøk?.query.filtere);
 
-	const kanLasteNed =
-		uttrekk.status === UttrekkStatus.FULLFØRT &&
-		uttrekk.typeKjøring === 'OPPGAVER' &&
-		uttrekk.antall !== null &&
-		uttrekk.antall > 0;
+	const kanLasteNed = uttrekk.status === UttrekkStatus.FULLFØRT && uttrekk.antall !== null && uttrekk.antall > 0;
 	const kanSlette = uttrekk.status !== UttrekkStatus.KJØRER;
 	const kanViseFeilmelding = uttrekk.status === UttrekkStatus.FEILET && uttrekk.feilmelding;
+
+	// For uttrekk med kun ANTALL: hent selve aggregat-verdien og vis inline,
+	// så bruker ikke trenger å åpne "Vis resultat"-dialogen for et enkelt tall.
+	const erKunAntall = erKunAntallUttrekk(uttrekk.query);
+	const skalHenteAntallVerdi = erKunAntall && kanLasteNed;
+	const { data: antallResultat } = useHentUttrekkResultat(uttrekk.id, 0, 1, skalHenteAntallVerdi);
+	const antallVerdi =
+		skalHenteAntallVerdi && antallResultat?.rader[0]?.kolonner[0] != null
+			? Number(antallResultat.rader[0].kolonner[0])
+			: null;
 
 	return (
 		<div className={`rounded-md py-2 px-3 mb-2 ${getStatusColor(uttrekk.status)}`}>
@@ -112,7 +141,7 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 				<div className="flex items-center gap-3 flex-1">
 					<div className="flex-shrink-0 flex items-center">{getStatusIcon(uttrekk)}</div>
 					<div className="flex items-center gap-3">
-						<div>{getStatusText(uttrekk)}</div>
+						<div>{getStatusText(uttrekk, antallVerdi)}</div>
 						<div className="text-sm text-ax-neutral-700">
 							{dateTimeSecondsFormat(uttrekk.opprettetTidspunkt)}
 							{uttrekk.status === UttrekkStatus.KJØRER || uttrekk.status === UttrekkStatus.FEILET ? (

@@ -9,7 +9,7 @@ import {
 import apiPaths from 'api/apiPaths';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
 import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
-import { OppgaveQuery } from 'filter/filterTsTypes';
+import { OppgaveQuery, SelectFelt } from 'filter/filterTsTypes';
 import { OppgaveKoIdOgTittel, OppgavekøV3, OppgavekøV3Enkel, OppgavekøerV3 } from 'types/OppgavekøV3Type';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
@@ -192,19 +192,21 @@ export type DagensTallHovedtallOgLinjer = {
 	linjer: DagensTallLinje[];
 };
 
+export type DagensTallSerie = {
+	first: DagensTallHovedtallOgLinjer;
+	second: DagensTallHovedtallOgLinjer;
+};
+
 export const useHentDagensTall = () =>
 	useQuery<{
 		oppdatertTidspunkt?: string;
 		hovedgrupper: [{ kode: string; navn: string }];
 		undergrupper: [{ kode: string; navn: string }];
-		tall: [
-			{
-				hovedgruppe: string;
-				undergruppe: string;
-				idag: [DagensTallHovedtallOgLinjer, DagensTallHovedtallOgLinjer];
-				siste7Dager: [DagensTallHovedtallOgLinjer, DagensTallHovedtallOgLinjer];
-			},
-		];
+		tall: {
+			hovedgruppe: string;
+			undergruppe: string;
+			serier: Record<string, DagensTallSerie>;
+		}[];
 	}>({
 		placeholderData: keepPreviousData,
 		queryKey: [apiPaths.hentDagensTall],
@@ -386,11 +388,6 @@ export enum UttrekkStatus {
 	FEILET = 'FEILET',
 }
 
-export enum TypeKjøring {
-	ANTALL = 'ANTALL',
-	OPPGAVER = 'OPPGAVER',
-}
-
 export interface Uttrekk {
 	id: number;
 	tittel: string;
@@ -398,7 +395,6 @@ export interface Uttrekk {
 	status: UttrekkStatus;
 	query: OppgaveQuery;
 	lagretSøkId: number;
-	typeKjøring: TypeKjøring;
 	antall: number | null;
 	feilmelding: string | null;
 	startetTidspunkt: string | null;
@@ -407,7 +403,6 @@ export interface Uttrekk {
 
 interface OpprettUttrekkRequest {
 	lagretSokId: number;
-	typeKjoring: TypeKjøring;
 	limit?: number | null;
 	offset?: number | null;
 }
@@ -472,18 +467,14 @@ export const useSlettUttrekk = (callback?: () => void) => {
 	});
 };
 
-export interface UttrekkResultatCelle {
-	område: string | null;
-	kode: string;
-	verdi: string | number | boolean | string[] | null;
-}
+export type CelleVerdi = string | number | boolean | null;
 
 export interface UttrekkResultat {
-	kolonner: string[];
-	rader: { id: { eksternId: string }; felter: UttrekkResultatCelle[] }[];
+	kolonner: SelectFelt[];
+	rader: { id: string; kolonner: CelleVerdi[] }[];
 	totaltAntall: number;
 	offset: number;
-	limit: number;
+	limit: number | null;
 }
 
 export const useHentUttrekkResultat = (id: number, offset: number, limit: number, enabled: boolean) =>

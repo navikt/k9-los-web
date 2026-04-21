@@ -9,6 +9,11 @@ import {
 	Oppgavefelt,
 	Oppgavefilter,
 	TolkesSom,
+	SelectFelt,
+	OrderFelt,
+	AggregertSelectFelt,
+	AggregertOrderFelt,
+	AGGREGERT_FUNKSJON_VISNINGSNAVN,
 } from './filterTsTypes';
 import { OPERATORS } from './utils';
 
@@ -171,13 +176,30 @@ function traverserFiltere(filtere: Oppgavefilter[], felter: Oppgavefelt[]): Filt
 	return beskrivelser;
 }
 
-function beskrivelseForSelectFelt(selectFelt: EnkelSelectFelt, felter: Oppgavefelt[]): SelectBeskrivelse {
+function beskrivelseForSelectFelt(selectFelt: SelectFelt, felter: Oppgavefelt[]): SelectBeskrivelse {
+	if (selectFelt.type === 'aggregert') {
+		const funksjonNavn = AGGREGERT_FUNKSJON_VISNINGSNAVN[selectFelt.funksjon];
+		if (selectFelt.område && selectFelt.kode) {
+			return { feltnavn: `${funksjonNavn}(${hentVisningsnavn(felter, selectFelt.område, selectFelt.kode)})` };
+		}
+		return { feltnavn: funksjonNavn };
+	}
 	return {
 		feltnavn: hentVisningsnavn(felter, selectFelt.område, selectFelt.kode),
 	};
 }
 
-function beskrivelseForOrderFelt(orderFelt: EnkelOrderFelt, felter: Oppgavefelt[]): OrderBeskrivelse {
+function beskrivelseForOrderFelt(orderFelt: OrderFelt, felter: Oppgavefelt[]): OrderBeskrivelse {
+	if (orderFelt.type === 'aggregert') {
+		const funksjonNavn = AGGREGERT_FUNKSJON_VISNINGSNAVN[orderFelt.funksjon];
+		if (orderFelt.område && orderFelt.kode) {
+			return {
+				feltnavn: `${funksjonNavn}(${hentVisningsnavn(felter, orderFelt.område, orderFelt.kode)})`,
+				økende: orderFelt.økende,
+			};
+		}
+		return { feltnavn: funksjonNavn, økende: orderFelt.økende };
+	}
 	return {
 		feltnavn: hentVisningsnavn(felter, orderFelt.område, orderFelt.kode),
 		økende: orderFelt.økende,
@@ -189,9 +211,13 @@ export function utledFilterBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[
 }
 
 export function utledSelectBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): SelectBeskrivelse[] {
-	return query.select.filter((s) => s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
+	return query.select
+		.filter((s) => s.type === 'aggregert' || s.kode)
+		.map((s) => beskrivelseForSelectFelt(s, felter));
 }
 
 export function utledOrderBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): OrderBeskrivelse[] {
-	return query.order.filter((o) => o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
+	return query.order
+		.filter((o) => o.type === 'aggregert' || o.kode)
+		.map((o) => beskrivelseForOrderFelt(o, felter));
 }

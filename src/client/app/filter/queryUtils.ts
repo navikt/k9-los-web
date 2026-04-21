@@ -31,6 +31,10 @@ const addEnkelSelectFelt = withMethod('addEnkelSelectFelt');
 
 const updateSelectFelt = withMethod('updateEnkelSelectFelt');
 
+const addAggregertSelectFelt = withMethod('addAggregertSelectFelt');
+
+const updateAggregertSelectFelt = withMethod('updateAggregertSelectFelt');
+
 const moveSelectFelt = withMethod('moveSelectFelt');
 
 // -------------------- Order Manipulations --------------------
@@ -42,6 +46,10 @@ const resetSortering = withMethod('nullstillOrderFelt');
 const addSortering = withMethod('addEnkelOrderFelt');
 
 const updateSortering = withMethod('updateEnkelOrderFelt');
+
+const addAggregertSortering = withMethod('addAggregertOrderFelt');
+
+const updateAggregertSortering = withMethod('updateAggregertOrderFelt');
 
 const moveSortering = withMethod('moveOrderFelt');
 
@@ -59,13 +67,17 @@ export {
 	addFeltverdiFilter,
 	removeSelectFelt,
 	addEnkelSelectFelt,
+	addAggregertSelectFelt,
 	updateFilter,
 	updateSelectFelt,
+	updateAggregertSelectFelt,
 	moveSelectFelt,
 	removeSortering,
 	resetSortering,
 	addSortering,
 	updateSortering,
+	addAggregertSortering,
+	updateAggregertSortering,
 	moveSortering,
 	applyFunctions,
 };

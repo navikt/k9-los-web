@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ReactNode, useRef, useState } from 'react';
 import { BodyShort, Popover } from '@navikt/ds-react';
-import { DagensTallHovedtallOgLinjer } from 'api/queries/avdelingslederQueries';
+import { DagensTallSerie } from 'api/queries/avdelingslederQueries';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { OppgaveQuery } from 'filter/filterTsTypes';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -67,11 +67,11 @@ function KildeViewer({
 
 interface OwnProps {
 	forklaring: string;
-	tall: [DagensTallHovedtallOgLinjer, DagensTallHovedtallOgLinjer];
+	tall: DagensTallSerie;
 }
 
 const Teller: FunctionComponent<OwnProps> = ({ forklaring, tall }) => {
-	const [inngang, ferdigstilt] = tall;
+	const { first: inngang, second: ferdigstilt } = tall;
 	return (
 		<div className={styles.ramme}>
 			<div className={styles.forklaring}>

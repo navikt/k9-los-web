@@ -5,6 +5,9 @@ import {
 	tilIdentifiedQuery,
 } from './filterFrontendTypes';
 import {
+	AggregertFunksjon,
+	AggregertOrderFelt,
+	AggregertSelectFelt,
 	CombineOppgavefilter,
 	EnkelOrderFelt,
 	EnkelSelectFelt,
@@ -121,6 +124,80 @@ describe('filterFrontendTypes konvertering', () => {
 
 			const roundtripped = fjernNodeIdFraFilter(identified);
 			expect(roundtripped).toEqual(combineFilter);
+		});
+	});
+
+	describe('aggregerte felter roundtrip', () => {
+		const aggregertSelect: AggregertSelectFelt = {
+			type: 'aggregert',
+			funksjon: AggregertFunksjon.ANTALL,
+			område: null,
+			kode: null,
+		};
+
+		const aggregertSelectMedFelt: AggregertSelectFelt = {
+			type: 'aggregert',
+			funksjon: AggregertFunksjon.SUM,
+			område: 'K9',
+			kode: 'feilutbetaltBelop',
+		};
+
+		const aggregertOrder: AggregertOrderFelt = {
+			type: 'aggregert',
+			funksjon: AggregertFunksjon.ANTALL,
+			område: null,
+			kode: null,
+			økende: false,
+		};
+
+		it('skal roundtrippe query med aggregerte select og order', () => {
+			const queryMedAggregert: OppgaveQuery = {
+				filtere: [feltverdiFilter],
+				select: [selectFelt, aggregertSelect, aggregertSelectMedFelt],
+				order: [orderFelt, aggregertOrder],
+			};
+
+			const identified = tilIdentifiedQuery(queryMedAggregert);
+
+			expect(identified.select).toHaveLength(3);
+			expect(identified.select[0].type).toBe('enkel');
+			expect(identified.select[1].type).toBe('aggregert');
+			if (identified.select[1].type === 'aggregert') {
+				expect(identified.select[1].funksjon).toBe(AggregertFunksjon.ANTALL);
+			}
+			expect(identified.select[2].type).toBe('aggregert');
+			if (identified.select[2].type === 'aggregert') {
+				expect(identified.select[2].funksjon).toBe(AggregertFunksjon.SUM);
+				expect(identified.select[2].kode).toBe('feilutbetaltBelop');
+			}
+
+			expect(identified.order).toHaveLength(2);
+			expect(identified.order[0].type).toBe('enkel');
+			expect(identified.order[1].type).toBe('aggregert');
+			if (identified.order[1].type === 'aggregert') {
+				expect(identified.order[1].funksjon).toBe(AggregertFunksjon.ANTALL);
+				expect(identified.order[1].økende).toBe(false);
+			}
+
+			const roundtripped = fjernNodeIdFraQuery(identified);
+			expect(roundtripped).toEqual(queryMedAggregert);
+		});
+
+		it('alle _nodeId-er skal være unike for aggregerte felter', () => {
+			const queryMedAggregert: OppgaveQuery = {
+				filtere: [],
+				select: [selectFelt, aggregertSelect, aggregertSelectMedFelt],
+				order: [aggregertOrder],
+			};
+
+			const identified = tilIdentifiedQuery(queryMedAggregert);
+
+			const nodeIds: string[] = [identified._nodeId];
+			identified.select.forEach((s) => nodeIds.push(s._nodeId));
+			identified.order.forEach((o) => nodeIds.push(o._nodeId));
+
+			const unique = new Set(nodeIds);
+			expect(unique.size).toBe(nodeIds.length);
 		});
 	});
 });

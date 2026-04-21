@@ -103,6 +103,7 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 				handling: () => {
 					reserverOppgaveMutate(oppgave.oppgaveNøkkel, {
 						onSuccess: () => {
+							// sjekk om den returnerte reserverte er saksbehandler sin
 							leggTilSisteOppgaverOgÅpneFagsystem();
 						},
 						onError: () => {

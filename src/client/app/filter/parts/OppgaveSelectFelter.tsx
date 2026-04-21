@@ -13,16 +13,16 @@ import { Button, Select, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
-import { EnkelSelectFelt, Oppgavefelt } from 'filter/filterTsTypes';
+import { EnkelSelectFelt, Oppgavefelt, SelectFelt } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 import QuickAddSelect from './QuickAddSelect';
 
-const SortableField: FunctionComponent<{
+const SortableEnkelField: FunctionComponent<{
 	felt: WithNodeId<EnkelSelectFelt>;
-	select: WithNodeId<EnkelSelectFelt>[];
+	select: WithNodeId<SelectFelt>[];
 	felter: Oppgavefelt[];
 	onUpdate: (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => void;
-	onRemove: (felt: WithNodeId<EnkelSelectFelt>) => void;
+	onRemove: (nodeId: string) => void;
 }> = ({ felt, select, felter, onUpdate, onRemove }) => {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
 
@@ -32,7 +32,9 @@ const SortableField: FunctionComponent<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const valgteFelterFraAndreRader = select.filter((s) => s._nodeId !== felt._nodeId && s.kode).map((s) => s.kode);
+	const valgteFelterFraAndreRader = select
+		.filter((s) => s._nodeId !== felt._nodeId && s.type === 'enkel' && s.kode)
+		.map((s) => (s as WithNodeId<EnkelSelectFelt>).kode);
 	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
 
 	return (
@@ -64,7 +66,7 @@ const SortableField: FunctionComponent<{
 				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
 				size="medium"
 				variant="tertiary"
-				onClick={() => onRemove(felt)}
+				onClick={() => onRemove(felt._nodeId)}
 			/>
 		</div>
 	);
@@ -81,15 +83,15 @@ const OppgaveSelectFelter = () => {
 		}),
 	);
 
-	const handleRemove = (felt: WithNodeId<EnkelSelectFelt>) => {
-		updateQuery([removeSelectFelt(felt._nodeId)]);
+	const handleRemove = (nodeId: string) => {
+		updateQuery([removeSelectFelt(nodeId)]);
 	};
 
-	const handleAdd = () => {
+	const handleAddEnkel = () => {
 		updateQuery([addEnkelSelectFelt()]);
 	};
 
-	const handleUpdate = (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => {
+	const handleUpdateEnkel = (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => {
 		const oppgavefelt = felter.find((f) => f.kode === newValue);
 		if (oppgavefelt) {
 			updateQuery([
@@ -118,12 +120,12 @@ const OppgaveSelectFelter = () => {
 			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
 				<SortableContext items={oppgaveQuery.select.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
 					{oppgaveQuery.select.map((felt) => (
-						<SortableField
+						<SortableEnkelField
 							key={felt._nodeId}
-							felt={felt}
+							felt={felt as WithNodeId<EnkelSelectFelt>}
 							select={oppgaveQuery.select}
 							felter={felter}
-							onUpdate={handleUpdate}
+							onUpdate={handleUpdateEnkel}
 							onRemove={handleRemove}
 						/>
 					))}
@@ -133,16 +135,18 @@ const OppgaveSelectFelter = () => {
 				<div className="text-ax-neutral-500 italic text-md">Ingen kolonner lagt til</div>
 			)}
 			<QuickAddSelect />
-			<Button
-				type="button"
-				className="self-start -ml-1 px-1"
-				icon={<PlusCircleIcon aria-hidden />}
-				size="small"
-				variant="tertiary"
-				onClick={handleAdd}
-			>
-				Legg til kolonne
-			</Button>
+			<div className="flex gap-2">
+				<Button
+					type="button"
+					className="self-start -ml-1 px-1"
+					icon={<PlusCircleIcon aria-hidden />}
+					size="small"
+					variant="tertiary"
+					onClick={handleAddEnkel}
+				>
+					Legg til kolonne
+				</Button>
+			</div>
 		</VStack>
 	);
 };

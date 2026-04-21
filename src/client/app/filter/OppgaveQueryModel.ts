@@ -8,7 +8,7 @@ import {
 	isIdentifiedQuery,
 	tilIdentifiedQuery,
 } from './filterFrontendTypes';
-import { EnkelOrderFelt, EnkelSelectFelt, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter } from './filterTsTypes';
+import { EnkelOrderFelt, EnkelSelectFelt, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter, AggregertFunksjon, AggregertSelectFelt, AggregertOrderFelt, SelectFelt, OrderFelt } from './filterTsTypes';
 
 const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
@@ -55,10 +55,13 @@ export default class OppgaveQueryModel {
 		});
 	}
 
-	private internalValidateSelect(select: WithNodeId<EnkelSelectFelt>[]) {
+	private internalValidateSelect(select: WithNodeId<SelectFelt>[]) {
 		select.forEach((s) => {
-			if (s.kode == null) {
+			if (s.type === 'enkel' && s.kode == null) {
 				this.errors.push({ _nodeId: s._nodeId, felt: 'kode', message: 'Du må velge et felt' });
+			}
+			if (s.type === 'aggregert' && s.funksjon !== AggregertFunksjon.ANTALL && !s.kode) {
+				this.errors.push({ _nodeId: s._nodeId, felt: 'kode', message: 'Felt er påkrevd for denne funksjonen' });
 			}
 		});
 	}
@@ -89,7 +92,7 @@ export default class OppgaveQueryModel {
 		return this;
 	}
 
-	getById(nodeId: string): WithNodeId<EnkelSelectFelt | EnkelOrderFelt | Oppgavefilter> | null {
+	getById(nodeId: string): WithNodeId<SelectFelt | OrderFelt | Oppgavefilter> | null {
 		const selected = this.oppgaveQuery.select.find((f) => f._nodeId === nodeId);
 		if (selected) {
 			return selected;
@@ -210,7 +213,26 @@ export default class OppgaveQueryModel {
 
 	updateEnkelSelectFelt(nodeId: string, data: Partial<EnkelSelectFelt>) {
 		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === nodeId);
-		if (index >= 0) {
+		if (index >= 0 && this.oppgaveQuery.select[index].type === 'enkel') {
+			this.oppgaveQuery.select[index] = { ...this.oppgaveQuery.select[index], ...data };
+		}
+		return this;
+	}
+
+	addAggregertSelectFelt() {
+		this.oppgaveQuery.select.push({
+			_nodeId: uuid(),
+			type: 'aggregert',
+			funksjon: AggregertFunksjon.ANTALL,
+			område: null,
+			kode: null,
+		});
+		return this;
+	}
+
+	updateAggregertSelectFelt(nodeId: string, data: Partial<AggregertSelectFelt>) {
+		const index = this.oppgaveQuery.select.findIndex((f) => f._nodeId === nodeId);
+		if (index >= 0 && this.oppgaveQuery.select[index].type === 'aggregert') {
 			this.oppgaveQuery.select[index] = { ...this.oppgaveQuery.select[index], ...data };
 		}
 		return this;
@@ -252,7 +274,27 @@ export default class OppgaveQueryModel {
 
 	updateEnkelOrderFelt(nodeId: string, data: Partial<EnkelOrderFelt>) {
 		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === nodeId);
-		if (index >= 0) {
+		if (index >= 0 && this.oppgaveQuery.order[index].type === 'enkel') {
+			this.oppgaveQuery.order[index] = { ...this.oppgaveQuery.order[index], ...data };
+		}
+		return this;
+	}
+
+	addAggregertOrderFelt() {
+		this.oppgaveQuery.order.push({
+			_nodeId: uuid(),
+			type: 'aggregert',
+			funksjon: AggregertFunksjon.ANTALL,
+			område: null,
+			kode: null,
+			økende: true,
+		});
+		return this;
+	}
+
+	updateAggregertOrderFelt(nodeId: string, data: Partial<AggregertOrderFelt>) {
+		const index = this.oppgaveQuery.order.findIndex((f) => f._nodeId === nodeId);
+		if (index >= 0 && this.oppgaveQuery.order[index].type === 'aggregert') {
 			this.oppgaveQuery.order[index] = { ...this.oppgaveQuery.order[index], ...data };
 		}
 		return this;
