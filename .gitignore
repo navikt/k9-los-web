@@ -32,3 +32,4 @@ jest_cache
 *storybook.log
 
 .vscode
+.playwright-mcp
