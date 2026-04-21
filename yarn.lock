@@ -12318,7 +12318,7 @@ __metadata:
     less: "npm:4.6.4"
     less-loader: "npm:12.3.2"
     lint-staged: "npm:16.4.0"
-    lodash: "npm:4.17.23"
+    lodash: "npm:4.18.1"
     mini-css-extract-plugin: "npm:2.10.1"
     msw: "npm:2.12.12"
     nav-frontend-chevron: "npm:1.0.30"
@@ -12585,13 +12585,6 @@ __metadata:
   version: 4.5.0
   resolution: "lodash.uniq@npm:4.5.0"
   checksum: 10/86246ca64ac0755c612e5df6d93cfe92f9ecac2e5ff054b965efbbb1d9a647b6310969e78545006f70f52760554b03233ad0103324121ae31474c20d5f7a2812
-  languageName: node
-  linkType: hard
-
-"lodash@npm:4.17.23":
-  version: 4.17.23
-  resolution: "lodash@npm:4.17.23"
-  checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
   languageName: node
   linkType: hard
 
