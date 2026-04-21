@@ -627,12 +627,15 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 		doSubmit(data);
 	};
 
+	// For 'antall' og 'gruppert' har vi ingen react-hook-form-felter å validere – kall doSubmit direkte.
+	// For 'oppgaver' delegerer vi til react-hook-form, som validerer og kaller onSubmit.
 	const handleFormSubmit = (e: React.FormEvent) => {
-		if (uttrekkType === 'antall' || uttrekkType === 'gruppert') {
-			e.preventDefault();
-			doSubmit();
+		if (uttrekkType === 'oppgaver') {
+			handleSubmit(onSubmit)(e);
+			return;
 		}
-		// For oppgaver brukes handleSubmit fra react-hook-form
+		e.preventDefault();
+		doSubmit();
 	};
 
 	const filterContextValues: FilterContextType = {
@@ -658,7 +661,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				</Dialog.Header>
 				<form
 					className="flex flex-col overflow-hidden min-h-0 flex-1"
-					onSubmit={uttrekkType === 'oppgaver' ? handleSubmit(onSubmit) : handleFormSubmit}
+					onSubmit={handleFormSubmit}
 				>
 					<Dialog.Body>
 						<BodyShort className="mb-4">

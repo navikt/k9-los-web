@@ -8,7 +8,6 @@ import {
 	useHentUttrekkResultat,
 } from 'api/queries/avdelingslederQueries';
 import { AggregertFunksjon, AGGREGERT_FUNKSJON_VISNINGSNAVN, Oppgavefelt, SelectFelt, TolkesSom } from 'filter/filterTsTypes';
-import { felter } from 'filter/parts/testdata';
 import 'utils/dateUtils';
 
 const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25, 30, 35, 40];
@@ -89,26 +88,30 @@ export function formatCelleVerdi(
 }
 
 function finnFeltdefForAggregert(
-	kode: string | undefined,
+	felter: Oppgavefelt[],
+	kode: string | null | undefined,
 	funksjon: AggregertFunksjon,
-): Pick<Oppgavefelt, 'område' | 'kode' | 'visningsnavn'> | undefined {
+): Pick<Oppgavefelt, 'område' | 'kode' | 'visningsnavn'> {
 	const funksjonsNavn = AGGREGERT_FUNKSJON_VISNINGSNAVN[funksjon];
 	const feltDef = kode ? felter.find((f) => f.kode === kode) : undefined;
-	if (!feltDef) return { visningsnavn: funksjonsNavn, kode: '', område: '' };
+	if (!feltDef) {
+		return { visningsnavn: kode ? `${funksjonsNavn}(${kode})` : funksjonsNavn, kode: kode ?? '', område: '' };
+	}
 	return {
 		...feltDef,
-		visningsnavn: `${funksjonsNavn}: ${feltDef.visningsnavn}`,
+		visningsnavn: `${funksjonsNavn}(${feltDef.visningsnavn})`,
 	};
 }
 
 function finnFeltdef(felter: Oppgavefelt[], kolonne: SelectFelt): Oppgavefelt | undefined {
 	if (kolonne.type === 'aggregert') {
 		return {
-			...finnFeltdefForAggregert(kolonne.kode ?? undefined, kolonne.funksjon),
+			...finnFeltdefForAggregert(felter, kolonne.kode, kolonne.funksjon),
 			tolkes_som: TolkesSom.String,
 			verdiforklaringer: null,
 			verdiforklaringerErUttømmende: false,
 			kokriterie: false,
+			listetype: false,
 		};
 	}
 	return felter.find((f) => f.kode === kolonne.kode);
@@ -116,7 +119,7 @@ function finnFeltdef(felter: Oppgavefelt[], kolonne: SelectFelt): Oppgavefelt | 
 
 function kolonneVisningsnavn(kolonne: SelectFelt, felter: Oppgavefelt[]): string {
 	const feltdef = finnFeltdef(felter, kolonne);
-	if (feltdef) return feltdef.visningsnavn;
+	if (feltdef?.visningsnavn) return feltdef.visningsnavn;
 	return kolonne.type === 'enkel' ? kolonne.kode : AGGREGERT_FUNKSJON_VISNINGSNAVN[kolonne.funksjon];
 }
 

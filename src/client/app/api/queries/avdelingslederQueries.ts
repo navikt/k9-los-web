@@ -1,4 +1,3 @@
-import { A } from 'react-router/dist/development/instrumentation--6Pioq_G';
 import {
 	DefaultError,
 	UseQueryOptions,
