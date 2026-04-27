@@ -75,6 +75,14 @@ jobs:
           sha: ${{ github.sha }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
+
+  sif-code-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: navikt/sif-gha-workflows/.github/actions/sif-code-scan@v1
+
+
   verdikjede-tester:
     name: Verdikjedetester
     needs: [build-and-deploy]
@@ -145,10 +153,4 @@ jobs:
     with:
       image: ${{ needs.build-and-deploy.outputs.image }}
       team: k9saksbehandling
-
-  sif-code-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: navikt/sif-gha-workflows/.github/actions/sif-code-scan@v1
 
