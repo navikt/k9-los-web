@@ -44,7 +44,7 @@
 		"nav-frontend-tabs-style": "2.0.2",
 		"nav-frontend-typografi": "4.0.2",
 		"nav-frontend-typografi-style": "2.0.2",
-		"postcss": "8.5.8",
+		"postcss": "8.5.10",
 		"postcss-import": "16.1.1",
 		"react": "19.2.5",
 		"react-collapse": "5.1.1",
