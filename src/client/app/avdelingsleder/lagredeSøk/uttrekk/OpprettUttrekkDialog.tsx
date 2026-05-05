@@ -12,7 +12,6 @@ import { CSS } from '@dnd-kit/utilities';
 import _ from 'lodash';
 import {
 	ArrowsUpDownIcon,
-	CalculatorIcon,
 	LayersIcon,
 	MenuHamburgerIcon,
 	PlusCircleIcon,
@@ -32,6 +31,7 @@ import {
 	ReadMore,
 	Select,
 	TextField,
+	UNSAFE_Combobox,
 	VStack,
 } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
@@ -48,15 +48,9 @@ import {
 	SelectFelt,
 } from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
-import {
-	QueryFunction,
-	addEnkelSelectFelt,
-	applyFunctions,
-	moveSelectFelt,
-	removeSelectFelt,
-	updateSelectFelt,
-} from 'filter/queryUtils';
+import { QueryFunction, applyFunctions } from 'filter/queryUtils';
 import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
+import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 import { QueryBoksStyle } from '../QueryBoksStyle';
 
 type UttrekkType = 'antall' | 'gruppert' | 'oppgaver';
@@ -79,7 +73,7 @@ function utledType(query: OppgaveQuery): UttrekkType {
 
 function alleOppgaverTekst(antall: number) {
 	const antallOmganger = Math.ceil(antall / maksAntallForUttrekk);
-	const offsets = Array.from({ length: antallOmganger }, (_, i) => i * maksAntallForUttrekk);
+	const offsets = Array.from({ length: antallOmganger }, (_v, i) => i * maksAntallForUttrekk);
 
 	let formattedOffsets: string;
 	if (offsets.length > 4) {
@@ -88,7 +82,10 @@ function alleOppgaverTekst(antall: number) {
 		formattedOffsets = [...offsets.slice(0, -2).map(String), offsets.slice(-2).join(' og ')].join(', ');
 	}
 
-	return `For å hente ut alle rader kan det gjøres uttrekk i ${antallOmganger} omganger. Sett da maksimalt antall ${maksAntallForUttrekk}, og hopp over henholdsvis ${formattedOffsets}.`;
+	return (
+		`For å hente ut alle rader kan det gjøres uttrekk i ${antallOmganger} omganger.` +
+		` Sett da maksimalt antall ${maksAntallForUttrekk}, og hopp over henholdsvis ${formattedOffsets}.`
+	);
 }
 
 // --- Gruppering: SortableGroupByField ---
@@ -101,6 +98,7 @@ const SortableGroupByField: React.FC<{
 	onRemove: (nodeId: string) => void;
 }> = ({ felt, alleFelter, oppgaveFelter, onUpdate, onRemove }) => {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
+	const [fritekst, setFritekst] = useState('');
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
@@ -110,6 +108,22 @@ const SortableGroupByField: React.FC<{
 
 	const valgteFraAndreRader = alleFelter.filter((f) => f._nodeId !== felt._nodeId && f.kode).map((f) => f.kode);
 	const tilgjengelige = oppgaveFelter.filter((f) => !valgteFraAndreRader.includes(f.kode) || f.kode === felt.kode);
+
+	const options = useMemo(() => {
+		const primærvalg = tilgjengelige.filter((v) => v.kokriterie);
+		const avanserteValg = tilgjengelige.filter((v) => !v.kokriterie);
+
+		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
+		if (avanserteValg.length > 0) {
+			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
+			optionsList.push(...avanserteValg.map((v) => ({ value: v.kode, label: v.visningsnavn })));
+		}
+		return optionsList;
+	}, [tilgjengelige]);
+
+	const selectedOptions = felt.kode ? options.filter((o) => o.value === felt.kode).map((o) => o.label) : [];
+
+	const containerClass = `groupByCombobox-${felt._nodeId.replace(/[^a-zA-Z0-9]/g, '')}`;
 
 	return (
 		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
@@ -122,23 +136,27 @@ const SortableGroupByField: React.FC<{
 			>
 				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
 			</button>
-			<Select
-				hideLabel
-				label="Velg felt"
-				className="min-w-0 grow"
-				value={felt.kode ?? ''}
-				onChange={(e) => onUpdate(felt._nodeId, e.target.value)}
-			>
-				<option value="">Velg felt</option>
-				{tilgjengelige.map((f) => (
-					<option key={f.kode} value={f.kode}>
-						{f.visningsnavn}
-					</option>
-				))}
-			</Select>
+			<div className={`min-w-0 grow ${containerClass}`}>
+				<style>{comboboxSeparatorStyle(containerClass)}</style>
+				<UNSAFE_Combobox
+					label="Velg felt"
+					hideLabel
+					size="small"
+					value={fritekst}
+					onChange={setFritekst}
+					selectedOptions={selectedOptions}
+					onToggleSelected={(value) => {
+						if (value === COMBOBOX_SEPARATOR_VALUE) return;
+						onUpdate(felt._nodeId, value);
+						setFritekst('');
+					}}
+					options={options}
+					shouldAutocomplete
+				/>
+			</div>
 			<Button
-				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
-				size="medium"
+				icon={<TrashIcon height="1.25rem" width="1.25rem" />}
+				size="small"
 				variant="tertiary"
 				onClick={() => onRemove(felt._nodeId)}
 			/>
@@ -178,7 +196,11 @@ const QuickAddGroupBy: React.FC<{
 				<button
 					key={kode}
 					type="button"
-					className="cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 font-semibold text-ax-neutral-700 hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200"
+					className={[
+						'cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed',
+						'border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 font-semibold text-ax-neutral-700',
+						'hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200',
+					].join(' ')}
 					style={{ fontSize: '0.9rem' }}
 					onClick={() => onAdd(kode)}
 				>
@@ -258,7 +280,7 @@ function GruppertKonfig({
 						</SortableContext>
 					</DndContext>
 					{groupByFelter.length === 0 && (
-						<div className="text-ax-neutral-500 italic text-md">Ingen kolonner lagt til</div>
+						<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen kolonner lagt til</div>
 					)}
 					<QuickAddGroupBy groupByFelter={groupByFelter} oppgaveFelter={oppgaveFelter} onAdd={onQuickAddGroupBy} />
 					<Button
@@ -286,6 +308,7 @@ function GruppertKonfig({
 							hideLabel
 							label="Sorter på"
 							className="min-w-0 grow"
+							size="small"
 							value={sortering?.felt ?? ''}
 							onChange={(e) => {
 								if (e.target.value === '') {
@@ -308,6 +331,7 @@ function GruppertKonfig({
 									hideLabel
 									label="Retning"
 									className="shrink-0"
+									size="small"
 									value={sortering.økende.toString()}
 									onChange={(e) => onUpdateSortering({ ...sortering, økende: e.target.value === 'true' })}
 								>
@@ -659,10 +683,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						Gjør uttrekk for {lagretSøk.tittel.length > 0 ? <>&#34;{lagretSøk.tittel}&#34;</> : 'lagret søk'}
 					</Dialog.Title>
 				</Dialog.Header>
-				<form
-					className="flex flex-col overflow-hidden min-h-0 flex-1"
-					onSubmit={handleFormSubmit}
-				>
+				<form className="flex flex-col overflow-hidden min-h-0 flex-1" onSubmit={handleFormSubmit}>
 					<Dialog.Body>
 						<BodyShort className="mb-4">
 							Søket matcher <strong>{antall?.toLocaleString('nb-NO')}</strong> oppgaver.
@@ -671,6 +692,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						<RadioGroup
 							legend="Type uttrekk"
 							value={uttrekkType}
+							size="small"
 							onChange={(val: UttrekkType) => handleTypeChange(val)}
 							className="mb-4"
 						>
@@ -771,7 +793,9 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 															},
 															max: {
 																value: maksAntallForUttrekk,
-																message: `Maksimalt antall rader kan ikke være større enn ${maksAntallForUttrekk.toLocaleString('nb-NO')}`,
+																message:
+																	`Maksimalt antall rader kan ikke være større enn ` +
+																	`${maksAntallForUttrekk.toLocaleString('nb-NO')}`,
 															},
 															valueAsNumber: true,
 															...(uttrekketErForStort && {

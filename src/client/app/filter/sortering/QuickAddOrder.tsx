@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { FilterContext } from 'filter/FilterContext';
 import { OppgavefilterKode } from 'filter/filterTsTypes';
@@ -41,21 +41,23 @@ const QuickAddOrder = () => {
 	if (tilgjengelige.length === 0) return null;
 
 	return (
-		<div className="mt-2">
-			<div className="flex flex-wrap gap-2">
-				{tilgjengelige.map((item) => (
-					<button
-						key={item.kode}
-						type="button"
-						className="cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 font-semibold text-ax-neutral-700 hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200"
-						style={{ fontSize: '0.9rem' }}
-						onClick={() => handleAdd(item)}
-					>
-						<PlusIcon aria-hidden className="shrink-0" height="0.875rem" width="0.875rem" />
-						{item.visningsnavn}
-					</button>
-				))}
-			</div>
+		<div className="flex flex-wrap gap-2">
+			{tilgjengelige.map((item) => (
+				<button
+					key={item.kode}
+					type="button"
+					className={[
+						'cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed',
+						'border-ax-neutral-400 bg-transparent pl-1 pr-2 py-0.5 font-semibold text-ax-neutral-700',
+						'hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200',
+					].join(' ')}
+					style={{ fontSize: '0.9rem' }}
+					onClick={() => handleAdd(item)}
+				>
+					<PlusIcon aria-hidden className="shrink-0" height="0.875rem" width="0.875rem" />
+					{item.visningsnavn}
+				</button>
+			))}
 		</div>
 	);
 };

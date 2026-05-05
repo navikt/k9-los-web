@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext } from 'react';
+import { FunctionComponent, useContext, useMemo, useState } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core/dist/types';
 import {
@@ -9,12 +9,13 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
-import { Button, Select, VStack } from '@navikt/ds-react';
+import { Button, Select, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
 import { EnkelOrderFelt, Oppgavefelt, OrderFelt } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
+import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 import QuickAddOrder from './QuickAddOrder';
 
 const SortableEnkelOrderField: FunctionComponent<{
@@ -26,6 +27,7 @@ const SortableEnkelOrderField: FunctionComponent<{
 	onRemove: (nodeId: string) => void;
 }> = ({ felt, order, felter, onUpdateKode, onUpdateDirection, onRemove }) => {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
+	const [fritekst, setFritekst] = useState('');
 
 	const style = {
 		transform: CSS.Transform.toString(transform),
@@ -38,6 +40,22 @@ const SortableEnkelOrderField: FunctionComponent<{
 		.map((o) => (o as WithNodeId<EnkelOrderFelt>).kode);
 	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
 
+	const options = useMemo(() => {
+		const primærvalg = tilgjengeligeFelter.filter((v) => v.kokriterie);
+		const avanserteValg = tilgjengeligeFelter.filter((v) => !v.kokriterie);
+
+		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
+		if (avanserteValg.length > 0) {
+			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
+			optionsList.push(...avanserteValg.map((v) => ({ value: v.kode, label: v.visningsnavn })));
+		}
+		return optionsList;
+	}, [tilgjengeligeFelter]);
+
+	const selectedOptions = felt.kode ? options.filter((o) => o.value === felt.kode).map((o) => o.label) : [];
+
+	const containerClass = `orderFeltCombobox-${felt._nodeId.replace(/[^a-zA-Z0-9]/g, '')}`;
+
 	return (
 		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
 			<button
@@ -49,23 +67,28 @@ const SortableEnkelOrderField: FunctionComponent<{
 			>
 				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
 			</button>
-			<Select
-				hideLabel
-				label="Velg felt for sortering"
-				className="min-w-0 grow"
-				value={felt.kode}
-				onChange={(event) => onUpdateKode(felt._nodeId, event.target.value)}
-			>
-				<option value="">Velg felt</option>
-				{tilgjengeligeFelter.map((feltdefinisjon) => (
-					<option key={feltdefinisjon.kode} value={feltdefinisjon.kode}>
-						{feltdefinisjon.visningsnavn}
-					</option>
-				))}
-			</Select>
+			<div className={`min-w-0 grow ${containerClass}`}>
+				<style>{comboboxSeparatorStyle(containerClass)}</style>
+				<UNSAFE_Combobox
+					label="Velg felt for sortering"
+					hideLabel
+					size="small"
+					value={fritekst}
+					onChange={setFritekst}
+					selectedOptions={selectedOptions}
+					onToggleSelected={(value) => {
+						if (value === COMBOBOX_SEPARATOR_VALUE) return;
+						onUpdateKode(felt._nodeId, value);
+						setFritekst('');
+					}}
+					options={options}
+					shouldAutocomplete
+				/>
+			</div>
 			<Select
 				hideLabel
 				label="Retning"
+				size="small"
 				className="shrink-0"
 				value={felt.økende.toString()}
 				onChange={(event) => onUpdateDirection(felt._nodeId, event.target.value)}
@@ -79,8 +102,8 @@ const SortableEnkelOrderField: FunctionComponent<{
 			</Select>
 			<Button
 				type="button"
-				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
-				size="medium"
+				icon={<TrashIcon height="1.25rem" width="1.25rem" />}
+				size="small"
 				variant="tertiary"
 				onClick={() => onRemove(felt._nodeId)}
 			/>
@@ -154,7 +177,9 @@ const OppgaveOrderFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			{orderFields.length === 0 && <div className="text-ax-neutral-500 italic text-md">Ingen sortering lagt til</div>}
+			{orderFields.length === 0 && (
+				<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen sortering lagt til</div>
+			)}
 			<QuickAddOrder />
 			<div className="flex gap-2">
 				<Button
