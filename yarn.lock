@@ -2822,9 +2822,9 @@ __metadata:
     dotenv: "npm:17.4.2"
     express: "npm:5.2.1"
     express-http-proxy: "npm:2.1.2"
-    express-rate-limit: "npm:8.3.1"
+    express-rate-limit: "npm:8.5.0"
     helmet: "npm:8.1.0"
-    jose: "npm:6.2.1"
+    jose: "npm:6.2.3"
     morgan: "npm:1.10.1"
     node-cache: "npm:5.1.2"
     winston: "npm:3.19.0"
@@ -7821,14 +7821,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express-rate-limit@npm:8.3.1":
-  version: 8.3.1
-  resolution: "express-rate-limit@npm:8.3.1"
+"express-rate-limit@npm:8.5.0":
+  version: 8.5.0
+  resolution: "express-rate-limit@npm:8.5.0"
   dependencies:
     ip-address: "npm:10.1.0"
   peerDependencies:
     express: ">= 4.11"
-  checksum: 10/dd97bfc48c01a6d4c5433203232b5e7a1e55e21322bde49033e5f8c4339584fe671a94096144a0810f4ea21dcec8aaaf15823109627e609f8ed1bc5912a345cf
+  checksum: 10/e6905dcc8ac8eb0e094fc72f672ff99beb07210f6da9e8e48942dc8123161f4c220e7066b7a09b7bd8218d0f1c2cd8d2675cdf8e661701cb0ed000a58dc3c3f5
   languageName: node
   linkType: hard
 
@@ -10144,10 +10144,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:6.2.1":
-  version: 6.2.1
-  resolution: "jose@npm:6.2.1"
-  checksum: 10/12f06a76ac743eb48314e662e02b141f6e4644dbcbdb1cd083c3867b1f72f1e148a67ebf4978d0d5adeb62f4be1572feee76f1849cbc32f8af1457ec9f788299
+"jose@npm:6.2.3":
+  version: 6.2.3
+  resolution: "jose@npm:6.2.3"
+  checksum: 10/876974613c5ee988d43b65a34c96ce440dbf7706a2f07f465b8874af16ee532102e224459a7068d2c6ef044affe49690667d23ca12770c279804baec95a09608
   languageName: node
   linkType: hard
 
