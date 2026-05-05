@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { PlusIcon } from '@navikt/aksel-icons';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
