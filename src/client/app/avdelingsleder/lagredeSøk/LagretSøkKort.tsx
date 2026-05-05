@@ -15,6 +15,8 @@ export function LagretSøkKort({
 	lagretSøk,
 	antall,
 	antallLoading,
+	henterAntallAutomatisk,
+	visAntall,
 	uttrekk,
 	initiallyExpanded,
 	onNyOpprettet,
@@ -22,6 +24,8 @@ export function LagretSøkKort({
 	lagretSøk: LagretSøk;
 	antall: number | undefined;
 	antallLoading: boolean;
+	henterAntallAutomatisk: boolean;
+	visAntall: () => void;
 	uttrekk: Uttrekk[];
 	initiallyExpanded?: boolean;
 	onNyOpprettet?: (id: number) => void;
@@ -36,10 +40,26 @@ export function LagretSøkKort({
 		}
 	}, [initiallyExpanded]);
 
+	useEffect(() => {
+		if (!lagretSøkKollapset && !henterAntallAutomatisk && antall === undefined) {
+			visAntall();
+		}
+	}, [lagretSøkKollapset, henterAntallAutomatisk, antall, visAntall]);
+
 	const { mutate: slettLagretSøk } = useSlettLagretSøk();
 	const harEgendefinertTittel = lagretSøk.tittel.length > 0;
 	const harUttrekk = uttrekk.length > 0;
 	const filterBeskrivelse = utledFilterBeskrivelse(lagretSøk.query, felter);
+	const antallOppgaver = antall !== undefined ? `${antall}` : '-';
+	const antallVisning = antallLoading ? (
+		<Skeleton variant="text" width={100} className="inline-block" />
+	) : (
+		<>
+			<span className="font-medium">Antall oppgaver: </span>
+			{antallOppgaver}
+		</>
+	);
+	const antallIKollapsetVisning = henterAntallAutomatisk || antall !== undefined || antallLoading;
 
 	const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
 		// Siden denne eventhandleren legges på hele div-en må det gjøres sjekker på at man klikker direkte på div-en
@@ -134,16 +154,7 @@ export function LagretSøkKort({
 							{filterBeskrivelse.map((f) => f.feltnavn).join(', ')}
 						</div>
 					)}
-					<div>
-						{antallLoading ? (
-							<Skeleton variant="text" width={100} className="inline-block" />
-						) : (
-							<>
-								<span className="font-medium">Antall oppgaver: </span>
-								{antall !== undefined ? `${antall}` : '-'}
-							</>
-						)}
-					</div>
+					<div>{antallIKollapsetVisning ? antallVisning : <span className="italic">Klikk for å vise antall</span>}</div>
 				</div>
 			) : (
 				<>
@@ -153,16 +164,7 @@ export function LagretSøkKort({
 					</div>
 
 					{/* Rad 3: Antall oppgaver */}
-					<div className="text-md text-ax-neutral-800 mb-4">
-						{antallLoading ? (
-							<Skeleton variant="text" width={100} className="inline-block" />
-						) : (
-							<>
-								<span className="font-medium">Antall oppgaver: </span>
-								{antall !== undefined ? `${antall}` : '-'}
-							</>
-						)}
-					</div>
+					<div className="text-md text-ax-neutral-800 mb-4">{antallVisning}</div>
 
 					{/* Rad 4: Uttrekk-visning */}
 					<div className="">
