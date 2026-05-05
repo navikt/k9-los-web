@@ -18,10 +18,10 @@ export default {
 			testMatch: ['**/?(*.)+(spec).+(js|jsx|ts|tsx)'],
 			testPathIgnorePatterns: ['/node_modules/', '/dist/', '<rootDir>/src/client/tests/'],
 			transform: {
-				'^.+\\.(ts|tsx|js|jsx)?$': 'babel-jest',
+				'^.+\\.(ts|tsx|js|jsx|mjs)?$': 'babel-jest',
 				'^.+.(css|less)$': 'jest-transform-stub',
 			},
-			transformIgnorePatterns: ['<rootDir>.*(node_modules)(?!.*(nav|uuid|@portabletext|until-async).*).*$'],
+			transformIgnorePatterns: ['<rootDir>.*(node_modules)(?!.*(nav|uuid|@portabletext|until-async|rettime|msw|@open-draft).*).*$'],
 			// ignore tests in tests folder
 			moduleDirectories: ['node_modules', 'src/client', 'src/client/app'],
 		},

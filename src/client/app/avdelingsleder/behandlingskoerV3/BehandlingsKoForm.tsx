@@ -117,7 +117,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 						<TextField
 							label="Navn"
 							size="medium"
-							error={formMethods.formState.errors[fieldnames.TITTEL]?.message as string}
+							error={formMethods.formState.errors[fieldnames.TITTEL]?.message}
 							{...formMethods.register(fieldnames.TITTEL, { required: 'Feltet er påkrevd' })}
 						/>
 						<Textarea
@@ -126,7 +126,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 							description="Her kan du legge inn en valgfri beskrivelse av hva denne køen inneholder."
 							className="mt-8"
 							maxLength={4000}
-							error={formMethods.formState.errors[fieldnames.BESKRIVELSE]?.message as string}
+							error={formMethods.formState.errors[fieldnames.BESKRIVELSE]?.message}
 							{...formMethods.register(fieldnames.BESKRIVELSE, { required: 'Feltet er påkrevd' })}
 						/>
 					</div>
@@ -202,6 +202,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 						}
 					}}
 					disabled={!formMethods.formState.isDirty}
+					loading={lagreMutation.isPending}
 				>
 					Lagre oppgavekø
 				</Button>
