@@ -127,7 +127,9 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 							className="mt-8"
 							maxLength={4000}
 							error={formMethods.formState.errors[fieldnames.BESKRIVELSE]?.message}
-							{...formMethods.register(fieldnames.BESKRIVELSE, { required: 'Feltet er påkrevd' })}
+							{...formMethods.register(fieldnames.BESKRIVELSE, {
+								maxLength: { value: 4000, message: 'Feltet kan ikke være lengre enn 4000 tegn' },
+							})}
 						/>
 					</div>
 				</div>
