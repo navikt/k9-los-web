@@ -41,19 +41,29 @@ import OppgaveQueryModel from 'filter/OppgaveQueryModel';
 import { IdentifiedOppgaveQuery, WithNodeId, fjernNodeIdFraQuery, tilIdentified } from 'filter/filterFrontendTypes';
 import {
 	AggregertFunksjon,
+	EnkelOrderFelt,
 	EnkelSelectFelt,
 	OppgaveQuery,
 	Oppgavefelt,
 	OppgavefilterKode,
+	OrderFelt,
 	SelectFelt,
 } from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
-import { QueryFunction, applyFunctions } from 'filter/queryUtils';
-import OppgaveOrderFelter from 'filter/sortering/OppgaveOrderFelter';
+import {
+	QueryFunction,
+	addSortering,
+	applyFunctions,
+	moveSortering,
+	removeSortering,
+	updateSortering,
+} from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 import { QueryBoksStyle } from '../QueryBoksStyle';
 
 type UttrekkType = 'antall' | 'gruppert' | 'oppgaver';
+
+type GruppertSorteringsFelt = { felt: string; økende: boolean; _nodeId: string };
 
 interface OpprettUttrekkDialogProps {
 	lagretSøk: LagretSøk;
@@ -212,41 +222,289 @@ const QuickAddGroupBy: React.FC<{
 	);
 };
 
+// --- Sortable order-felt for gruppert modus ---
+
+const SortableGruppertOrderField: React.FC<{
+	felt: GruppertSorteringsFelt;
+	alleSorteringer: GruppertSorteringsFelt[];
+	sorteringsAlternativer: { value: string; label: string }[];
+	onUpdateFelt: (nodeId: string, felt: string) => void;
+	onUpdateRetning: (nodeId: string, økende: boolean) => void;
+	onRemove: (nodeId: string) => void;
+}> = ({ felt, alleSorteringer, sorteringsAlternativer, onUpdateFelt, onUpdateRetning, onRemove }) => {
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		opacity: isDragging ? 0.5 : 1,
+	};
+
+	const valgteFraAndreRader = alleSorteringer.filter((s) => s._nodeId !== felt._nodeId && s.felt).map((s) => s.felt);
+	const tilgjengelige = sorteringsAlternativer.filter(
+		(alt) => !valgteFraAndreRader.includes(alt.value) || alt.value === felt.felt,
+	);
+
+	return (
+		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
+			<button
+				type="button"
+				className="shrink-0 flex items-center cursor-grab text-ax-neutral-700 hover:text-ax-neutral-1000"
+				style={{ appearance: 'none', background: 'none', border: 'none', padding: 0 }}
+				{...attributes}
+				{...listeners}
+			>
+				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
+			</button>
+			<Select
+				hideLabel
+				label="Sorter på"
+				className="min-w-0 grow"
+				size="small"
+				value={felt.felt}
+				onChange={(e) => onUpdateFelt(felt._nodeId, e.target.value)}
+			>
+				<option value="">Velg felt</option>
+				{tilgjengelige.map((alt) => (
+					<option key={alt.value} value={alt.value}>
+						{alt.label}
+					</option>
+				))}
+			</Select>
+			<Select
+				hideLabel
+				label="Retning"
+				className="shrink-0"
+				size="small"
+				value={felt.økende.toString()}
+				onChange={(e) => onUpdateRetning(felt._nodeId, e.target.value === 'true')}
+			>
+				<option value="true">Økende</option>
+				<option value="false">Synkende</option>
+			</Select>
+			<Button
+				type="button"
+				icon={<TrashIcon height="1.25rem" width="1.25rem" />}
+				size="small"
+				variant="tertiary"
+				onClick={() => onRemove(felt._nodeId)}
+			/>
+		</div>
+	);
+};
+
+// --- Constrained order-felter for oppgaver-modus ---
+
+const SortableOppgaverOrderField: React.FC<{
+	felt: WithNodeId<EnkelOrderFelt>;
+	allOrder: WithNodeId<OrderFelt>[];
+	sorteringsAlternativer: { value: string; label: string }[];
+	onUpdateKode: (nodeId: string, kode: string) => void;
+	onUpdateRetning: (nodeId: string, økende: boolean) => void;
+	onRemove: (nodeId: string) => void;
+}> = ({ felt, allOrder, sorteringsAlternativer, onUpdateKode, onUpdateRetning, onRemove }) => {
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: felt._nodeId });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		opacity: isDragging ? 0.5 : 1,
+	};
+
+	const valgteFraAndreRader = allOrder
+		.filter((o) => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode)
+		.map((o) => (o as WithNodeId<EnkelOrderFelt>).kode);
+	const tilgjengelige = sorteringsAlternativer.filter(
+		(alt) => !valgteFraAndreRader.includes(alt.value) || alt.value === felt.kode,
+	);
+
+	return (
+		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
+			<button
+				type="button"
+				className="shrink-0 flex items-center cursor-grab text-ax-neutral-700 hover:text-ax-neutral-1000"
+				style={{ appearance: 'none', background: 'none', border: 'none', padding: 0 }}
+				{...attributes}
+				{...listeners}
+			>
+				<MenuHamburgerIcon aria-hidden height="1.5rem" width="1.5rem" />
+			</button>
+			<Select
+				hideLabel
+				label="Sorter på"
+				className="min-w-0 grow"
+				size="small"
+				value={felt.kode ?? ''}
+				onChange={(e) => onUpdateKode(felt._nodeId, e.target.value)}
+			>
+				<option value="">Velg felt</option>
+				{tilgjengelige.map((alt) => (
+					<option key={alt.value} value={alt.value}>
+						{alt.label}
+					</option>
+				))}
+			</Select>
+			<Select
+				hideLabel
+				label="Retning"
+				className="shrink-0"
+				size="small"
+				value={felt.økende.toString()}
+				onChange={(e) => onUpdateRetning(felt._nodeId, e.target.value === 'true')}
+			>
+				<option value="true">Økende</option>
+				<option value="false">Synkende</option>
+			</Select>
+			<Button
+				type="button"
+				icon={<TrashIcon height="1.25rem" width="1.25rem" />}
+				size="small"
+				variant="tertiary"
+				onClick={() => onRemove(felt._nodeId)}
+			/>
+		</div>
+	);
+};
+
+const OppgaverConstrainedOrderFelter: React.FC = () => {
+	const { felter } = useContext(AppContext);
+	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
+
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+	);
+
+	const valgteKolonner = (oppgaveQuery?.select ?? [])
+		.filter((s): s is WithNodeId<EnkelSelectFelt> => s.type === 'enkel' && Boolean(s.kode))
+		.map((s) => {
+			const oppgavefelt = felter.find((f) => f.kode === s.kode);
+			return { kode: s.kode, visningsnavn: oppgavefelt?.visningsnavn ?? s.kode };
+		});
+
+	const sorteringsAlternativer = valgteKolonner.map((k) => ({ value: k.kode, label: k.visningsnavn }));
+
+	const orderFields = oppgaveQuery?.order ?? [];
+
+	const handleAddFelt = () => {
+		updateQuery([addSortering(null)]);
+	};
+
+	const handleUpdateKode = (nodeId: string, kode: string) => {
+		const oppgavefelt = felter.find((f) => f.kode === kode);
+		if (oppgavefelt) {
+			updateQuery([updateSortering(nodeId, { område: oppgavefelt.område, kode: oppgavefelt.kode })]);
+		}
+	};
+
+	const handleUpdateRetning = (nodeId: string, økende: boolean) => {
+		updateQuery([updateSortering(nodeId, { økende })]);
+	};
+
+	const handleRemove = (nodeId: string) => {
+		updateQuery([removeSortering(nodeId)]);
+	};
+
+	const handleDragEnd = (event: DragEndEvent) => {
+		const { active, over } = event;
+		if (!over || active.id === over.id) return;
+		const oldIndex = orderFields.findIndex((f) => f._nodeId === active.id);
+		const newIndex = orderFields.findIndex((f) => f._nodeId === over.id);
+		if (oldIndex === -1 || newIndex === -1) return;
+		updateQuery([moveSortering(oldIndex, newIndex)]);
+	};
+
+	return (
+		<VStack gap="space-8">
+			<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+				<SortableContext items={orderFields.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
+					{orderFields.map((felt) => (
+						<SortableOppgaverOrderField
+							key={felt._nodeId}
+							felt={felt as WithNodeId<EnkelOrderFelt>}
+							allOrder={orderFields}
+							sorteringsAlternativer={sorteringsAlternativer}
+							onUpdateKode={handleUpdateKode}
+							onUpdateRetning={handleUpdateRetning}
+							onRemove={handleRemove}
+						/>
+					))}
+				</SortableContext>
+			</DndContext>
+			{orderFields.length === 0 && (
+				<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen sortering lagt til</div>
+			)}
+			<Button
+				type="button"
+				className="self-start -ml-1 px-1"
+				icon={<PlusCircleIcon aria-hidden />}
+				size="small"
+				variant="tertiary"
+				onClick={handleAddFelt}
+			>
+				Legg til sortering
+			</Button>
+		</VStack>
+	);
+};
+
 function GruppertKonfig({
 	groupByFelter,
-	sortering,
+	sorteringer,
 	oppgaveFelter,
 	onAddGroupBy,
 	onQuickAddGroupBy,
 	onUpdateGroupBy,
 	onRemoveGroupBy,
 	onMoveGroupBy,
-	onUpdateSortering,
+	onAddSortering,
+	onUpdateSorteringFelt,
+	onUpdateSorteringRetning,
+	onRemoveSortering,
+	onMoveSortering,
 	valideringsfeil,
 }: {
 	groupByFelter: WithNodeId<EnkelSelectFelt>[];
-	sortering: { felt: string; økende: boolean } | null;
+	sorteringer: GruppertSorteringsFelt[];
 	oppgaveFelter: Oppgavefelt[];
 	onAddGroupBy: () => void;
 	onQuickAddGroupBy: (kode: string) => void;
 	onUpdateGroupBy: (nodeId: string, kode: string) => void;
 	onRemoveGroupBy: (nodeId: string) => void;
 	onMoveGroupBy: (oldIndex: number, newIndex: number) => void;
-	onUpdateSortering: (sortering: { felt: string; økende: boolean } | null) => void;
+	onAddSortering: () => void;
+	onUpdateSorteringFelt: (nodeId: string, felt: string) => void;
+	onUpdateSorteringRetning: (nodeId: string, økende: boolean) => void;
+	onRemoveSortering: (nodeId: string) => void;
+	onMoveSortering: (oldIndex: number, newIndex: number) => void;
 	valideringsfeil: string | null;
 }) {
-	const sensors = useSensors(
+	const groupBySensors = useSensors(
 		useSensor(PointerSensor),
 		useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
 	);
 
-	const handleDragEnd = (event: DragEndEvent) => {
+	const orderSensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+	);
+
+	const handleGroupByDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event;
 		if (!over || active.id === over.id) return;
 		const oldIndex = groupByFelter.findIndex((f) => f._nodeId === active.id);
 		const newIndex = groupByFelter.findIndex((f) => f._nodeId === over.id);
 		if (oldIndex === -1 || newIndex === -1) return;
 		onMoveGroupBy(oldIndex, newIndex);
+	};
+
+	const handleOrderDragEnd = (event: DragEndEvent) => {
+		const { active, over } = event;
+		if (!over || active.id === over.id) return;
+		const oldIndex = sorteringer.findIndex((f) => f._nodeId === active.id);
+		const newIndex = sorteringer.findIndex((f) => f._nodeId === over.id);
+		if (oldIndex === -1 || newIndex === -1) return;
+		onMoveSortering(oldIndex, newIndex);
 	};
 
 	const valgteGroupByNavn = groupByFelter
@@ -265,7 +523,7 @@ function GruppertKonfig({
 		<>
 			<QueryBoksStyle ikon={<LayersIcon />} tittel="Grupper etter">
 				<VStack gap="space-8">
-					<DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+					<DndContext sensors={groupBySensors} collisionDetection={closestCenter} onDragEnd={handleGroupByDragEnd}>
 						<SortableContext items={groupByFelter.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
 							{groupByFelter.map((felt) => (
 								<SortableGroupByField
@@ -303,50 +561,34 @@ function GruppertKonfig({
 
 			<QueryBoksStyle ikon={<ArrowsUpDownIcon />} tittel="Sortering">
 				<VStack gap="space-8">
-					<div className="flex items-center gap-2">
-						<Select
-							hideLabel
-							label="Sorter på"
-							className="min-w-0 grow"
-							size="small"
-							value={sortering?.felt ?? ''}
-							onChange={(e) => {
-								if (e.target.value === '') {
-									onUpdateSortering(null);
-								} else {
-									onUpdateSortering({ felt: e.target.value, økende: sortering?.økende ?? true });
-								}
-							}}
-						>
-							<option value="">Ingen sortering</option>
-							{sorteringsAlternativer.map((alt) => (
-								<option key={alt.value} value={alt.value}>
-									{alt.label}
-								</option>
-							))}
-						</Select>
-						{sortering && (
-							<>
-								<Select
-									hideLabel
-									label="Retning"
-									className="shrink-0"
-									size="small"
-									value={sortering.økende.toString()}
-									onChange={(e) => onUpdateSortering({ ...sortering, økende: e.target.value === 'true' })}
-								>
-									<option value="true">Økende</option>
-									<option value="false">Synkende</option>
-								</Select>
-								<Button
-									icon={<TrashIcon height="1.5rem" width="1.5rem" />}
-									size="medium"
-									variant="tertiary"
-									onClick={() => onUpdateSortering(null)}
+					<DndContext sensors={orderSensors} collisionDetection={closestCenter} onDragEnd={handleOrderDragEnd}>
+						<SortableContext items={sorteringer.map((f) => f._nodeId)} strategy={verticalListSortingStrategy}>
+							{sorteringer.map((felt) => (
+								<SortableGruppertOrderField
+									key={felt._nodeId}
+									felt={felt}
+									alleSorteringer={sorteringer}
+									sorteringsAlternativer={sorteringsAlternativer}
+									onUpdateFelt={onUpdateSorteringFelt}
+									onUpdateRetning={onUpdateSorteringRetning}
+									onRemove={onRemoveSortering}
 								/>
-							</>
-						)}
-					</div>
+							))}
+						</SortableContext>
+					</DndContext>
+					{sorteringer.length === 0 && (
+						<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen sortering lagt til</div>
+					)}
+					<Button
+						type="button"
+						className="self-start -ml-1 px-1"
+						icon={<PlusCircleIcon aria-hidden />}
+						size="small"
+						variant="tertiary"
+						onClick={onAddSortering}
+					>
+						Legg til sortering
+					</Button>
 				</VStack>
 			</QueryBoksStyle>
 		</>
@@ -374,7 +616,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	// --- Gruppert state ---
 	const [groupByFelter, setGroupByFelter] = useState<WithNodeId<EnkelSelectFelt>[]>([]);
-	const [gruppertSortering, setGruppertSortering] = useState<{ felt: string; økende: boolean } | null>(null);
+	const [gruppertSorteringer, setGruppertSorteringer] = useState<GruppertSorteringsFelt[]>([]);
 	const [gruppertValideringsfeil, setGruppertValideringsfeil] = useState<string | null>(null);
 
 	// --- Oppgaver state (via react-hook-form) ---
@@ -419,20 +661,21 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 					.map((s) => tilIdentified(s));
 				setGroupByFelter(enkelFelter);
 
-				// Hent ut sortering
+				// Hent ut sorteringer (støtter flere)
 				if (lagretSøk.query.order.length > 0) {
-					const order = lagretSøk.query.order[0];
-					if (order.type === 'aggregert') {
-						setGruppertSortering({ felt: '__antall__', økende: order.økende });
-					} else {
-						setGruppertSortering({ felt: order.kode, økende: order.økende });
-					}
+					setGruppertSorteringer(
+						lagretSøk.query.order.map((order) => ({
+							felt: order.type === 'aggregert' ? '__antall__' : order.kode,
+							økende: order.økende,
+							_nodeId: crypto.randomUUID(),
+						})),
+					);
 				} else {
-					setGruppertSortering({ felt: '__antall__', økende: false });
+					setGruppertSorteringer([{ felt: '__antall__', økende: false, _nodeId: crypto.randomUUID() }]);
 				}
 			} else {
 				setGroupByFelter([]);
-				setGruppertSortering(null);
+				setGruppertSorteringer([]);
 			}
 
 			// For oppgaver-modus: reset form med lagret søks data, men kun enkel-felter
@@ -458,7 +701,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 		if (newType === 'gruppert') {
 			setGroupByFelter([]);
-			setGruppertSortering({ felt: '__antall__', økende: false });
+			setGruppertSorteringer([{ felt: '__antall__', økende: false, _nodeId: crypto.randomUUID() }]);
 		}
 
 		if (newType === 'oppgaver') {
@@ -502,6 +745,32 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 	const handleMoveGroupBy = (oldIndex: number, newIndex: number) => {
 		setGroupByFelter((prev) => {
+			const copy = [...prev];
+			const [moved] = copy.splice(oldIndex, 1);
+			copy.splice(newIndex, 0, moved);
+			return copy;
+		});
+	};
+
+	// --- Gruppert sortering handlers ---
+	const handleAddGruppertSortering = () => {
+		setGruppertSorteringer((prev) => [...prev, { felt: '', økende: true, _nodeId: crypto.randomUUID() }]);
+	};
+
+	const handleUpdateGruppertSorteringFelt = (nodeId: string, felt: string) => {
+		setGruppertSorteringer((prev) => prev.map((s) => (s._nodeId === nodeId ? { ...s, felt } : s)));
+	};
+
+	const handleUpdateGruppertSorteringRetning = (nodeId: string, økende: boolean) => {
+		setGruppertSorteringer((prev) => prev.map((s) => (s._nodeId === nodeId ? { ...s, økende } : s)));
+	};
+
+	const handleRemoveGruppertSortering = (nodeId: string) => {
+		setGruppertSorteringer((prev) => prev.filter((s) => s._nodeId !== nodeId));
+	};
+
+	const handleMoveGruppertSortering = (oldIndex: number, newIndex: number) => {
+		setGruppertSorteringer((prev) => {
 			const copy = [...prev];
 			const [moved] = copy.splice(oldIndex, 1);
 			copy.splice(newIndex, 0, moved);
@@ -554,23 +823,24 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				{ type: 'aggregert' as const, funksjon: AggregertFunksjon.ANTALL },
 			];
 
-			// Bygg order
+			// Bygg order fra alle gyldige sorteringer
 			const orderFelter: OppgaveQuery['order'] = [];
-			if (gruppertSortering) {
-				if (gruppertSortering.felt === '__antall__') {
+			for (const sortering of gruppertSorteringer) {
+				if (!sortering.felt) continue;
+				if (sortering.felt === '__antall__') {
 					orderFelter.push({
 						type: 'aggregert',
 						funksjon: AggregertFunksjon.ANTALL,
-						økende: gruppertSortering.økende,
+						økende: sortering.økende,
 					});
 				} else {
-					const oppgavefelt = felter.find((f) => f.kode === gruppertSortering.felt);
+					const oppgavefelt = felter.find((f) => f.kode === sortering.felt);
 					if (oppgavefelt) {
 						orderFelter.push({
 							type: 'enkel',
 							område: oppgavefelt.område,
 							kode: oppgavefelt.kode,
-							økende: gruppertSortering.økende,
+							økende: sortering.økende,
 						});
 					}
 				}
@@ -717,14 +987,18 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						{uttrekkType === 'gruppert' && (
 							<GruppertKonfig
 								groupByFelter={groupByFelter}
-								sortering={gruppertSortering}
+								sorteringer={gruppertSorteringer}
 								oppgaveFelter={felter}
 								onAddGroupBy={handleAddGroupBy}
 								onQuickAddGroupBy={handleQuickAddGroupBy}
 								onUpdateGroupBy={handleUpdateGroupBy}
 								onRemoveGroupBy={handleRemoveGroupBy}
 								onMoveGroupBy={handleMoveGroupBy}
-								onUpdateSortering={setGruppertSortering}
+								onAddSortering={handleAddGruppertSortering}
+								onUpdateSorteringFelt={handleUpdateGruppertSorteringFelt}
+								onUpdateSorteringRetning={handleUpdateGruppertSorteringRetning}
+								onRemoveSortering={handleRemoveGruppertSortering}
+								onMoveSortering={handleMoveGruppertSortering}
 								valideringsfeil={gruppertValideringsfeil}
 							/>
 						)}
@@ -738,7 +1012,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 									</QueryBoksStyle>
 
 									<QueryBoksStyle ikon={<ArrowsUpDownIcon />} tittel="Sortering">
-										<OppgaveOrderFelter />
+										<OppgaverConstrainedOrderFelter />
 									</QueryBoksStyle>
 								</FilterContext.Provider>
 
