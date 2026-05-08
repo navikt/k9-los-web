@@ -3,11 +3,15 @@ import dayjs from 'dayjs';
 import { ChevronDownIcon, EyeIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Dialog, Loader, Pagination, Table } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
+import { Uttrekk, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 import {
-	Uttrekk,
-	useHentUttrekkResultat,
-} from 'api/queries/avdelingslederQueries';
-import { AggregertFunksjon, AGGREGERT_FUNKSJON_VISNINGSNAVN, Oppgavefelt, SelectFelt, TolkesSom } from 'filter/filterTsTypes';
+	AGGREGERT_FUNKSJON_VISNINGSNAVN,
+	AggregertFunksjon,
+	Oppgavefelt,
+	SelectFelt,
+	Synlighet,
+	TolkesSom,
+} from 'filter/filterTsTypes';
 import 'utils/dateUtils';
 
 const PAGE_SIZE_OPTIONS = [5, 10, 15, 20, 25, 30, 35, 40];
@@ -110,7 +114,7 @@ function finnFeltdef(felter: Oppgavefelt[], kolonne: SelectFelt): Oppgavefelt | 
 			tolkes_som: TolkesSom.String,
 			verdiforklaringer: null,
 			verdiforklaringerErUttømmende: false,
-			kokriterie: false,
+			synlighet: Synlighet.UnderStreken,
 			listetype: false,
 		};
 	}
@@ -282,9 +286,7 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 									<Table.Header>
 										<Table.Row>
 											{visKolonneIndekser.map((idx) => (
-												<Table.HeaderCell key={idx}>
-													{kolonneVisningsnavn(data.kolonner[idx], felter)}
-												</Table.HeaderCell>
+												<Table.HeaderCell key={idx}>{kolonneVisningsnavn(data.kolonner[idx], felter)}</Table.HeaderCell>
 											))}
 										</Table.Row>
 									</Table.Header>

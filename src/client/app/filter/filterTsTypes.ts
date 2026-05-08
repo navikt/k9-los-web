@@ -84,8 +84,14 @@ export type Verdiforklaring = {
 	visningsnavn: string;
 	gruppering: string | undefined;
 	sekundærvalg?: boolean;
-	synlighet?: 'SKJULT' | 'OVER_STREKEN' | 'UNDER_STREKEN';
+	synlighet?: Synlighet;
 };
+
+export enum Synlighet {
+	OverStreken = 'OVER_STREKEN',
+	UnderStreken = 'UNDER_STREKEN',
+	Skjult = 'SKJULT',
+}
 
 export enum TolkesSom {
 	String = 'String',
@@ -100,7 +106,7 @@ export type Oppgavefelt = {
 	kode: string;
 	visningsnavn: string;
 	beskrivelse?: string;
-	kokriterie: boolean;
+	synlighet: Synlighet;
 	tolkes_som: TolkesSom;
 	listetype: boolean;
 	verdiforklaringerErUttømmende: boolean;

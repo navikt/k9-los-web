@@ -48,6 +48,7 @@ import {
 	OppgavefilterKode,
 	OrderFelt,
 	SelectFelt,
+	Synlighet,
 } from 'filter/filterTsTypes';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
 import {
@@ -120,8 +121,8 @@ const SortableGroupByField: React.FC<{
 	const tilgjengelige = oppgaveFelter.filter((f) => !valgteFraAndreRader.includes(f.kode) || f.kode === felt.kode);
 
 	const options = useMemo(() => {
-		const primærvalg = tilgjengelige.filter((v) => v.kokriterie);
-		const avanserteValg = tilgjengelige.filter((v) => !v.kokriterie);
+		const primærvalg = tilgjengelige.filter((v) => v.synlighet === Synlighet.OverStreken);
+		const avanserteValg = tilgjengelige.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
 		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
 		if (avanserteValg.length > 0) {
