@@ -4,7 +4,7 @@ import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { Oppgavefelt } from 'filter/filterTsTypes';
+import { Oppgavefelt, Synlighet } from 'filter/filterTsTypes';
 import { QueryFunction, removeFilter, updateFilter } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 
@@ -31,8 +31,8 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 		paakrevdeKoder.length > 0 ? felter.filter((kriterie) => paakrevdeKoder.some((v) => v !== kriterie.kode)) : felter;
 
 	const getOptions = () => {
-		const primærvalg = kriterierSomKanVelges?.filter((v) => v.kokriterie);
-		const avanserteValg = kriterierSomKanVelges?.filter((v) => !v.kokriterie);
+		const primærvalg = kriterierSomKanVelges?.filter((v) => v.synlighet === Synlighet.OverStreken);
+		const avanserteValg = kriterierSomKanVelges?.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
 		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
 		if (avanserteValg?.length > 0) {

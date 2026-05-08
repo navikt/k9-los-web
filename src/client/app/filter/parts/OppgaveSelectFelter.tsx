@@ -13,7 +13,7 @@ import { Button, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { WithNodeId } from 'filter/filterFrontendTypes';
-import { EnkelSelectFelt, Oppgavefelt, SelectFelt } from 'filter/filterTsTypes';
+import { EnkelSelectFelt, Oppgavefelt, SelectFelt, Synlighet } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 import QuickAddSelect from './QuickAddSelect';
@@ -40,8 +40,8 @@ const SortableEnkelField: FunctionComponent<{
 	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
 
 	const options = useMemo(() => {
-		const primærvalg = tilgjengeligeFelter.filter((v) => v.kokriterie);
-		const avanserteValg = tilgjengeligeFelter.filter((v) => !v.kokriterie);
+		const primærvalg = tilgjengeligeFelter.filter((v) => v.synlighet === Synlighet.OverStreken);
+		const avanserteValg = tilgjengeligeFelter.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
 		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
 		if (avanserteValg.length > 0) {

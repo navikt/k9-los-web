@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react';
+import { Synlighet } from 'filter/filterTsTypes';
 import SearchDropdownMedPredefinerteVerdier, {
 	SearchDropdownPredefinerteVerdierProps,
 } from 'filter/parts/SearchDropdownMedPredefinerteVerdier';
@@ -7,10 +8,10 @@ const AksjonspunktVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown, readOnly }) => {
 	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
-		.filter(({ synlighet }) => synlighet !== 'SKJULT')
+		.filter(({ synlighet }) => synlighet !== Synlighet.Skjult)
 		.map(({ verdi, visningsnavn, gruppering, synlighet, sekundærvalg }) => {
 			// sekundærvalg skal fases ut til fordel for synlighet, har begge feltene p.t. for å være foroverkompatibelt
-			const secondary = synlighet ? synlighet === 'UNDER_STREKEN' : (sekundærvalg ?? false);
+			const secondary = synlighet ? synlighet === Synlighet.UnderStreken : (sekundærvalg ?? false);
 			return {
 				value: verdi,
 				label: visningsnavn,

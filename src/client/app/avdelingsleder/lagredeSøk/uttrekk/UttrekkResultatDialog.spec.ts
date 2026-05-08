@@ -1,4 +1,4 @@
-import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
+import { Oppgavefelt, Synlighet, TolkesSom } from 'filter/filterTsTypes';
 import { formatCelleVerdi, harFormatering } from './UttrekkResultatDialog';
 
 function lagFeltdef(overrides: Partial<Oppgavefelt> = {}): Oppgavefelt {
@@ -6,7 +6,7 @@ function lagFeltdef(overrides: Partial<Oppgavefelt> = {}): Oppgavefelt {
 		område: 'K9',
 		kode: 'testFelt',
 		visningsnavn: 'Testfelt',
-		kokriterie: false,
+		synlighet: Synlighet.UnderStreken,
 		tolkes_som: TolkesSom.String,
 		listetype: false,
 		verdiforklaringerErUttømmende: false,
