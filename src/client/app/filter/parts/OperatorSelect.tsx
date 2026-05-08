@@ -17,7 +17,7 @@ function OperatorSelect({ oppgavefilter }) {
 	return (
 		<Select label="Operator" size="small" hideLabel value={oppgavefilter.operator} onChange={handleChangeOperator}>
 			<option value={OPERATORS.EQUALS}>er lik</option>
-			<option value={OPERATORS.NOT_EQUALS}>er IKKE lik</option>
+			<option value={OPERATORS.NOT_EQUALS}>er ikke lik</option>
 			<option value={OPERATORS.IN}>Inkluder</option>
 			<option value={OPERATORS.NOT_IN}>Ekskluder</option>
 			<option value={OPERATORS.LESS_THAN}>mindre enn (&#60;)</option>
