@@ -76,6 +76,7 @@ describe('OppgaveFeltVisning', () => {
 				{
 					verdi: '9001',
 					visningsnavn: 'Kontroller legeerklæring',
+					gruppering: 'aksjonspunkt',
 				},
 			],
 		},
