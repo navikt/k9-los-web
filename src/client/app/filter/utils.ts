@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Oppgavefelt, TolkesSom } from './filterTsTypes';
+import { Oppgavefelt, TolkesSom, Verdiforklaring } from './filterTsTypes';
 
 /** Reservert verdi for separator-element i UNSAFE_Combobox. */
 export const COMBOBOX_SEPARATOR_VALUE = '__separator__';
@@ -98,6 +98,24 @@ export const mapStringToBooleanArray = (values: string[]): (string | null)[] =>
 			return 'false';
 		}
 		return null;
+	});
+
+/**
+ * Sorterer verdiforklaringer i tre grupper:
+ * 1. Pinnet til toppen: rekkefølge >= 0, sortert stigende (0 først). Likt tall → alfabetisk.
+ * 2. Uprioriterte: rekkefølge == null, sortert alfabetisk.
+ * 3. Pinnet til bunnen: rekkefølge < 0, sortert stigende (-1 betyr sist, -2 nest sist osv.). Likt tall → alfabetisk.
+ */
+export const sorterVerdiforklaringer = (verdiforklaringer: Verdiforklaring[]): Verdiforklaring[] =>
+	[...verdiforklaringer].sort((a, b) => {
+		const gruppeFor = (r: number | undefined) => (r == null ? 1 : r < 0 ? 2 : 0);
+		const ag = gruppeFor(a.rekkefølge);
+		const bg = gruppeFor(b.rekkefølge);
+		if (ag !== bg) return ag - bg;
+		if (a.rekkefølge != null && b.rekkefølge != null) {
+			if (a.rekkefølge !== b.rekkefølge) return a.rekkefølge - b.rekkefølge;
+		}
+		return a.visningsnavn.localeCompare(b.visningsnavn);
 	});
 
 export const calculateDays = (verdi: string[]): number | undefined => {

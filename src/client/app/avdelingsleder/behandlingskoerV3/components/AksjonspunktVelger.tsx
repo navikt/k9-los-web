@@ -3,25 +3,21 @@ import { Synlighet } from 'filter/filterTsTypes';
 import SearchDropdownMedPredefinerteVerdier, {
 	SearchDropdownPredefinerteVerdierProps,
 } from 'filter/parts/SearchDropdownMedPredefinerteVerdier';
+import { sorterVerdiforklaringer } from 'filter/utils';
 
 const AksjonspunktVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown, readOnly }) => {
-	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
+	const formaterteOppgavekoder = sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer)
 		.filter(({ synlighet }) => synlighet !== Synlighet.Skjult)
-		.map(({ verdi, visningsnavn, gruppering, synlighet, sekundærvalg }) => {
-			// sekundærvalg skal fases ut til fordel for synlighet, har begge feltene p.t. for å være foroverkompatibelt
-			const secondary = synlighet ? synlighet === Synlighet.UnderStreken : (sekundærvalg ?? false);
-			return {
-				value: verdi,
-				label: visningsnavn,
-				group: gruppering,
-				secondary,
-			};
-		})
-		.sort((a, b) => Number(a.value) - Number(b.value));
+		.map(({ verdi, visningsnavn, gruppering, synlighet }) => ({
+			value: verdi,
+			label: visningsnavn,
+			group: gruppering,
+			secondary: synlighet === Synlighet.UnderStreken,
+		}));
 
-	// Finn grupper som kun har sekundærvalg-elementer
+	// Finn grupper som kun har sekundære elementer
 	const alleGrupper = [...new Set(formaterteOppgavekoder.map(({ group }) => group))];
 	const sekundæreGrupper = alleGrupper.filter((group) => {
 		const itemsInGroup = formaterteOppgavekoder.filter((item) => item.group === group);

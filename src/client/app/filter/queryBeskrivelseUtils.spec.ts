@@ -34,9 +34,27 @@ describe('queryBeskrivelseUtils', () => {
 			listetype: false,
 			verdiforklaringerErUttømmende: true,
 			verdiforklaringer: [
-				{ verdi: 'AAPEN', visningsnavn: 'Åpen', gruppering: undefined, sekundærvalg: false },
-				{ verdi: 'VENTER', visningsnavn: 'Venter', gruppering: undefined, sekundærvalg: false },
-				{ verdi: 'LUKKET', visningsnavn: 'Lukket', gruppering: undefined, sekundærvalg: false },
+				{
+					verdi: 'AAPEN',
+					visningsnavn: 'Åpen',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
+				{
+					verdi: 'VENTER',
+					visningsnavn: 'Venter',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
+				{
+					verdi: 'LUKKET',
+					visningsnavn: 'Lukket',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
 			],
 		},
 		{
@@ -48,8 +66,20 @@ describe('queryBeskrivelseUtils', () => {
 			listetype: false,
 			verdiforklaringerErUttømmende: true,
 			verdiforklaringer: [
-				{ verdi: 'KODE7', visningsnavn: 'Kode 7', gruppering: undefined, sekundærvalg: false },
-				{ verdi: 'EGEN_ANSATT', visningsnavn: 'Egen ansatt', gruppering: undefined, sekundærvalg: false },
+				{
+					verdi: 'KODE7',
+					visningsnavn: 'Kode 7',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
+				{
+					verdi: 'EGEN_ANSATT',
+					visningsnavn: 'Egen ansatt',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
 			],
 		},
 		{

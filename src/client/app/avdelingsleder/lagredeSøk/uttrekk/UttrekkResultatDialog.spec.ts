@@ -34,7 +34,15 @@ describe('formatCelleVerdi', () => {
 
 	it('viser råverdi når formatering er avslått', () => {
 		const feltdef = lagFeltdef({
-			verdiforklaringer: [{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined }],
+			verdiforklaringer: [
+				{
+					verdi: 'PSB',
+					visningsnavn: 'Pleiepenger sykt barn',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
+			],
 		});
 		expect(formatCelleVerdi('PSB', feltdef, false)).toBe('PSB');
 	});
@@ -42,8 +50,20 @@ describe('formatCelleVerdi', () => {
 	describe('verdiforklaring', () => {
 		const feltdef = lagFeltdef({
 			verdiforklaringer: [
-				{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined },
-				{ verdi: 'OMP', visningsnavn: 'Omsorgspenger', gruppering: undefined },
+				{
+					verdi: 'PSB',
+					visningsnavn: 'Pleiepenger sykt barn',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
+				{
+					verdi: 'OMP',
+					visningsnavn: 'Omsorgspenger',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
 			],
 		});
 
@@ -141,8 +161,20 @@ describe('formatCelleVerdi', () => {
 			const feltdef = lagFeltdef({
 				listetype: true,
 				verdiforklaringer: [
-					{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined },
-					{ verdi: 'OMP', visningsnavn: 'Omsorgspenger', gruppering: undefined },
+					{
+						verdi: 'PSB',
+						visningsnavn: 'Pleiepenger sykt barn',
+						gruppering: undefined,
+						synlighet: Synlighet.OverStreken,
+						rekkefølge: undefined,
+					},
+					{
+						verdi: 'OMP',
+						visningsnavn: 'Omsorgspenger',
+						gruppering: undefined,
+						synlighet: Synlighet.OverStreken,
+						rekkefølge: undefined,
+					},
 				],
 			});
 			expect(formatCelleVerdi(['PSB', 'OMP'], feltdef, true)).toBe('Pleiepenger sykt barn, Omsorgspenger');
@@ -151,7 +183,15 @@ describe('formatCelleVerdi', () => {
 		it('blander forklarte og uforklarte verdier', () => {
 			const feltdef = lagFeltdef({
 				listetype: true,
-				verdiforklaringer: [{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined }],
+				verdiforklaringer: [
+					{
+						verdi: 'PSB',
+						visningsnavn: 'Pleiepenger sykt barn',
+						gruppering: undefined,
+						synlighet: Synlighet.OverStreken,
+						rekkefølge: undefined,
+					},
+				],
 			});
 			expect(formatCelleVerdi(['PSB', 'UKJENT'], feltdef, true)).toBe('Pleiepenger sykt barn, UKJENT');
 		});
@@ -159,7 +199,15 @@ describe('formatCelleVerdi', () => {
 		it('viser råverdier når formatering er avslått', () => {
 			const feltdef = lagFeltdef({
 				listetype: true,
-				verdiforklaringer: [{ verdi: 'PSB', visningsnavn: 'Pleiepenger sykt barn', gruppering: undefined }],
+				verdiforklaringer: [
+					{
+						verdi: 'PSB',
+						visningsnavn: 'Pleiepenger sykt barn',
+						gruppering: undefined,
+						synlighet: Synlighet.OverStreken,
+						rekkefølge: undefined,
+					},
+				],
 			});
 			expect(formatCelleVerdi(['PSB', 'OMP'], feltdef, false)).toBe('PSB, OMP');
 		});
@@ -173,7 +221,15 @@ describe('harFormatering', () => {
 
 	it('returnerer true for felt med verdiforklaringer', () => {
 		const feltdef = lagFeltdef({
-			verdiforklaringer: [{ verdi: 'A', visningsnavn: 'Alfa', gruppering: undefined }],
+			verdiforklaringer: [
+				{
+					verdi: 'A',
+					visningsnavn: 'Alfa',
+					gruppering: undefined,
+					synlighet: Synlighet.OverStreken,
+					rekkefølge: undefined,
+				},
+			],
 		});
 		expect(harFormatering(feltdef)).toBe(true);
 	});

@@ -16,7 +16,13 @@ import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
 import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
-import { OPERATORS, calculateDays, mapBooleanToStringArray, mapStringToBooleanArray } from 'filter/utils';
+import {
+	OPERATORS,
+	calculateDays,
+	mapBooleanToStringArray,
+	mapStringToBooleanArray,
+	sorterVerdiforklaringer,
+} from 'filter/utils';
 import MultiSelectKriterie from './MultiSelectKriterie';
 
 const KriterieVerdi = ({
@@ -142,7 +148,7 @@ const KriterieVerdi = ({
 				error={errorMessage}
 				readOnly={readOnly}
 			>
-				{feltdefinisjon.verdiforklaringer.map((verdiforklaring) => (
+				{sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer).map((verdiforklaring) => (
 					<option key={verdiforklaring.visningsnavn} value={verdiforklaring.verdi}>
 						{verdiforklaring.visningsnavn}
 					</option>
