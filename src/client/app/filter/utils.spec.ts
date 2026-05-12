@@ -1,10 +1,10 @@
 import { Synlighet, Verdiforklaring } from './filterTsTypes';
-import { sorterVerdiforklaringer } from './utils';
+import { sorterGrupperinger, sorterVerdiforklaringer } from './utils';
 
-const v = (visningsnavn: string, rekkefølge: number | undefined): Verdiforklaring => ({
+const v = (visningsnavn: string, rekkefølge: number | undefined, gruppering?: string): Verdiforklaring => ({
 	verdi: visningsnavn.toLowerCase(),
 	visningsnavn,
-	gruppering: undefined,
+	gruppering,
 	synlighet: Synlighet.OverStreken,
 	rekkefølge,
 });
@@ -56,5 +56,37 @@ describe('sorterVerdiforklaringer', () => {
 		const original = [v('B', undefined), v('A', undefined)];
 		sorterVerdiforklaringer(original);
 		expect(original.map((r) => r.visningsnavn)).toEqual(['B', 'A']);
+	});
+});
+
+describe('sorterGrupperinger', () => {
+	it('sorterer grupper etter minste rekkefølge-tall i gruppen', () => {
+		const verdier = [v('A', 10, 'Gruppe B'), v('B', 1, 'Gruppe A')];
+		expect(sorterGrupperinger(['Gruppe B', 'Gruppe A'], verdier)).toEqual(['Gruppe A', 'Gruppe B']);
+	});
+
+	it('bruker minste tall når gruppen har flere verdier', () => {
+		const verdier = [v('X', 50, 'Sen'), v('Y', 5, 'Sen'), v('Z', 2, 'Tidlig')];
+		expect(sorterGrupperinger(['Sen', 'Tidlig'], verdier)).toEqual(['Tidlig', 'Sen']);
+	});
+
+	it('plasserer grupper med kun null-verdier i midten', () => {
+		const verdier = [v('A', 1, 'Topp'), v('B', undefined, 'Midt'), v('C', -1, 'Bunn')];
+		expect(sorterGrupperinger(['Bunn', 'Midt', 'Topp'], verdier)).toEqual(['Topp', 'Midt', 'Bunn']);
+	});
+
+	it('plasserer grupper med negative verdier sist', () => {
+		const verdier = [v('A', -1, 'Sist'), v('B', -2, 'Nest sist'), v('C', undefined, 'Midt')];
+		expect(sorterGrupperinger(['Sist', 'Nest sist', 'Midt'], verdier)).toEqual(['Midt', 'Nest sist', 'Sist']);
+	});
+
+	it('sorterer alfabetisk ved lik effektiv rekkefølge', () => {
+		const verdier = [v('A', 1, 'Bravo'), v('B', 1, 'Alfa')];
+		expect(sorterGrupperinger(['Bravo', 'Alfa'], verdier)).toEqual(['Alfa', 'Bravo']);
+	});
+
+	it('bruker minste positive tall selv om gruppen også har null-verdier', () => {
+		const verdier = [v('A', undefined, 'Gruppe'), v('B', 5, 'Gruppe'), v('C', 1, 'Annen')];
+		expect(sorterGrupperinger(['Gruppe', 'Annen'], verdier)).toEqual(['Annen', 'Gruppe']);
 	});
 });

@@ -4,9 +4,8 @@ import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
-import { Oppgavefelt } from 'filter/filterTsTypes';
-import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { removeFilter } from 'filter/queryUtils';
+import { harGruppering } from 'filter/utils';
 import { IdentifiedFeltverdiOppgavefilter } from '../filterFrontendTypes';
 import { Aksjonspunktvisning } from './Aksjonspunktvisning';
 import KriterieOperator from './KriterieOperator';
@@ -17,8 +16,6 @@ interface Props {
 	paakrevdeKoder: string[];
 	readOnly: boolean;
 }
-
-const harFeltGruppering = (feltdefinisjon: Oppgavefelt) => kriterierSomSkalGrupperes.includes(feltdefinisjon.kode);
 
 const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnly = false }) => {
 	const testID = useMemo(() => uuid(), []);
@@ -56,7 +53,7 @@ const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnl
 					</div>
 				)}
 			</div>
-			{feltdefinisjon && harFeltGruppering(feltdefinisjon) && (
+			{feltdefinisjon && harGruppering(feltdefinisjon) && (
 				<Aksjonspunktvisning oppgavefilter={oppgavefilter} feltdefinisjon={feltdefinisjon} readOnly={readOnly} />
 			)}
 		</div>

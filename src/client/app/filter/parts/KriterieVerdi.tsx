@@ -10,15 +10,15 @@ import {
 	useDatepicker,
 	useRangeDatepicker,
 } from '@navikt/ds-react';
-import GruppertKriterieVelger from 'avdelingsleder/behandlingskoerV3/components/AksjonspunktVelger';
+import GrupperteKriterierVelger from 'avdelingsleder/behandlingskoerV3/components/GrupperteKriterierVelger';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
-import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
 import {
 	OPERATORS,
 	calculateDays,
+	harGruppering,
 	mapBooleanToStringArray,
 	mapStringToBooleanArray,
 	sorterVerdiforklaringer,
@@ -112,9 +112,9 @@ const KriterieVerdi = ({
 		onRangeChange,
 	});
 
-	if (kriterierSomSkalGrupperes.includes(feltdefinisjon?.kode)) {
+	if (harGruppering(feltdefinisjon)) {
 		return (
-			<GruppertKriterieVelger
+			<GrupperteKriterierVelger
 				onChange={(value) => {
 					updateQuery([
 						updateFilter(oppgavefilter._nodeId, {

@@ -3,9 +3,9 @@ import { Synlighet } from 'filter/filterTsTypes';
 import SearchDropdownMedPredefinerteVerdier, {
 	SearchDropdownPredefinerteVerdierProps,
 } from 'filter/parts/SearchDropdownMedPredefinerteVerdier';
-import { sorterVerdiforklaringer } from 'filter/utils';
+import { sorterGrupperinger, sorterVerdiforklaringer } from 'filter/utils';
 
-const AksjonspunktVelger: FunctionComponent<
+const GrupperteKriterierVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown, readOnly }) => {
 	const formaterteOppgavekoder = sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer)
@@ -24,14 +24,13 @@ const AksjonspunktVelger: FunctionComponent<
 		return itemsInGroup.length > 0 && itemsInGroup.every((item) => item.secondary);
 	});
 
-	// Sorter grupper: primære først (alfabetisk), deretter sekundære (alfabetisk)
-	const grupper = alleGrupper.sort((a, b) => {
-		const aIsSecondary = sekundæreGrupper.includes(a);
-		const bIsSecondary = sekundæreGrupper.includes(b);
-		if (aIsSecondary && !bIsSecondary) return 1;
-		if (!aIsSecondary && bIsSecondary) return -1;
-		return a.localeCompare(b);
-	});
+	// Sorter grupper etter effektiv rekkefølge, med sekundære grupper etter primære
+	const primære = sorterGrupperinger(
+		alleGrupper.filter((g) => !sekundæreGrupper.includes(g)),
+		feltdefinisjon.verdiforklaringer,
+	);
+	const sekundære = sorterGrupperinger(sekundæreGrupper, feltdefinisjon.verdiforklaringer);
+	const grupper = [...primære, ...sekundære];
 
 	return (
 		<SearchDropdownMedPredefinerteVerdier
@@ -48,4 +47,4 @@ const AksjonspunktVelger: FunctionComponent<
 	);
 };
 
-export default AksjonspunktVelger;
+export default GrupperteKriterierVelger;
