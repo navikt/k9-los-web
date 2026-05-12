@@ -3,39 +3,34 @@ import { Synlighet } from 'filter/filterTsTypes';
 import SearchDropdownMedPredefinerteVerdier, {
 	SearchDropdownPredefinerteVerdierProps,
 } from 'filter/parts/SearchDropdownMedPredefinerteVerdier';
+import { sorterGrupperinger, sorterVerdiforklaringer } from 'filter/utils';
 
-const AksjonspunktVelger: FunctionComponent<
+const GrupperteKriterierVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }
 > = ({ onChange, feltdefinisjon, oppgavefilter, error, skjulValgteVerdierUnderDropdown, readOnly }) => {
-	const formaterteOppgavekoder = feltdefinisjon.verdiforklaringer
+	const formaterteOppgavekoder = sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer)
 		.filter(({ synlighet }) => synlighet !== Synlighet.Skjult)
-		.map(({ verdi, visningsnavn, gruppering, synlighet, sekundærvalg }) => {
-			// sekundærvalg skal fases ut til fordel for synlighet, har begge feltene p.t. for å være foroverkompatibelt
-			const secondary = synlighet ? synlighet === Synlighet.UnderStreken : (sekundærvalg ?? false);
-			return {
-				value: verdi,
-				label: visningsnavn,
-				group: gruppering,
-				secondary,
-			};
-		})
-		.sort((a, b) => Number(a.value) - Number(b.value));
+		.map(({ verdi, visningsnavn, gruppering, synlighet }) => ({
+			value: verdi,
+			label: visningsnavn,
+			group: gruppering,
+			secondary: synlighet === Synlighet.UnderStreken,
+		}));
 
-	// Finn grupper som kun har sekundærvalg-elementer
+	// Finn grupper som kun har sekundære elementer
 	const alleGrupper = [...new Set(formaterteOppgavekoder.map(({ group }) => group))];
 	const sekundæreGrupper = alleGrupper.filter((group) => {
 		const itemsInGroup = formaterteOppgavekoder.filter((item) => item.group === group);
 		return itemsInGroup.length > 0 && itemsInGroup.every((item) => item.secondary);
 	});
 
-	// Sorter grupper: primære først (alfabetisk), deretter sekundære (alfabetisk)
-	const grupper = alleGrupper.sort((a, b) => {
-		const aIsSecondary = sekundæreGrupper.includes(a);
-		const bIsSecondary = sekundæreGrupper.includes(b);
-		if (aIsSecondary && !bIsSecondary) return 1;
-		if (!aIsSecondary && bIsSecondary) return -1;
-		return a.localeCompare(b);
-	});
+	// Sorter grupper etter effektiv rekkefølge, med sekundære grupper etter primære
+	const primære = sorterGrupperinger(
+		alleGrupper.filter((g) => !sekundæreGrupper.includes(g)),
+		feltdefinisjon.verdiforklaringer,
+	);
+	const sekundære = sorterGrupperinger(sekundæreGrupper, feltdefinisjon.verdiforklaringer);
+	const grupper = [...primære, ...sekundære];
 
 	return (
 		<SearchDropdownMedPredefinerteVerdier
@@ -52,4 +47,4 @@ const AksjonspunktVelger: FunctionComponent<
 	);
 };
 
-export default AksjonspunktVelger;
+export default GrupperteKriterierVelger;

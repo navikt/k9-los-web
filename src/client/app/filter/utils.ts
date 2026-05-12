@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Oppgavefelt, TolkesSom } from './filterTsTypes';
+import { Oppgavefelt, TolkesSom, Verdiforklaring } from './filterTsTypes';
 
 /** Reservert verdi for separator-element i UNSAFE_Combobox. */
 export const COMBOBOX_SEPARATOR_VALUE = '__separator__';
@@ -99,6 +99,55 @@ export const mapStringToBooleanArray = (values: string[]): (string | null)[] =>
 		}
 		return null;
 	});
+
+/** Mapper rekkefølge til sorteringsgruppe: 0 = topp, 1 = midt (null), 2 = bunn (negativ). */
+const rekkefølgeGruppe = (r: number | undefined) => (r == null ? 1 : r < 0 ? 2 : 0);
+
+/** Sammenligner to rekkefølge-verdier med tre-gruppe-logikk. Returner 0 ved likhet. */
+const sammenlignRekkefølge = (a: number | undefined, b: number | undefined): number => {
+	const ag = rekkefølgeGruppe(a);
+	const bg = rekkefølgeGruppe(b);
+	if (ag !== bg) return ag - bg;
+	if (a != null && b != null && a !== b) return a - b;
+	return 0;
+};
+
+/**
+ * Sorterer verdiforklaringer i tre grupper:
+ * 1. Pinnet til toppen: rekkefølge >= 0, sortert stigende (0 først). Likt tall → alfabetisk.
+ * 2. Uprioriterte: rekkefølge == null, sortert alfabetisk.
+ * 3. Pinnet til bunnen: rekkefølge < 0, sortert stigende (-1 betyr sist, -2 nest sist osv.). Likt tall → alfabetisk.
+ */
+export const sorterVerdiforklaringer = (verdiforklaringer: Verdiforklaring[]): Verdiforklaring[] =>
+	[...verdiforklaringer].sort(
+		(a, b) => sammenlignRekkefølge(a.rekkefølge, b.rekkefølge) || a.visningsnavn.localeCompare(b.visningsnavn),
+	);
+
+/**
+ * Beregner effektiv rekkefølge for en gruppering basert på det minste tallet blant verdiforklaringene.
+ * Returnerer undefined dersom alle verdier har null rekkefølge.
+ */
+const gruppeRekkefølge = (verdiforklaringer: Verdiforklaring[], gruppering: string): number | undefined => {
+	const tall = verdiforklaringer
+		.filter((v) => v.gruppering === gruppering && v.rekkefølge != null)
+		.map((v) => v.rekkefølge as number);
+	return tall.length > 0 ? Math.min(...tall) : undefined;
+};
+
+/**
+ * Sorterer gruppenavn etter gruppens effektive rekkefølge (minste rekkefølge-tall i gruppen).
+ * Bruker samme tre-gruppe-logikk som sorterVerdiforklaringer. Likhet brytes alfabetisk.
+ */
+export const sorterGrupperinger = (grupper: string[], verdiforklaringer: Verdiforklaring[]): string[] =>
+	[...grupper].sort(
+		(a, b) =>
+			sammenlignRekkefølge(gruppeRekkefølge(verdiforklaringer, a), gruppeRekkefølge(verdiforklaringer, b)) ||
+			a.localeCompare(b),
+	);
+
+/** Returnerer true dersom feltdefinisjonens verdiforklaringer har minst én med gruppering satt. */
+export const harGruppering = (feltdefinisjon: Oppgavefelt | undefined): boolean =>
+	feltdefinisjon?.verdiforklaringer?.some((v) => v.gruppering != null) ?? false;
 
 export const calculateDays = (verdi: string[]): number | undefined => {
 	if (!verdi || verdi.length === 0) return undefined;

@@ -10,13 +10,19 @@ import {
 	useDatepicker,
 	useRangeDatepicker,
 } from '@navikt/ds-react';
-import GruppertKriterieVelger from 'avdelingsleder/behandlingskoerV3/components/AksjonspunktVelger';
+import GrupperteKriterierVelger from 'avdelingsleder/behandlingskoerV3/components/GrupperteKriterierVelger';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
-import { kriterierSomSkalGrupperes } from 'filter/konstanter';
 import { updateFilter } from 'filter/queryUtils';
-import { OPERATORS, calculateDays, mapBooleanToStringArray, mapStringToBooleanArray } from 'filter/utils';
+import {
+	OPERATORS,
+	calculateDays,
+	harGruppering,
+	mapBooleanToStringArray,
+	mapStringToBooleanArray,
+	sorterVerdiforklaringer,
+} from 'filter/utils';
 import MultiSelectKriterie from './MultiSelectKriterie';
 
 const KriterieVerdi = ({
@@ -106,9 +112,9 @@ const KriterieVerdi = ({
 		onRangeChange,
 	});
 
-	if (kriterierSomSkalGrupperes.includes(feltdefinisjon?.kode)) {
+	if (harGruppering(feltdefinisjon)) {
 		return (
-			<GruppertKriterieVelger
+			<GrupperteKriterierVelger
 				onChange={(value) => {
 					updateQuery([
 						updateFilter(oppgavefilter._nodeId, {
@@ -142,7 +148,7 @@ const KriterieVerdi = ({
 				error={errorMessage}
 				readOnly={readOnly}
 			>
-				{feltdefinisjon.verdiforklaringer.map((verdiforklaring) => (
+				{sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer).map((verdiforklaring) => (
 					<option key={verdiforklaring.visningsnavn} value={verdiforklaring.verdi}>
 						{verdiforklaring.visningsnavn}
 					</option>

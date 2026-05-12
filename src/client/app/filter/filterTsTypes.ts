@@ -83,8 +83,8 @@ export type Verdiforklaring = {
 	verdi: string;
 	visningsnavn: string;
 	gruppering: string | undefined;
-	sekundærvalg?: boolean;
-	synlighet?: Synlighet;
+	synlighet: Synlighet;
+	rekkefølge: number | undefined;
 };
 
 export enum Synlighet {

@@ -3,9 +3,9 @@ import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { Oppgavefelt } from 'filter/filterTsTypes';
+import { Oppgavefelt, Synlighet } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
-import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
+import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle, sorterVerdiforklaringer } from 'filter/utils';
 
 interface Props {
 	feltdefinisjon?: Oppgavefelt;
@@ -29,27 +29,24 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 	});
 
 	const getOptions = () => {
-		const primærvalg = feltdefinisjon.verdiforklaringer
-			?.filter((v) => !v.sekundærvalg)
+		const sortert = sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer);
+		const primærvalg = sortert
+			.filter((v) => v.synlighet !== Synlighet.UnderStreken)
 			.map((v) => ({ value: v.verdi, label: v.visningsnavn }));
-		const sekundærvalg = feltdefinisjon.verdiforklaringer
-			?.filter((v) => v.sekundærvalg)
+		const sekundærvalg = sortert
+			.filter((v) => v.synlighet === Synlighet.UnderStreken)
 			.map((v) => ({ value: v.verdi, label: v.visningsnavn }));
 
-		const harSekundærvalg = sekundærvalg?.length > 0;
+		const harSekundærvalg = sekundærvalg.length > 0;
 		if (visSekundærvalg && harSekundærvalg) {
 			return [...primærvalg, { value: COMBOBOX_SEPARATOR_VALUE, label: '' }, ...sekundærvalg];
 		}
 
-		const filteredOptions = feltdefinisjon.verdiforklaringer
-			?.filter((v) => !v.sekundærvalg)
-			?.map((v) => ({ value: v.verdi, label: v.visningsnavn }));
-
 		if (harSekundærvalg) {
-			return [...filteredOptions, { value: '--- Vis alle ---', label: '--- Vis alle ---' }];
+			return [...primærvalg, { value: '--- Vis alle ---', label: '--- Vis alle ---' }];
 		}
 
-		return filteredOptions;
+		return primærvalg;
 	};
 
 	useEffect(() => {

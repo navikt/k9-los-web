@@ -1,8 +1,8 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import 'utils/dateUtils';
 import { Oppgavefelt, Oppgavefeltverdi, TolkesSom } from 'filter/filterTsTypes';
-import { kriterierSomSkalGrupperes } from 'filter/konstanter';
+import { harGruppering } from 'filter/utils';
+import 'utils/dateUtils';
 
 interface Props {
 	oppgaveFelter: Oppgavefelt[];
@@ -26,7 +26,7 @@ const OppgaveFeltVisning = ({ felt, oppgaveFelter }: Props) => {
 		return <div>-</div>;
 	}
 
-	if (kriterierSomSkalGrupperes.includes(oppgaveFelt.kode)) {
+	if (harGruppering(oppgaveFelt)) {
 		const aksjonspunkter = getVerdiforklaringer(felt, oppgaveFelt, true).join(', ');
 
 		return <div>{aksjonspunkter}</div>;

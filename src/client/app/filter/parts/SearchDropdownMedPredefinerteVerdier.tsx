@@ -1,5 +1,6 @@
 import React from 'react';
 import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
+import { sorterVerdiforklaringer } from 'filter/utils';
 import SearchWithDropdown, { SearchWithDropdownProps } from 'sharedComponents/searchWithDropdown/SearchWithDropdown';
 
 export interface SearchDropdownPredefinerteVerdierProps extends Partial<SearchWithDropdownProps> {
@@ -20,7 +21,7 @@ const SearchDropdownMedPredefinerteVerdier = ({
 }: SearchDropdownPredefinerteVerdierProps) => (
 	<SearchWithDropdown
 		id={`${feltdefinisjon.visningsnavn.toLowerCase()}`}
-		suggestions={feltdefinisjon.verdiforklaringer.map((verdiforklaring) => ({
+		suggestions={sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer).map((verdiforklaring) => ({
 			label: verdiforklaring.visningsnavn,
 			value: verdiforklaring.verdi,
 		}))}
