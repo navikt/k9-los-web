@@ -26,12 +26,12 @@ export function modalInnhold(
 			const reservertTomFormatert = dateTimeFormat(reservasjon.reservertTil);
 			modaltekst = `Oppgaven er reservert av ${reservasjon.reservertAvNavn ?? reservasjon.reservertAvEpost} t.o.m. ${reservertTomFormatert}.`;
 		}
+		const reservertAvAnnen = !!reservasjon && reservasjon.reservertAvIdent !== innloggetSaksbehandler.brukerIdent;
 		return {
 			heading: 'Oppgaven er satt på vent',
 			modaltekst,
-			visÅpneOgReserverKnapp: false,
-			visÅpneOgEndreReservasjonKnapp:
-				innloggetSaksbehandler.kanReservere && reservasjon?.reservertAvIdent !== innloggetSaksbehandler.brukerIdent,
+			visÅpneOgReserverKnapp: innloggetSaksbehandler.kanReservere && !reservasjon,
+			visÅpneOgEndreReservasjonKnapp: innloggetSaksbehandler.kanReservere && reservertAvAnnen,
 			visLeggTilbakeIKøKnapp: reservasjon?.reservertAvIdent === innloggetSaksbehandler.brukerIdent,
 		};
 	}
