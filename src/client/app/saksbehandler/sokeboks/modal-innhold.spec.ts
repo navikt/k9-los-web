@@ -56,8 +56,8 @@ describe('Skal lage riktig modalinnhold', () => {
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er satt på vent',
 			modaltekst: 'Oppgaven er ikke reservert.',
-			visÅpneOgReserverKnapp: false,
-			visÅpneOgEndreReservasjonKnapp: true,
+			visÅpneOgReserverKnapp: true,
+			visÅpneOgEndreReservasjonKnapp: false,
 			visLeggTilbakeIKøKnapp: false,
 		});
 	});
