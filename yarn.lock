@@ -2816,7 +2816,7 @@ __metadata:
   resolution: "@k9-los-web/server@workspace:server"
   dependencies:
     "@navikt/oasis": "npm:3.8.0"
-    axios: "npm:1.15.2"
+    axios: "npm:1.16.0"
     connect-timeout: "npm:1.9.1"
     cors: "npm:2.8.6"
     dotenv: "npm:17.4.2"
@@ -5252,14 +5252,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.15.2":
-  version: 1.15.2
-  resolution: "axios@npm:1.15.2"
+"axios@npm:1.16.0":
+  version: 1.16.0
+  resolution: "axios@npm:1.16.0"
   dependencies:
-    follow-redirects: "npm:^1.15.11"
+    follow-redirects: "npm:^1.16.0"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
-  checksum: 10/eebbd8cb777316d4252cd994a06ec9fb956ef519214a62dab6c5443ae8b753b5116e9a770502316789e6cdef1101e6aae53b6936d6a3791b2d66d75f4d7d2462
+  checksum: 10/cf8b521ff732c21550b38c8739aef556ea5e14b268468bb89e4307416ab262b462e582474e810963a3d61c2392ab47ad35c11d05eff027de7c97113bc7411623
   languageName: node
   linkType: hard
 
@@ -8180,7 +8180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.15.11":
+"follow-redirects@npm:^1.0.0, follow-redirects@npm:^1.16.0":
   version: 1.16.0
   resolution: "follow-redirects@npm:1.16.0"
   peerDependenciesMeta:
@@ -10407,7 +10407,7 @@ __metadata:
     "@types/react-collapse": "npm:5.0.4"
     "@types/react-dom": "npm:19.2.1"
     autoprefixer: "npm:10.5.0"
-    axios: "npm:1.15.2"
+    axios: "npm:1.16.0"
     babel-jest: "npm:30.3.0"
     babel-loader: "npm:10.1.1"
     babel-runtime: "npm:6.26.0"
