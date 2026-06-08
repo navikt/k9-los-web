@@ -109,7 +109,7 @@
 		"jest-transform-stub": "2.0.0",
 		"less": "4.6.4",
 		"less-loader": "12.3.2",
-		"lint-staged": "16.4.0",
+		"lint-staged": "17.0.7",
 		"mini-css-extract-plugin": "2.10.2",
 		"msw": "2.14.6",
 		"postcss-less": "6.0.0",
