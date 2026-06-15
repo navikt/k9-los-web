@@ -21,10 +21,12 @@ const OppsummeringAvKø = ({ oppgavekø }: OwnProps) => {
 
 	return (
 		<div className="flex flex-col gap-4">
-			<div>
-				<Detail>Beskrivelse av køen</Detail>
-				<BodyShort className="mt-4">{oppgavekø.beskrivelse ? oppgavekø.beskrivelse : <>&ndash;</>}</BodyShort>
-			</div>
+			{oppgavekø.beskrivelse.length > 0 && (
+				<div>
+					<Detail>Beskrivelse av køen</Detail>
+					<BodyShort className="mt-4">{oppgavekø.beskrivelse}</BodyShort>
+				</div>
+			)}
 			{nyVisning && kriterieBeskrivelse.length > 0 && (
 				<div>
 					<Detail>Kriterier</Detail>
