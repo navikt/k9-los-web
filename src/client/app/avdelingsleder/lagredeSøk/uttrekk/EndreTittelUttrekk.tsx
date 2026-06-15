@@ -45,6 +45,7 @@ export function EndreTittelUttrekk({
 				error={feilmelding}
 				htmlSize={40}
 				maxLength={100}
+				// eslint-disable-next-line jsx-a11y/no-autofocus -- bevisst fokus på tittelfelt ved redigering
 				autoFocus
 			/>
 			<Button variant="secondary" disabled={isPending} type="submit" size="medium">

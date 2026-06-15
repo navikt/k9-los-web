@@ -100,7 +100,12 @@ const Teller: FunctionComponent<OwnProps> = ({ forklaring, tall }) => {
 								/* <KildeViewer key={linje.visningsnavn} tittel={forklaring} linje={linje}>
 							</KildeViewer> */
 							}
-							return <span className={styles.nedbrytningTekst}>{`${linje.verdi} ${linje.visningsnavn}`}</span>;
+							return (
+								<span
+									key={linje.visningsnavn}
+									className={styles.nedbrytningTekst}
+								>{`${linje.verdi} ${linje.visningsnavn}`}</span>
+							);
 						})}
 					</div>
 				</div>

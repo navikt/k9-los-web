@@ -54,11 +54,26 @@ const tabLabels = {
 };
 
 const tabStyle = {
-	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.LAGREDE_SØK]: [<FileSearchIcon fontSize="1.5rem" />, <FileSearchIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.NOKKELTALL]: [<BarChartIcon fontSize="1.5rem" />, <BarChartIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.RESERVASJONER]: [<CircleSlashIcon fontSize="1.5rem" />, <CircleSlashIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.SAKSBEHANDLERE]: [<PersonGroupIcon fontSize="1.5rem" />, <PersonGroupIcon fontSize="1.5rem" />],
+	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [
+		<TasklistIcon key="inaktiv" fontSize="1.5rem" />,
+		<TasklistIcon key="aktiv" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.LAGREDE_SØK]: [
+		<FileSearchIcon key="inaktiv" fontSize="1.5rem" />,
+		<FileSearchIcon key="aktiv" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.NOKKELTALL]: [
+		<BarChartIcon key="inaktiv" fontSize="1.5rem" />,
+		<BarChartIcon key="aktiv" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.RESERVASJONER]: [
+		<CircleSlashIcon key="inaktiv" fontSize="1.5rem" />,
+		<CircleSlashIcon key="aktiv" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.SAKSBEHANDLERE]: [
+		<PersonGroupIcon key="inaktiv" fontSize="1.5rem" />,
+		<PersonGroupIcon key="aktiv" fontSize="1.5rem" />,
+	],
 };
 
 type TabProps = {

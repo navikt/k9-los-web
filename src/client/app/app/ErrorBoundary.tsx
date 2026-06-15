@@ -2,7 +2,7 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { captureException, withScope } from '@sentry/browser';
 
 interface OwnProps {
-	errorMessageCallback: (error: any) => void;
+	errorMessageCallback: (error: unknown) => void;
 	children: ReactNode;
 }
 
@@ -21,8 +21,7 @@ export class ErrorBoundary extends Component<OwnProps, State> {
 
 		withScope((scope) => {
 			Object.keys(info).forEach((key) => {
-				// @ts-ignore Fiks
-				scope.setExtra(key, info[key]);
+				scope.setExtra(key, info[key as keyof ErrorInfo]);
 				captureException(error);
 			});
 		});
@@ -37,7 +36,6 @@ export class ErrorBoundary extends Component<OwnProps, State> {
 			].join(' '),
 		);
 
-		// eslint-disable-next-line no-console
 		console.error(error);
 	}
 

@@ -2,7 +2,7 @@ import OppgaveQueryModel from './OppgaveQueryModel';
 import { IdentifiedOppgaveQuery } from './filterFrontendTypes';
 
 type ModelMethods = {
-	[K in keyof OppgaveQueryModel]: OppgaveQueryModel[K] extends (...args: any[]) => OppgaveQueryModel ? K : never;
+	[K in keyof OppgaveQueryModel]: OppgaveQueryModel[K] extends (...args: never[]) => OppgaveQueryModel ? K : never;
 }[keyof OppgaveQueryModel];
 
 const withMethod =

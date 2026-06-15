@@ -66,7 +66,7 @@ function KriterieOperator({
 		return null;
 	}
 
-	const handleChangeOperator = (event: { target: { value: any } }) => {
+	const handleChangeOperator = (event: { target: { value: string } }) => {
 		const newOperator = event.target.value;
 		const switchingFromInterval = oppgavefilter.operator === OPERATORS.INTERVAL && newOperator !== OPERATORS.INTERVAL;
 

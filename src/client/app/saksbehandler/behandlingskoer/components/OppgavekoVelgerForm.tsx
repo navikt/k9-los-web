@@ -13,7 +13,7 @@ import {
 } from 'utils/localStorageHelper';
 import { Saksbehandler } from '../saksbehandlerTsType';
 import { getKoId } from '../utils';
-import OppsummeringAvKø from './OppusmmeringAvKø';
+import OppsummeringAvKø from './OppsummeringAvKø';
 import * as styles from './oppgavekoVelgerForm.css';
 
 interface OwnProps {

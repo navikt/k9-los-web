@@ -2,6 +2,7 @@ import React, { FunctionComponent, useMemo, useState } from 'react';
 import { Loader } from '@navikt/ds-react';
 import { useAlleSaksbehandlerKoerV3 } from 'api/queries/saksbehandlerQueries';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
+import { NyVisningProvider } from 'saksbehandler/NyVisningContext';
 import { OppgavekøV3, OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import OppgavekoPanel from './components/OppgavekoPanel';
 
@@ -27,7 +28,9 @@ const BehandlingskoerIndex: FunctionComponent = () => {
 
 	return (
 		<BehandlingskoerContext.Provider value={behandlingskoerContextValue}>
-			<OppgavekoPanel />
+			<NyVisningProvider>
+				<OppgavekoPanel />
+			</NyVisningProvider>
 		</BehandlingskoerContext.Provider>
 	);
 };

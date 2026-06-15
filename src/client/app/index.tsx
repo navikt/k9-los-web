@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unused-modules */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
@@ -7,7 +6,7 @@ import { breadcrumbsIntegration, reactRouterV6BrowserTracingIntegration } from '
 import '@navikt/ds-css';
 import AppContainer from 'app/AppContainer';
 
-/* eslint no-undef: "error" */
+/* global process -- erstattes av webpack EnvironmentPlugin på byggtid */
 const environment = window.location.hostname;
 
 const app = document.getElementById('app');

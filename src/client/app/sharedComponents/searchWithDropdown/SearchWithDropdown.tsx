@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-pascal-case */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, ErrorMessage, Label, Search, UNSAFE_Combobox } from '@navikt/ds-react';
@@ -60,11 +59,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	const prevSyncedRef = useRef(JSON.stringify(selectedValues));
 
 	const handleClickOutside = useCallback((e: MouseEvent) => {
-		if (
-			dropdownRef.current?.contains(e.target as Node) ||
-			anchorRef.current?.contains(e.target as Node)
-		)
-			return;
+		if (dropdownRef.current?.contains(e.target as Node) || anchorRef.current?.contains(e.target as Node)) return;
 		setIsOpen(false);
 	}, []);
 
@@ -73,8 +68,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	const showFilteredOnly = currentInput.length > 0;
 	const filteredSuggestions = showFilteredOnly
 		? suggestions.filter(
-				(s) =>
-					s.label.toLowerCase().includes(currentInput.toLowerCase()) || s.value.includes(currentInput),
+				(s) => s.label.toLowerCase().includes(currentInput.toLowerCase()) || s.value.includes(currentInput),
 			)
 		: suggestions;
 
@@ -88,9 +82,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		prevSyncedRef.current = JSON.stringify(selectedValues);
 		if (isInitialMount.current) {
 			isInitialMount.current = false;
-			const selectedGroups = selectedValues
-				.map((v) => getSuggestion(v)?.group)
-				.filter(Boolean);
+			const selectedGroups = selectedValues.map((v) => getSuggestion(v)?.group).filter(Boolean);
 			setOpenGroups((prev) => [...new Set([...prev, ...selectedGroups])]);
 		}
 		setCurrentInput('');
@@ -98,9 +90,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 
 	useEffect(() => {
 		if (secondaryGroups.length > 0) {
-			const hasSelectedSecondary = selectedValues.some((v) =>
-				secondaryGroups.includes(getSuggestion(v)?.group),
-			);
+			const hasSelectedSecondary = selectedValues.some((v) => secondaryGroups.includes(getSuggestion(v)?.group));
 			if (hasSelectedSecondary) setVisUnderStreken(true);
 		}
 	}, []);
@@ -130,9 +120,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	};
 
 	const toggleGroupOpen = (group: string) => {
-		setOpenGroups((prev) =>
-			prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group],
-		);
+		setOpenGroups((prev) => (prev.includes(group) ? prev.filter((g) => g !== group) : [...prev, group]));
 	};
 
 	const toggleGroupSelection = (group: string) => {
@@ -154,8 +142,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		});
 	};
 
-	const groupHasSelection = (group: string) =>
-		selectedSuggestionValues.some((v) => getSuggestion(v)?.group === group);
+	const groupHasSelection = (group: string) => selectedSuggestionValues.some((v) => getSuggestion(v)?.group === group);
 
 	const primaryGroups = groups.filter((g) => !secondaryGroups.includes(g));
 	const secondaryGroupList = groups.filter((g) => secondaryGroups.includes(g));
@@ -311,7 +298,11 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 				)}
 			</div>
 			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
-				<SelectedValues values={sv} remove={readOnly ? undefined : onRemoveSuggestion} removeAllValues={readOnly ? undefined : removeAllSuggestions} />
+				<SelectedValues
+					values={sv}
+					remove={readOnly ? undefined : onRemoveSuggestion}
+					removeAllValues={readOnly ? undefined : removeAllSuggestions}
+				/>
 			)}
 			{error && <ErrorMessage>{error}</ErrorMessage>}
 		</div>
@@ -406,7 +397,11 @@ const SimpleSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 				readOnly={readOnly}
 			/>
 			{!skjulValgteVerdierUnderDropdown && sv.length > 0 && (
-				<SelectedValues values={sv} remove={readOnly ? undefined : onRemoveSuggestion} removeAllValues={readOnly ? undefined : removeAllSuggestions} />
+				<SelectedValues
+					values={sv}
+					remove={readOnly ? undefined : onRemoveSuggestion}
+					removeAllValues={readOnly ? undefined : removeAllSuggestions}
+				/>
 			)}
 		</div>
 	);

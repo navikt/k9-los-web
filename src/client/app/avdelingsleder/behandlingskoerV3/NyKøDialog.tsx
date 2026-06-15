@@ -51,6 +51,7 @@ const NyKøDialog = ({ onSuccessCallback }: OwnProps) => {
 						<TextField
 							className="my-6 max-w"
 							label="Kønavn"
+							// eslint-disable-next-line jsx-a11y/no-autofocus -- bevisst fokus på første felt når dialogen åpnes
 							autoFocus
 							error={errors.tittel?.message}
 							{...register('tittel', {

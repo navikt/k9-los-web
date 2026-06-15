@@ -30,6 +30,7 @@ const SletteDriftsmeldingModal: FunctionComponent<TsProps> = ({
 	>
 		<Modal.Body>Ønsker du å slette driftmelding?</Modal.Body>
 		<Modal.Footer>
+			{/* eslint-disable-next-line jsx-a11y/no-autofocus -- bevisst fokus på bekreft-knapp i bekreftelsesdialog */}
 			<Button variant="primary" onClick={() => fjernDriftsmelding(valgtDriftsmelding)} autoFocus>
 				Ja
 			</Button>

@@ -40,6 +40,7 @@ export function EndreTittel({
 				htmlSize={40}
 				maxLength={100}
 				size="small"
+				// eslint-disable-next-line jsx-a11y/no-autofocus -- bevisst fokus på tittelfelt ved redigering
 				autoFocus
 			/>
 			<Button variant="secondary" disabled={isPending} type="submit" size="small">

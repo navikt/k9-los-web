@@ -1,12 +1,10 @@
-/* eslint-disable no-use-before-define */
 import React, { useContext } from 'react';
 import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label, ToggleGroup } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
-import { addFeltverdiFilter, addGruppeFilter, removeFilter, updateFilter } from 'filter/queryUtils';
+import { QueryFunction, addFeltverdiFilter, addGruppeFilter, removeFilter, updateFilter } from 'filter/queryUtils';
 import { IdentifiedCombineOppgavefilter, IdentifiedOppgavefilter } from '../filterFrontendTypes';
 import { OppgavefilterKode } from '../filterTsTypes';
-import { QueryFunction } from '../queryUtils';
 import Kriterie from './Kriterie';
 import VelgKriterie from './VelgKriterie';
 import * as filterGruppeStyles from './filterGruppe.css';
@@ -52,7 +50,7 @@ const OppgavefilterPanel = ({
 		return <FilterGruppe oppgavefilter={oppgavefilter} køvisning={køvisning} />;
 	}
 
-	throw new Error(`Unhandled type: ${(oppgavefilter as any).type}`);
+	throw new Error(`Unhandled type: ${(oppgavefilter as { type: string }).type}`);
 };
 
 interface FilterGruppeProps {

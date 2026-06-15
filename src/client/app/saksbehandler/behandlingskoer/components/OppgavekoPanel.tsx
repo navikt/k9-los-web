@@ -1,12 +1,13 @@
 import React, { FunctionComponent, useContext, useState } from 'react';
 import NavFrontendChevron from 'nav-frontend-chevron';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
-import { Button, Heading, Label, Modal } from '@navikt/ds-react';
+import { Button, HStack, Heading, Label, Modal } from '@navikt/ds-react';
 import { usePlukkOppgaveMutation, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/oppgavetabeller/ReserverteOppgaverTabell';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKoId } from '../utils';
+import NyVisningSwitch from './NyVisningSwitch';
 import OppgavekoVelgerForm from './OppgavekoVelgerForm';
 import * as styles from './oppgavekoPanel.css';
 import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
@@ -35,9 +36,10 @@ const OppgavekoPanel: FunctionComponent = () => {
 	const lukkFinnesIngenBehandlingerIKoModal = () => setVisFinnesIngenBehandlingerIKoModal(false);
 	return (
 		<div className={styles.container}>
-			<Heading size="small">
-				Oppgavekøer
-			</Heading>
+			<HStack justify="space-between" align="center" wrap gap="space-8">
+				<Heading size="small">Oppgavekøer</Heading>
+				<NyVisningSwitch />
+			</HStack>
 			<VerticalSpacer sixteenPx />
 			<OppgavekoVelgerForm plukkNyOppgave={plukkNyOppgave} loadingOppgaveFraKo={loadingOppgaveFraKo} />
 			<VerticalSpacer twentyPx />
@@ -68,9 +70,7 @@ const OppgavekoPanel: FunctionComponent = () => {
 					onClick={() => setVisBehandlingerIKo(!visBehandlingerIKo)}
 				>
 					<NavFrontendChevron type={visBehandlingerIKo ? 'ned' : 'høyre'} className={styles.chevron} />
-					<Label>
-						Neste oppgaver
-					</Label>
+					<Label>Neste oppgaver</Label>
 				</button>
 
 				{visBehandlingerIKo && valgtOppgaveko && <OppgavetabellV3 køId={valgtOppgavekoId} />}

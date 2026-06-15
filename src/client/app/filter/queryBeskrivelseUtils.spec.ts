@@ -17,6 +17,7 @@ import {
 	OrderBeskrivelse,
 	SelectBeskrivelse,
 	utledFilterBeskrivelse,
+	utledFilterBeskrivelseUtenStandardverdier,
 	utledOrderBeskrivelse,
 	utledSelectBeskrivelse,
 } from './queryBeskrivelseUtils';
@@ -60,22 +61,22 @@ describe('queryBeskrivelseUtils', () => {
 		{
 			område: null,
 			kode: 'personbeskyttelse',
-			visningsnavn: 'Personbeskyttelse',
+			visningsnavn: 'Kode 7 eller egen ansatt',
 			synlighet: Synlighet.UnderStreken,
 			tolkes_som: TolkesSom.String,
 			listetype: false,
 			verdiforklaringerErUttømmende: true,
 			verdiforklaringer: [
 				{
-					verdi: 'KODE7',
-					visningsnavn: 'Kode 7',
+					verdi: 'KODE7_ELLER_EGEN_ANSATT',
+					visningsnavn: 'Kode 7 eller egen ansatt',
 					gruppering: undefined,
 					synlighet: Synlighet.OverStreken,
 					rekkefølge: undefined,
 				},
 				{
-					verdi: 'EGEN_ANSATT',
-					visningsnavn: 'Egen ansatt',
+					verdi: 'UGRADERT',
+					visningsnavn: 'Ikke kode 7 eller egen ansatt',
 					gruppering: undefined,
 					synlighet: Synlighet.OverStreken,
 					rekkefølge: undefined,
@@ -169,14 +170,14 @@ describe('queryBeskrivelseUtils', () => {
 					område: null,
 					kode: 'personbeskyttelse',
 					operator: 'NOT_IN',
-					verdi: ['KODE7', 'EGEN_ANSATT'],
+					verdi: ['KODE7_ELLER_EGEN_ANSATT'],
 				},
 			]);
 
 			const result = utledFilterBeskrivelse(query, felter);
 
 			expect(result[0].sammenføyning).toEqual({ prefiks: 'ikke ', separator: ', ' });
-			expect(result[0].verdier).toEqual(['Kode 7', 'Egen ansatt']);
+			expect(result[0].verdier).toEqual(['Kode 7 eller egen ansatt']);
 		});
 
 		it('should format boolean values', () => {
@@ -508,6 +509,127 @@ describe('queryBeskrivelseUtils', () => {
 			expect(result).toHaveLength(2);
 			expect(result[0]).toEqual({ feltnavn: 'Mottatt dato', økende: true });
 			expect(result[1]).toEqual({ feltnavn: 'Antall', økende: false });
+		});
+	});
+
+	describe('utledFilterBeskrivelseUtenStandardverdier', () => {
+		it('skjuler oppgavestatus når den kun er Åpen (IN)', () => {
+			const query = opprettQuery([
+				{ type: 'feltverdi', område: null, kode: 'oppgavestatus', operator: 'IN', verdi: ['AAPEN'] },
+			]);
+
+			const result = utledFilterBeskrivelseUtenStandardverdier(query, felter);
+
+			expect(result).toEqual([]);
+		});
+
+		it('skjuler oppgavestatus når den kun er Åpen (EQUALS)', () => {
+			const query = opprettQuery([
+				{ type: 'feltverdi', område: null, kode: 'oppgavestatus', operator: 'EQUALS', verdi: ['AAPEN'] },
+			]);
+
+			const result = utledFilterBeskrivelseUtenStandardverdier(query, felter);
+
+			expect(result).toEqual([]);
+		});
+
+		it('viser oppgavestatus når den er Åpen og Venter', () => {
+			const query = opprettQuery([
+				{ type: 'feltverdi', område: null, kode: 'oppgavestatus', operator: 'IN', verdi: ['AAPEN', 'VENTER'] },
+			]);
+
+			const result = utledFilterBeskrivelseUtenStandardverdier(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Oppgavestatus');
+			expect(result[0].verdier).toEqual(['Åpen', 'Venter']);
+		});
+
+		it('skjuler personbeskyttelse når den er Ikke kode 7 eller egen ansatt (IN UGRADERT)', () => {
+			const query = opprettQuery([
+				{
+					type: 'feltverdi',
+					område: null,
+					kode: 'personbeskyttelse',
+					operator: 'IN',
+					verdi: ['UGRADERT'],
+				},
+			]);
+
+			const result = utledFilterBeskrivelseUtenStandardverdier(query, felter);
+
+			expect(result).toEqual([]);
+		});
+
+		it('viser personbeskyttelse når den ikke er standardverdien', () => {
+			const query = opprettQuery([
+				{
+					type: 'feltverdi',
+					område: null,
+					kode: 'personbeskyttelse',
+					operator: 'IN',
+					verdi: ['KODE7_ELLER_EGEN_ANSATT'],
+				},
+			]);
+
+			const result = utledFilterBeskrivelseUtenStandardverdier(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Kode 7 eller egen ansatt');
+			expect(result[0].verdier).toEqual(['Kode 7 eller egen ansatt']);
+		});
+
+		it('viser personbeskyttelse når operator ikke er IN/EQUALS', () => {
+			const query = opprettQuery([
+				{
+					type: 'feltverdi',
+					område: null,
+					kode: 'personbeskyttelse',
+					operator: 'NOT_IN',
+					verdi: ['UGRADERT'],
+				},
+			]);
+
+			const result = utledFilterBeskrivelseUtenStandardverdier(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Kode 7 eller egen ansatt');
+		});
+
+		it('beholder øvrige kriterier og skjuler kun standardverdiene', () => {
+			const query = opprettQuery([
+				{ type: 'feltverdi', område: null, kode: 'oppgavestatus', operator: 'IN', verdi: ['AAPEN'] },
+				{
+					type: 'feltverdi',
+					område: null,
+					kode: 'personbeskyttelse',
+					operator: 'IN',
+					verdi: ['UGRADERT'],
+				},
+				{ type: 'feltverdi', område: 'K9', kode: 'hastesak', operator: 'IN', verdi: ['true'] },
+			]);
+
+			const result = utledFilterBeskrivelseUtenStandardverdier(query, felter);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].feltnavn).toBe('Hastesak');
+		});
+
+		it('utledFilterBeskrivelse beholder alle kriterier (lagrede søk er uendret)', () => {
+			const query = opprettQuery([
+				{ type: 'feltverdi', område: null, kode: 'oppgavestatus', operator: 'IN', verdi: ['AAPEN'] },
+				{
+					type: 'feltverdi',
+					område: null,
+					kode: 'personbeskyttelse',
+					operator: 'IN',
+					verdi: ['UGRADERT'],
+				},
+			]);
+
+			const result = utledFilterBeskrivelse(query, felter);
+
+			expect(result).toHaveLength(2);
 		});
 	});
 });

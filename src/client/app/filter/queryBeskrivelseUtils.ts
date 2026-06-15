@@ -1,19 +1,16 @@
 import dayjs from 'dayjs';
 import 'utils/dateUtils';
 import {
+	AGGREGERT_FUNKSJON_VISNINGSNAVN,
 	CombineOppgavefilter,
-	EnkelOrderFelt,
-	EnkelSelectFelt,
 	FeltverdiOppgavefilter,
 	OppgaveQuery,
 	Oppgavefelt,
 	Oppgavefilter,
-	TolkesSom,
-	SelectFelt,
+	OppgavefilterKode,
 	OrderFelt,
-	AggregertSelectFelt,
-	AggregertOrderFelt,
-	AGGREGERT_FUNKSJON_VISNINGSNAVN,
+	SelectFelt,
+	TolkesSom,
 } from './filterTsTypes';
 import { OPERATORS } from './utils';
 
@@ -142,7 +139,8 @@ function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: O
 
 function beskrivelseForCombineFilter(filter: CombineOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
 	const feltnavn = 'Gruppe';
-	const verdier = traverserFiltere(filter.filtere, felter).map(({ feltnavn }) => feltnavn);
+	// eslint-disable-next-line @typescript-eslint/no-use-before-define -- gjensidig rekursjon mellom hoistede funksjoner
+	const verdier = traverserFiltere(filter.filtere, felter).map(({ feltnavn: f }) => f);
 	const prefiks = bestemSammenføyning(undefined, filter.combineOperator);
 
 	return {
@@ -210,14 +208,49 @@ export function utledFilterBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[
 	return traverserFiltere(query.filtere, felter);
 }
 
+// Standardverdier som regnes som "default" og derfor kan skjules i en forenklet visning.
+const STANDARD_OPPGAVESTATUS = ['AAPEN'];
+const STANDARD_PERSONBESKYTTELSE = ['UGRADERT'];
+
+function harSammeVerdier(a: string[], b: string[]): boolean {
+	if (a.length !== b.length) {
+		return false;
+	}
+	return a.every((v) => b.includes(v));
+}
+
+function erStandardverdiFilter(filter: FeltverdiOppgavefilter): boolean {
+	if (filter.operator !== OPERATORS.IN && filter.operator !== OPERATORS.EQUALS) {
+		return false;
+	}
+	if (filter.kode === OppgavefilterKode.Oppgavestatus) {
+		return harSammeVerdier(filter.verdi, STANDARD_OPPGAVESTATUS);
+	}
+	if (filter.kode === OppgavefilterKode.Personbeskyttelse) {
+		return harSammeVerdier(filter.verdi, STANDARD_PERSONBESKYTTELSE);
+	}
+	return false;
+}
+
+/**
+ * Som utledFilterBeskrivelse, men skjuler kriterier som kun har standardverdier
+ * (Oppgavestatus = Åpen, Personbeskyttelse = Ikke kode 7 eller egen ansatt).
+ * Brukes i forenklet visning for saksbehandler; lagrede søk skal fortsatt vise alle kriterier.
+ */
+export function utledFilterBeskrivelseUtenStandardverdier(
+	query: OppgaveQuery,
+	felter: Oppgavefelt[],
+): FilterBeskrivelse[] {
+	const filtrerteFiltere = query.filtere.filter(
+		(filter) => !(isFeltverdiOppgavefilter(filter) && erStandardverdiFilter(filter)),
+	);
+	return traverserFiltere(filtrerteFiltere, felter);
+}
+
 export function utledSelectBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): SelectBeskrivelse[] {
-	return query.select
-		.filter((s) => s.type === 'aggregert' || s.kode)
-		.map((s) => beskrivelseForSelectFelt(s, felter));
+	return query.select.filter((s) => s.type === 'aggregert' || s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
 }
 
 export function utledOrderBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): OrderBeskrivelse[] {
-	return query.order
-		.filter((o) => o.type === 'aggregert' || o.kode)
-		.map((o) => beskrivelseForOrderFelt(o, felter));
+	return query.order.filter((o) => o.type === 'aggregert' || o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
 }

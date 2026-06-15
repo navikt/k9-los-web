@@ -12,6 +12,7 @@ import KopierKø from './KopierKø';
 import SlettKø from './SlettKø';
 
 function scrollToId(id: string) {
+	// eslint-disable-next-line prefer-const -- tilordnes etter at closure-en som leser den er definert
 	let intervalId: NodeJS.Timeout | undefined;
 
 	const scroll = () => {
@@ -25,7 +26,7 @@ function scrollToId(id: string) {
 	intervalId = setInterval(scroll, 100);
 }
 
-const berikMedAntallOppgaverIndividuelt = (køArray: OppgavekøV3Enkel[]) => {
+const useBerikMedAntallOppgaverIndividuelt = (køArray: OppgavekøV3Enkel[]) => {
 	const queries = useQueries({
 		queries: køArray.map((kø) => ({
 			queryKey: ['antallOppgaver', kø.id],
@@ -95,7 +96,7 @@ const Row = ({
 );
 const BehandlingskoerIndex = () => {
 	const { data: initielleKøer, isLoading, error } = useAlleKoer();
-	const { results: køerMedAntallOppgaver, isSuccess: isSuccessAll } = berikMedAntallOppgaverIndividuelt(
+	const { results: køerMedAntallOppgaver, isSuccess: isSuccessAll } = useBerikMedAntallOppgaverIndividuelt(
 		initielleKøer || [],
 	);
 	const [sort, setSort] = useState<SortState | undefined>({

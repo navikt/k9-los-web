@@ -41,6 +41,7 @@ export function KopierLagretSøkDialog({ lagretSøk, onNyOpprettet }: Props) {
 						onChange={(e) => setTittel(e.target.value)}
 						size="small"
 						maxLength={100}
+						// eslint-disable-next-line jsx-a11y/no-autofocus -- bevisst fokus på tittelfelt når dialogen åpnes
 						autoFocus
 					/>
 					{isError && (
