@@ -1,12 +1,11 @@
-import ModalButton from 'sharedComponents/ModalButton';
-import { Button } from '@navikt/ds-react';
-import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
 import React from 'react';
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
+import { Button } from '@navikt/ds-react';
 import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonerModal';
+import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
+import ModalButton from 'sharedComponents/ModalButton';
 
 interface Props {
-	valgteReservasjoner: Array<{ oppgaveNøkkel: OppgaveNøkkel; begrunnelse: string }>;
+	valgteReservasjoner: Array<{ reservasjonsnøkkel: string; begrunnelse: string }>;
 }
 
 const ReservasjonerBolkButtons = ({ valgteReservasjoner }: Props) => (
@@ -19,7 +18,7 @@ const ReservasjonerBolkButtons = ({ valgteReservasjoner }: Props) => (
 			)}
 			renderModal={({ closeModal, open }) => (
 				<OpphevReservasjonerModal
-					oppgaveNøkler={valgteReservasjoner.map((r) => r.oppgaveNøkkel)}
+					reservasjonsnøkler={valgteReservasjoner.map((r) => r.reservasjonsnøkkel)}
 					open={open}
 					closeModal={closeModal}
 				/>

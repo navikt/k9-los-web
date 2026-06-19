@@ -12,6 +12,7 @@ interface BaseReservasjonV3 {
 
 interface ReservasjonV3 extends BaseReservasjonV3 {
 	reserverteV3Oppgaver: OppgaveV3[];
+	reservasjonsnøkkel: string;
 	kommentar: string;
 }
 

@@ -1,18 +1,17 @@
 import React, { FunctionComponent } from 'react';
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
-import { useOpphevReservasjoner } from 'api/queries/saksbehandlerQueries';
 import { Button, Modal } from '@navikt/ds-react';
+import { useOpphevReservasjoner } from 'api/queries/saksbehandlerQueries';
 
 type OwnProps = Readonly<{
 	open: boolean;
-	oppgaveNøkler: Array<OppgaveNøkkel>;
+	reservasjonsnøkler: Array<string>;
 	closeModal: () => void;
 }>;
 
-export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, closeModal, oppgaveNøkler }) => {
+export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, closeModal, reservasjonsnøkler }) => {
 	const { mutate: opphevReservasjoner } = useOpphevReservasjoner();
 
-	const antall = oppgaveNøkler.length;
+	const antall = reservasjonsnøkler.length;
 
 	return (
 		<Modal
@@ -25,15 +24,14 @@ export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, cl
 			<Modal.Body>
 				{antall > 1
 					? `Er du sikker på at du vil oppheve ${antall} reservasjoner?`
-					: 'Er du sikker på at du vil oppheve reservasjonen?'
-				}
+					: 'Er du sikker på at du vil oppheve reservasjonen?'}
 			</Modal.Body>
 			<Modal.Footer>
 				<Button
 					onClick={() =>
 						opphevReservasjoner(
-							oppgaveNøkler.map((o) => ({
-								oppgaveNøkkel: o,
+							reservasjonsnøkler.map((reservasjonsnøkkel) => ({
+								reservasjonsnøkkel,
 							})),
 							{ onSuccess: closeModal },
 						)

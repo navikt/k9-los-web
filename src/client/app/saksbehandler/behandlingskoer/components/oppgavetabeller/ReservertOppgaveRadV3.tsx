@@ -38,7 +38,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({ oppgave, reserv
 				closeModal={() => setModal(null)}
 				reservasjoner={[
 					{
-						oppgaveNøkkel: oppgave.oppgaveNøkkel,
+						reservasjonsnøkkel: reservasjon.reservasjonsnøkkel,
 						begrunnelse: reservasjon.kommentar,
 						reserverTil: reservasjon.reservertTil,
 						reservertAvIdent: reservasjon.reservertAvIdent,
@@ -49,12 +49,16 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({ oppgave, reserv
 	};
 
 	const forlengOppgaveReservasjon = () => {
-		forlengOppgaveReservasjonMutate({ oppgaveNøkkel: oppgave.oppgaveNøkkel });
+		forlengOppgaveReservasjonMutate({ reservasjonsnøkkel: reservasjon.reservasjonsnøkkel });
 	};
 
 	const openOpphevModal = () => {
 		setModal(
-			<OpphevReservasjonerModal open closeModal={() => setModal(null)} oppgaveNøkler={[oppgave.oppgaveNøkkel]} />,
+			<OpphevReservasjonerModal
+				open
+				closeModal={() => setModal(null)}
+				reservasjonsnøkler={[reservasjon.reservasjonsnøkkel]}
+			/>,
 		);
 	};
 

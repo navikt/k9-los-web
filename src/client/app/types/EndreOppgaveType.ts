@@ -1,7 +1,5 @@
-import { OppgaveNøkkel } from './OppgaveNøkkel';
-
 export default interface EndreOppgaveType {
-	oppgaveNøkkel: OppgaveNøkkel;
+	reservasjonsnøkkel: string;
 	begrunnelse?: string;
 	reserverTil?: string;
 	brukerIdent?: string;

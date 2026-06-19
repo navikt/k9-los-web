@@ -1,4 +1,4 @@
-/* eslint-disable no-use-before-define */
+ 
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React, { useCallback, useEffect, useState } from 'react';
 import _ from 'lodash';
@@ -11,7 +11,6 @@ import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/me
 import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
 import ModalButton from 'sharedComponents/ModalButton';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { getDateAndTime } from 'utils/dateUtils';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
 import Reservasjon from '../reservasjonTsType';
@@ -52,9 +51,9 @@ const sorter = (reservasjonerListe: ReservasjonTableData[], newSort: Reservasjon
 const AvdelingslederReservasjonerTabell = () => {
 	const [reservasjonerSomSkalVises, setReservasjonerSomSkalVises] = useState<ReservasjonTableData[]>([]);
 	const [finnesSokResultat, setFinnesSokResultat] = useState(true);
-	const [valgteReservasjoner, setValgteReservasjoner] = useState<
-		{ oppgaveNøkkel: OppgaveNøkkel; begrunnelse: string }[]
-	>([]);
+	const [valgteReservasjoner, setValgteReservasjoner] = useState<{ reservasjonsnøkkel: string; begrunnelse: string }[]>(
+		[],
+	);
 	const [sort, setSort] = useState<ReservasjonTableDataSortState>({ orderBy: 'navn', direction: 'ascending' });
 
 	const handleSort = (sortKey: keyof ReservasjonTableData) => {
@@ -170,7 +169,7 @@ const AvdelingslederReservasjonerTabell = () => {
 										} else {
 											setValgteReservasjoner(
 												reservasjonerSomSkalVises.map((r) => ({
-													oppgaveNøkkel: r.reservasjon.oppgavenøkkel,
+													reservasjonsnøkkel: r.reservasjon.reservasjonsnøkkel,
 													begrunnelse: r.reservasjon.kommentar,
 												})),
 											);
@@ -206,18 +205,22 @@ const AvdelingslederReservasjonerTabell = () => {
 									<Checkbox
 										hideLabel
 										checked={
-											valgteReservasjoner.filter(({ oppgaveNøkkel }) => oppgaveNøkkel === reservasjon.oppgavenøkkel)
-												.length > 0
+											valgteReservasjoner.filter(
+												({ reservasjonsnøkkel }) => reservasjonsnøkkel === reservasjon.reservasjonsnøkkel,
+											).length > 0
 										}
 										onClick={(event) => {
 											if (event.currentTarget.checked) {
 												const endret = [...valgteReservasjoner];
-												endret.push({ oppgaveNøkkel: reservasjon.oppgavenøkkel, begrunnelse: reservasjon.kommentar });
+												endret.push({
+													reservasjonsnøkkel: reservasjon.reservasjonsnøkkel,
+													begrunnelse: reservasjon.kommentar,
+												});
 												setValgteReservasjoner(endret);
 											} else {
 												setValgteReservasjoner(
 													valgteReservasjoner.filter(
-														({ oppgaveNøkkel }) => oppgaveNøkkel !== reservasjon.oppgavenøkkel,
+														({ reservasjonsnøkkel }) => reservasjonsnøkkel !== reservasjon.reservasjonsnøkkel,
 													),
 												);
 											}
@@ -248,7 +251,7 @@ const AvdelingslederReservasjonerTabell = () => {
 											<OpphevReservasjonerModal
 												open={open}
 												closeModal={closeModal}
-												oppgaveNøkler={[reservasjon.oppgavenøkkel]}
+												reservasjonsnøkler={[reservasjon.reservasjonsnøkkel]}
 											/>
 										)}
 									/>
@@ -270,7 +273,7 @@ const AvdelingslederReservasjonerTabell = () => {
 												closeModal={closeModal}
 												reservasjoner={[
 													{
-														oppgaveNøkkel: reservasjon.oppgavenøkkel,
+														reservasjonsnøkkel: reservasjon.reservasjonsnøkkel,
 														begrunnelse: reservasjon.kommentar,
 														reserverTil: reservasjon.reservertTilTidspunkt,
 														reservertAvIdent: reservasjon.reservertAvIdent,
