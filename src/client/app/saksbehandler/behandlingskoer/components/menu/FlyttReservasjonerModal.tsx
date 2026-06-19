@@ -13,10 +13,9 @@ import {
 	useDatepicker,
 } from '@navikt/ds-react';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 
 interface FlyttReservasjonType {
-	oppgaveNøkkel: OppgaveNøkkel;
+	reservasjonsnøkkel: string;
 	begrunnelse: string;
 	reserverTil?: string;
 	reservertAvIdent?: string;
@@ -60,7 +59,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 		.map((v) => ({ value: v.brukerIdent, label: v.navn }))
 		.sort((a, b) => a.label.localeCompare(b.label));
 
-	const formMethods = useForm<Omit<FlyttReservasjonType, 'oppgaveNøkkel'>>({
+	const formMethods = useForm<Omit<FlyttReservasjonType, 'reservasjonsnøkkel'>>({
 		defaultValues: initialValues(reservasjoner),
 		mode: 'onBlur',
 		reValidateMode: 'onChange',
@@ -120,7 +119,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 		if (reservasjoner.length === 1) {
 			flyttReservasjoner([
 				{
-					oppgaveNøkkel: reservasjoner[0]?.oppgaveNøkkel,
+					reservasjonsnøkkel: reservasjoner[0]?.reservasjonsnøkkel,
 					brukerIdent,
 					begrunnelse,
 					reserverTil,
@@ -129,7 +128,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 		} else {
 			flyttReservasjoner(
 				reservasjoner.map((v) => ({
-					oppgaveNøkkel: v.oppgaveNøkkel,
+					reservasjonsnøkkel: v.reservasjonsnøkkel,
 					begrunnelse: v.begrunnelse,
 					brukerIdent,
 					reserverTil,

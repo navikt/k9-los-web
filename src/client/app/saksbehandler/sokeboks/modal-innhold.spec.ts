@@ -35,6 +35,7 @@ const modalInnhold = (
 
 	const defaultReservasjon: ReservasjonV3 = {
 		reserverteV3Oppgaver: [],
+		reservasjonsnøkkel: '',
 		reservertAvEpost: 'saksbehandler@test.no',
 		reservertAvIdent: 'Z123456',
 		reservertAvNavn: 'Sara Saksbehandler',

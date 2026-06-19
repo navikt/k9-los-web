@@ -84,7 +84,7 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 				vis: visÅpneOgEndreReservasjonKnapp,
 				handling: () => {
 					endreReservasjonerMutate(
-						[{ oppgaveNøkkel: oppgave.oppgaveNøkkel, brukerIdent: innloggetSaksbehandler.brukerIdent }],
+						[{ reservasjonsnøkkel: oppgave.reservasjonsnøkkel, brukerIdent: innloggetSaksbehandler.brukerIdent }],
 						{
 							onSuccess: leggTilSisteOppgaverOgÅpneFagsystem,
 							onError: () => {
@@ -119,7 +119,7 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 			leggTilbakeIKø: {
 				vis: visLeggTilbakeIKøKnapp,
 				handling: () => {
-					opphevReservasjonerMutate([{ oppgaveNøkkel: oppgave.oppgaveNøkkel }], {
+					opphevReservasjonerMutate([{ reservasjonsnøkkel: oppgave.reservasjonsnøkkel }], {
 						onSuccess: () => {
 							closeModal();
 						},

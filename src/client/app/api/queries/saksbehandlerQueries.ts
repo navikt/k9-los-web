@@ -104,8 +104,7 @@ export const usePlukkOppgaveMutation = (callback?: (oppgave: ReservasjonV3FraKø
 export const useOpphevReservasjoner = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: Array<{ oppgaveNøkkel: OppgaveNøkkel }>) =>
-			axiosInstance.post(apiPaths.opphevReservasjoner, data),
+		mutationFn: (data: Array<{ reservasjonsnøkkel: string }>) => axiosInstance.post(apiPaths.opphevReservasjoner, data),
 		onSuccess: () => {
 			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
 			return Promise.all([
@@ -119,8 +118,7 @@ export const useOpphevReservasjoner = () => {
 export const useForlengOppgavereservasjon = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (data: { oppgaveNøkkel: OppgaveNøkkel }) =>
-			axiosInstance.post(apiPaths.forlengOppgavereservasjon, data),
+		mutationFn: (data: { reservasjonsnøkkel: string }) => axiosInstance.post(apiPaths.forlengOppgavereservasjon, data),
 		onSuccess: () =>
 			Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
