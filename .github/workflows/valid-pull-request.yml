@@ -42,6 +42,14 @@ jobs:
         run: pnpm test --maxWorkers=2
       - name: Bygge
         run: pnpm build
+        # Lager en selvstendig server-deploy med kun serverens prod-dependencies (samme som i build-and-deploy).
+        # node-linker=hoisted gir en flat node_modules uten symlenker, som kopieres rent inn i Docker.
+      - name: Lag server-deploy
+        run: |
+          rm -rf ./deploy
+          pnpm --filter=@k9-los-web/server --config.node-linker=hoisted deploy --prod ./deploy
+          test -f ./deploy/server.js || { echo "::error ::deploy/server.js mangler"; exit 1; }
+          test "$(find ./deploy -type l | wc -l)" -eq 0 || { echo "::error ::deploy inneholder symlenker"; exit 1; }
       - name: Bygg Dockerimage
         uses: navikt/sif-gha-workflows/.github/actions/maven/build-push-docker-image@main # ratchet:exclude
         id: docker-push
