@@ -1,9 +1,6 @@
 {
 	"name": "k9-los-web",
 	"version": "0.0.1",
-	"workspaces": [
-		"server"
-	],
 	"description": "k9-los-web",
 	"type": "module",
 	"main": "index.js",
@@ -127,7 +124,7 @@
 	},
 	"scripts": {
 		"test": "jest --colors",
-		"dev": "yarn node webpack/webpack.dev.server.mjs --config webpack/webpack.dev.mjs",
+		"dev": "node webpack/webpack.dev.server.mjs --config webpack/webpack.dev.mjs",
 		"build": "cross-env NODE_ENV=production SENTRY_RELEASE=$(git rev-parse --short HEAD) webpack --config webpack/webpack.prod.mjs",
 		"ts-check": "tsc",
 		"lint": "eslint --cache --fix \"src/**/*.ts?(x)\"",
@@ -145,5 +142,5 @@
 		"src/client/**/*.ts?(x)": "eslint --fix",
 		"src/client/**/*.{ts,tsx,js,jsx,css,less}": "prettier --write"
 	},
-	"packageManager": "yarn@4.12.0"
+	"packageManager": "pnpm@11.15.1"
 }

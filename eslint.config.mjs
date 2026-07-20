@@ -17,7 +17,6 @@ export default tseslint.config(
 			'build/',
 			'node_modules/',
 			'coverage/',
-			'.yarn/',
 			'storybook-static/',
 			'**/*.d.ts',
 		],

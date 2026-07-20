@@ -1,0 +1,22 @@
+packages:
+  - server
+
+allowBuilds:
+  '@sentry/cli': set this to true or false
+  core-js: set this to true or false
+  esbuild: set this to true or false
+  msw: set this to true or false
+  unrs-resolver: set this to true or false
+
+# Tilsvarer yarns `enableScripts: false`: vi kjører ikke postinstall/build-scripts.
+# Listen demmer opp for pnpm sin advarsel om ignorerte build-scripts.
+ignoredBuiltDependencies:
+  - '@sentry/cli'
+  - core-js
+  - esbuild
+  - msw
+  - unrs-resolver
+
+# Ikke kjør `pnpm install` på nytt før hvert `pnpm run`-script.
+# Registryet er token-gated, så en auto-reinstall ville kreve token ved hver kommando.
+verifyDepsBeforeRun: false
