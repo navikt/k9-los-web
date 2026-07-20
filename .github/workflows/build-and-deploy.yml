@@ -26,7 +26,7 @@ jobs:
       - name: Hente kode
         uses: actions/checkout@v6
       - name: Sette opp pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
       - name: Sette opp Node
         uses: actions/setup-node@v6
         with:
@@ -50,7 +50,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         # Lager en selvstendig server-deploy med kun serverens prod-dependencies, da det er det eneste som trenger å være med på docker imaget
       - name: Lag server-deploy
-        run: pnpm --filter=@k9-los-web/server --legacy deploy --prod ./deploy
+        run: pnpm --filter=@k9-los-web/server deploy --prod ./deploy
       - uses: nais/docker-build-push@v0
         id: docker-push
         with:

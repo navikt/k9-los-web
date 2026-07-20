@@ -1,15 +1,12 @@
 packages:
   - server
 
-allowBuilds:
-  '@sentry/cli': set this to true or false
-  core-js: set this to true or false
-  esbuild: set this to true or false
-  msw: set this to true or false
-  unrs-resolver: set this to true or false
+# Isolerer deploy til det spesifikke workspace-prosjektet (server), slik at
+# `pnpm deploy` (uten --legacy) tar med kun serverens egne prod-dependencies.
+injectWorkspacePackages: true
 
-# Tilsvarer yarns `enableScripts: false`: vi kjører ikke postinstall/build-scripts.
-# Listen demmer opp for pnpm sin advarsel om ignorerte build-scripts.
+# Tilsvarer yarns `enableScripts: false`: vi kjører ingen postinstall/build-scripts.
+# Pakkene under bygges bevisst ikke (binærene kommer via optional platform-deps).
 ignoredBuiltDependencies:
   - '@sentry/cli'
   - core-js
