@@ -24,11 +24,11 @@ jobs:
       image_version: ${{ steps.docker-push.outputs.tag }}
     steps:
       - name: Hente kode
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Sette opp pnpm
         uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
       - name: Sette opp Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 22.x
           cache: pnpm
@@ -83,7 +83,7 @@ jobs:
   sif-code-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: navikt/sif-gha-workflows/.github/actions/sif-code-scan@v1
 
 
@@ -128,7 +128,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Deploy k9-los-web til prod
         uses: nais/deploy/actions/deploy@v2
         env:
