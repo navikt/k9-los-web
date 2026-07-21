@@ -1,11 +1,16 @@
 const { SentryCli } = require("@sentry/cli");
+const { execSync } = require("child_process");
+
+function hentRelease() {
+  return execSync("git rev-parse --short HEAD").toString().trim();
+}
 
 async function opprettReleaseTilSentry() {
-  const release = process.env.SENTRY_RELEASE;
+  const release = hentRelease();
   const authToken = process.env.SENTRY_AUTH_TOKEN;
 
   if (!release) {
-    throw new Error('"SENTRY_RELEASE" er ikke satt');
+    throw new Error("Klarte ikke å utlede release fra git");
   }
 
   if (!authToken) {

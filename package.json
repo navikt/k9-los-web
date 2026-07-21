@@ -131,7 +131,7 @@
 		"lint": "eslint --cache --fix \"src/**/*.ts?(x)\"",
 		"up": "docker-compose up -d --remove-orphans --build",
 		"down": "docker-compose down",
-		"sentry-release": "(SENTRY_RELEASE=$(git rev-parse --short HEAD); node ./setup/sentry-release.cjs)",
+		"sentry-release": "node ./setup/sentry-release.cjs",
 		"prepare": "husky install",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
