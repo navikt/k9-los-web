@@ -25,24 +25,31 @@ jobs:
     steps:
       - name: Hente kode
         uses: actions/checkout@v6
-      - name: Sette yarn-config
-        run: |
-          yarn config set npmScopes.navikt.npmRegistryServer "https://npm.pkg.github.com"
-          yarn config set npmScopes.navikt.npmAlwaysAuth true
-          yarn config set npmScopes.navikt.npmAuthToken $NPM_AUTH_TOKEN
-        env:
-          NPM_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - name: Sette opp pnpm
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
       - name: Sette opp Node
         uses: actions/setup-node@v6
         with:
           node-version: 22.x
-          cache: yarn
+          cache: pnpm
+      - name: Sette opp npm-auth mot GitHub Packages
+        run: echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" >> ~/.npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Installere dependencies
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Tester
-        run: yarn test --maxWorkers=2
+        run: pnpm test --maxWorkers=2
       - name: Bygge
-        run: yarn build
+        run: pnpm build
+        # Lager en selvstendig server-deploy med kun serverens prod-dependencies (samme som i build-and-deploy).
+        # node-linker=hoisted gir en flat node_modules uten symlenker, som kopieres rent inn i Docker.
+      - name: Lag server-deploy
+        run: |
+          rm -rf ./deploy
+          pnpm --filter=@k9-los-web/server --config.node-linker=hoisted deploy --prod ./deploy
+          test -f ./deploy/server.js || { echo "::error ::deploy/server.js mangler"; exit 1; }
+          test "$(find ./deploy -type l | wc -l)" -eq 0 || { echo "::error ::deploy inneholder symlenker"; exit 1; }
       - name: Bygg Dockerimage
         uses: navikt/sif-gha-workflows/.github/actions/maven/build-push-docker-image@main # ratchet:exclude
         id: docker-push

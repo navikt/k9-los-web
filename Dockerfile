@@ -8,7 +8,8 @@ WORKDIR /app
 COPY ./webpack/faroConfig.js ./dist/public/nais.js
 COPY ./dist ./dist
 
-COPY ./node_modules ./node_modules
-COPY server ./
+# ./deploy er en selvstendig pnpm-deploy av @k9-los-web/server
+# og inneholder server.js, package.json og node_modules
+COPY ./deploy ./
 
 CMD ["./server.js"]

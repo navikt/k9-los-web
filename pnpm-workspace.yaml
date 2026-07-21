@@ -1,0 +1,20 @@
+packages:
+  - server
+
+# Isolerer deploy til det spesifikke workspace-prosjektet (server), slik at
+# `pnpm deploy` (uten --legacy) tar med kun serverens egne prod-dependencies.
+injectWorkspacePackages: true
+
+# Tilsvarer yarns `enableScripts: false`: vi kjører ingen postinstall/build-scripts.
+# Alle er satt til `false` bevisst (binærene kommer via optional platform-deps).
+# Dette må stå eksplisitt – ellers feiler `pnpm install` med ERR_PNPM_IGNORED_BUILDS.
+allowBuilds:
+  '@sentry/cli': false
+  core-js: false
+  esbuild: false
+  msw: false
+  unrs-resolver: false
+
+# Ikke kjør `pnpm install` på nytt før hvert `pnpm run`-script.
+# Registryet er token-gated, så en auto-reinstall ville kreve token ved hver kommando.
+verifyDepsBeforeRun: false

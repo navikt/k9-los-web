@@ -8,19 +8,16 @@
 
 ### Autentisering med GitHub's Package Registry
 
-Før du kjører `yarn install`, sett opp lokal NPM for autentisering mot GitHub ved hjelp av en Personal Access Token (PAT) med `read:packages`-tilgang. For mer informasjon, se den [offisielle GitHub-guiden](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages).
+Før du kjører `pnpm install`, sett opp lokal NPM for autentisering mot GitHub ved hjelp av en Personal Access Token (PAT) med `read:packages`-tilgang. For mer informasjon, se den [offisielle GitHub-guiden](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-npm-registry#authenticating-to-github-packages).
 
 **Korte Trinn**:
 
 1. Opprett en GitHub PAT med `read:packages`-tilgang.
 2. Aktiver SSO.
-3. Legg følgende i `~/.yarnrc.yml`:
+3. Registry-mappingen for `@navikt` ligger allerede i `.npmrc` i repoet. Selve tokenet må ligge i din globale `~/.npmrc` (pnpm ekspanderer av sikkerhetsgrunner ikke miljøvariabler i prosjektets innsjekkede `.npmrc`):
 
-   ```yaml
-   npmRegistries:
-     https://npm.pkg.github.com:
-       npmAlwaysAuth: true
-       npmAuthToken: <token>
+   ```
+   //npm.pkg.github.com/:_authToken=<token>
    ```
 
 ⚠️ Merk: Dette skal ikke sjekkes inn i versjonskontroll.
@@ -39,7 +36,7 @@ Før du kjører `yarn install`, sett opp lokal NPM for autentisering mot GitHub 
 ```
    docker-compose up -d k9-los
 ```
-2. Kjør opp k9-los-web lokalt med yarn dev
+2. Kjør opp k9-los-web lokalt med pnpm dev
 3. Opprett ønsket kø i avdelingslederpanelet og legg til saksbehandler i køen
 4. Kjør tester i verdikjede for å opprette saker. Man kan slette deler av testene for å få behandlinger som ikke er ferdigstilt.
    Les dokumentasjon i https://github.com/navikt/k9-verdikjede for å kjøre tester.
@@ -49,7 +46,7 @@ Før du kjører `yarn install`, sett opp lokal NPM for autentisering mot GitHub 
 Nå kan du søke opp saksnummeret eller søkeren i k9-los-web. Dersom oppgaven matcher kriteriene i en av dine køer vil den også dukke opp i listen over oppgaver.
 
 ##### Bygge k9-los-web i docker og kjøre mot k9-los-web i veridkjede
-1. yarn build
+1. pnpm build
 2. docker build -t k9-los-web:din-valgfrie-tag
 3. 
 ```

@@ -1,13 +1,13 @@
 # Pakkebehandler
 
-Dette prosjektet bruker **yarn** (Yarn 4). Bruk alltid `yarn` – aldri `npm`.
+Dette prosjektet bruker **pnpm**. Bruk alltid `pnpm` – aldri `npm` eller `yarn`.
 
-- Installere dependencies: `yarn install`
-- Legge til pakke: `yarn add <pakke>` / `yarn add -D <pakke>`
-- Fjerne pakke: `yarn remove <pakke>`
-- Kjøre script: `yarn <script>` (f.eks. `yarn test`, `yarn build`)
+- Installere dependencies: `pnpm install`
+- Legge til pakke: `pnpm add <pakke>` / `pnpm add -D <pakke>`
+- Fjerne pakke: `pnpm remove <pakke>`
+- Kjøre script: `pnpm <script>` (f.eks. `pnpm test`, `pnpm build`)
 
-Ikke kjør `npm install` eller commit `package-lock.json` – kun `yarn.lock` skal være i repoet.
+Ikke kjør `npm install`/`yarn install` eller commit `package-lock.json`/`yarn.lock` – kun `pnpm-lock.yaml` skal være i repoet.
 
 # Designsystem
 
@@ -23,9 +23,9 @@ Appen bruker Aksels designsystem https://aksel.nav.no/. Foretrekk komponenter he
 Kjøre tester:
 
 ```bash
-yarn test                                          # alle tester
-yarn jest --colors src/.../dateUtils.spec.ts       # spesifikk fil
-yarn jest --colors dateUtils                       # pattern
-yarn jest --colors --watch                         # watch
-yarn jest --colors --coverage                      # coverage
+pnpm test                                          # alle tester
+pnpm jest --colors src/.../dateUtils.spec.ts       # spesifikk fil
+pnpm jest --colors dateUtils                       # pattern
+pnpm jest --colors --watch                         # watch
+pnpm jest --colors --coverage                      # coverage
 ```
