@@ -1,13 +1,12 @@
-import React, { FunctionComponent, useContext, useState } from 'react';
-import NavFrontendChevron from 'nav-frontend-chevron';
-import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
+import { FunctionComponent, useContext, useState } from 'react';
+import { ChevronDownIcon, ChevronRightIcon, ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Label, Modal } from '@navikt/ds-react';
 import { usePlukkOppgaveMutation, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
-import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
+import { BehandlingskoerContext } from 'saksbehandler/BehandlingskoerContext';
 import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/oppgavetabeller/ReserverteOppgaverTabell';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKoId } from '../utils';
-import OppgavekoVelgerForm from './OppgavekoVelgerForm';
+import { OppgavekoVelgerForm } from './OppgavekoVelgerForm';
 import * as styles from './oppgavekoPanel.css';
 import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
 
@@ -35,9 +34,7 @@ const OppgavekoPanel: FunctionComponent = () => {
 	const lukkFinnesIngenBehandlingerIKoModal = () => setVisFinnesIngenBehandlingerIKoModal(false);
 	return (
 		<div className={styles.container}>
-			<Heading size="small">
-				Oppgavekøer
-			</Heading>
+			<Heading size="small">Oppgavekøer</Heading>
 			<VerticalSpacer sixteenPx />
 			<OppgavekoVelgerForm plukkNyOppgave={plukkNyOppgave} loadingOppgaveFraKo={loadingOppgaveFraKo} />
 			<VerticalSpacer twentyPx />
@@ -67,10 +64,12 @@ const OppgavekoPanel: FunctionComponent = () => {
 					className={styles.behandlingskoerKnapp}
 					onClick={() => setVisBehandlingerIKo(!visBehandlingerIKo)}
 				>
-					<NavFrontendChevron type={visBehandlingerIKo ? 'ned' : 'høyre'} className={styles.chevron} />
-					<Label>
-						Neste oppgaver
-					</Label>
+					{visBehandlingerIKo ? (
+						<ChevronDownIcon className={styles.chevron} />
+					) : (
+						<ChevronRightIcon className={styles.chevron} />
+					)}
+					<Label>Neste oppgaver</Label>
 				</button>
 
 				{visBehandlingerIKo && valgtOppgaveko && <OppgavetabellV3 køId={valgtOppgavekoId} />}

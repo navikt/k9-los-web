@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useState } from 'react';
-import NavFrontendChevron from 'nav-frontend-chevron';
+import { FunctionComponent, useState } from 'react';
+import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react';
 import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
@@ -35,7 +35,11 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 				className={kopanelStyles.behandlingskoerKnapp}
 				onClick={() => setVisReservasjoner(!visReservasjoner)}
 			>
-				<NavFrontendChevron type={visReservasjoner ? 'ned' : 'høyre'} className={kopanelStyles.chevron} />
+				{visReservasjoner ? (
+					<ChevronDownIcon className={kopanelStyles.chevron} />
+				) : (
+					<ChevronRightIcon className={kopanelStyles.chevron} />
+				)}
 				<Label>Reserverte oppgaver</Label>
 				{isSuccess && <OppgaveTabellMenyAntallOppgaver tekst={`${antallReservasjoner} reserverte`} />}
 			</button>

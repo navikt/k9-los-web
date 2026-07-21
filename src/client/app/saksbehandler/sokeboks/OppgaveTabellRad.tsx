@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import Chevron from 'nav-frontend-chevron';
+import { ReactNode } from 'react';
+import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
 import { OppgaveModal } from 'saksbehandler/sokeboks/OppgaveModal';
 import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
@@ -25,7 +25,7 @@ export function OppgaveTabellRad(props: {
 			<Table.DataCell>{props.oppgave.ytelsestype}</Table.DataCell>
 			<Table.DataCell>{props.oppgave.status}</Table.DataCell>
 			<Table.DataCell>
-				<Chevron />
+				<ChevronRightIcon />
 			</Table.DataCell>
 		</Table.Row>
 	);

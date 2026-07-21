@@ -2,10 +2,8 @@ import React, { FunctionComponent } from 'react';
 import { NavLink } from 'react-router';
 import classnames from 'classnames/bind';
 import { Location } from 'history';
-import Panel from 'nav-frontend-paneler';
-import Tabs from 'nav-frontend-tabs';
 import { BarChartIcon, CircleSlashIcon, FileSearchIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
-import { Heading } from '@navikt/ds-react';
+import { Box, Heading } from '@navikt/ds-react';
 import useTrackRouteParam from 'app/data/trackRouteParam';
 import { getPanelLocationCreator } from 'app/paths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
@@ -54,11 +52,26 @@ const tabLabels = {
 };
 
 const tabStyle = {
-	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [<TasklistIcon fontSize="1.5rem" />, <TasklistIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.LAGREDE_SØK]: [<FileSearchIcon fontSize="1.5rem" />, <FileSearchIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.NOKKELTALL]: [<BarChartIcon fontSize="1.5rem" />, <BarChartIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.RESERVASJONER]: [<CircleSlashIcon fontSize="1.5rem" />, <CircleSlashIcon fontSize="1.5rem" />],
-	[AvdelingslederPanels.SAKSBEHANDLERE]: [<PersonGroupIcon fontSize="1.5rem" />, <PersonGroupIcon fontSize="1.5rem" />],
+	[AvdelingslederPanels.BEHANDLINGSKOER_V3]: [
+		<TasklistIcon key="behandlingskoer-active" fontSize="1.5rem" />,
+		<TasklistIcon key="behandlingskoer-inactive" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.LAGREDE_SØK]: [
+		<FileSearchIcon key="lagredesok-active" fontSize="1.5rem" />,
+		<FileSearchIcon key="lagredesok-inactive" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.NOKKELTALL]: [
+		<BarChartIcon key="nokkeltall-active" fontSize="1.5rem" />,
+		<BarChartIcon key="nokkeltall-inactive" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.RESERVASJONER]: [
+		<CircleSlashIcon key="reservasjoner-active" fontSize="1.5rem" />,
+		<CircleSlashIcon key="reservasjoner-inactive" fontSize="1.5rem" />,
+	],
+	[AvdelingslederPanels.SAKSBEHANDLERE]: [
+		<PersonGroupIcon key="saksbehandlere-active" fontSize="1.5rem" />,
+		<PersonGroupIcon key="saksbehandlere-inactive" fontSize="1.5rem" />,
+	],
 };
 
 type TabProps = {
@@ -137,20 +150,37 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 				<VerticalSpacer twentyPx />
 				<AvdelingslederDashboard>
 					<div>
-						<Tabs
-							tabs={[
-								getTab(
+						<div className={styles.tabs}>
+							<ul className={styles.tabList} role="tablist">
+								{[
 									AvdelingslederPanels.BEHANDLINGSKOER_V3,
-									activeAvdelingslederPanel,
-									getAvdelingslederPanelLocation,
-								),
-								getTab(AvdelingslederPanels.LAGREDE_SØK, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-								getTab(AvdelingslederPanels.NOKKELTALL, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-								getTab(AvdelingslederPanels.RESERVASJONER, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-								getTab(AvdelingslederPanels.SAKSBEHANDLERE, activeAvdelingslederPanel, getAvdelingslederPanelLocation),
-							].filter(Boolean)}
-						/>
-						<Panel className={styles.panelPadding}>{renderAvdelingslederPanel(activeAvdelingslederPanel)}</Panel>
+									AvdelingslederPanels.LAGREDE_SØK,
+									AvdelingslederPanels.NOKKELTALL,
+									AvdelingslederPanels.RESERVASJONER,
+									AvdelingslederPanels.SAKSBEHANDLERE,
+								].map((panel) => {
+									const { label, aktiv, linkCreator } = getTab(
+										panel,
+										activeAvdelingslederPanel,
+										getAvdelingslederPanelLocation,
+									);
+									return (
+										<li key={panel} className={styles.tabOuter} role="presentation">
+											{linkCreator({
+												className: classNames('tabInner', {
+													tabInnerAktiv: aktiv,
+													tabInnerInteraktiv: !aktiv,
+												}),
+												children: <div className={styles.tabLabelOuter}>{label}</div>,
+											})}
+										</li>
+									);
+								})}
+							</ul>
+						</div>
+						<Box background="raised" borderRadius="4" className={styles.panelPadding}>
+							{renderAvdelingslederPanel(activeAvdelingslederPanel)}
+						</Box>
 					</div>
 				</AvdelingslederDashboard>
 			</div>
