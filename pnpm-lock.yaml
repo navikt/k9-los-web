@@ -25,23 +25,23 @@ importers:
         specifier: 2.8.2
         version: 2.8.2(supports-color@8.1.1)
       '@navikt/aksel-icons':
-        specifier: 8.10.3
-        version: 8.10.3
+        specifier: 8.15.0
+        version: 8.15.0
       '@navikt/ds-css':
-        specifier: 8.10.3
-        version: 8.10.3
+        specifier: 8.15.0
+        version: 8.15.0
       '@navikt/ds-react':
-        specifier: 8.10.3
-        version: 8.10.3(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 8.15.0
+        version: 8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@navikt/ds-tailwind':
-        specifier: 8.10.3
-        version: 8.10.3
+        specifier: 8.15.0
+        version: 8.15.0
       '@navikt/ds-tokens':
-        specifier: 8.10.3
-        version: 8.10.3
+        specifier: 8.15.0
+        version: 8.15.0
       '@navikt/familie-endringslogg':
         specifier: 14.0.6
-        version: 14.0.6(@navikt/aksel-icons@8.10.3)(@navikt/ds-react@8.10.3(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)
+        version: 14.0.6(@navikt/aksel-icons@8.15.0)(@navikt/ds-react@8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)
       '@sentry/browser':
         specifier: 10.64.0
         version: 10.64.0
@@ -170,8 +170,8 @@ importers:
         specifier: 9.39.4
         version: 9.39.4
       '@navikt/aksel':
-        specifier: 8.10.3
-        version: 8.10.3(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: 8.15.0
+        version: 8.15.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
       '@tanstack/react-query-devtools':
         specifier: 5.101.2
         version: 5.101.2(@tanstack/react-query@5.101.2(react@19.2.7))(react@19.2.7)
@@ -1379,8 +1379,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  '@floating-ui/react@0.27.8':
-    resolution: {integrity: sha512-EQJ4Th328y2wyHR3KzOUOoTW2UKjFk53fmyahfwExnFQ8vnsMYqKc+fFPOkeYtj5tcp1DUMiNJ7BFhed7e9ONw==}
+  '@floating-ui/react@0.27.19':
+    resolution: {integrity: sha512-31B8h5mm8YxotlE7/AU/PhNAl8eWxAmjL/v2QOxroDNkTFLk3Uu82u63N3b6TXa4EGJeeZLVcd/9AlNlVqzeog==}
     peerDependencies:
       react: '>=17.0.0'
       react-dom: '>=17.0.0'
@@ -1720,29 +1720,29 @@ packages:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
 
-  '@navikt/aksel-icons@8.10.3':
-    resolution: {integrity: sha512-csrNBbiluUNWP/Ha33g1hZFHqmA7ofusGt3d0TtDe29+tdRYf5Cu7tmrTv1HWlbBe6wiRT8gYiDKv84t35xqwg==, tarball: https://npm.pkg.github.com/download/@navikt/aksel-icons/8.10.3/a30f1c596de7423acbdd2347a32355aea772a366}
+  '@navikt/aksel-icons@8.15.0':
+    resolution: {integrity: sha512-+A/jWvZaMWkuG0SiG2GdJK0rlLTi/EIccV/3ax+y2hI9CmIqDzyUR9yflr24Q9wy2xwKY212kfrphSnVy1Zgiw==, tarball: https://npm.pkg.github.com/download/@navikt/aksel-icons/8.15.0/c8e11e3fe44d081727f36ec526b05f36859b8c4e}
 
-  '@navikt/aksel@8.10.3':
-    resolution: {integrity: sha512-rJ89NpTB73jma17kExgpcBurjuLSHF0Q7V1Jx0axBclGgjKsaTOoYelNywI8E87TpKFH+y9ZrftAq4BGc5YGow==, tarball: https://npm.pkg.github.com/download/@navikt/aksel/8.10.3/c3180b9992f6247411de6ac651afbe496e2d2dac}
+  '@navikt/aksel@8.15.0':
+    resolution: {integrity: sha512-P1XAJIYWw6zzt+SV/fAji7WgLxOwg5eWqZaOJlc2W+WvowXgKs/rprvB46/gCH3TRHAo/B9FhtWSioVzPF94GA==, tarball: https://npm.pkg.github.com/download/@navikt/aksel/8.15.0/cdf496a2babeb3df9123525cc5f1c9570ecd6ae4}
     engines: {node: '>=22.0.0'}
     hasBin: true
 
-  '@navikt/ds-css@8.10.3':
-    resolution: {integrity: sha512-y/0tArSJf5vyqYdYu7gzfcQmAy+JrX7lPxKl2XiHWr0ae/STNyq7owrK2r6CfVAKSo57SOuNfll58T2SftHuvg==, tarball: https://npm.pkg.github.com/download/@navikt/ds-css/8.10.3/2c6d65719d3a85ff0f59aa178c3f8c77c78f9bca}
+  '@navikt/ds-css@8.15.0':
+    resolution: {integrity: sha512-eRrXG4qZ90M/SLp40URG81TWDXP7RTAYec5QdYMfJ/P55ahXBFI1fm2EyjWDGpEldGBOEdr/wPq57m6x01gcnA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-css/8.15.0/7241ddaf993ca7e42a23cdcfd6cb716c9105bb6e}
 
-  '@navikt/ds-react@8.10.3':
-    resolution: {integrity: sha512-ZKFEUx2mmhHjsykKziL0i38tIVBc/dO1bynpnvPUL7RYsd4q5HQ/NpdvrRLHh1WNdN9b/jKI4MuLPrcB3ZiJng==, tarball: https://npm.pkg.github.com/download/@navikt/ds-react/8.10.3/d1b215fcd6beef57205dfc7350b5cc7e7104ebff}
+  '@navikt/ds-react@8.15.0':
+    resolution: {integrity: sha512-eArtTiUnPIlFMsuLdUUtyF4m5GtpiKzCNKBQXuSJ0glNRPROUYP4wXdGwGknYnhG+R/JIbjbf9u69laIRPxfNA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-react/8.15.0/b28729a9b637f8853bdb1239c4fa4d3f992d3e35}
     peerDependencies:
       '@types/react': ^17.0.30 || ^18 || ^19
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
 
-  '@navikt/ds-tailwind@8.10.3':
-    resolution: {integrity: sha512-oyv1dLdLvnkcavlFOX7oFkWWyl4AKN8iP/OLN9M2lhcqKCNdYSCetty73tzILuoaHneyoxTYPPn2uwIlxHey0Q==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tailwind/8.10.3/dd5ab1e6543ceffb74261a3d2250cd9b167dfdf1}
+  '@navikt/ds-tailwind@8.15.0':
+    resolution: {integrity: sha512-alkeeHebiDFKi9WYMr4A0MG1wY3BNnvtlIZbvIQEqsiGE8dz5JRtTzqXk2ulMX3iSnsvHjs93p+AHTDtb+6V/Q==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tailwind/8.15.0/438c15ff5ec53d2ae613346bbc687c2c480bb6da}
 
-  '@navikt/ds-tokens@8.10.3':
-    resolution: {integrity: sha512-b35JJxZS3KbxQfKCHAK/AwAsCQsUr8CD+CuKFbEfJtZ02kjejt+n+RbUGM6ej30Jle7Myto7gU0r+kpCrS+NJA==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.10.3/1c8cb263d04f4002c5a1f40b8c5d68366b4613b9}
+  '@navikt/ds-tokens@8.15.0':
+    resolution: {integrity: sha512-i76uLUIONOWc/G7kzPHQwNCR65bKBVulYbua6tyVmtlAhJyEPjC2vNyeeOq1bE4QcccPNQz9rBKydmXOVvJYtw==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.15.0/96c20d8f453f8be770e5e1a9e9ce4888e50e4348}
 
   '@navikt/familie-endringslogg@14.0.6':
     resolution: {integrity: sha512-hWxiCWQ91mBoA+2BMCmHii+jPnVEmedalPo+/4s9EyQy0fpZOYp05UrHC/iFkMSaMU2wJaxsNqgXLe3zqqtllA==, tarball: https://npm.pkg.github.com/download/@navikt/familie-endringslogg/14.0.6/ab0f51a8514453c6cbab461060451c3b4f5750e0}
@@ -3258,8 +3258,13 @@ packages:
     resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
     engines: {node: '>= 12'}
 
-  clipboardy@5.0.1:
-    resolution: {integrity: sha512-pJ5ZDWjOT593Nli4TqlRLy33KomlAPxIFntMFxXrCqJON1cGcGPT5nNFxRxJ9m4HbfrccsYve7XwXjywW6nXVw==}
+  clipboard-image@0.1.0:
+    resolution: {integrity: sha512-SWk7FgaXLNFld19peQ/rTe0n97lwR1WbkqxV6JKCAOh7U52AKV/PeMFCyt/8IhBdqyDA8rdyewQMKZqvWT5Akg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  clipboardy@5.3.1:
+    resolution: {integrity: sha512-fPWgBqpp9ctiOQCkE5yjYGzv11ZU55g6ahEgr3COiio6dXdt1mbchCPXQrSR2Y9sZqfi8L7QD3+UosgXVIuPdg==}
     engines: {node: '>=20'}
 
   cliui@8.0.1:
@@ -3431,6 +3436,10 @@ packages:
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
+
+  crypto-random-string@4.0.0:
+    resolution: {integrity: sha512-x8dy3RnvYdlUcPOjkEHqozhiwzKNSq7GcPuXFbnyMOCHxX8V3OgIg/pYuabl2sbUPfIJaeAQB7PMOK8DFIdoRA==}
+    engines: {node: '>=12'}
 
   css-declaration-sorter@7.4.0:
     resolution: {integrity: sha512-LTuzjPoyA2vMGKKcaOqKSp7Ub2eGrNfKiZH4LpezxpNrsICGCSFvsQOI29psISxNZtaXibkC2CXzrQ5enMeGGw==}
@@ -3850,6 +3859,10 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
+  escape-string-regexp@5.0.0:
+    resolution: {integrity: sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==}
+    engines: {node: '>=12'}
+
   eslint-config-prettier@10.1.8:
     resolution: {integrity: sha512-82GZUjRS0p/jganf6q1rEO25VSoHH0hKPCTrgillPjdI/3bgBhAE1QzHrHTizjpRvy6pGAvKjDJtk2pF9NDq8w==}
     hasBin: true
@@ -4131,8 +4144,8 @@ packages:
   fecha@4.2.3:
     resolution: {integrity: sha512-OP2IUU6HeYKJi3i0z4A19kHMQoLVs4Hc+DPqqxI2h/DPZHTm/vjsfC6P0b4jCMy14XizLBqvndQ+UilD7707Jw==}
 
-  figlet@1.10.0:
-    resolution: {integrity: sha512-aktIwEZZ6Gp9AWdMXW4YCi0J2Ahuxo67fNJRUIWD81w8pQ0t9TS8FFpbl27ChlTLF06VkwjDesZSzEVzN75rzA==}
+  figlet@1.11.0:
+    resolution: {integrity: sha512-EEx3OS/l2bFqcUNN2NM9FPJp8vAMrgbCxsbl2hbcJNNxOEwVe3mEzrhan7TbJQViZa8mMqhihlbCaqD+LyYKTQ==}
     engines: {node: '>= 17.0.0'}
     hasBin: true
 
@@ -5015,16 +5028,6 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
-  jscodeshift-add-imports@1.0.11:
-    resolution: {integrity: sha512-9eJQcskqlBEqdYwu3p28Am8te/cPBakQqT6f8lpeAPs3kxGlm7U23uRHJYcEXJyKPPEwNhCcLghUJGtY5v/luQ==}
-    peerDependencies:
-      jscodeshift: '>=0.7 <1'
-
-  jscodeshift-find-imports@2.0.5:
-    resolution: {integrity: sha512-B9V351mJosjOPsCqFY7rnaFdfnYKStl0kM9G/Lw21FFJlYWpoTXzEwl+Z1UEjpbjB9DrBMoOxEjdxcaul1GCxw==}
-    peerDependencies:
-      jscodeshift: '>=0.7 <1'
-
   jscodeshift@17.3.0:
     resolution: {integrity: sha512-LjFrGOIORqXBU+jwfC9nbkjmQfFldtMIoS6d9z2LG/lkmyNXsJAySPT+2SWXJEoE68/bCWcxKpXH37npftgmow==}
     engines: {node: '>=16'}
@@ -5210,6 +5213,10 @@ packages:
   lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
     hasBin: true
+
+  macos-version@6.0.0:
+    resolution: {integrity: sha512-O2S8voA+pMfCHhBn/TIYDXzJ1qNHpPDU32oFxglKnVdJABiYYITt45oLkV9yhwA3E2FDwn3tQqUFrTsr1p3sBQ==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   make-dir@2.1.0:
     resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
@@ -6068,6 +6075,10 @@ packages:
     resolution: {integrity: sha512-vuwillviilfKZsg0VGj5R/YwwcHx4SLsIOI/7K6mQkWx+l5cUHTjj5g0AasTBcyXsbfTgrwsUNmVUb5xVwyPwg==}
     engines: {node: ^10 || ^12 || >=14}
 
+  powershell-utils@0.2.0:
+    resolution: {integrity: sha512-ZlsFlG7MtSFCoc5xreOvBAozCJ6Pf06opgJjh9ONEv418xpZSAzNjstD36C6+JwOnfSqOW/9uDkqKjezTdxZhw==}
+    engines: {node: '>=20'}
+
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
@@ -6355,6 +6366,10 @@ packages:
   run-applescript@7.1.0:
     resolution: {integrity: sha512-DPe5pVFaAsinSaV6QjQ6gdiedWDcRCbUuiQfQa2wmWV7+xC9bGulGI8+TdRmoFkAPaBXk8CrAbnlY2ISniJ47Q==}
     engines: {node: '>=18'}
+
+  run-jxa@3.0.0:
+    resolution: {integrity: sha512-4f2CrY7H+sXkKXJn/cE6qRA3z+NMVO7zvlZ/nUV0e62yWftpiLAfw5eV9ZdomzWd2TXWwEIiGjAT57+lWIzzvA==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -6681,6 +6696,10 @@ packages:
     peerDependencies:
       postcss: ^8.5.13
 
+  subsume@4.0.0:
+    resolution: {integrity: sha512-BWnYJElmHbYZ/zKevy+TG+SsyoFCmRPDHJbR1MzLxkPOv1Jp/4hGhVUtP98s+wZBsBsHwCXvPTP0x287/WMjGg==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
   sucrase@3.35.1:
     resolution: {integrity: sha512-DhuTmvZWux4H1UOnWMB3sk0sbaCVOoQZjv8u1rDoTV0HTdGem9hkAZtl4JZy8P2z4Bg0nT+YMeOFyVr4zcG5Tw==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -6921,6 +6940,14 @@ packages:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
 
+  type-fest@1.4.0:
+    resolution: {integrity: sha512-yGSza74xk0UG8k+pLh5oeoYirvIiWo5t0/o3zHHAO2tRDiZcxWP7fywNlXhqb6/r6sWvwi+RsyQMWhVLe4BVuA==}
+    engines: {node: '>=10'}
+
+  type-fest@2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
+
   type-fest@5.8.0:
     resolution: {integrity: sha512-YGYEVz3Fm5iy/AybuA0oyNFq7H4CgQNfRp/qfe8nurE1kuCeNm3/vfm9X4Mtl+qLyaKJUh5xrFZwogr41SMjYA==}
     engines: {node: '>=20'}
@@ -6995,6 +7022,10 @@ packages:
   unicorn-magic@0.3.0:
     resolution: {integrity: sha512-+QBBXBCvifc56fsbuxZQ6Sic3wqqc3WWaqxs58gvJrcOuN83HGTCwz3oS5phzU9LthRNE9VrJCFCLUgHeeFnfA==}
     engines: {node: '>=18'}
+
+  unique-string@3.0.0:
+    resolution: {integrity: sha512-VGXBUVwxKMBUznyffQweQABPRRW1vHZAbadFZud4pLFAqRGvv/96vafgjWFqzourzr8YonlQiPgH0YCJfawoGQ==}
+    engines: {node: '>=12'}
 
   unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
@@ -8401,7 +8432,7 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@floating-ui/react@0.27.8(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@floating-ui/react@0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@floating-ui/react-dom': 2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@floating-ui/utils': 0.2.12
@@ -8890,49 +8921,46 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@navikt/aksel-icons@8.10.3': {}
+  '@navikt/aksel-icons@8.15.0': {}
 
-  '@navikt/aksel@8.10.3(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@navikt/aksel@8.15.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@navikt/ds-css': 8.10.3
-      '@navikt/ds-tokens': 8.10.3
       chalk: 5.6.2
       cli-progress: 3.12.0
-      clipboardy: 5.0.1
+      clipboardy: 5.3.1
       commander: 14.0.3
       enquirer: 2.4.1
       fast-glob: 3.3.3
-      figlet: 1.10.0
+      figlet: 1.11.0
       is-git-clean: 1.1.0
       jscodeshift: 17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
-      jscodeshift-add-imports: 1.0.11(jscodeshift@17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
       lodash: 4.18.1
     transitivePeerDependencies:
       - '@babel/preset-env'
       - supports-color
 
-  '@navikt/ds-css@8.10.3': {}
+  '@navikt/ds-css@8.15.0': {}
 
-  '@navikt/ds-react@8.10.3(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@navikt/ds-react@8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@floating-ui/react': 0.27.8(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@floating-ui/react': 0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@floating-ui/react-dom': 2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@navikt/aksel-icons': 8.10.3
-      '@navikt/ds-tokens': 8.10.3
+      '@navikt/aksel-icons': 8.15.0
+      '@navikt/ds-tokens': 8.15.0
       '@types/react': 19.2.2
       date-fns: 4.4.0
       react: 19.2.7
       react-day-picker: 9.14.0(react@19.2.7)
       react-dom: 19.2.7(react@19.2.7)
 
-  '@navikt/ds-tailwind@8.10.3': {}
+  '@navikt/ds-tailwind@8.15.0': {}
 
-  '@navikt/ds-tokens@8.10.3': {}
+  '@navikt/ds-tokens@8.15.0': {}
 
-  '@navikt/familie-endringslogg@14.0.6(@navikt/aksel-icons@8.10.3)(@navikt/ds-react@8.10.3(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)':
+  '@navikt/familie-endringslogg@14.0.6(@navikt/aksel-icons@8.15.0)(@navikt/ds-react@8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)':
     dependencies:
-      '@navikt/aksel-icons': 8.10.3
-      '@navikt/ds-react': 8.10.3(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@navikt/aksel-icons': 8.15.0
+      '@navikt/ds-react': 8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@portabletext/react': 6.0.0(react@19.2.7)
       '@types/react': 19.2.2
       classnames: 2.5.1
@@ -10518,12 +10546,18 @@ snapshots:
 
   cli-width@4.1.0: {}
 
-  clipboardy@5.0.1:
+  clipboard-image@0.1.0:
     dependencies:
+      run-jxa: 3.0.0
+
+  clipboardy@5.3.1:
+    dependencies:
+      clipboard-image: 0.1.0
       execa: 9.6.1
       is-wayland: 0.1.0
       is-wsl: 3.1.1
       is64bit: 2.0.0
+      powershell-utils: 0.2.0
 
   cliui@8.0.1:
     dependencies:
@@ -10679,6 +10713,10 @@ snapshots:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  crypto-random-string@4.0.0:
+    dependencies:
+      type-fest: 1.4.0
 
   css-declaration-sorter@7.4.0(postcss@8.5.16):
     dependencies:
@@ -11173,6 +11211,8 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
+  escape-string-regexp@5.0.0: {}
+
   eslint-config-prettier@10.1.8(eslint@9.39.4(jiti@1.21.7)(supports-color@8.1.1)):
     dependencies:
       eslint: 9.39.4(jiti@1.21.7)(supports-color@8.1.1)
@@ -11613,7 +11653,7 @@ snapshots:
 
   fecha@4.2.3: {}
 
-  figlet@1.10.0:
+  figlet@1.11.0:
     dependencies:
       commander: 14.0.3
 
@@ -12691,18 +12731,6 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jscodeshift-add-imports@1.0.11(jscodeshift@17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1):
-    dependencies:
-      '@babel/traverse': 7.29.7(supports-color@8.1.1)
-      jscodeshift: 17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
-      jscodeshift-find-imports: 2.0.5(jscodeshift@17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1))
-    transitivePeerDependencies:
-      - supports-color
-
-  jscodeshift-find-imports@2.0.5(jscodeshift@17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)):
-    dependencies:
-      jscodeshift: 17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1)
-
   jscodeshift@17.3.0(@babel/preset-env@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
@@ -12919,6 +12947,10 @@ snapshots:
       yallist: 4.0.0
 
   lz-string@1.5.0: {}
+
+  macos-version@6.0.0:
+    dependencies:
+      semver: 7.8.5
 
   make-dir@2.1.0:
     dependencies:
@@ -13737,6 +13769,8 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  powershell-utils@0.2.0: {}
+
   prelude-ls@1.2.1: {}
 
   prettier@3.9.4: {}
@@ -14040,6 +14074,13 @@ snapshots:
   rrweb-cssom@0.8.0: {}
 
   run-applescript@7.1.0: {}
+
+  run-jxa@3.0.0:
+    dependencies:
+      execa: 5.1.1
+      macos-version: 6.0.0
+      subsume: 4.0.0
+      type-fest: 2.19.0
 
   run-parallel@1.2.0:
     dependencies:
@@ -14459,6 +14500,11 @@ snapshots:
       postcss: 8.5.16
       postcss-selector-parser: 7.1.4
 
+  subsume@4.0.0:
+    dependencies:
+      escape-string-regexp: 5.0.0
+      unique-string: 3.0.0
+
   sucrase@3.35.1:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
@@ -14673,6 +14719,10 @@ snapshots:
 
   type-fest@0.21.3: {}
 
+  type-fest@1.4.0: {}
+
+  type-fest@2.19.0: {}
+
   type-fest@5.8.0:
     dependencies:
       tagged-tag: 1.0.0
@@ -14759,6 +14809,10 @@ snapshots:
   unicode-property-aliases-ecmascript@2.2.0: {}
 
   unicorn-magic@0.3.0: {}
+
+  unique-string@3.0.0:
+    dependencies:
+      crypto-random-string: 4.0.0
 
   unpipe@1.0.0: {}
 
