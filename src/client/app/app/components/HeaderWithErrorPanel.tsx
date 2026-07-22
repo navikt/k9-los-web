@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { MenuGridIcon } from '@navikt/aksel-icons';
-import { ActionMenu, InternalHeader, Spacer } from '@navikt/ds-react';
-import Endringslogg from '@navikt/familie-endringslogg';
+import { ActionMenu, InternalHeader, Spacer, Theme } from '@navikt/ds-react';
+import Endringslogg from '@navikt/endringslogg';
 import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import * as styles from './headerWithErrorPanel.css';
@@ -72,17 +72,19 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 					<InternalHeader.Button onClick={goTilAvdelingslederPanel}>Avdelingslederpanel</InternalHeader.Button>
 				)}
 				{innloggetSaksbehandler?.brukerIdent && (
-					<div className={styles['endringslogg-container']}>
-						<Endringslogg
-							userId={innloggetSaksbehandler?.brukerIdent}
-							appId="K9_SAK"
-							appName="K9 Sak"
-							backendUrl={endringsloggBackendUrl}
-							stil="lys"
-							alignLeft
-							maxEntries={150}
-						/>
-					</div>
+					<Theme theme="light">
+						<div className={styles.endringsloggContainer}>
+							<Endringslogg
+								userId={innloggetSaksbehandler?.brukerIdent}
+								appId="K9_SAK"
+								appName="K9 Sak"
+								backendUrl={endringsloggBackendUrl}
+								stil="lys"
+								alignLeft
+								maxEntries={150}
+							/>
+						</div>
+					</Theme>
 				)}
 				<ActionMenu>
 					<ActionMenu.Trigger>
