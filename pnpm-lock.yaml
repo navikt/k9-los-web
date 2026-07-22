@@ -39,9 +39,9 @@ importers:
       '@navikt/ds-tokens':
         specifier: 8.15.0
         version: 8.15.0
-      '@navikt/familie-endringslogg':
-        specifier: 14.0.6
-        version: 14.0.6(@navikt/aksel-icons@8.15.0)(@navikt/ds-react@8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)
+      '@navikt/endringslogg':
+        specifier: 2.0.1
+        version: 2.0.1(@navikt/aksel-icons@8.15.0)(@navikt/ds-react@8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)
       '@sentry/browser':
         specifier: 10.64.0
         version: 10.64.0
@@ -1705,11 +1705,11 @@ packages:
   '@navikt/ds-tokens@8.15.0':
     resolution: {integrity: sha512-i76uLUIONOWc/G7kzPHQwNCR65bKBVulYbua6tyVmtlAhJyEPjC2vNyeeOq1bE4QcccPNQz9rBKydmXOVvJYtw==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.15.0/96c20d8f453f8be770e5e1a9e9ce4888e50e4348}
 
-  '@navikt/familie-endringslogg@14.0.6':
-    resolution: {integrity: sha512-hWxiCWQ91mBoA+2BMCmHii+jPnVEmedalPo+/4s9EyQy0fpZOYp05UrHC/iFkMSaMU2wJaxsNqgXLe3zqqtllA==, tarball: https://npm.pkg.github.com/download/@navikt/familie-endringslogg/14.0.6/ab0f51a8514453c6cbab461060451c3b4f5750e0}
+  '@navikt/endringslogg@2.0.1':
+    resolution: {integrity: sha512-vNomnki1ncbSMker8YIlVRfRV2jKZGNbozAj06qfvmE321lgjJll15MDRFcT62wkIl7EgVwlF/73bTY+aUHv7A==, tarball: https://npm.pkg.github.com/download/@navikt/endringslogg/2.0.1/8b91733d979678fa7da317cc43e790388720ccea}
     peerDependencies:
-      '@navikt/aksel-icons': 7.x
-      '@navikt/ds-react': 7.x
+      '@navikt/aksel-icons': 8.x
+      '@navikt/ds-react': 8.x
       '@types/react': 18.x || 19.x
       react: 18.x || 19.x
 
@@ -2136,8 +2136,8 @@ packages:
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  '@portabletext/react@6.0.0':
-    resolution: {integrity: sha512-8jzmFruC6fhC8A47c+RdiFfldzRq/rRW/FwRsr5ZMeNeCf3S0dXVlM/LJQRWH5JLQXbH3oxINN1UV2mbuZQJ9w==}
+  '@portabletext/react@6.2.0':
+    resolution: {integrity: sha512-Z0J/AWrvg7GyDfEBQRRhi6ZpxLOsN4/QbU8KhTwfa6r2ELiRaMa4gkHE9wfs3V1ozNDrTG4IRr+8yBnHNDnAqA==}
     engines: {node: '>=20.19 <22 || >=22.12'}
     peerDependencies:
       react: ^18.2 || ^19
@@ -8838,11 +8838,11 @@ snapshots:
 
   '@navikt/ds-tokens@8.15.0': {}
 
-  '@navikt/familie-endringslogg@14.0.6(@navikt/aksel-icons@8.15.0)(@navikt/ds-react@8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)':
+  '@navikt/endringslogg@2.0.1(@navikt/aksel-icons@8.15.0)(@navikt/ds-react@8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@types/react@19.2.2)(react@19.2.7)':
     dependencies:
       '@navikt/aksel-icons': 8.15.0
       '@navikt/ds-react': 8.15.0(@types/react@19.2.2)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@portabletext/react': 6.0.0(react@19.2.7)
+      '@portabletext/react': 6.2.0(react@19.2.7)
       '@types/react': 19.2.2
       classnames: 2.5.1
       react: 19.2.7
@@ -9236,7 +9236,7 @@ snapshots:
 
   '@pkgr/core@0.3.6': {}
 
-  '@portabletext/react@6.0.0(react@19.2.7)':
+  '@portabletext/react@6.2.0(react@19.2.7)':
     dependencies:
       '@portabletext/toolkit': 5.0.2
       '@portabletext/types': 4.0.2

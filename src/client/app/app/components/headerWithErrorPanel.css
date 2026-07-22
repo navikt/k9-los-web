@@ -2,34 +2,33 @@
 	background-color: #0a0;
 }
 
-.endringslogg-container {
-	border-left: 1px solid var(--ax-border-neutral-subtleA);
-	margin-top: var(--ax-space-6);
-
-	/* @navikt/familie-endringslogg bruker Aksel v7-tokens (--a-*). Kan fjernes når endringslogg er migrert og oppdatert til v8 (--ax-*). */
-	--a-surface-inverted: #262626;
-	--a-bg-default: #fff;
-	--a-text-default: #262626;
-	--a-border-focus: #254b6d;
-	--a-border-focus-on-inverted: #fff;
-	--a-surface-action: #0067c5;
-	--a-red-400: #c30000;
-	--a-text-action: #0067c5;
+.endringsloggContainer {
+	display: flex;
+	align-items: center;
+	height: 100%;
 }
 
-.endringslogg-container :global(.endringslogg) {
-	margin-right: unset;
+.endringsloggContainer :global(.endringslogg) {
+	margin-right: 0.5rem;
 }
 
-.endringslogg-container :global(.endringslogg-dropDown) {
-	transform: scale(0.65);
+.endringsloggContainer :global(.endringslogg-dropDown) {
+	transform: scale(0.66);
 }
-.endringslogg-container :global(.collapse-header) {
+
+.endringsloggContainer :global(.collapse-header) {
 	background-color: #3e3832;
 }
-.endringslogg-container :global(.ringring) {
+
+.endringsloggContainer :global(.ringring) {
 	border: 3px solid #ba3a26;
 }
-.endringslogg-container :global(.circle) {
+
+.endringsloggContainer :global(.circle) {
 	background-color: #ba3a26;
+}
+
+.containerDev {
+	background-color: #0a0;
+	color: white;
 }
