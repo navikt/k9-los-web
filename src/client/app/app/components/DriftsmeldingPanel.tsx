@@ -1,8 +1,7 @@
-import React, { FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import dayjs from 'dayjs';
-import { Column, Row } from 'nav-frontend-grid';
-import { Heading } from '@navikt/ds-react';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
+import { Heading } from '@navikt/ds-react';
 import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
 import * as styles from './driftsmeldingPanel.css';
 
@@ -19,14 +18,14 @@ const DriftsmeldingPanel: FunctionComponent = () => {
 	return (
 		<div className={styles.container}>
 			{aktiveDriftsmeldinger.map((message) => (
-				<Row key={message.id}>
-					<Column xs="11" className={styles.column}>
+				<div className={styles.row} key={message.id}>
+					<div className={styles.column}>
 						<ExclamationmarkTriangleIcon />
 						<Heading size="small">
 							{`${message.melding}. (Registrert ${dayjs(message.aktivert).format('DD.MM HH:mm')})`}
 						</Heading>
-					</Column>
-				</Row>
+					</div>
+				</div>
 			))}
 		</div>
 	);

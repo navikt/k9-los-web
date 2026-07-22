@@ -4,7 +4,7 @@ module.exports = function (api) {
 
   return {
     presets: [
-      "@babel/react",
+      ["@babel/preset-react", { runtime: "automatic" }],
       [
         "@babel/preset-env",
         {

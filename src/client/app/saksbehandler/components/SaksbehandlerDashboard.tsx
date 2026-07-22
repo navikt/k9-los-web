@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
-import Panel from 'nav-frontend-paneler';
+import { FunctionComponent } from 'react';
+import { Box } from '@navikt/ds-react';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
@@ -14,21 +14,21 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 			<div className={styles.oppgaveContainer}>
 				<div className={styles.gridContainer}>
 					<div className={styles.leftColumn}>
-						<Panel className={styles.sakslistePanel}>
+						<Box background="raised" borderRadius="4" padding="space-16" className={styles.sakslistePanel}>
 							<Søkeboks />
-						</Panel>
+						</Box>
 						{saksbehandler.finnesISaksbehandlerTabell && (
 							<div>
-								<Panel className={styles.sakslistePanel}>
+								<Box background="raised" borderRadius="4" padding="space-16" className={styles.sakslistePanel}>
 									<BehandlingskoerIndex />
-								</Panel>
+								</Box>
 							</div>
 						)}
 					</div>
 					<div className={styles.rightColumn}>
-						<Panel>
+						<Box background="raised" borderRadius="4" padding="space-16">
 							<SaksstotteIndex />
-						</Panel>
+						</Box>
 					</div>
 				</div>
 			</div>
