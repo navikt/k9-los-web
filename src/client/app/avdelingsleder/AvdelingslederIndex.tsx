@@ -151,7 +151,7 @@ export const AvdelingslederIndex: FunctionComponent = () => {
 				<AvdelingslederDashboard>
 					<div>
 						<div className={styles.tabs}>
-							<ul className={styles.tabList} role="tablist">
+							<ul className={styles.tabList}>
 								{[
 									AvdelingslederPanels.BEHANDLINGSKOER_V3,
 									AvdelingslederPanels.LAGREDE_SØK,
