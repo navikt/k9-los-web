@@ -1,10 +1,9 @@
-/* eslint-disable import/no-unused-modules */
+/* global process */
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 import { init } from '@sentry/browser';
 import { breadcrumbsIntegration, reactRouterV6BrowserTracingIntegration } from '@sentry/react';
-import '@navikt/ds-css';
 import AppContainer from 'app/AppContainer';
 
 /* eslint no-undef: "error" */

@@ -1,5 +1,4 @@
-import React from 'react';
-import { Heading, Skeleton } from '@navikt/ds-react';
+import { Heading, Link, Skeleton } from '@navikt/ds-react';
 import { useHentSisteOppgaver } from 'api/queries/saksbehandlerQueries';
 import Repeat from 'sharedComponents/Repeat';
 
@@ -23,7 +22,7 @@ export default function SisteOppgaver() {
 					data.length > 0 &&
 					data.map((oppgave) => (
 						<li className="mb-2" key={oppgave.oppgaveEksternId}>
-							{oppgave.url ? <a href={oppgave.url}>{oppgave.tittel}</a> : oppgave.tittel}
+							{oppgave.url ? <Link href={oppgave.url}>{oppgave.tittel}</Link> : oppgave.tittel}
 						</li>
 					))}
 			</ul>
