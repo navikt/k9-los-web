@@ -1,4 +1,3 @@
-import React from 'react';
 import { FilterIcon, PencilIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
 import { LagretSøk } from 'api/queries/avdelingslederQueries';
