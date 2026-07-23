@@ -259,12 +259,6 @@ importers:
       jest-transform-stub:
         specifier: 2.0.0
         version: 2.0.0
-      less:
-        specifier: 4.6.7
-        version: 4.6.7
-      less-loader:
-        specifier: 12.3.2
-        version: 12.3.2(less@4.6.7)(webpack@5.108.4)
       lint-staged:
         specifier: 16.4.0
         version: 16.4.0
@@ -274,9 +268,6 @@ importers:
       msw:
         specifier: 2.14.7
         version: 2.14.7(@types/node@22.20.1)(typescript@5.9.3)
-      postcss-less:
-        specifier: 6.0.0
-        version: 6.0.0(postcss@8.5.16)
       postcss-loader:
         specifier: 8.2.1
         version: 8.2.1(postcss@8.5.16)(typescript@5.9.3)(webpack@5.108.4)
@@ -3352,10 +3343,6 @@ packages:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
 
-  copy-anything@3.0.5:
-    resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
-    engines: {node: '>=12.13'}
-
   copy-webpack-plugin@14.0.0:
     resolution: {integrity: sha512-3JLW90aBGeaTLpM7mYQKpnVdgsUZRExY55giiZgLuX/xTQRUs1dOCwbBnWnvY6Q6rfZoXMNwzOQJCSZPppfqXA==}
     engines: {node: '>= 20.9.0'}
@@ -3750,10 +3737,6 @@ packages:
   environment@1.1.0:
     resolution: {integrity: sha512-xUtoPkMggbz0MPyPiIWr1Kp4aeWJjDZ6SMvURhimjdZgsRuDplF5/s9hcgGhyXMhs+6vpnuoiZ2kFiu3FMnS8Q==}
     engines: {node: '>=18'}
-
-  errno@0.1.8:
-    resolution: {integrity: sha512-dJ6oBr5SQ1VSd9qkk7ByRgb/1SH4JZjCHSW/mr63/QcXO9zLVxvJ6Oy13nio03rxpSnVDDjFor75SjVeZWPW/A==}
-    hasBin: true
 
   error-ex@1.3.4:
     resolution: {integrity: sha512-sqQamAnR14VgCr1A618A3sGrygcpK+HEbenA/HiEAkkUwcZIIB/tgWqHFxWgOyDh4nB4JCRimh79dR5Ywc9MDQ==}
@@ -4487,11 +4470,6 @@ packages:
     resolution: {integrity: sha512-BAg6QkE8W+TuQLrrw0Ugr7HegXduRuuj8/ti2kSOc+jz1dmx8/WNcjr6XGnq5YpDWxFwwaavqD0+jIUOKelTsw==}
     engines: {node: '>= 4'}
 
-  image-size@0.5.5:
-    resolution: {integrity: sha512-6TDAlDPZxUFCv+fuOkIoXT/V/f3Qbq8e37p+YOiYrUv3v9cc3/6x78VdfPgFVaB9dZYeLUfKgHRebpkm/oP2VQ==}
-    engines: {node: '>=0.10.0'}
-    hasBin: true
-
   import-fresh@3.3.1:
     resolution: {integrity: sha512-TR3KfrTZTYLPB6jUjfx6MF9WcWrHL9su5TObK4ZkYgBdWKPOFoSoQIdEuTuR82pmtxH2spWG9h6etwfr1pLBqQ==}
     engines: {node: '>=6'}
@@ -4735,10 +4713,6 @@ packages:
   is-weakset@2.0.4:
     resolution: {integrity: sha512-mfcwb6IzQyOKTs84CQMrOwW4gQcaTOAWJ0zzJCl2WSPDrWk/OzDaImWFH3djXhb24g4eudZfLRozAvPGw4d9hQ==}
     engines: {node: '>= 0.4'}
-
-  is-what@4.1.16:
-    resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
-    engines: {node: '>=12.13'}
 
   is-wsl@3.1.1:
     resolution: {integrity: sha512-e6rvdUCiQCAuumZslxRJWR/Doq4VpPR82kqclvcS0efgt430SlGIk05vdCN58+VrzgtIcfNODjozVielycD4Sw==}
@@ -5064,24 +5038,6 @@ packages:
   launch-editor@2.14.1:
     resolution: {integrity: sha512-QWBrQsMpH7gPr965dsKD/3cKWiNoTjpATQf++Xq63N6sKRGMwlVXz41O1IZTMfZQgBctD/K5Zt06+/I6pP6+HA==}
 
-  less-loader@12.3.2:
-    resolution: {integrity: sha512-uLV5c702ff2jBvO7qewpkLRzkh/I9QW07ur2NKkv8TVTrtX2lrKjEbEU/LLXAn7cgpCIBbkfyUm4qYXCQs5/+w==}
-    engines: {node: '>= 18.12.0'}
-    peerDependencies:
-      '@rspack/core': 0.x || ^1.0.0 || ^2.0.0-0
-      less: ^3.5.0 || ^4.0.0
-      webpack: ^5.0.0
-    peerDependenciesMeta:
-      '@rspack/core':
-        optional: true
-      webpack:
-        optional: true
-
-  less@4.6.7:
-    resolution: {integrity: sha512-o3UxHBPPVY1HtCXx15/z1NlknQiWyafRNbtLEv+6xFaDRI2g2xPKIH43do9dSwt8bGLTsjNSaifa48N3d6odsQ==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   leven@3.1.0:
     resolution: {integrity: sha512-qsda+H8jTaUaN/x5vzW2rzc+8Rw4TAQ/4KjB46IwK5VH+IlVeeeje/EoZRpiXvIqjFgK84QffqPztGI3VBLG1A==}
     engines: {node: '>=6'}
@@ -5183,10 +5139,6 @@ packages:
   make-dir@4.0.0:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
-
-  make-dir@5.1.0:
-    resolution: {integrity: sha512-IfpFq6UM39dUNiphpA6uDezNx/AvWyhwfICWPR3t1VspkgkMZrL+Rk1RbN1bx+aeNYwOrqGJgEgV3yotk+ZUVw==}
-    engines: {node: '>=18'}
 
   makeerror@1.0.12:
     resolution: {integrity: sha512-JmqCvUhmt43madlpFzG4BQzG2Z3m6tvQDNKdClZnO3VbIudJYmxsT0FNJMeiB2+JTSlTQTSbU8QdesVmwJcmLg==}
@@ -5393,11 +5345,6 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
-  needle@3.5.0:
-    resolution: {integrity: sha512-jaQyPKKk2YokHrEg+vFDYxXIHTCBgiZwSHOoVx/8V3GIBS8/VN6NdVRmg8q1ERtPkMvmOvebsgga4sAj5hls/w==}
-    engines: {node: '>= 4.4.x'}
-    hasBin: true
-
   negotiator@0.6.3:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
@@ -5597,10 +5544,6 @@ packages:
     resolution: {integrity: sha512-TXfryirbmq34y8QBwgqCVLi+8oA3oWx2eAnSn62ITyEhEYaWRlVZ2DvMM9eZbMs/RfxPu/PK/aBLyGj4IrqMHw==}
     engines: {node: '>=18'}
 
-  parse-node-version@1.0.1:
-    resolution: {integrity: sha512-3YHlOa/JgH6Mnpr05jP9eDG254US9ek25LyIxZlDItp2iJtwyaXQb57lBYLdT3MowkUFYEV2XXNAYIPlESvJlA==}
-    engines: {node: '>= 0.10'}
-
   parse5@7.3.0:
     resolution: {integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==}
 
@@ -5753,12 +5696,6 @@ packages:
     engines: {node: ^12 || ^14 || >= 16}
     peerDependencies:
       postcss: ^8.4.21
-
-  postcss-less@6.0.0:
-    resolution: {integrity: sha512-FPX16mQLyEjLzEuuJtxA8X3ejDLNGGEG503d2YGZR5Ask1SpDN8KmZUMpzCvyalWRywAn1n1VOA5dcqfCLo5rg==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      postcss: ^8.3.5
 
   postcss-load-config@6.0.1:
     resolution: {integrity: sha512-oPtTM4oerL+UXmx+93ytZVN82RrlY/wPUV8IeDxFrzIjXOLF1pN+EmKPLbubvKHT2HC20xXsCAH2Z+CKV6Oz/g==}
@@ -6012,9 +5949,6 @@ packages:
   proxy-from-env@2.1.0:
     resolution: {integrity: sha512-cJ+oHTW1VAEa8cJslgmUZrc+sjRKgAKl3Zyse6+PV38hZe/V6Z14TbCuXcan9F9ghlz4QrFr2c92TNF82UkYHA==}
     engines: {node: '>=10'}
-
-  prr@1.0.1:
-    resolution: {integrity: sha512-yPw4Sng1gWghHQWj0B3ZggWUm4qVbPwPFcRG8KyxiU7J2OHFSoEHKS+EZ3fv5l1t9CyCiop6l/ZYeWbrgoQejw==}
 
   pseudomap@1.0.2:
     resolution: {integrity: sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==}
@@ -10544,10 +10478,6 @@ snapshots:
 
   cookie@1.1.1: {}
 
-  copy-anything@3.0.5:
-    dependencies:
-      is-what: 4.1.16
-
   copy-webpack-plugin@14.0.0(webpack@5.108.4):
     dependencies:
       glob-parent: 6.0.2
@@ -10930,11 +10860,6 @@ snapshots:
   envinfo@7.21.0: {}
 
   environment@1.1.0: {}
-
-  errno@0.1.8:
-    dependencies:
-      prr: 1.0.1
-    optional: true
 
   error-ex@1.3.4:
     dependencies:
@@ -11937,9 +11862,6 @@ snapshots:
 
   ignore@7.0.6: {}
 
-  image-size@0.5.5:
-    optional: true
-
   import-fresh@3.3.1:
     dependencies:
       parent-module: 1.0.1
@@ -12154,8 +12076,6 @@ snapshots:
     dependencies:
       call-bound: 1.0.4
       get-intrinsic: 1.3.0
-
-  is-what@4.1.16: {}
 
   is-wsl@3.1.1:
     dependencies:
@@ -12710,25 +12630,6 @@ snapshots:
       picocolors: 1.1.1
       shell-quote: 1.10.0
 
-  less-loader@12.3.2(less@4.6.7)(webpack@5.108.4):
-    dependencies:
-      less: 4.6.7
-    optionalDependencies:
-      webpack: 5.108.4(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.16))(csso@5.0.5)(esbuild@0.27.7)(html-minifier-terser@6.1.0)(postcss@8.5.16)(webpack-cli@7.2.1)
-
-  less@4.6.7:
-    dependencies:
-      copy-anything: 3.0.5
-      parse-node-version: 1.0.1
-    optionalDependencies:
-      errno: 0.1.8
-      graceful-fs: 4.2.11
-      image-size: 0.5.5
-      make-dir: 5.1.0
-      mime: 1.6.0
-      needle: 3.5.0
-      source-map: 0.6.1
-
   leven@3.1.0: {}
 
   levn@0.4.1:
@@ -12839,9 +12740,6 @@ snapshots:
   make-dir@4.0.0:
     dependencies:
       semver: 7.8.5
-
-  make-dir@5.1.0:
-    optional: true
 
   makeerror@1.0.12:
     dependencies:
@@ -13016,12 +12914,6 @@ snapshots:
   napi-postinstall@0.3.4: {}
 
   natural-compare@1.4.0: {}
-
-  needle@3.5.0:
-    dependencies:
-      iconv-lite: 0.6.3
-      sax: 1.6.0
-    optional: true
 
   negotiator@0.6.3: {}
 
@@ -13274,8 +13166,6 @@ snapshots:
 
   parse-ms@4.0.0: {}
 
-  parse-node-version@1.0.1: {}
-
   parse5@7.3.0:
     dependencies:
       entities: 6.0.1
@@ -13399,10 +13289,6 @@ snapshots:
   postcss-js@4.1.0(postcss@8.5.16):
     dependencies:
       camelcase-css: 2.0.1
-      postcss: 8.5.16
-
-  postcss-less@6.0.0(postcss@8.5.16):
-    dependencies:
       postcss: 8.5.16
 
   postcss-load-config@6.0.1(jiti@1.21.7)(postcss@8.5.16)(yaml@2.9.0):
@@ -13639,9 +13525,6 @@ snapshots:
   proxy-from-env@1.1.0: {}
 
   proxy-from-env@2.1.0: {}
-
-  prr@1.0.1:
-    optional: true
 
   pseudomap@1.0.2: {}
 

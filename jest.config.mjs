@@ -3,10 +3,10 @@ export default {
 		{
 			displayName: 'test',
 			cacheDirectory: '<rootDir>/jest_cache/',
-			moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx', 'less', 'css'],
+			moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx', 'css'],
 			moduleNameMapper: {
 				'\\.(svg)$': '<rootDir>/setup/fileMock.js',
-				'\\.(less|css)$': 'identity-obj-proxy',
+				'\\.css$': 'identity-obj-proxy',
 			},
 			roots: ['<rootDir>/src'],
 			setupFiles: ['<rootDir>/setup/setup.js'],
@@ -19,7 +19,7 @@ export default {
 			testPathIgnorePatterns: ['/node_modules/', '/dist/', '<rootDir>/src/client/tests/'],
 			transform: {
 				'^.+\\.(ts|tsx|js|jsx|mjs)?$': 'babel-jest',
-				'^.+.(css|less)$': 'jest-transform-stub',
+				'^.+\\.css$': 'jest-transform-stub',
 			},
 			transformIgnorePatterns: ['<rootDir>.*(node_modules)(?!.*(nav|uuid|@portabletext|until-async|rettime|msw|@open-draft).*).*$'],
 			// ignore tests in tests folder

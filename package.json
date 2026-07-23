@@ -95,12 +95,9 @@
 		"jest-environment-jsdom": "30.4.1",
 		"jest-fixed-jsdom": "0.0.11",
 		"jest-transform-stub": "2.0.0",
-		"less": "4.6.7",
-		"less-loader": "12.3.2",
 		"lint-staged": "16.4.0",
 		"mini-css-extract-plugin": "2.10.2",
 		"msw": "2.14.7",
-		"postcss-less": "6.0.0",
 		"postcss-loader": "8.2.1",
 		"prettier": "3.9.4",
 		"storybook": "10.4.6",
@@ -131,7 +128,7 @@
 	},
 	"lint-staged": {
 		"src/client/**/*.ts?(x)": "eslint --fix",
-		"src/client/**/*.{ts,tsx,js,jsx,css,less}": "prettier --write"
+		"src/client/**/*.{ts,tsx,js,jsx,css}": "prettier --write"
 	},
 	"packageManager": "pnpm@11.15.1"
 }
