@@ -12,11 +12,16 @@ import KopierKø from './KopierKø';
 import SlettKø from './SlettKø';
 
 function scrollToId(id: string) {
+	const maxAttempts = 50;
+	let attempts = 0;
 	const intervalId = setInterval(() => {
+		attempts += 1;
 		const element = document.getElementById(id);
-		if (element) {
+		if (element || attempts >= maxAttempts) {
 			clearInterval(intervalId);
-			setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'end' }), 500);
+			if (element) {
+				setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'end' }), 500);
+			}
 		}
 	}, 100);
 }

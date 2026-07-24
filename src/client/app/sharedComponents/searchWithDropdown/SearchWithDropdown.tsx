@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
-import { Button, Checkbox, ErrorMessage, Label, Search, UNSAFE_Combobox } from '@navikt/ds-react';
+import { Button, Checkbox, ErrorMessage, Label, Search, UNSAFE_Combobox as UnstableCombobox } from '@navikt/ds-react';
 import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { SelectedValues } from './SelectedValues';
 import * as styles from './searchWithDropdown.module.css';
@@ -219,7 +219,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		<div className={`${styles.searchContainer} ${className || ''}`}>
 			<div>
 				{readOnly ? (
-					<UNSAFE_Combobox
+					<UnstableCombobox
 						id={id}
 						size={size}
 						label={label}
@@ -378,7 +378,7 @@ const SimpleSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 
 	return (
 		<div className={`${styles.searchContainer} ${className || ''}`}>
-			<UNSAFE_Combobox
+			<UnstableCombobox
 				id={id}
 				size={size}
 				label={label}

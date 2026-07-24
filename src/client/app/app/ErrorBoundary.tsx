@@ -22,8 +22,8 @@ export class ErrorBoundary extends Component<OwnProps, State> {
 		withScope((scope) => {
 			Object.keys(info).forEach((key) => {
 				scope.setExtra(key, info[key as keyof ErrorInfo]);
-				captureException(error);
 			});
+			captureException(error);
 		});
 
 		errorMessageCallback(
