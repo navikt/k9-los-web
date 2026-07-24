@@ -5,7 +5,7 @@ import { useHentAvdelingslederStatusFordeling } from 'api/queries/avdelingsleder
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { OppgaveQuery } from 'filter/filterTsTypes';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import * as styles from './StatusFordeling.module.css';
+import styles from './StatusFordeling.module.css';
 
 function KildeViewer({
 	tittel,

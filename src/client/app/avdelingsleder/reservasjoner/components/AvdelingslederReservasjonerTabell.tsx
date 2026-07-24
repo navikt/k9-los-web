@@ -13,7 +13,7 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getDateAndTime } from 'utils/dateUtils';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
 import Reservasjon from '../reservasjonTsType';
-import * as styles from './AvdelingslederReservasjonerTabell.module.css';
+import styles from './AvdelingslederReservasjonerTabell.module.css';
 
 type ReservasjonTableData = {
 	reservasjon: Reservasjon;

@@ -5,7 +5,7 @@ import { ActionMenu, InternalHeader, Spacer, Theme } from '@navikt/ds-react';
 import Endringslogg from '@navikt/endringslogg';
 import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
-import * as styles from './headerWithErrorPanel.module.css';
+import styles from './headerWithErrorPanel.module.css';
 
 const isDev = !window.location.hostname.includes('intern.nav.no');
 

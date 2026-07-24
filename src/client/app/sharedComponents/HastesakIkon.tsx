@@ -1,6 +1,6 @@
 import React from 'react';
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
-import * as styles from './HastesakIkon.module.css';
+import styles from './HastesakIkon.module.css';
 
 export function HastesakIkon() {
 	return (

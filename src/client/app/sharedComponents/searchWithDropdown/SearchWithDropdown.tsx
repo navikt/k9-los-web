@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, ErrorMessage, Label, Search, UNSAFE_Combobox as UnstableCombobox } from '@navikt/ds-react';
-import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { SelectedValues } from './SelectedValues';
-import * as styles from './searchWithDropdown.module.css';
+import styles from './searchWithDropdown.module.css';
+
+type ComboboxOption = {
+	label: string;
+	value: string;
+};
 
 interface SuggestionsType {
 	label: string;

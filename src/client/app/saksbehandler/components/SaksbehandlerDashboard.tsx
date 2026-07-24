@@ -4,7 +4,7 @@ import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
 import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
-import * as styles from './saksbehandlerDashboard.module.css';
+import styles from './saksbehandlerDashboard.module.css';
 
 export const SaksbehandlerDashboard: FunctionComponent = () => {
 	const { data: saksbehandler } = useInnloggetSaksbehandler();

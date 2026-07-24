@@ -14,7 +14,7 @@ import {
 import { Saksbehandler } from '../saksbehandlerTsType';
 import { getKoId } from '../utils';
 import OppsummeringAvKø from './OppusmmeringAvKø';
-import * as styles from './oppgavekoVelgerForm.module.css';
+import styles from './oppgavekoVelgerForm.module.css';
 
 interface OwnProps {
 	plukkNyOppgave: () => void;

@@ -7,7 +7,7 @@ import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/o
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKoId } from '../utils';
 import { OppgavekoVelgerForm } from './OppgavekoVelgerForm';
-import * as styles from './oppgavekoPanel.module.css';
+import styles from './oppgavekoPanel.module.css';
 import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
 
 const OppgavekoPanel: FunctionComponent = () => {

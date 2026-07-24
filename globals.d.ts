@@ -7,4 +7,12 @@ declare global {
 	}
 }
 
+interface ImportMetaEnv {
+	readonly VITE_SENTRY_RELEASE?: string;
+}
+
+interface ImportMeta {
+	readonly env: ImportMetaEnv;
+}
+
 export {};
