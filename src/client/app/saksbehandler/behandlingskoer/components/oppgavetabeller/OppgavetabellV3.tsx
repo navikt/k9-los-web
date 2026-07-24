@@ -2,7 +2,7 @@ import React from 'react';
 import dayjs from 'dayjs';
 import { BodyShort, ErrorMessage, Loader, Table } from '@navikt/ds-react';
 import { useNesteOppgaverFraKø } from 'api/queries/saksbehandlerQueries';
-import * as styles from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgaverTabell.css';
+import * as styles from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgaverTabell.module.css';
 import { getKoId } from 'saksbehandler/behandlingskoer/utils';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
@@ -13,20 +13,14 @@ export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 		return <Loader size="2xlarge" className={styles.spinner} />;
 	}
 	if (error) {
-		return (
-			<ErrorMessage>
-				Noe gikk galt og vi kunne ikke hente de neste oppgavene i køen
-			</ErrorMessage>
-		);
+		return <ErrorMessage>Noe gikk galt og vi kunne ikke hente de neste oppgavene i køen</ErrorMessage>;
 	}
 
 	if (isSuccess && rader.length === 0) {
 		return (
 			<>
 				<VerticalSpacer eightPx />
-				<BodyShort size="small">
-					Det er ingen flere oppgaver i køen som kan plukkes
-				</BodyShort>
+				<BodyShort size="small">Det er ingen flere oppgaver i køen som kan plukkes</BodyShort>
 			</>
 		);
 	}
@@ -34,20 +28,20 @@ export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 	const kolonnekoder = Object.keys(kolonner);
 
 	return (
-        <Table>
-            <Table.Header>
+		<Table>
+			<Table.Header>
 				<Table.Row>
 					{kolonnekoder.map((kode) => (
 						<Table.HeaderCell key={kode}>{kolonner[kode]}</Table.HeaderCell>
 					))}
 				</Table.Row>
 			</Table.Header>
-            <Table.Body>
+			<Table.Body>
 				{rader.map((rad) => {
 					const { id } = rad;
 					return (
-                        <Table.Row key={id}>
-                            {kolonnekoder.map((kode) => {
+						<Table.Row key={id}>
+							{kolonnekoder.map((kode) => {
 								const verdi = rad[kode] ?? '';
 								if (/^\d{4}-\d{2}-\d{2}/.test(verdi)) {
 									const dato = dayjs(verdi).format('DD.MM.YYYY');
@@ -60,10 +54,10 @@ export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 								}
 								return <Table.DataCell key={kode}>{verdi}</Table.DataCell>;
 							})}
-                        </Table.Row>
-                    );
+						</Table.Row>
+					);
 				})}
 			</Table.Body>
-        </Table>
-    );
+		</Table>
+	);
 };

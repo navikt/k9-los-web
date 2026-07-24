@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { ChangeEvent, useContext, useEffect, useMemo } from 'react';
 import { Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
@@ -66,7 +66,7 @@ function KriterieOperator({
 		return null;
 	}
 
-	const handleChangeOperator = (event: { target: { value: any } }) => {
+	const handleChangeOperator = (event: ChangeEvent<HTMLSelectElement>) => {
 		const newOperator = event.target.value;
 		const switchingFromInterval = oppgavefilter.operator === OPERATORS.INTERVAL && newOperator !== OPERATORS.INTERVAL;
 

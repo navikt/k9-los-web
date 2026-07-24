@@ -6,7 +6,6 @@ import jestDom from 'eslint-plugin-jest-dom';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import storybook from 'eslint-plugin-storybook';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -17,7 +16,6 @@ export default tseslint.config(
 			'build/',
 			'node_modules/',
 			'coverage/',
-			'storybook-static/',
 			'**/*.d.ts',
 		],
 	},
@@ -28,7 +26,6 @@ export default tseslint.config(
 	jsxA11y.flatConfigs.recommended,
 	importPlugin.flatConfigs.recommended,
 	importPlugin.flatConfigs.typescript,
-	...storybook.configs['flat/recommended'],
 	prettier,
 	{
 		languageOptions: {

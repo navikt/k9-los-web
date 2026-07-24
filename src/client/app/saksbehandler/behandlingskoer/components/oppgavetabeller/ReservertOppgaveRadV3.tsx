@@ -9,7 +9,7 @@ import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/m
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
 import OppgaveV3 from 'types/OppgaveV3';
 import { dateTimeFormat } from 'utils/dateUtils';
-import * as styles from './oppgaverTabell.css';
+import * as styles from './oppgaverTabell.module.css';
 
 interface OwnProps {
 	oppgave: OppgaveV3;

@@ -13,7 +13,13 @@ const fieldnames = {
 	TITTEL: 'tittel',
 	TA_MED_QUERY: 'taMedQuery',
 	TA_MED_SAKSBEHANDLERE: 'taMedSaksbehandlere',
-};
+} as const;
+
+interface KopierKøFormValues {
+	tittel: string;
+	taMedQuery: boolean;
+	taMedSaksbehandlere: boolean;
+}
 
 const KopierKøModal: React.FC<Props> = ({ lukk, eksisterendeKø }) => {
 	const { mutate, isError, reset } = useKopierKøMutation(lukk);
@@ -27,7 +33,7 @@ const KopierKøModal: React.FC<Props> = ({ lukk, eksisterendeKø }) => {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm({
+	} = useForm<KopierKøFormValues>({
 		defaultValues: {
 			[fieldnames.TITTEL]: '',
 			[fieldnames.TA_MED_QUERY]: false,
@@ -35,7 +41,7 @@ const KopierKøModal: React.FC<Props> = ({ lukk, eksisterendeKø }) => {
 		},
 	});
 
-	const onSubmit = (data: Record<string, any>) => {
+	const onSubmit = (data: KopierKøFormValues) => {
 		const { tittel, taMedQuery, taMedSaksbehandlere } = data;
 		const payload = {
 			kopierFraOppgaveId: eksisterendeKø.id,
@@ -64,7 +70,9 @@ const KopierKøModal: React.FC<Props> = ({ lukk, eksisterendeKø }) => {
 							minLength: { value: 3, message: 'Må være minst 3 tegn' },
 						})}
 					/>
-					<Checkbox {...register(fieldnames.TA_MED_QUERY)}>{`Kopier køkriterier fra ${eksisterendeKø.tittel}`}</Checkbox>
+					<Checkbox
+						{...register(fieldnames.TA_MED_QUERY)}
+					>{`Kopier køkriterier fra ${eksisterendeKø.tittel}`}</Checkbox>
 					<Checkbox
 						{...register(fieldnames.TA_MED_SAKSBEHANDLERE)}
 						className="mt-2"

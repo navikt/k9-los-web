@@ -2,6 +2,7 @@ import OppgaveQueryModel from './OppgaveQueryModel';
 import { IdentifiedOppgaveQuery } from './filterFrontendTypes';
 
 type ModelMethods = {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[K in keyof OppgaveQueryModel]: OppgaveQueryModel[K] extends (...args: any[]) => OppgaveQueryModel ? K : never;
 }[keyof OppgaveQueryModel];
 

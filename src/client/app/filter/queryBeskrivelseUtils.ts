@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
 import 'utils/dateUtils';
 import {
+	AGGREGERT_FUNKSJON_VISNINGSNAVN,
+	AggregertOrderFelt,
+	AggregertSelectFelt,
 	CombineOppgavefilter,
 	EnkelOrderFelt,
 	EnkelSelectFelt,
@@ -8,12 +11,9 @@ import {
 	OppgaveQuery,
 	Oppgavefelt,
 	Oppgavefilter,
-	TolkesSom,
-	SelectFelt,
 	OrderFelt,
-	AggregertSelectFelt,
-	AggregertOrderFelt,
-	AGGREGERT_FUNKSJON_VISNINGSNAVN,
+	SelectFelt,
+	TolkesSom,
 } from './filterTsTypes';
 import { OPERATORS } from './utils';
 
@@ -140,18 +140,6 @@ function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: O
 	};
 }
 
-function beskrivelseForCombineFilter(filter: CombineOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
-	const feltnavn = 'Gruppe';
-	const verdier = traverserFiltere(filter.filtere, felter).map(({ feltnavn }) => feltnavn);
-	const prefiks = bestemSammenføyning(undefined, filter.combineOperator);
-
-	return {
-		feltnavn,
-		verdier,
-		sammenføyning: prefiks,
-	};
-}
-
 function isFeltverdiOppgavefilter(filter: Oppgavefilter): filter is FeltverdiOppgavefilter {
 	return filter.type === 'feltverdi';
 }
@@ -169,11 +157,24 @@ function traverserFiltere(filtere: Oppgavefilter[], felter: Oppgavefelt[]): Filt
 				beskrivelser.push(beskrivelseForFeltverdiFilter(filter, felter));
 			}
 		} else if (isCombineOppgavefilter(filter)) {
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			beskrivelser.push(beskrivelseForCombineFilter(filter, felter));
 		}
 	}
 
 	return beskrivelser;
+}
+
+function beskrivelseForCombineFilter(filter: CombineOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
+	const feltnavn = 'Gruppe';
+	const verdier = traverserFiltere(filter.filtere, felter).map(({ feltnavn: navn }) => navn);
+	const prefiks = bestemSammenføyning(undefined, filter.combineOperator);
+
+	return {
+		feltnavn,
+		verdier,
+		sammenføyning: prefiks,
+	};
 }
 
 function beskrivelseForSelectFelt(selectFelt: SelectFelt, felter: Oppgavefelt[]): SelectBeskrivelse {
@@ -211,13 +212,9 @@ export function utledFilterBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[
 }
 
 export function utledSelectBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): SelectBeskrivelse[] {
-	return query.select
-		.filter((s) => s.type === 'aggregert' || s.kode)
-		.map((s) => beskrivelseForSelectFelt(s, felter));
+	return query.select.filter((s) => s.type === 'aggregert' || s.kode).map((s) => beskrivelseForSelectFelt(s, felter));
 }
 
 export function utledOrderBeskrivelse(query: OppgaveQuery, felter: Oppgavefelt[]): OrderBeskrivelse[] {
-	return query.order
-		.filter((o) => o.type === 'aggregert' || o.kode)
-		.map((o) => beskrivelseForOrderFelt(o, felter));
+	return query.order.filter((o) => o.type === 'aggregert' || o.kode).map((o) => beskrivelseForOrderFelt(o, felter));
 }

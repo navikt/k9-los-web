@@ -31,6 +31,7 @@ export function EndreTittel({
 				mutate({ ...lagretSøk, tittel: '' });
 			}}
 		>
+			{/* eslint-disable jsx-a11y/no-autofocus */}
 			<TextField
 				label="Tittel"
 				hideLabel
@@ -42,6 +43,7 @@ export function EndreTittel({
 				size="small"
 				autoFocus
 			/>
+			{/* eslint-enable jsx-a11y/no-autofocus */}
 			<Button variant="secondary" disabled={isPending} type="submit" size="small">
 				Lagre
 			</Button>

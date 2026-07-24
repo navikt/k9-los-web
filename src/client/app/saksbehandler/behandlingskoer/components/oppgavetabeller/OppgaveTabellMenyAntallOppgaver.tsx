@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import * as styles from './oppgaverTabellMenyAntallOppgaver.css';
+import * as styles from './oppgaverTabellMenyAntallOppgaver.module.css';
 
 interface OwnProps {
 	tekst: string;

@@ -4,7 +4,7 @@ import { Alert, Button, Label, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { useHentAntallOppgaver, useValiderOppgaveQuery } from 'api/queries/oppgaveQueries';
 import { FilterContext } from './FilterContext';
-import * as styles from './KøKriterieEditorProvider.css';
+import * as styles from './KøKriterieEditorProvider.module.css';
 import OppgaveQueryModel from './OppgaveQueryModel';
 import { WithNodeId, fjernNodeIdFraQuery } from './filterFrontendTypes';
 import { OppgaveQuery } from './filterTsTypes';

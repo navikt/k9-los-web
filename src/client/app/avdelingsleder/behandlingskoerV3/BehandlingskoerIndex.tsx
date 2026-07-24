@@ -12,20 +12,21 @@ import KopierKø from './KopierKø';
 import SlettKø from './SlettKø';
 
 function scrollToId(id: string) {
-	let intervalId: NodeJS.Timeout | undefined;
-
-	const scroll = () => {
+	const maxAttempts = 50;
+	let attempts = 0;
+	const intervalId = setInterval(() => {
+		attempts += 1;
 		const element = document.getElementById(id);
-		if (element) {
+		if (element || attempts >= maxAttempts) {
 			clearInterval(intervalId);
-			setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'end' }), 500);
+			if (element) {
+				setTimeout(() => element.scrollIntoView({ behavior: 'smooth', block: 'end' }), 500);
+			}
 		}
-	};
-
-	intervalId = setInterval(scroll, 100);
+	}, 100);
 }
 
-const berikMedAntallOppgaverIndividuelt = (køArray: OppgavekøV3Enkel[]) => {
+const useBerikMedAntallOppgaverIndividuelt = (køArray: OppgavekøV3Enkel[]) => {
 	const queries = useQueries({
 		queries: køArray.map((kø) => ({
 			queryKey: ['antallOppgaver', kø.id],
@@ -95,7 +96,7 @@ const Row = ({
 );
 const BehandlingskoerIndex = () => {
 	const { data: initielleKøer, isLoading, error } = useAlleKoer();
-	const { results: køerMedAntallOppgaver, isSuccess: isSuccessAll } = berikMedAntallOppgaverIndividuelt(
+	const { results: køerMedAntallOppgaver, isSuccess: isSuccessAll } = useBerikMedAntallOppgaverIndividuelt(
 		initielleKøer || [],
 	);
 	const [sort, setSort] = useState<SortState | undefined>({

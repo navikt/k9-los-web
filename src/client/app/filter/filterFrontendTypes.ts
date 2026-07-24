@@ -1,13 +1,18 @@
 import { v4 as uuid } from 'uuid';
-import { CombineOppgavefilter, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter, SelectFelt, OrderFelt } from './filterTsTypes';
+import {
+	CombineOppgavefilter,
+	FeltverdiOppgavefilter,
+	OppgaveQuery,
+	Oppgavefilter,
+	OrderFelt,
+	SelectFelt,
+} from './filterTsTypes';
 
 export type WithNodeId<T> = T & { _nodeId: string };
 
-export type WithNodeIdRecursive<T extends object> = T extends any
-	? WithNodeId<{
-			[K in keyof T]: T[K] extends (infer U)[] ? ([U] extends [object] ? WithNodeIdRecursive<U>[] : T[K]) : T[K];
-		}>
-	: never;
+export type WithNodeIdRecursive<T extends object> = WithNodeId<{
+	[K in keyof T]: T[K] extends (infer U)[] ? ([U] extends [object] ? WithNodeIdRecursive<U>[] : T[K]) : T[K];
+}>;
 
 export type IdentifiedFeltverdiOppgavefilter = WithNodeId<FeltverdiOppgavefilter>;
 
@@ -17,6 +22,15 @@ export type IdentifiedOppgavefilter = IdentifiedFeltverdiOppgavefilter | Identif
 
 export type IdentifiedOppgaveQuery = WithNodeIdRecursive<OppgaveQuery>;
 
+export function tilIdentified<T>(uident: T): WithNodeId<T> {
+	return { ...uident, _nodeId: uuid() };
+}
+
+export function fjernNodeId<T extends object>(obj: WithNodeId<T>): Omit<T, '_nodeId'> {
+	const { _nodeId, ...rest } = obj;
+	return rest;
+}
+
 export function tilIdentifiedFilter(filter: Oppgavefilter): IdentifiedOppgavefilter {
 	if (filter.type === 'combine') {
 		return {
@@ -25,10 +39,6 @@ export function tilIdentifiedFilter(filter: Oppgavefilter): IdentifiedOppgavefil
 		};
 	}
 	return tilIdentified(filter);
-}
-
-export function tilIdentified<T>(uident: T): WithNodeId<T> {
-	return { ...uident, _nodeId: uuid() };
 }
 
 export function tilIdentifiedQuery(query: OppgaveQuery): IdentifiedOppgaveQuery {
@@ -56,11 +66,6 @@ export function fjernNodeIdFraQuery(query: IdentifiedOppgaveQuery): OppgaveQuery
 		select: query.select.map(fjernNodeId) as SelectFelt[],
 		order: query.order.map(fjernNodeId) as OrderFelt[],
 	};
-}
-
-export function fjernNodeId<T extends object>(obj: WithNodeId<T>): Omit<T, '_nodeId'> {
-	const { _nodeId, ...rest } = obj;
-	return rest;
 }
 
 export function isIdentifiedQuery(query: OppgaveQuery | IdentifiedOppgaveQuery): query is IdentifiedOppgaveQuery {
