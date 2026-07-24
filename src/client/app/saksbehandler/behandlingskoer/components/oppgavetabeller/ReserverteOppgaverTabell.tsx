@@ -5,10 +5,10 @@ import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries'
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
-import * as kopanelStyles from '../oppgavekoPanel.css';
+import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
-import * as styles from './oppgaverTabell.css';
+import * as styles from './oppgaverTabell.module.css';
 
 const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);

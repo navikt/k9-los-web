@@ -64,12 +64,15 @@ describe('filterFrontendTypes konvertering', () => {
 			const identCombine = identified.filtere[1];
 			expect(identCombine._nodeId).toBeDefined();
 			expect(identCombine.type).toBe('combine');
-			if (identCombine.type === 'combine') {
-				expect(identCombine.filtere).toHaveLength(2);
-				identCombine.filtere.forEach((f) => {
-					expect(f._nodeId).toBeDefined();
-				});
-			}
+			expect(identCombine).toEqual(
+				expect.objectContaining({
+					type: 'combine',
+					filtere: [
+						expect.objectContaining({ _nodeId: expect.any(String) }),
+						expect.objectContaining({ _nodeId: expect.any(String) }),
+					],
+				}),
+			);
 
 			// Select og order har _nodeId
 			expect(identified.select[0]._nodeId).toBeDefined();
@@ -115,12 +118,15 @@ describe('filterFrontendTypes konvertering', () => {
 			expect(identified._nodeId).toBeDefined();
 			expect(identified.type).toBe('combine');
 
-			if (identified.type === 'combine') {
-				expect(identified.filtere).toHaveLength(2);
-				identified.filtere.forEach((f) => {
-					expect(f._nodeId).toBeDefined();
-				});
-			}
+			expect(identified).toEqual(
+				expect.objectContaining({
+					type: 'combine',
+					filtere: [
+						expect.objectContaining({ _nodeId: expect.any(String) }),
+						expect.objectContaining({ _nodeId: expect.any(String) }),
+					],
+				}),
+			);
 
 			const roundtripped = fjernNodeIdFraFilter(identified);
 			expect(roundtripped).toEqual(combineFilter);
@@ -161,23 +167,26 @@ describe('filterFrontendTypes konvertering', () => {
 
 			expect(identified.select).toHaveLength(3);
 			expect(identified.select[0].type).toBe('enkel');
-			expect(identified.select[1].type).toBe('aggregert');
-			if (identified.select[1].type === 'aggregert') {
-				expect(identified.select[1].funksjon).toBe(AggregertFunksjon.ANTALL);
-			}
-			expect(identified.select[2].type).toBe('aggregert');
-			if (identified.select[2].type === 'aggregert') {
-				expect(identified.select[2].funksjon).toBe(AggregertFunksjon.SUM);
-				expect(identified.select[2].kode).toBe('feilutbetaltBelop');
-			}
+			expect(identified.select[1]).toEqual(
+				expect.objectContaining({ type: 'aggregert', funksjon: AggregertFunksjon.ANTALL }),
+			);
+			expect(identified.select[2]).toEqual(
+				expect.objectContaining({
+					type: 'aggregert',
+					funksjon: AggregertFunksjon.SUM,
+					kode: 'feilutbetaltBelop',
+				}),
+			);
 
 			expect(identified.order).toHaveLength(2);
 			expect(identified.order[0].type).toBe('enkel');
-			expect(identified.order[1].type).toBe('aggregert');
-			if (identified.order[1].type === 'aggregert') {
-				expect(identified.order[1].funksjon).toBe(AggregertFunksjon.ANTALL);
-				expect(identified.order[1].økende).toBe(false);
-			}
+			expect(identified.order[1]).toEqual(
+				expect.objectContaining({
+					type: 'aggregert',
+					funksjon: AggregertFunksjon.ANTALL,
+					økende: false,
+				}),
+			);
 
 			const roundtripped = fjernNodeIdFraQuery(identified);
 			expect(roundtripped).toEqual(queryMedAggregert);

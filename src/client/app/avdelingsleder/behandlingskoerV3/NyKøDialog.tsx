@@ -48,6 +48,7 @@ const NyKøDialog = ({ onSuccessCallback }: OwnProps) => {
 				</Dialog.Header>
 				<Dialog.Body>
 					<form id="form" onSubmit={handleSubmit(onSubmit)}>
+						{/* eslint-disable jsx-a11y/no-autofocus */}
 						<TextField
 							className="my-6 max-w"
 							label="Kønavn"
@@ -58,6 +59,7 @@ const NyKøDialog = ({ onSuccessCallback }: OwnProps) => {
 								minLength: { value: 3, message: 'Må være minst 3 tegn' },
 							})}
 						/>
+						{/* eslint-enable jsx-a11y/no-autofocus */}
 						{mutation.isError && <ErrorMessage>Noe gikk galt ved oppretting av kø.</ErrorMessage>}
 					</form>
 				</Dialog.Body>

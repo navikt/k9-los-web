@@ -1,8 +1,8 @@
 import React, { FunctionComponent } from 'react';
-import * as styles from './avdelingslederDashboard.css';
+import * as styles from './avdelingslederDashboard.module.css';
 
 type OwnProps = Readonly<{
-	children: any;
+	children: React.ReactNode;
 }>;
 
 /**

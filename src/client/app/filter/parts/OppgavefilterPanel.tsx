@@ -7,7 +7,7 @@ import { assertNever } from 'utils/assert-never';
 import { IdentifiedCombineOppgavefilter, IdentifiedOppgavefilter } from '../filterFrontendTypes';
 import Kriterie from './Kriterie';
 import VelgKriterie from './VelgKriterie';
-import * as filterGruppeStyles from './filterGruppe.css';
+import * as filterGruppeStyles from './filterGruppe.module.css';
 
 interface OppgavefilterPanelProps {
 	oppgavefilter: IdentifiedOppgavefilter;

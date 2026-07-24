@@ -37,6 +37,7 @@ export function EndreTittelUttrekk({
 				}
 			}}
 		>
+			{/* eslint-disable jsx-a11y/no-autofocus */}
 			<TextField
 				label="Tittel"
 				hideLabel
@@ -47,6 +48,7 @@ export function EndreTittelUttrekk({
 				maxLength={100}
 				autoFocus
 			/>
+			{/* eslint-enable jsx-a11y/no-autofocus */}
 			<Button variant="secondary" disabled={isPending} type="submit" size="medium">
 				Lagre
 			</Button>

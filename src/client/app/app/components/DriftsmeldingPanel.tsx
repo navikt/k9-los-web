@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
-import * as styles from './driftsmeldingPanel.css';
+import * as styles from './driftsmeldingPanel.module.css';
 
 const DriftsmeldingPanel: FunctionComponent = () => {
 	const { data, isSuccess } = useHentDriftsmeldinger();

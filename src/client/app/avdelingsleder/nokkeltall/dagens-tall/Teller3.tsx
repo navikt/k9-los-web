@@ -4,7 +4,7 @@ import { DagensTallSerie } from 'api/queries/avdelingslederQueries';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
 import { OppgaveQuery } from 'filter/filterTsTypes';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import * as styles from './teller3.css';
+import * as styles from './teller3.module.css';
 
 // Ubrukt nå med grupperte queries. Hvis den skal beholdes må man bruke original query og legge på flere kriterier, som da blir forskjellig fra hva som er kjørt.
 function KildeViewer({
@@ -100,7 +100,12 @@ const Teller: FunctionComponent<OwnProps> = ({ forklaring, tall }) => {
 								/* <KildeViewer key={linje.visningsnavn} tittel={forklaring} linje={linje}>
 							</KildeViewer> */
 							}
-							return <span className={styles.nedbrytningTekst}>{`${linje.verdi} ${linje.visningsnavn}`}</span>;
+							return (
+								<span
+									className={styles.nedbrytningTekst}
+									key={linje.visningsnavn}
+								>{`${linje.verdi} ${linje.visningsnavn}`}</span>
+							);
 						})}
 					</div>
 				</div>
