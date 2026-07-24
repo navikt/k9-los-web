@@ -17,7 +17,7 @@ import LoadingPanel from 'sharedComponents/LoadingPanel';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { parseQueryString } from 'utils/urlUtils';
 import FeatureSwitch from '../FeatureSwitch';
-import * as styles from './avdelingslederIndex.module.css';
+import styles from './avdelingslederIndex.module.css';
 import AvdelingslederPanels from './avdelingslederPanels';
 import BehandlingskoerIndex from './behandlingskoerV3/BehandlingskoerIndex';
 import SaksbehandlereTabell from './bemanning/components/SaksbehandlereTabell';

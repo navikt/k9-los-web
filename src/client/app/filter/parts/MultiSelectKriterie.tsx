@@ -1,11 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
-import { ComboboxOption } from '@navikt/ds-react/cjs/form/combobox/types';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { Oppgavefelt, Synlighet } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle, sorterVerdiforklaringer } from 'filter/utils';
+
+type ComboboxOption = {
+	label: string;
+	value: string;
+};
 
 interface Props {
 	feltdefinisjon?: Oppgavefelt;

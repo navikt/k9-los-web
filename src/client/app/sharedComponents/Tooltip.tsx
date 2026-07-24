@@ -1,6 +1,6 @@
 import React, { FunctionComponent, ReactNode } from 'react';
 import classnames from 'classnames/bind';
-import * as styles from './tooltip.module.css';
+import styles from './tooltip.module.css';
 
 const classNames = classnames.bind(styles);
 

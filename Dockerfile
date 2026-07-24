@@ -5,7 +5,6 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY ./webpack/faroConfig.js ./dist/public/nais.js
 COPY ./dist ./dist
 
 # ./deploy er en selvstendig pnpm-deploy av @k9-los-web/server

@@ -25,7 +25,6 @@ npm-debug.log*
 pnpm-debug.log*
 
 .idea
-.eslintcache
 jest_cache
 /test-results/
 

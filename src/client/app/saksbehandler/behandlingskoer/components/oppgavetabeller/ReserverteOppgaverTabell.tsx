@@ -8,7 +8,7 @@ import { OppgavestatusV3 } from 'types/OppgaveV3';
 import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
-import * as styles from './oppgaverTabell.module.css';
+import styles from './oppgaverTabell.module.css';
 
 const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);

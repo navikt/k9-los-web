@@ -1,5 +1,5 @@
 import { Box, Heading } from '@navikt/ds-react';
-import * as styles from './ikkeTilgang.module.css';
+import styles from './ikkeTilgang.module.css';
 
 const IkkeTilgang = () => (
 	<Box background="raised" borderRadius="4" padding="space-16" className={styles.container}>
