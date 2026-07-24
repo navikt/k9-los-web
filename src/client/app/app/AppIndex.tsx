@@ -4,6 +4,7 @@ import { getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk';
 import { TracingInstrumentation } from '@grafana/faro-web-tracing';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
+import { faroBeforeSend } from 'utils/faroPiiScrubber';
 import '../../styles/global.css';
 import ErrorBoundary from './ErrorBoundary';
 import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
@@ -30,10 +31,12 @@ const AppIndex: FunctionComponent = () => {
 					url: window.nais?.telemetryCollectorURL,
 					app: window.nais?.app,
 					instrumentations: [...getWebInstrumentations({ captureConsole: true }), new TracingInstrumentation()],
+					// Vasker bort fnr/tokens fra telemetri før det sendes til Nais APM.
+					beforeSend: faroBeforeSend,
 				});
 			}
 		}
-	}, [window.nais?.app, window.nais?.telemetryCollectorURL]);
+	}, [window.nais?.telemetryCollectorURL]);
 
 	const timeout = 1000 * 60 * 58;
 

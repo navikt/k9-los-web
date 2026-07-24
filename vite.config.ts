@@ -34,6 +34,9 @@ export default defineConfig({
 	},
 	build: {
 		assetsDir: 'public',
-		sourcemap: true,
+		// Sourcemaps er slått av i mellomfasen: Sentry er fjernet, og Nais APM
+		// kan kun deobfuskere bundles servert fra cdn.nav.no – ikke pod-serverte.
+		// Skru dette på igjen (til true) samtidig som CDN-opplasting settes opp.
+		sourcemap: false,
 	},
 });

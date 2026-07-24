@@ -44,10 +44,6 @@ jobs:
         run: pnpm test --maxWorkers=2
       - name: Bygge kode
         run: pnpm build
-      - name: Opprett release med Sentry
-        run: pnpm sentry-release
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         # Lager en selvstendig server-deploy med kun serverens prod-dependencies, da det er det eneste som trenger å være med på docker imaget.
         # node-linker=hoisted gir en flat node_modules uten symlenker, som kopieres rent inn i Docker (symlenker bryter BuildKit sin checksum-beregning).
       - name: Lag server-deploy

@@ -9,7 +9,6 @@ injectWorkspacePackages: true
 # Alle er satt til `false` bevisst (binærene kommer via optional platform-deps).
 # Dette må stå eksplisitt – ellers feiler `pnpm install` med ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
-  '@sentry/cli': false
   core-js: false
   esbuild: false
   msw: false

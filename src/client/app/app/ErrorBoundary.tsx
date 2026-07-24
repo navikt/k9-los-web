@@ -1,5 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { captureException, withScope } from '@sentry/browser';
+import { faro } from '@grafana/faro-web-sdk';
 
 interface OwnProps {
 	errorMessageCallback: (error: string) => void;
@@ -19,11 +19,12 @@ export class ErrorBoundary extends Component<OwnProps, State> {
 	componentDidCatch(error: Error, info: ErrorInfo): void {
 		const { errorMessageCallback } = this.props;
 
-		withScope((scope) => {
-			Object.keys(info).forEach((key) => {
-				scope.setExtra(key, info[key as keyof ErrorInfo]);
-			});
-			captureException(error);
+		// React render-feil propagerer ikke til window.onerror, så Faros
+		// auto-instrumentering fanger dem ikke. Vi sender dem derfor eksplisitt
+		// til nais-APM. faro.api er kun definert når Faro er initialisert
+		// (kun på nav.no-hostnavn), så vi guarder for lokal kjøring.
+		faro?.api?.pushError(error, {
+			context: { componentStack: info.componentStack ?? '' },
 		});
 
 		errorMessageCallback(
