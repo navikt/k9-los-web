@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
@@ -21,7 +21,6 @@ interface Props {
 const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }: Props) => {
 	const [value, setValue] = useState('');
 	const [visSekundærvalg, setVisSekundærvalg] = useState(false);
-	const [options, setOptions] = useState<ComboboxOption[]>([]);
 	const { updateQuery } = useContext(FilterContext);
 	const verdier = oppgavefilter.verdi;
 	const selectedOptions = verdier?.map((v) => {
@@ -32,7 +31,9 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 		return { value: option.verdi, label: option.visningsnavn };
 	});
 
-	const getOptions = () => {
+	// Avledet direkte fra feltdefinisjon og visSekundærvalg. Lå tidligere i state satt fra
+	// en useEffect, noe som ga en ekstra render med tom liste før optionene kom på plass.
+	const options = useMemo<ComboboxOption[]>(() => {
 		const sortert = sorterVerdiforklaringer(feltdefinisjon.verdiforklaringer);
 		const primærvalg = sortert
 			.filter((v) => v.synlighet !== Synlighet.UnderStreken)
@@ -51,10 +52,6 @@ const MultiSelectKriterie = ({ feltdefinisjon, oppgavefilter, error, readOnly }:
 		}
 
 		return primærvalg;
-	};
-
-	useEffect(() => {
-		setOptions(getOptions());
 	}, [feltdefinisjon, visSekundærvalg]);
 
 	const onToggleSelected = (option: string, isSelected: boolean) => {

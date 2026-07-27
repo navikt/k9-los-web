@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowsCirclepathIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Label, Skeleton } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
@@ -53,10 +53,11 @@ const KøKriterieEditorProvider = ({
 		}
 	}, [oppgaveQuery, shouldRevalidate]);
 
-	const updateQuery = (operations: Array<QueryFunction>) => {
-		const newQuery = applyFunctions(oppgaveQuery, operations);
-		setOppgaveQuery(newQuery);
-	};
+	// Funksjonell oppdatering gjør at callbacken ikke trenger å lukke over oppgaveQuery.
+	// Dermed er identiteten stabil, og konsumenter kan trygt ha updateQuery i sine dependencies.
+	const updateQuery = useCallback((operations: Array<QueryFunction>) => {
+		setOppgaveQuery((forrigeQuery) => applyFunctions(forrigeQuery, operations));
+	}, []);
 
 	const { felter } = React.useContext(AppContext);
 
@@ -113,7 +114,7 @@ const KøKriterieEditorProvider = ({
 			updateQuery,
 			errors: queryErrors,
 		}),
-		[oppgaveQuery, queryErrors],
+		[oppgaveQuery, queryErrors, updateQuery],
 	);
 
 	if (felter.length === 0) {

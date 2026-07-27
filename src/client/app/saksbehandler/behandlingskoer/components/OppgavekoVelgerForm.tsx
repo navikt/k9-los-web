@@ -1,8 +1,9 @@
-import React, { FunctionComponent, ReactNode, useContext, useEffect } from 'react';
+import React, { FunctionComponent, ReactNode, useContext } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { BodyShort, Button, ReadMore, Select, Skeleton } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { useAntallOppgaverIKoV3UtenReserverte } from 'api/queries/saksbehandlerQueries';
+import { useMount } from 'hooks/UseMount';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
@@ -78,7 +79,9 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 		enabled: harKoer && !!valgtKoId,
 	});
 
-	useEffect(() => {
+	// Setter default kø kun ved mount. Skal ikke overskrive saksbehandlers eget valg
+	// dersom kølista endrer seg senere.
+	useMount(() => {
 		if (oppgavekoerSortertAlfabetisk.length > 0) {
 			const defaultOppgavekoId = getDefaultOppgaveko(oppgavekoerSortertAlfabetisk);
 			if (defaultOppgavekoId) {
@@ -86,7 +89,7 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgav
 				queryClient.invalidateQueries({ queryKey: [apiPaths.hentSaksbehandlereIKoV3(getKoId(defaultOppgavekoId))] });
 			}
 		}
-	}, []);
+	});
 
 	const handleSelectKo = (event) => {
 		const koId = event.target.value;

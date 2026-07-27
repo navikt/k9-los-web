@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { EChartsOption } from 'echarts';
-import { Box, Detail, HStack, Heading, Select, Tag, ToggleGroup } from '@navikt/ds-react';
+import { Box, Detail, HStack, Heading, Select, ToggleGroup } from '@navikt/ds-react';
 import { useHentFerdigstiltePerEnhet } from 'api/queries/avdelingslederQueries';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
@@ -47,11 +47,11 @@ export default function FerdigstiltePerEnhet() {
 	};
 
 	return (
-        <Box padding="space-16" borderWidth="1" borderColor="neutral">
-            <Heading size="small">Ferdigstilte behandlinger og oppgaver per enhet</Heading>
-            <VerticalSpacer eightPx />
-            {!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
-            {data.oppdatertTidspunkt && (
+		<Box padding="space-16" borderWidth="1" borderColor="neutral">
+			<Heading size="small">Ferdigstilte behandlinger og oppgaver per enhet</Heading>
+			<VerticalSpacer eightPx />
+			{!data.oppdatertTidspunkt && <p>Ingen data for øyeblikket</p>}
+			{data.oppdatertTidspunkt && (
 				<>
 					<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
 					<VerticalSpacer eightPx />
@@ -77,6 +77,6 @@ export default function FerdigstiltePerEnhet() {
 					<ReactECharts option={chartOption} height={grafHeight} />
 				</>
 			)}
-        </Box>
-    );
+		</Box>
+	);
 }

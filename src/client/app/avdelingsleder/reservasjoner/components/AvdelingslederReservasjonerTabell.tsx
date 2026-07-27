@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import _ from 'lodash';
 import { ArrowUndoIcon, PencilIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, ErrorMessage, Heading, Loader, Search, SortState, Table } from '@navikt/ds-react';
@@ -47,6 +47,18 @@ const sorter = (reservasjonerListe: ReservasjonTableData[], newSort: Reservasjon
 		return 1;
 	});
 
+// Ren avbildning uten avhengigheter til komponent-state, derfor definert på modulnivå.
+const mapTilTableData = (reservasjon: Reservasjon): ReservasjonTableData => ({
+	reservasjon,
+	navn: reservasjon.reservertAvNavn || reservasjon.reservertAvEpost,
+	id: reservasjon.saksnummer || reservasjon.journalpostId,
+	ytelse: reservasjon.ytelse,
+	type:
+		getKodeverknavnFraKode(reservasjon.behandlingType?.kode, kodeverkTyper.BEHANDLING_TYPE, {}) +
+		(reservasjon.tilBeslutter ? ' - [B] ' : ''),
+	reservertTil: getDateAndTime(reservasjon.reservertTilTidspunkt).date,
+});
+
 const AvdelingslederReservasjonerTabell = () => {
 	const [reservasjonerSomSkalVises, setReservasjonerSomSkalVises] = useState<ReservasjonTableData[]>([]);
 	const [finnesSokResultat, setFinnesSokResultat] = useState(true);
@@ -74,40 +86,45 @@ const AvdelingslederReservasjonerTabell = () => {
 		isError: isErrorReservasjoner,
 	} = useAvdelingslederReservasjoner();
 
+	// Holder gjeldende sortering tilgjengelig for effekten under uten at den abonnerer på den.
+	// handleSort sorterer allerede om umiddelbart ved brukerens klikk; hadde sort ligget i
+	// dependencies ville effekten i tillegg nullstilt avkryssede reservasjoner ved hver sortering.
+	const sortRef = useRef(sort);
+	useEffect(() => {
+		sortRef.current = sort;
+	}, [sort]);
+
+	// Kjører når data lastes på nytt: mapper om, sorterer med gjeldende sortering, og
+	// nullstiller valgte rader siden radene kan ha endret seg.
 	useEffect(() => {
 		if (reservasjoner) {
-			setReservasjonerSomSkalVises(sorter(reservasjoner.map(mapTilTableData), sort));
+			setReservasjonerSomSkalVises(sorter(reservasjoner.map(mapTilTableData), sortRef.current));
 			setValgteReservasjoner([]);
 		}
 	}, [reservasjoner]);
 
-	const mapTilTableData = (reservasjon: Reservasjon): ReservasjonTableData => ({
-		reservasjon,
-		navn: reservasjon.reservertAvNavn || reservasjon.reservertAvEpost,
-		id: reservasjon.saksnummer || reservasjon.journalpostId,
-		ytelse: reservasjon.ytelse,
-		type:
-			getKodeverknavnFraKode(reservasjon.behandlingType?.kode, kodeverkTyper.BEHANDLING_TYPE, {}) +
-			(reservasjon.tilBeslutter ? ' - [B] ' : ''),
-		reservertTil: getDateAndTime(reservasjon.reservertTilTidspunkt).date,
-	});
+	const sokEtterReservasjon = useCallback(
+		(value: string) => {
+			const sokVerdi = value.toLowerCase();
+			const reservasjonerMedMatch = reservasjoner.filter(
+				(res) =>
+					res.reservertAvNavn.toLowerCase().includes(sokVerdi) ||
+					res.saksnummer?.toLowerCase()?.includes(sokVerdi) ||
+					res.journalpostId?.toLowerCase()?.includes(sokVerdi),
+			);
+			if (reservasjonerMedMatch.length > 0) {
+				setFinnesSokResultat(true);
+				setReservasjonerSomSkalVises(reservasjonerMedMatch.map(mapTilTableData));
+			} else {
+				setFinnesSokResultat(false);
+			}
+		},
+		[reservasjoner],
+	);
 
-	const sokEtterReservasjon = (value: string) => {
-		const sokVerdi = value.toLowerCase();
-		const reservasjonerMedMatch = reservasjoner.filter(
-			(res) =>
-				res.reservertAvNavn.toLowerCase().includes(sokVerdi) ||
-				res.saksnummer?.toLowerCase()?.includes(sokVerdi) ||
-				res.journalpostId?.toLowerCase()?.includes(sokVerdi),
-		);
-		if (reservasjonerMedMatch.length > 0) {
-			setFinnesSokResultat(true);
-			setReservasjonerSomSkalVises(reservasjonerMedMatch.map(mapTilTableData));
-		} else {
-			setFinnesSokResultat(false);
-		}
-	};
-	const debounceFn = useCallback(_.debounce(sokEtterReservasjon, 300), [reservasjoner]);
+	// useMemo, ikke useCallback: vi memoiserer selve debounce-instansen. Med useCallback
+	// ble _.debounce kalt på nytt ved hver render, slik at timeren aldri fikk løpe ut.
+	const debounceFn = useMemo(() => _.debounce(sokEtterReservasjon, 300), [sokEtterReservasjon]);
 
 	if (isErrorReservasjoner) {
 		return <ErrorMessage>Noe gikk galt ved henting av reservasjoner</ErrorMessage>;

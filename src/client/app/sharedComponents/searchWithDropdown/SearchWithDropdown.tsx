@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, ErrorMessage, Label, Search, UNSAFE_Combobox as UnstableCombobox } from '@navikt/ds-react';
+import { useMount } from 'hooks/UseMount';
 import { SelectedValues } from './SelectedValues';
 import styles from './searchWithDropdown.module.css';
 
@@ -77,6 +78,13 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		: suggestions;
 
 	const isInitialMount = useRef(true);
+	// Verdibasert nøkkel: selectedValues er en ny array ved hver render fra forelder.
+	// Med selve arrayen som dependency ville effekten kjørt hver render og trigget
+	// setSelectedSuggestionValues, som gir en uendelig renderløkke.
+	const selectedValuesKey = JSON.stringify(selectedValues);
+	// isOpen, selectedValues og getSuggestion er bevisst utelatt: effekten skal kun reagere
+	// på at forelderens verdier faktisk endrer innhold, ikke på at dropdownen åpnes/lukkes.
+	/* eslint-disable react-hooks/exhaustive-deps */
 	useEffect(() => {
 		// Ikke overskriv lokal state mens dropdown er åpen — lokal state er autoritativ
 		if (!isInitialMount.current && isOpen) return;
@@ -90,14 +98,17 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 			setOpenGroups((prev) => [...new Set([...prev, ...selectedGroups])]);
 		}
 		setCurrentInput('');
-	}, [JSON.stringify(selectedValues)]);
+	}, [selectedValuesKey]);
+	/* eslint-enable react-hooks/exhaustive-deps */
 
-	useEffect(() => {
+	// Avgjør kun ved mount om seksjonen under streken skal være åpen. Skal ikke
+	// tvinge den åpen igjen dersom brukeren lukker den.
+	useMount(() => {
 		if (secondaryGroups.length > 0) {
 			const hasSelectedSecondary = selectedValues.some((v) => secondaryGroups.includes(getSuggestion(v)?.group));
 			if (hasSelectedSecondary) setVisUnderStreken(true);
 		}
-	}, []);
+	});
 
 	// Sync local selection to parent on every change
 	useEffect(() => {
@@ -106,7 +117,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 			prevSyncedRef.current = key;
 			updateSelection(selectedSuggestionValues);
 		}
-	}, [selectedSuggestionValues]);
+	}, [selectedSuggestionValues, updateSelection]);
 
 	useEffect(() => {
 		if (isOpen) {
@@ -337,12 +348,13 @@ const SimpleSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => {
 	const getSuggestion = (v: string) => suggestions.find((s) => s.value === v);
 	const hasSecondaryGroups = secondaryGroups.length > 0;
 
-	useEffect(() => {
+	// Se kommentar over: kun initialisering, brukerens valg er autoritativt etterpå.
+	useMount(() => {
 		if (hasSecondaryGroups) {
 			const hasSelectedSecondary = selectedValues.some((v) => secondaryGroups.includes(getSuggestion(v)?.group));
 			if (hasSelectedSecondary) setVisSekundærvalg(true);
 		}
-	}, []);
+	});
 
 	const primaryOptions: ComboboxOption[] = suggestions
 		.filter((s) => !hasSecondaryGroups || !secondaryGroups.includes(s.group))

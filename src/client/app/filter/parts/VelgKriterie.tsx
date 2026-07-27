@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
@@ -22,7 +22,6 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 	const { updateQuery, errors } = useContext(FilterContext);
 	const { felter } = useContext(AppContext);
 	const [valgtKriterie, setValgtKriterie] = useState<Oppgavefelt | '__gruppe'>();
-	const [options, setOptions] = useState<ComboboxOption[]>([]);
 	const [fritekst, setFritekst] = useState('');
 	const [klikketLeggTilUtenÅVelgeKriterie, setKlikketLeggTilUtenÅVelgeKriterie] = useState(false);
 	// error fra modellen
@@ -31,10 +30,15 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 			? 'Du må velge et kriterie'
 			: errors.find((e) => e._nodeId === oppgavefilter._nodeId && e.felt === 'kode')?.message;
 
-	const kriterierSomKanVelges =
-		paakrevdeKoder.length > 0 ? felter.filter((kriterie) => paakrevdeKoder.some((v) => v !== kriterie.kode)) : felter;
+	const kriterierSomKanVelges = useMemo(
+		() =>
+			paakrevdeKoder.length > 0 ? felter.filter((kriterie) => paakrevdeKoder.some((v) => v !== kriterie.kode)) : felter,
+		[felter, paakrevdeKoder],
+	);
 
-	const getOptions = () => {
+	// Avledet direkte fra kriterierSomKanVelges. Lå tidligere i state satt fra en useEffect,
+	// noe som ga en ekstra render med tom liste før optionene kom på plass.
+	const options = useMemo<ComboboxOption[]>(() => {
 		const primærvalg = kriterierSomKanVelges?.filter((v) => v.synlighet === Synlighet.OverStreken);
 		const avanserteValg = kriterierSomKanVelges?.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
@@ -45,11 +49,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 		}
 		optionsList.push({ label: 'Gruppe', value: '__gruppe' });
 		return optionsList;
-	};
-
-	useEffect(() => {
-		setOptions(getOptions());
-	}, [JSON.stringify(kriterierSomKanVelges)]);
+	}, [kriterierSomKanVelges]);
 
 	const handleSelect = (value: string) => {
 		if (value === COMBOBOX_SEPARATOR_VALUE) return;

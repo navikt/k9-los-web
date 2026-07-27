@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Button, Checkbox, ErrorMessage, Heading, Modal, TextField } from '@navikt/ds-react';
 import { useKopierKøMutation } from 'api/queries/avdelingslederQueries';
+import { useMount } from 'hooks/UseMount';
 import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
 
 interface Props {
@@ -28,7 +29,8 @@ const KopierKøModal: React.FC<Props> = ({ lukk, eksisterendeKø }) => {
 		reset();
 	};
 
-	useEffect(() => () => reset(), []);
+	// Nullstiller mutasjonstilstanden når modalen lukkes.
+	useMount(() => () => reset());
 	const {
 		register,
 		handleSubmit,
