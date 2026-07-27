@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { TrashIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, List, Skeleton, Heading, Box } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading, List, Skeleton } from '@navikt/ds-react';
 import { useHentAndreSaksbehandleresKøer, useSlettSaksbehandler } from 'api/queries/avdelingslederQueries';
 import SletteSaksbehandlerModal from 'avdelingsleder/bemanning/components/SletteSaksbehandlerModal';
 import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';

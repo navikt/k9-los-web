@@ -42,12 +42,7 @@ export const LeggTilDriftsmeldingForm: FunctionComponent = () => {
 					onChange={(e) => setMelding(e.target.value)}
 				/>
 				<div>
-					<Button
-						className="absolute bottom-0 h-[42px]"
-						loading={isPending}
-						disabled={isPending}
-						type="submit"
-					>
+					<Button className="absolute bottom-0 h-[42px]" loading={isPending} disabled={isPending} type="submit">
 						Legg til
 					</Button>
 				</div>
