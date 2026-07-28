@@ -105,10 +105,15 @@ const AvdelingslederReservasjonerTabell = () => {
 
 	const sokEtterReservasjon = useCallback(
 		(value: string) => {
+			// Søkefeltet vises også mens data lastes, så reservasjoner kan være undefined her.
+			if (!reservasjoner) {
+				return;
+			}
 			const sokVerdi = value.toLowerCase();
 			const reservasjonerMedMatch = reservasjoner.filter(
 				(res) =>
-					res.reservertAvNavn.toLowerCase().includes(sokVerdi) ||
+					// reservertAvNavn kan mangle i praksis, jf. fallback til epost i mapTilTableData.
+					res.reservertAvNavn?.toLowerCase()?.includes(sokVerdi) ||
 					res.saksnummer?.toLowerCase()?.includes(sokVerdi) ||
 					res.journalpostId?.toLowerCase()?.includes(sokVerdi),
 			);
@@ -122,9 +127,14 @@ const AvdelingslederReservasjonerTabell = () => {
 		[reservasjoner],
 	);
 
-	// useMemo, ikke useCallback: vi memoiserer selve debounce-instansen. Med useCallback
-	// ble _.debounce kalt på nytt ved hver render, slik at timeren aldri fikk løpe ut.
+	// useMemo, ikke useCallback: her er det selve debounce-instansen vi vil memoisere.
+	// useCallback ga også stabil identitet, men opprettet en ny instans ved hver render
+	// som umiddelbart ble forkastet.
 	const debounceFn = useMemo(() => _.debounce(sokEtterReservasjon, 300), [sokEtterReservasjon]);
+
+	// Avbryt ventende søk når komponenten unmountes eller instansen byttes ut, slik at
+	// vi ikke oppdaterer state etter unmount.
+	useEffect(() => () => debounceFn.cancel(), [debounceFn]);
 
 	if (isErrorReservasjoner) {
 		return <ErrorMessage>Noe gikk galt ved henting av reservasjoner</ErrorMessage>;
