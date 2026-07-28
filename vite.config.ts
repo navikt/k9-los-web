@@ -47,7 +47,7 @@ export default defineConfig({
 			},
 		},
 		setupFiles: ['./setup/setup.js', './setup/setup-test-env.ts'],
-		include: ['src/**/*.spec.{js,jsx,ts,tsx}'],
+		include: ['src/**/*.spec.{js,jsx,ts,tsx}', 'setup/**/*.spec.ts'],
 		exclude: ['**/node_modules/**', '**/dist/**'],
 		server: {
 			deps: {

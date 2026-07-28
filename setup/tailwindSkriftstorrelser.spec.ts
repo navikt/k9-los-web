@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
@@ -7,11 +8,14 @@ import { resolve } from 'node:path';
  * men Tailwind 4 genererer text-*-utilities fra --text-*-navnerommet. Uten en
  * mapping finnes ikke text-ax-small, text-ax-medium osv. i det hele tatt –
  * klassene blir stille no-ops i markupen. Vi bygger derfor broen selv i
- * global.css.
+ * en @theme-blokk i src/client/styles/global.css.
  *
  * Denne testen vokter den broen. Legger Aksel til eller fjerner en størrelse,
  * feiler testen i stedet for at vi ender opp med døde utility-klasser.
  * Kan slettes når Aksel bruker --text-* direkte.
+ *
+ * Ligger utenfor src/ fordi den leser filer fra disk og hører til
+ * byggkonfigurasjonen, ikke applikasjonskoden.
  */
 
 const require = createRequire(resolve(process.cwd(), 'package.json'));
