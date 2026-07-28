@@ -18,3 +18,6 @@ allowBuilds:
 # Ikke kjør `pnpm install` på nytt før hvert `pnpm run`-script.
 # Registryet er token-gated, så en auto-reinstall ville kreve token ved hver kommando.
 verifyDepsBeforeRun: false
+
+minimumReleaseAgeExclude:
+  - postcss@8.5.24

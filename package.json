@@ -31,7 +31,7 @@
 		"dayjs": "1.11.21",
 		"echarts": "6.1.0",
 		"lodash": "4.18.1",
-		"postcss": "8.5.16",
+		"postcss": "8.5.24",
 		"react": "19.2.7",
 		"react-collapse": "5.1.1",
 		"react-dom": "19.2.7",
