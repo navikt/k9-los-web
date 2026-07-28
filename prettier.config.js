@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	htmlWhitespaceSensitivity: 'css',
 	printWidth: 120,
 	proseWrap: 'preserve',
