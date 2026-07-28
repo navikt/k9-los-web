@@ -3,7 +3,7 @@ import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
-import { OppgaveQuery, OppgavefilterKode } from './filterTsTypes';
+import { OppgaveQuery } from './filterTsTypes';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
 import { addFeltverdiFilter, addGruppeFilter } from './queryUtils';
 

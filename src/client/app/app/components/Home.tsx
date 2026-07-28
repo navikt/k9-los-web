@@ -26,9 +26,12 @@ const Home: FunctionComponent = () => {
 
 	const queryClient = useQueryClient();
 
+	const kanOppgavestyre = saksbehandler?.kanOppgavestyre;
+	const brukerIdent = saksbehandler?.brukerIdent;
+
 	useEffect(() => {
-		if (saksbehandler !== undefined) {
-			if (saksbehandler.kanOppgavestyre) {
+		if (brukerIdent !== undefined) {
+			if (kanOppgavestyre) {
 				queryClient.prefetchQuery({
 					queryKey: [apiPaths.hentSaksbehandlereAvdelingsleder],
 				});
@@ -37,7 +40,7 @@ const Home: FunctionComponent = () => {
 				queryKey: [apiPaths.hentSaksbehandlereSomSaksbehandler],
 			});
 		}
-	}, [queryClient, saksbehandler?.brukerIdent, saksbehandler?.kanOppgavestyre]);
+	}, [queryClient, brukerIdent, kanOppgavestyre]);
 
 	const contextValues = useMemo(() => ({ felter: data?.felter || [] }), [data]);
 

@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
+import 'dayjs/locale/nb';
 import durationPlugin from 'dayjs/plugin/duration';
 import isoWeek from 'dayjs/plugin/isoWeek';
-import 'dayjs/locale/nb';
 
 dayjs.extend(isoWeek);
 dayjs.extend(durationPlugin);

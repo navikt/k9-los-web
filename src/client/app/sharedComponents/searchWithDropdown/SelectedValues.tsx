@@ -18,8 +18,8 @@ const Group = ({ group, chips, remove }: { group: string; chips: Props['values']
 	const [open, setOpen] = useState(false);
 
 	return (
-        <div className={open ? `bg-ax-bg-default rounded-md p-1.5 pt-0 pl-0 w-full` : ''}>
-            <Button
+		<div className={open ? `bg-ax-bg-default rounded-md p-1.5 pt-0 pl-0 w-full` : ''}>
+			<Button
 				className="!p-1"
 				size="small"
 				type="button"
@@ -29,7 +29,7 @@ const Group = ({ group, chips, remove }: { group: string; chips: Props['values']
 			>
 				{`${group} (${chips.length})`}
 			</Button>
-            {open && (
+			{open && (
 				<div className="p-2">
 					<Chips size="small">
 						{chips.map((v) =>
@@ -46,8 +46,8 @@ const Group = ({ group, chips, remove }: { group: string; chips: Props['values']
 					</Chips>
 				</div>
 			)}
-        </div>
-    );
+		</div>
+	);
 };
 
 export const SelectedValues = ({ values, remove, removeAllValues }: Props) => {

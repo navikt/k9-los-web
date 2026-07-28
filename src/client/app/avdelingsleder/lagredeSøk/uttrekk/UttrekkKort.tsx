@@ -116,7 +116,7 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 	const { mutate: slettUttrekk } = useSlettUttrekk();
 
 	// Oppdater kjøretid ved statusendring og hvert sekund hvis uttrekket kjører
-	useEffect(oppdaterKjøretid, [uttrekk.status]);
+	useEffect(oppdaterKjøretid, [uttrekk.status, uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt]);
 	useInterval(oppdaterKjøretid, uttrekk.status === UttrekkStatus.KJØRER ? 1000 : null);
 
 	const kriterierErForskjellige = !_.isEqual(uttrekk.query.filtere, lagretSøk?.query.filtere);

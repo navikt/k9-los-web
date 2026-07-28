@@ -3,7 +3,7 @@ import { Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { FeltverdiOppgavefilter, TolkesSom } from 'filter/filterTsTypes';
+import { TolkesSom } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS, operatorsFraTolkesSom } from 'filter/utils';
 
@@ -41,7 +41,7 @@ function KriterieOperator({
 
 	const operators = useMemo(
 		() => operatorsFraTolkesSom(kriterieDefinisjon.tolkes_som, kriterieDefinisjon.verdiforklaringer?.length),
-		[JSON.stringify(kriterieDefinisjon)],
+		[kriterieDefinisjon.tolkes_som, kriterieDefinisjon.verdiforklaringer?.length],
 	);
 
 	// I readOnly modus: vis alltid operatoren selv om den ikke er i listen
@@ -52,6 +52,8 @@ function KriterieOperator({
 		return operators;
 	}, [operators, oppgavefilter.operator, readOnly]);
 
+	// Normaliserer operatoren dersom den ikke er gyldig for feltet. Vakten gjør at effekten
+	// er en no-op når brukeren velger en gyldig operator, så den kommer ikke i veien for valget.
 	useEffect(() => {
 		if (!readOnly && operators.length && !operators.includes(oppgavefilter.operator)) {
 			updateQuery([
@@ -60,7 +62,7 @@ function KriterieOperator({
 				}),
 			]);
 		}
-	}, [JSON.stringify(operators), JSON.stringify(kriterieDefinisjon), readOnly]);
+	}, [operators, oppgavefilter.operator, oppgavefilter._nodeId, readOnly, updateQuery]);
 
 	if (operatorsToShow.length <= 1) {
 		return null;

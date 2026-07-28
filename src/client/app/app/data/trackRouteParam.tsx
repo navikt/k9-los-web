@@ -20,7 +20,7 @@ const mapMatchToParam = (params: Params, location: Location, trackingConfig: Req
 	return trackingConfig.parse(newParams[trackingConfig.paramName]);
 };
 
-function useTrackRouteParam<T>(config: Config): { location: Location; selected: string | undefined } {
+function useTrackRouteParam(config: Config): { location: Location; selected: string | undefined } {
 	const trackingConfig = { ...defaultConfig, ...config };
 
 	const location = useLocation();

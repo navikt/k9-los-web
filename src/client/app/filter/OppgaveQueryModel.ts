@@ -8,7 +8,18 @@ import {
 	isIdentifiedQuery,
 	tilIdentifiedQuery,
 } from './filterFrontendTypes';
-import { EnkelOrderFelt, EnkelSelectFelt, FeltverdiOppgavefilter, OppgaveQuery, Oppgavefilter, AggregertFunksjon, AggregertSelectFelt, AggregertOrderFelt, SelectFelt, OrderFelt } from './filterTsTypes';
+import {
+	AggregertFunksjon,
+	AggregertOrderFelt,
+	AggregertSelectFelt,
+	EnkelOrderFelt,
+	EnkelSelectFelt,
+	FeltverdiOppgavefilter,
+	OppgaveQuery,
+	Oppgavefilter,
+	OrderFelt,
+	SelectFelt,
+} from './filterTsTypes';
 
 const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 

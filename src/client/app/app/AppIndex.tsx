@@ -33,7 +33,7 @@ const AppIndex: FunctionComponent = () => {
 				});
 			}
 		}
-	}, [window.nais?.app, window.nais?.telemetryCollectorURL]);
+	}, []);
 
 	const timeout = 1000 * 60 * 58;
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { PencilIcon } from '@navikt/aksel-icons';
 import { Alert, Button, ErrorMessage, Heading, Label, Modal, TextField, Textarea } from '@navikt/ds-react';
@@ -68,9 +68,17 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 		setVisSuksess(true);
 	});
 
+	// defaultValues bygges på nytt ved hver render. Lå den i dependencies ville reset()
+	// kjørt kontinuerlig og nullstilt skjemaet mens avdelingslederen skriver. Vi leser derfor
+	// siste verdi via ref, slik at reset kun skjer ved åpning/lukking og ny køversjon.
+	const defaultValuesRef = useRef(defaultValues);
 	useEffect(() => {
-		formMethods.reset(defaultValues);
-	}, [ekspandert, versjon]);
+		defaultValuesRef.current = defaultValues;
+	});
+
+	useEffect(() => {
+		formMethods.reset(defaultValuesRef.current);
+	}, [ekspandert, versjon, formMethods]);
 
 	useEffect(() => {
 		if (visSuksess) {

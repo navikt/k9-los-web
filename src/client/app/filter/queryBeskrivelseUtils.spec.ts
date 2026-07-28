@@ -2,8 +2,6 @@ import dayjs from 'dayjs';
 import durationPlugin from 'dayjs/plugin/duration';
 import {
 	AggregertFunksjon,
-	EnkelOrderFelt,
-	EnkelSelectFelt,
 	FeltverdiOppgavefilter,
 	OppgaveQuery,
 	Oppgavefelt,

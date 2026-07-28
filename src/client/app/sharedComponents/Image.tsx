@@ -40,14 +40,17 @@ const Image: FunctionComponent<OwnProps> = ({
 		setHoovering(false);
 	}, []);
 
-	const onKeyDownFn = useCallback((e) => {
-		if (e.key === 'Enter' || e.key === ' ') {
-			if (onKeyDown) {
-				onKeyDown(e);
+	const onKeyDownFn = useCallback(
+		(e) => {
+			if (e.key === 'Enter' || e.key === ' ') {
+				if (onKeyDown) {
+					onKeyDown(e);
+				}
+				e.preventDefault();
 			}
-			e.preventDefault();
-		}
-	}, []);
+		},
+		[onKeyDown],
+	);
 
 	const imgSource = srcHover && isHovering ? srcHover : src;
 

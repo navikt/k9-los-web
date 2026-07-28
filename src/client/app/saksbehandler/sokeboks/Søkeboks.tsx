@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSearchParams } from 'react-router';
 import { useSøkOppgaveV3 } from 'api/queries/saksbehandlerQueries';
+import { useMount } from 'hooks/UseMount';
 import { SøkForm } from 'saksbehandler/sokeboks/SøkForm';
 import { SøkResultat } from 'saksbehandler/sokeboks/SøkResultat';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
@@ -13,11 +14,13 @@ export function Søkeboks() {
 	const gyldigSøkeordFraUrl = søkeordFraUrl && saksnummerEllerJournalpostId.test(søkeordFraUrl) ? søkeordFraUrl : null;
 	const { mutate: utførSøk, isPending, data, reset: nullstillSøk } = useSøkOppgaveV3();
 
-	useEffect(() => {
+	// Søker kun på søkeordet som lå i URL-en ved førstegangsvisning. Senere søk
+	// styres av SøkForm, så effekten skal ikke fyre på nytt ved URL-endringer.
+	useMount(() => {
 		if (gyldigSøkeordFraUrl) {
 			utførSøk({ søkeord: gyldigSøkeordFraUrl });
 		}
-	}, []);
+	});
 
 	return (
 		<>

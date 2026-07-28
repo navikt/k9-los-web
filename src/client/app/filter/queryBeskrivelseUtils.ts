@@ -2,11 +2,7 @@ import dayjs from 'dayjs';
 import 'utils/dateUtils';
 import {
 	AGGREGERT_FUNKSJON_VISNINGSNAVN,
-	AggregertOrderFelt,
-	AggregertSelectFelt,
 	CombineOppgavefilter,
-	EnkelOrderFelt,
-	EnkelSelectFelt,
 	FeltverdiOppgavefilter,
 	OppgaveQuery,
 	Oppgavefelt,

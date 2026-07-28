@@ -34,7 +34,7 @@ const ReactECharts: FunctionComponent<OwnProps> = ({ option, style, height }) =>
 			const chart = getInstanceByDom(chartRef.current);
 			chart.setOption(option, true);
 		}
-	}, [chartRef.current, option]);
+	}, [option]);
 
 	return <div ref={chartRef} style={{ width: 'auto', height, ...style }} />;
 };
