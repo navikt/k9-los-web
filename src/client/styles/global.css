@@ -1,6 +1,26 @@
 @import 'tailwindcss';
+@import '@navikt/ds-tailwind/v4';
 @import '@navikt/ds-css' layer(components);
-@config '../../../tailwind.config.cjs';
+
+/*
+ * @navikt/ds-tailwind/v4 legger skriftstørrelsene under --font-size-*, men
+ * Tailwind 4 genererer text-*-utilities fra --text-*-navnerommet. Uten denne
+ * mappingen finnes ikke text-ax-small, text-ax-medium osv. i det hele tatt.
+ * v3-presetet (tailwind.config.cjs) registrerte de samme ti nøklene, så dette
+ * gjenoppretter paritet. Kan fjernes hvis Aksel retter navnerommet i v4-CSS-en.
+ */
+@theme {
+	--text-ax-heading-2xlarge: var(--ax-font-size-heading-2xlarge);
+	--text-ax-heading-xlarge: var(--ax-font-size-heading-xlarge);
+	--text-ax-heading-large: var(--ax-font-size-heading-large);
+	--text-ax-heading-medium: var(--ax-font-size-heading-medium);
+	--text-ax-heading-small: var(--ax-font-size-heading-small);
+	--text-ax-heading-xsmall: var(--ax-font-size-heading-xsmall);
+	--text-ax-xlarge: var(--ax-font-size-xlarge);
+	--text-ax-large: var(--ax-font-size-large);
+	--text-ax-medium: var(--ax-font-size-medium);
+	--text-ax-small: var(--ax-font-size-small);
+}
 
 body {
 	background-color: var(--ax-bg-sunken);
