@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 import { init } from '@sentry/browser';
-import { breadcrumbsIntegration, reactRouterV6BrowserTracingIntegration } from '@sentry/react';
+import { breadcrumbsIntegration, reactRouterV7BrowserTracingIntegration } from '@sentry/react';
 import AppContainer from 'app/AppContainer';
 
 const environment = window.location.hostname;
@@ -20,7 +20,7 @@ if (environment.includes('nav.no')) {
 		tracesSampleRate: 1.0,
 		integrations: [
 			breadcrumbsIntegration({ console: false }),
-			reactRouterV6BrowserTracingIntegration({
+			reactRouterV7BrowserTracingIntegration({
 				useEffect: React.useEffect,
 				useLocation,
 				useNavigationType,

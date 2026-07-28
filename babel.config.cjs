@@ -13,5 +13,8 @@ module.exports = function (api) {
       ],
       "@babel/typescript",
     ],
+    // Denne konfigurasjonen brukes kun av babel-jest – Vite bruker @vitejs/plugin-react,
+    // som ikke leser babel.config.
+    plugins: [require.resolve("./setup/babelPluginImportMeta.cjs")],
   };
 };

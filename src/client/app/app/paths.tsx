@@ -1,20 +1,20 @@
-import { formatQueryString, parseQueryString } from 'utils/urlUtils';
-import { Location } from './locationTsType';
+import { Location, To } from 'react-router';
 
-const emptyQueryString = (queryString) => queryString === '?' || !queryString;
+/**
+ * Lager en lenke til et avdelingslederpanel.
+ *
+ * Øvrige query-parametere beholdes, slik at f.eks. `?sok=` overlever at man
+ * bytter fane.
+ */
+export const getPanelLocationCreator =
+	(location: Location) =>
+	(avdelingslederPanel: string): To => {
+		const søkeparametere = new URLSearchParams(location.search);
+		søkeparametere.set('fane', avdelingslederPanel);
 
-const updateQueryParams = (queryString, nextParams) => {
-	const prevParams = emptyQueryString(queryString) ? {} : parseQueryString(queryString);
-	return formatQueryString({
-		...prevParams,
-		...nextParams,
-	});
-};
-
-const getLocationWithQueryParams = (location, queryParams) => ({
-	...location,
-	search: updateQueryParams(location.search, queryParams),
-});
-
-export const getPanelLocationCreator = (location: Location) => (avdelingslederPanel: string) =>
-	getLocationWithQueryParams(location, { fane: avdelingslederPanel });
+		return {
+			pathname: location.pathname,
+			hash: location.hash,
+			search: `?${søkeparametere}`,
+		};
+	};

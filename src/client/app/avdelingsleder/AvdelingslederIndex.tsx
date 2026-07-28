@@ -1,10 +1,8 @@
 import React, { FunctionComponent } from 'react';
-import { NavLink } from 'react-router';
+import { NavLink, To, useLocation, useSearchParams } from 'react-router';
 import classnames from 'classnames/bind';
-import { Location } from 'history';
 import { BarChartIcon, CircleSlashIcon, FileSearchIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { Box, Heading } from '@navikt/ds-react';
-import useTrackRouteParam from 'app/data/trackRouteParam';
 import { getPanelLocationCreator } from 'app/paths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import { LagredeSøk } from 'avdelingsleder/lagredeSøk/LagredeSøk';
@@ -15,7 +13,6 @@ import { StatusFordeling } from 'avdelingsleder/statusfordeling/StatusFordeling'
 import Image from 'sharedComponents/Image';
 import LoadingPanel from 'sharedComponents/LoadingPanel';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { parseQueryString } from 'utils/urlUtils';
 import FeatureSwitch from '../FeatureSwitch';
 import styles from './avdelingslederIndex.module.css';
 import AvdelingslederPanels from './avdelingslederPanels';
@@ -83,7 +80,7 @@ type TabProps = {
 const getTab = (
 	avdelingslederPanel: string,
 	activeAvdelingslederPanel: string,
-	getAvdelingslederPanelLocation: (panel: string) => string,
+	getAvdelingslederPanelLocation: (panel: string) => To,
 ): TabProps => {
 	const isActive = avdelingslederPanel === activeAvdelingslederPanel;
 	const icon = isActive ? tabStyle[avdelingslederPanel][0] : tabStyle[avdelingslederPanel][1];
@@ -111,20 +108,15 @@ const getTab = (
  * AvdelingslederIndex
  */
 export const AvdelingslederIndex: FunctionComponent = () => {
-	const { selected: activeAvdelingslederPanelTemp, location } = useTrackRouteParam({
-		paramName: 'fane',
-		isQueryParam: true,
-	});
-
-	const getPanelFromUrlOrDefault = (loc: Location) => {
-		const panelFromUrl = parseQueryString(loc.search);
-		return panelFromUrl.avdelingsleder ? panelFromUrl.avdelingsleder : AvdelingslederPanels.BEHANDLINGSKOER_V3;
-	};
+	const location = useLocation();
+	const [søkeparametere] = useSearchParams();
 
 	const { data: innnloggetSaksbehandler } = useInnloggetSaksbehandler();
 
 	const getAvdelingslederPanelLocation = getPanelLocationCreator(location);
-	const activeAvdelingslederPanel = activeAvdelingslederPanelTemp || getPanelFromUrlOrDefault(location);
+	// `avdelingsleder` er en eldre parameter som beholdes for innkommende lenker.
+	const activeAvdelingslederPanel =
+		søkeparametere.get('fane') || søkeparametere.get('avdelingsleder') || AvdelingslederPanels.BEHANDLINGSKOER_V3;
 
 	if (!innnloggetSaksbehandler.kanOppgavestyre) {
 		return <IkkeTilgang />;
