@@ -11,7 +11,8 @@ const saksnummerEllerJournalpostId = /^(?:\w{5}|\w{7}|\d{9})$/;
 export function Søkeboks() {
 	const [searchParams] = useSearchParams();
 	const søkeordFraUrl = searchParams.get('sok');
-	const gyldigSøkeordFraUrl = søkeordFraUrl && saksnummerEllerJournalpostId.test(søkeordFraUrl) ? søkeordFraUrl : null;
+	const gyldigSøkeordFraUrl =
+		søkeordFraUrl && saksnummerEllerJournalpostId.test(søkeordFraUrl) ? søkeordFraUrl : undefined;
 	const { mutate: utførSøk, isPending, data, reset: nullstillSøk } = useSøkOppgaveV3();
 
 	// Søker kun på søkeordet som lå i URL-en ved førstegangsvisning. Senere søk
