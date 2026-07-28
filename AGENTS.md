@@ -15,17 +15,18 @@ Appen bruker Aksels designsystem https://aksel.nav.no/. Foretrekk komponenter he
 
 # Testing
 
-- Test framework: Jest
-- Test environment: `jest-fixed-jsdom`
-- Test pattern: `**/?(*.)+(spec).+(js|jsx|ts|tsx)`
+- Test framework: Vitest (konfigurert i `test`-blokken i `vite.config.ts`)
+- Test environment: `jsdom`
+- Test pattern: `src/**/*.spec.{js,jsx,ts,tsx}`
 - Setup: `setup/setup.js`, `setup/setup-test-env.ts`
+- `describe`/`it`/`expect` er globale (`globals: true`). `vi` må importeres fra `vitest`.
 
 Kjøre tester:
 
 ```bash
-pnpm test                                          # alle tester
-pnpm jest --colors src/.../dateUtils.spec.ts       # spesifikk fil
-pnpm jest --colors dateUtils                       # pattern
-pnpm jest --colors --watch                         # watch
-pnpm jest --colors --coverage                      # coverage
+pnpm test                                    # alle tester
+pnpm vitest run src/.../dateUtils.spec.ts    # spesifikk fil
+pnpm vitest run dateUtils                    # pattern
+pnpm test:watch                              # watch
+pnpm test:coverage                           # coverage
 ```

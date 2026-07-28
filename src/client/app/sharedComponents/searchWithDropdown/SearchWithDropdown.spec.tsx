@@ -13,7 +13,7 @@ const suggestions = [
 const defaultProps: SearchWithDropdownProps = {
 	label: 'Search label',
 	suggestions,
-	updateSelection: jest.fn(),
+	updateSelection: vi.fn(),
 	selectedValues: [],
 };
 

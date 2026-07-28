@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render as rtlRender } from '@testing-library/react';
-import { config } from 'utils/reactQueryConfig';
+import { config } from '../../src/client/app/utils/reactQueryConfig';
 
 export const renderWithAllProviders = (ui, { ...renderOptions } = {}) => {
 	const queryClient = new QueryClient(config);
