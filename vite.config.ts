@@ -48,7 +48,7 @@ export default defineConfig({
 		},
 		setupFiles: ['./setup/setup.js', './setup/setup-test-env.ts'],
 		include: ['src/**/*.spec.{js,jsx,ts,tsx}'],
-		exclude: ['**/node_modules/**', '**/dist/**', 'src/client/tests/**'],
+		exclude: ['**/node_modules/**', '**/dist/**'],
 		server: {
 			deps: {
 				// @navikt/endringslogg publiserer ESM med en extensionless relativ import
