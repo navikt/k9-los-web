@@ -1,9 +1,9 @@
+import { Location, To } from 'react-router';
 import { formatQueryString, parseQueryString } from 'utils/urlUtils';
-import { Location } from './locationTsType';
 
-const emptyQueryString = (queryString) => queryString === '?' || !queryString;
+const emptyQueryString = (queryString: string) => queryString === '?' || !queryString;
 
-const updateQueryParams = (queryString, nextParams) => {
+const updateQueryParams = (queryString: string, nextParams: Record<string, string>) => {
 	const prevParams = emptyQueryString(queryString) ? {} : parseQueryString(queryString);
 	return formatQueryString({
 		...prevParams,
@@ -11,10 +11,10 @@ const updateQueryParams = (queryString, nextParams) => {
 	});
 };
 
-const getLocationWithQueryParams = (location, queryParams) => ({
-	...location,
-	search: updateQueryParams(location.search, queryParams),
-});
-
-export const getPanelLocationCreator = (location: Location) => (avdelingslederPanel: string) =>
-	getLocationWithQueryParams(location, { fane: avdelingslederPanel });
+export const getPanelLocationCreator =
+	(location: Location) =>
+	(avdelingslederPanel: string): To => ({
+		pathname: location.pathname,
+		hash: location.hash,
+		search: updateQueryParams(location.search, { fane: avdelingslederPanel }),
+	});

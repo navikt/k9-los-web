@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
-import { NavLink } from 'react-router';
+import { Location, NavLink, To } from 'react-router';
 import classnames from 'classnames/bind';
-import { Location } from 'history';
 import { BarChartIcon, CircleSlashIcon, FileSearchIcon, PersonGroupIcon, TasklistIcon } from '@navikt/aksel-icons';
 import { Box, Heading } from '@navikt/ds-react';
 import useTrackRouteParam from 'app/data/trackRouteParam';
@@ -83,7 +82,7 @@ type TabProps = {
 const getTab = (
 	avdelingslederPanel: string,
 	activeAvdelingslederPanel: string,
-	getAvdelingslederPanelLocation: (panel: string) => string,
+	getAvdelingslederPanelLocation: (panel: string) => To,
 ): TabProps => {
 	const isActive = avdelingslederPanel === activeAvdelingslederPanel;
 	const icon = isActive ? tabStyle[avdelingslederPanel][0] : tabStyle[avdelingslederPanel][1];

@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useMemo } from 'react';
 import { Route, Routes } from 'react-router';
-import { withSentryReactRouterV6Routing } from '@sentry/react';
+import { withSentryReactRouterV7Routing } from '@sentry/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import AppContext from 'app/AppContext';
 import apiPaths from 'api/apiPaths';
@@ -17,7 +17,7 @@ import MissingPage from './MissingPage';
  * Presentasjonskomponent. Wrapper for sideinnholdet som vises under header.
  */
 
-const SentryRoutes = withSentryReactRouterV6Routing(Routes);
+const SentryRoutes = withSentryReactRouterV7Routing(Routes);
 const Home: FunctionComponent = () => {
 	const { data, isSuccess: harHentetFelter } = useQuery<{ felter: Oppgavefelt[] }>({
 		queryKey: [apiPaths.hentOppgaveFelter],

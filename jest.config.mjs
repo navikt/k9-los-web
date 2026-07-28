@@ -21,7 +21,11 @@ export default {
 				'^.+\\.(ts|tsx|js|jsx|mjs)?$': 'babel-jest',
 				'^.+\\.css$': 'jest-transform-stub',
 			},
-			transformIgnorePatterns: ['<rootDir>.*(node_modules)(?!.*(nav|uuid|@portabletext|until-async|rettime|msw|@open-draft).*).*$'],
+			// react-router 8 (og dens dependency cookie-es) er ESM-only – ingen CJS-build.
+			// De må derfor transpileres av babel-jest i stedet for å ignoreres.
+			transformIgnorePatterns: [
+				'<rootDir>.*(node_modules)(?!.*(nav|uuid|@portabletext|until-async|rettime|msw|@open-draft|react-router|cookie-es).*).*$',
+			],
 			// ignore tests in tests folder
 			moduleDirectories: ['node_modules', 'src/client', 'src/client/app'],
 		},

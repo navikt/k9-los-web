@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Params, useLocation, useParams } from 'react-router';
-import { Location } from 'history';
+import { Location, Params, useLocation, useParams } from 'react-router';
 import { parseQueryString } from 'utils/urlUtils';
 
 const defaultConfig = {
