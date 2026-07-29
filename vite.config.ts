@@ -40,26 +40,8 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: 'jsdom',
-		// msw krever at pakkens «browser»-eksport ikke velges under jsdom.
-		environmentOptions: {
-			jsdom: {
-				customExportConditions: [''],
-			},
-		},
-		setupFiles: ['./setup/setup.js', './setup/setup-test-env.ts'],
+		setupFiles: ['./setup/setup-test-env.ts'],
 		include: ['src/**/*.spec.{js,jsx,ts,tsx}', 'setup/**/*.spec.ts'],
-		exclude: ['**/node_modules/**', '**/dist/**'],
-		server: {
-			deps: {
-				// @navikt/endringslogg publiserer ESM med en extensionless relativ import
-				// (./endringslogg-container) som Node ikke kan resolve, og må derfor
-				// bundles av Vite. Under Jest ble den transpilert til CJS, som tillater det.
-				//
-				// Bieffekt: pakkens sourcemaps peker på kildefiler som ikke er publisert,
-				// så Vite logger «points to missing source files» per modul. Ufarlig,
-				// og kan fjernes når pakken fikser publiseringen.
-				inline: ['@navikt/endringslogg'],
-			},
-		},
+		exclude: ['**/node_modules/**', '**/dist/**']
 	},
 });

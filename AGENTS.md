@@ -7,7 +7,7 @@ Dette prosjektet bruker **pnpm**. Bruk alltid `pnpm` – aldri `npm` eller `yarn
 - Fjerne pakke: `pnpm remove <pakke>`
 - Kjøre script: `pnpm <script>` (f.eks. `pnpm test`, `pnpm build`)
 
-Ikke kjør `npm install`/`yarn install` eller commit `package-lock.json`/`yarn.lock` – kun `pnpm-lock.yaml` skal være i repoet.
+Kun `pnpm-lock.yaml` skal være i repoet.
 
 # Designsystem
 
@@ -18,7 +18,7 @@ Appen bruker Aksels designsystem https://aksel.nav.no/. Foretrekk komponenter he
 - Test framework: Vitest (konfigurert i `test`-blokken i `vite.config.ts`)
 - Test environment: `jsdom`
 - Test pattern: `src/**/*.spec.{js,jsx,ts,tsx}`
-- Setup: `setup/setup.js`, `setup/setup-test-env.ts`
+- Setup: `setup/setup-test-env.ts`
 - `describe`/`it`/`expect` er globale (`globals: true`). `vi` må importeres fra `vitest`.
 
 Kjøre tester:
