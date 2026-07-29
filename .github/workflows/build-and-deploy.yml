@@ -71,7 +71,7 @@ jobs:
           team: k9saksbehandling
 
       - name: Deploy k9-los-web til dev
-        uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb # v2
+        uses: nais/deploy/actions/deploy@fc3eae3edebabdf67f7592102ae16176d5ba3b5f # v2
         env:
           PRINT_PAYLOAD: true
           CLUSTER: dev-gcp
@@ -138,7 +138,7 @@ jobs:
       - name: Hente kode
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Deploy k9-los-web til prod
-        uses: nais/deploy/actions/deploy@2d18f050f07b6a007864c6a57070ed915d571beb # v2
+        uses: nais/deploy/actions/deploy@fc3eae3edebabdf67f7592102ae16176d5ba3b5f # v2
         env:
           PRINT_PAYLOAD: true
           CLUSTER: prod-gcp
