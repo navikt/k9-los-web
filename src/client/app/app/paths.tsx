@@ -1,4 +1,4 @@
-import { Location, To } from 'react-router';
+import type { Location, To } from 'react-router';
 
 /**
  * Lager en lenke til et avdelingslederpanel.

@@ -1,4 +1,11 @@
-import React, { FunctionComponent, KeyboardEvent, MouseEvent, ReactNode, useCallback, useState } from 'react';
+import {
+	type FunctionComponent,
+	type KeyboardEvent,
+	type MouseEvent,
+	type ReactNode,
+	useCallback,
+	useState,
+} from 'react';
 import Tooltip from './Tooltip';
 
 interface OwnProps {
@@ -55,7 +62,7 @@ const Image: FunctionComponent<OwnProps> = ({
 	const imgSource = srcHover && isHovering ? srcHover : src;
 
 	const image = (
-		<img // eslint-disable-line jsx-a11y/no-noninteractive-element-interactions
+		<img
 			className={className}
 			src={imgSource}
 			alt={alt}

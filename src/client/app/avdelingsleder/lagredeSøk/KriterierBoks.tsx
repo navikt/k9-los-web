@@ -1,8 +1,8 @@
+import ModalButton from 'sharedComponents/ModalButton';
 import { FilterIcon, PencilIcon } from '@navikt/aksel-icons';
 import { Button } from '@navikt/ds-react';
-import { LagretSøk } from 'api/queries/avdelingslederQueries';
-import { FilterBeskrivelse as FilterBeskrivelseType } from 'filter/queryBeskrivelseUtils';
-import ModalButton from 'sharedComponents/ModalButton';
+import type { LagretSøk } from 'api/queries/avdelingslederQueries';
+import type { FilterBeskrivelse as FilterBeskrivelseType } from 'filter/queryBeskrivelseUtils';
 import { EndreKriterierLagretSøkModal } from './EndreKriterierLagretSøkModal';
 import { QueryBoksStyle } from './QueryBoksStyle';
 

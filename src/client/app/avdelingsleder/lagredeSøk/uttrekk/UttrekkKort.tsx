@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
+import ModalButton from 'sharedComponents/ModalButton';
 import {
 	CalculatorIcon,
 	ClockDashedIcon,
@@ -13,17 +12,19 @@ import {
 import { BodyShort, Button, Loader, Modal } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import {
-	LagretSøk,
-	Uttrekk,
+	type LagretSøk,
+	type Uttrekk,
 	UttrekkStatus,
 	useHentUttrekkResultat,
 	useSlettUttrekk,
 } from 'api/queries/avdelingslederQueries';
 import { UttrekkResultatDialog } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkResultatDialog';
+import { AggregertFunksjon, type OppgaveQuery } from 'filter/filterTsTypes';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
-import { AggregertFunksjon, OppgaveQuery } from 'filter/filterTsTypes';
 import { useInterval } from 'hooks/UseInterval';
-import ModalButton from 'sharedComponents/ModalButton';
+import _ from 'lodash';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { assertNever } from 'utils/assert-never';
 import { calculateDuration, dateTimeSecondsFormat } from 'utils/dateUtils';
 
@@ -115,8 +116,9 @@ export function UttrekkKort({ uttrekk, lagretSøk }: { uttrekk: Uttrekk; lagretS
 
 	const { mutate: slettUttrekk } = useSlettUttrekk();
 
-	// Oppdater kjøretid ved statusendring og hvert sekund hvis uttrekket kjører
-	useEffect(oppdaterKjøretid, [uttrekk.status, uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt]);
+	// Oppdater kjøretid ved endring i tidspunktene, og hvert sekund hvis uttrekket kjører.
+	// uttrekk.status trengs ikke som trigger: statusendring til FULLFØRT/FEILET setter fullførtTidspunkt.
+	useEffect(oppdaterKjøretid, [uttrekk.startetTidspunkt, uttrekk.fullførtTidspunkt]);
 	useInterval(oppdaterKjøretid, uttrekk.status === UttrekkStatus.KJØRER ? 1000 : null);
 
 	const kriterierErForskjellige = !_.isEqual(uttrekk.query.filtere, lagretSøk?.query.filtere);

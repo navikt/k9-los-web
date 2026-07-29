@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Dialog } from '@navikt/ds-react';
-import { LagretSøk, useSlettLagretSøk, useSlettUttrekkForLagretSøk } from 'api/queries/avdelingslederQueries';
+import { type LagretSøk, useSlettLagretSøk, useSlettUttrekkForLagretSøk } from 'api/queries/avdelingslederQueries';
+import { useState } from 'react';
 
 interface SlettLagretSøkDialogProps {
 	lagretSøk: LagretSøk;

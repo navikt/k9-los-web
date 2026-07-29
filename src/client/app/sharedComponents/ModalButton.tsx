@@ -1,4 +1,5 @@
-import React, { FunctionComponent, ReactNode, useState } from 'react';
+import type React from 'react';
+import { type FunctionComponent, type ReactNode, useState } from 'react';
 
 export interface RenderModalProps {
 	open: boolean;

@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import IkkeTilgang from 'avdelingsleder/components/IkkeTilgang';
+import type { FunctionComponent } from 'react';
 import DriftsmeldingerPanel from './driftsmeldinger/DriftsmeldingerPanel';
 
 /**

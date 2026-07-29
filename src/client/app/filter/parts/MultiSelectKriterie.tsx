@@ -1,10 +1,10 @@
-import React, { useContext, useMemo, useState } from 'react';
 import { UNSAFE_Combobox } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
-import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { Oppgavefelt, Synlighet } from 'filter/filterTsTypes';
+import type { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
+import { type Oppgavefelt, Synlighet } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle, sorterVerdiforklaringer } from 'filter/utils';
+import { useContext, useMemo, useState } from 'react';
 
 type ComboboxOption = {
 	label: string;

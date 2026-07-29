@@ -1,6 +1,6 @@
-import NavAnsatt from 'app/navAnsattTsType';
-import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type NavAnsatt from 'app/navAnsattTsType';
+import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
+import type { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 import { dateFormat, dateTimeFormat, timeFormat } from 'utils/dateUtils';
 
 export type ModalInnholdRetur = {

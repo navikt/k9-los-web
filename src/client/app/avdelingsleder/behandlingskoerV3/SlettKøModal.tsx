@@ -1,4 +1,3 @@
-import React from 'react';
 import { BodyShort, Button, ErrorMessage, Heading, Modal } from '@navikt/ds-react';
 import { useSlettKøMutation } from 'api/queries/avdelingslederQueries';
 

@@ -1,6 +1,5 @@
-import React from 'react';
-import FerdigstiltePerEnhet from 'avdelingsleder/nokkeltall/ferdigstilte-per-enhet/FerdigstiltePerEnhet';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import FerdigstiltePerEnhet from 'avdelingsleder/nokkeltall/ferdigstilte-per-enhet/FerdigstiltePerEnhet';
 import DagensTall from './dagens-tall/DagensTall';
 
 function NokkeltallIndex() {

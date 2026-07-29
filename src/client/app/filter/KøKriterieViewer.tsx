@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
 import { Heading } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
+import React, { useMemo } from 'react';
 import { FilterContext } from './FilterContext';
+import type { OppgaveQuery } from './filterTsTypes';
 import OppgaveQueryModel from './OppgaveQueryModel';
-import { OppgaveQuery } from './filterTsTypes';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
 
 interface OwnProps {

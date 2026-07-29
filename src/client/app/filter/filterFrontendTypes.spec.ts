@@ -7,13 +7,13 @@ import {
 } from './filterFrontendTypes';
 import {
 	AggregertFunksjon,
-	AggregertOrderFelt,
-	AggregertSelectFelt,
-	CombineOppgavefilter,
-	EnkelOrderFelt,
-	EnkelSelectFelt,
-	FeltverdiOppgavefilter,
-	OppgaveQuery,
+	type AggregertOrderFelt,
+	type AggregertSelectFelt,
+	type CombineOppgavefilter,
+	type EnkelOrderFelt,
+	type EnkelSelectFelt,
+	type FeltverdiOppgavefilter,
+	type OppgaveQuery,
 } from './filterTsTypes';
 
 const feltverdiFilter: FeltverdiOppgavefilter = {
@@ -93,11 +93,11 @@ describe('filterFrontendTypes konvertering', () => {
 			identified.filtere.forEach((f) => {
 				nodeIds.push(f._nodeId);
 				if (f.type === 'combine') {
-					f.filtere.forEach((nested) => nodeIds.push(nested._nodeId));
+					nodeIds.push(...f.filtere.map((nested) => nested._nodeId));
 				}
 			});
-			identified.select.forEach((s) => nodeIds.push(s._nodeId));
-			identified.order.forEach((o) => nodeIds.push(o._nodeId));
+			nodeIds.push(...identified.select.map((s) => s._nodeId));
+			nodeIds.push(...identified.order.map((o) => o._nodeId));
 
 			const unique = new Set(nodeIds);
 			expect(unique.size).toBe(nodeIds.length);
@@ -203,8 +203,8 @@ describe('filterFrontendTypes konvertering', () => {
 			const identified = tilIdentifiedQuery(queryMedAggregert);
 
 			const nodeIds: string[] = [identified._nodeId];
-			identified.select.forEach((s) => nodeIds.push(s._nodeId));
-			identified.order.forEach((o) => nodeIds.push(o._nodeId));
+			nodeIds.push(...identified.select.map((s) => s._nodeId));
+			nodeIds.push(...identified.order.map((o) => o._nodeId));
 
 			const unique = new Set(nodeIds);
 			expect(unique.size).toBe(nodeIds.length);

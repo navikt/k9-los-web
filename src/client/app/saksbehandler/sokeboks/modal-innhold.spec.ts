@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
-import NavAnsatt from 'app/navAnsattTsType';
-import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
+import type NavAnsatt from 'app/navAnsattTsType';
+import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { modalInnhold as modalInnholdOriginal } from 'saksbehandler/sokeboks/modal-innhold';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import { describe, expect, it } from 'vitest';
 
 const modalInnhold = (
 	oppgave: Partial<SøkeboksOppgaveDto>,

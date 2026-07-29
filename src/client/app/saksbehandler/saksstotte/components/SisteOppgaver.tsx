@@ -1,6 +1,6 @@
+import Repeat from 'sharedComponents/Repeat';
 import { Heading, Link, Skeleton } from '@navikt/ds-react';
 import { useHentSisteOppgaver } from 'api/queries/saksbehandlerQueries';
-import Repeat from 'sharedComponents/Repeat';
 
 export default function SisteOppgaver() {
 	const { data, isSuccess, isLoading, isError } = useHentSisteOppgaver();

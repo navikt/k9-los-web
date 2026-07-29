@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
 import { SparklesFillIcon, SparklesIcon } from '@navikt/aksel-icons';
 import { Button, HStack, Popover, Switch } from '@navikt/ds-react';
+import type React from 'react';
+import { useRef, useState } from 'react';
 
 export default function FeatureSwitchSparkles(props: {
 	turnedOn: React.ReactNode;

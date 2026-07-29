@@ -1,18 +1,22 @@
-import { FunctionComponent, useContext, useState } from 'react';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ChevronDownIcon, ChevronRightIcon, ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Label, Modal } from '@navikt/ds-react';
 import { usePlukkOppgaveMutation, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
-import { BehandlingskoerContext } from 'saksbehandler/BehandlingskoerContext';
+import { type FunctionComponent, useState } from 'react';
 import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/oppgavetabeller/ReserverteOppgaverTabell';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import type { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import { getKoId } from '../utils';
 import { OppgavekoVelgerForm } from './OppgavekoVelgerForm';
 import styles from './oppgavekoPanel.module.css';
 import { OppgavetabellV3 } from './oppgavetabeller/OppgavetabellV3';
 
-const OppgavekoPanel: FunctionComponent = () => {
+interface OwnProps {
+	oppgavekoer: OppgavekøV3MedNavn[];
+}
+
+const OppgavekoPanel: FunctionComponent<OwnProps> = ({ oppgavekoer }) => {
 	const [visBehandlingerIKo, setVisBehandlingerIKo] = useState<boolean>(false);
-	const { valgtOppgavekoId, oppgavekoer } = useContext(BehandlingskoerContext);
+	const [valgtOppgavekoId, setValgtOppgavekoId] = useState('');
 	const [visFinnesIngenBehandlingerIKoModal, setVisFinnesIngenBehandlingerIKoModal] = useState<boolean>(false);
 	const { mutateAsync: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 	const { mutate, isPending: loadingOppgaveFraKo } = usePlukkOppgaveMutation((reservasjoner) => {
@@ -36,7 +40,13 @@ const OppgavekoPanel: FunctionComponent = () => {
 		<div className={styles.container}>
 			<Heading size="small">Oppgavekøer</Heading>
 			<VerticalSpacer sixteenPx />
-			<OppgavekoVelgerForm plukkNyOppgave={plukkNyOppgave} loadingOppgaveFraKo={loadingOppgaveFraKo} />
+			<OppgavekoVelgerForm
+				oppgavekoer={oppgavekoer}
+				valgtOppgavekoId={valgtOppgavekoId}
+				setValgtOppgavekoId={setValgtOppgavekoId}
+				plukkNyOppgave={plukkNyOppgave}
+				loadingOppgaveFraKo={loadingOppgaveFraKo}
+			/>
 			<VerticalSpacer twentyPx />
 			<div className={styles.behandlingskoerContainer}>
 				<ReserverteOppgaverTabell />
@@ -44,7 +54,7 @@ const OppgavekoPanel: FunctionComponent = () => {
 			<VerticalSpacer eightPx />
 			{visFinnesIngenBehandlingerIKoModal && (
 				<Modal
-					className="min-w-[500px]"
+					className="min-w-125"
 					open
 					onClose={lukkFinnesIngenBehandlingerIKoModal}
 					header={{ heading: 'Ingen flere ureserverte oppgaver i køen', icon: <ExclamationmarkTriangleIcon /> }}

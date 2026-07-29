@@ -1,8 +1,9 @@
-import React, { useContext, useMemo } from 'react';
 import { Select } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import { addSortering, resetSortering } from 'filter/queryUtils';
-import { SORTERING_ALTERNATIVER, mapKodeTilSorteringParams, mapSorteringParamsTilKode } from './sorteringUtils';
+import type React from 'react';
+import { useContext, useMemo } from 'react';
+import { mapKodeTilSorteringParams, mapSorteringParamsTilKode, SORTERING_ALTERNATIVER } from './sorteringUtils';
 
 const EnkelSortering = () => {
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);

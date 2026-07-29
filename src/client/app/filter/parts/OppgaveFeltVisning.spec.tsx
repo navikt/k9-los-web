@@ -1,7 +1,6 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { type Oppgavefelt, type Oppgavefeltverdi, OppgavefilterKode, Synlighet, TolkesSom } from 'filter/filterTsTypes';
 import { describe, expect, it } from 'vitest';
-import { Oppgavefelt, Oppgavefeltverdi, OppgavefilterKode, Synlighet, TolkesSom } from 'filter/filterTsTypes';
 import OppgaveFeltVisning from './OppgaveFeltVisning';
 
 const lagFelt = (overrides: Partial<Oppgavefelt> & Pick<Oppgavefelt, 'kode'>): Oppgavefelt => ({

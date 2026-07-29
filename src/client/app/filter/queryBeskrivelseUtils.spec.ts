@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import {
 	AggregertFunksjon,
-	FeltverdiOppgavefilter,
-	OppgaveQuery,
-	Oppgavefelt,
-	OrderFelt,
-	SelectFelt,
+	type FeltverdiOppgavefilter,
+	type Oppgavefelt,
+	type OppgaveQuery,
+	type OrderFelt,
+	type SelectFelt,
 	Synlighet,
 	TolkesSom,
 } from './filterTsTypes';
 import {
-	FilterBeskrivelse,
-	OrderBeskrivelse,
-	SelectBeskrivelse,
+	type FilterBeskrivelse,
+	type OrderBeskrivelse,
+	type SelectBeskrivelse,
 	utledFilterBeskrivelse,
 	utledOrderBeskrivelse,
 	utledSelectBeskrivelse,
@@ -179,7 +179,7 @@ describe('queryBeskrivelseUtils', () => {
 				{
 					type: 'feltverdi',
 					område: 'K9',
-					kode: 'hastesak' as any,
+					kode: 'hastesak',
 					operator: 'IN',
 					verdi: ['true'],
 				},

@@ -1,4 +1,4 @@
-import { Location } from 'react-router';
+import type { Location } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import { getPanelLocationCreator } from './paths';
 

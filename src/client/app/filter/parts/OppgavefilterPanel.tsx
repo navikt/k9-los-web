@@ -1,13 +1,13 @@
-import { useContext } from 'react';
 import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label, ToggleGroup } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
-import { QueryFunction, addFeltverdiFilter, addGruppeFilter, removeFilter, updateFilter } from 'filter/queryUtils';
+import { addFeltverdiFilter, addGruppeFilter, type QueryFunction, removeFilter, updateFilter } from 'filter/queryUtils';
+import { useContext } from 'react';
 import { assertNever } from 'utils/assert-never';
-import { IdentifiedCombineOppgavefilter, IdentifiedOppgavefilter } from '../filterFrontendTypes';
+import type { IdentifiedCombineOppgavefilter, IdentifiedOppgavefilter } from '../filterFrontendTypes';
+import * as filterGruppeStyles from './filterGruppe.module.css';
 import Kriterie from './Kriterie';
 import VelgKriterie from './VelgKriterie';
-import * as filterGruppeStyles from './filterGruppe.module.css';
 
 interface OppgavefilterPanelProps {
 	oppgavefilter: IdentifiedOppgavefilter;
@@ -17,7 +17,6 @@ interface OppgavefilterPanelProps {
 	readOnlyKoder?: string[];
 }
 
-/* eslint-disable @typescript-eslint/no-use-before-define */
 const OppgavefilterPanel = ({
 	oppgavefilter,
 	addGruppeOperation,

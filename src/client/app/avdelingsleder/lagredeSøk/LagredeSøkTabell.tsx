@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
-import { LagretSøk, Uttrekk } from 'api/queries/avdelingslederQueries';
+import type { LagretSøk, Uttrekk } from 'api/queries/avdelingslederQueries';
 import { LagretSøkKort } from 'avdelingsleder/lagredeSøk/LagretSøkKort';
+import { useState } from 'react';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 export function LagredeSøkTabell(props: {

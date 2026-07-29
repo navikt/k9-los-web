@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowsCirclepathIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Label, Skeleton } from '@navikt/ds-react';
-import AppContext from 'app/AppContext';
 import { useHentAntallOppgaver, useValiderOppgaveQuery } from 'api/queries/oppgaveQueries';
+import AppContext from 'app/AppContext';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { FilterContext } from './FilterContext';
+import { fjernNodeIdFraQuery, type WithNodeId } from './filterFrontendTypes';
+import type { OppgaveQuery } from './filterTsTypes';
 import styles from './KøKriterieEditorProvider.module.css';
 import OppgaveQueryModel from './OppgaveQueryModel';
-import { WithNodeId, fjernNodeIdFraQuery } from './filterFrontendTypes';
-import { OppgaveQuery } from './filterTsTypes';
-import { QueryFunction, applyFunctions } from './queryUtils';
+import { applyFunctions, type QueryFunction } from './queryUtils';
 import EnkelSortering from './sortering/EnkelSortering';
 
 interface OwnProps {

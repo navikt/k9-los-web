@@ -1,6 +1,6 @@
-import KodeverkMedNavn from 'kodeverk/kodeverkMedNavnTsType';
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
-import { OppgaveStatus } from './oppgaveStatusTsType';
+import type KodeverkMedNavn from 'kodeverk/kodeverkMedNavnTsType';
+import type { OppgaveNøkkel } from 'types/OppgaveNøkkel';
+import type { OppgaveStatus } from './oppgaveStatusTsType';
 
 type Oppgave = {
 	status: OppgaveStatus;

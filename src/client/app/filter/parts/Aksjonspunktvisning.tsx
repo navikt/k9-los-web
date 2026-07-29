@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
-import { FilterContext } from 'filter/FilterContext';
-import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { Oppgavefelt } from 'filter/filterTsTypes';
-import { updateFilter } from 'filter/queryUtils';
 import { SelectedValues } from 'sharedComponents/searchWithDropdown/SelectedValues';
+import { FilterContext } from 'filter/FilterContext';
+import type { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
+import type { Oppgavefelt } from 'filter/filterTsTypes';
+import { updateFilter } from 'filter/queryUtils';
+import { useContext } from 'react';
 
 interface Props {
 	oppgavefilter: IdentifiedFeltverdiOppgavefilter;

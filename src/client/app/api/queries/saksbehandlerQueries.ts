@@ -1,14 +1,15 @@
-import { UseQueryOptions, keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import NavAnsatt from 'app/navAnsattTsType';
+import { keepPreviousData, type UseQueryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
-import { SaksbehandlerEnkel } from 'avdelingsleder/bemanning/saksbehandlerTsType';
-import ReservasjonV3, { ReservasjonV3FraKøDto } from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
-import { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
-import { Søkeresultat } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
-import EndreOppgaveType from 'types/EndreOppgaveType';
-import { NesteOppgaverFraKoDto } from 'types/NesteOppgaverFraKoDto';
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
-import { OppgavekøV3 } from 'types/OppgavekøV3Type';
+import type NavAnsatt from 'app/navAnsattTsType';
+import type { SaksbehandlerEnkel } from 'avdelingsleder/bemanning/saksbehandlerTsType';
+import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
+import type { ReservasjonV3FraKøDto } from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
+import type { OppgaveStatus } from 'saksbehandler/oppgaveStatusTsType';
+import type { Søkeresultat } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type EndreOppgaveType from 'types/EndreOppgaveType';
+import type { NesteOppgaverFraKoDto } from 'types/NesteOppgaverFraKoDto';
+import type { OppgavekøV3 } from 'types/OppgavekøV3Type';
+import type { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 export const useInnloggetSaksbehandler = (options?: Omit<UseQueryOptions<NavAnsatt, Error>, 'queryKey'>) =>

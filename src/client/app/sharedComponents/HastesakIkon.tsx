@@ -1,4 +1,3 @@
-import React from 'react';
 import { ExclamationmarkTriangleFillIcon } from '@navikt/aksel-icons';
 import styles from './HastesakIkon.module.css';
 

@@ -1,5 +1,5 @@
-import { FunctionComponent } from 'react';
-import { DagensTallSerie } from 'api/queries/avdelingslederQueries';
+import type { DagensTallSerie } from 'api/queries/avdelingslederQueries';
+import type { FunctionComponent } from 'react';
 import styles from './teller3.module.css';
 
 interface OwnProps {

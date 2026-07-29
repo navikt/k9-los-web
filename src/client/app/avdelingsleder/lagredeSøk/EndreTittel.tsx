@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { Button, TextField } from '@navikt/ds-react';
-import { LagretSøk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
+import { type LagretSøk, useEndreLagretSøk } from 'api/queries/avdelingslederQueries';
+import { useEffect, useState } from 'react';
 
 export function EndreTittel({
 	lagretSøk,
@@ -31,7 +31,6 @@ export function EndreTittel({
 				mutate({ ...lagretSøk, tittel: '' });
 			}}
 		>
-			{/* eslint-disable jsx-a11y/no-autofocus */}
 			<TextField
 				label="Tittel"
 				hideLabel
@@ -43,7 +42,6 @@ export function EndreTittel({
 				size="small"
 				autoFocus
 			/>
-			{/* eslint-enable jsx-a11y/no-autofocus */}
 			<Button variant="secondary" disabled={isPending} type="submit" size="small">
 				Lagre
 			</Button>

@@ -1,6 +1,6 @@
-import proxy from 'express-http-proxy';
-import url from 'url';
+import url from 'node:url';
 import { requestOboToken, validateToken } from '@navikt/oasis';
+import proxy from 'express-http-proxy';
 import config, { configValueAsJson } from './config.js';
 import log from './log.js';
 
@@ -71,7 +71,7 @@ const proxyOptions = (api) => ({
 		log.info(`Proxying request from '${req.originalUrl}' to '${stripTrailingSlash(urlFromApi.href)}${newPath}'`);
 		return newPath;
 	},
-	userResHeaderDecorator: (headers, userReq, userRes, proxyReq, proxyRes) => {
+	userResHeaderDecorator: (headers, userReq, _userRes, proxyReq, proxyRes) => {
 		const { statusCode } = proxyRes;
 		const requestTime = Date.now() - proxyReq.getHeader(xTimestamp);
 		const melding = `${statusCode} ${proxyRes.statusMessage}: ${userReq.method} - ${userReq.originalUrl} (${requestTime}ms)`;
@@ -87,7 +87,7 @@ const proxyOptions = (api) => ({
 		console.error(err.code);
 		console.error(err.message);
 
-		switch (err && err.code) {
+		switch (err?.code) {
 			case 'ENOTFOUND': {
 				log.warning(`${err}, with code: ${err.code}`);
 				return res.status(404).send();
@@ -108,8 +108,7 @@ const proxyOptions = (api) => ({
 	},
 });
 
-// eslint-disable-next-line func-names
-const timedOut = function (req, res, next) {
+const timedOut = (req, _res, next) => {
 	if (!req.timedout) {
 		next();
 	} else {

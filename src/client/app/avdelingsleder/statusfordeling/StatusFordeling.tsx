@@ -1,10 +1,10 @@
-import React, { ReactNode, useRef, useState } from 'react';
-import dayjs from 'dayjs';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { BodyShort, Detail, Heading, Popover } from '@navikt/ds-react';
 import { useHentAvdelingslederStatusFordeling } from 'api/queries/avdelingslederQueries';
+import dayjs from 'dayjs';
+import type { OppgaveQuery } from 'filter/filterTsTypes';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
-import { OppgaveQuery } from 'filter/filterTsTypes';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { type ReactNode, useRef, useState } from 'react';
 import styles from './StatusFordeling.module.css';
 
 function KildeViewer({
@@ -17,20 +17,13 @@ function KildeViewer({
 	children: ReactNode | ReactNode[];
 }) {
 	const [openPopover, setOpenPopover] = useState(false);
-	const href = useRef<HTMLDivElement>(null);
+	const href = useRef<HTMLButtonElement>(null);
 	return (
 		<div>
-			{/* Vurder annet html-element */}
-			<div
-				onKeyUp={(event) => {
-					if (event.key === 'Enter') {
-						setOpenPopover(!openPopover);
-					}
-				}}
-				role="button"
-				tabIndex={0}
+			<button
+				type="button"
 				ref={href}
-				className="flex items-center gap-1"
+				className="flex items-center gap-1 text-left"
 				onClick={() => setOpenPopover(!openPopover)}
 			>
 				<div
@@ -42,7 +35,7 @@ function KildeViewer({
 				>
 					{children}
 				</div>
-			</div>
+			</button>
 			<Popover anchorEl={href.current} open={openPopover} onClose={() => setOpenPopover(false)}>
 				{openPopover && (
 					<div className="max-w-screen-md">

@@ -1,8 +1,8 @@
+import type { IdentifiedOppgaveQuery } from './filterFrontendTypes';
 import OppgaveQueryModel from './OppgaveQueryModel';
-import { IdentifiedOppgaveQuery } from './filterFrontendTypes';
 
 type ModelMethods = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: any[] er nødvendig her — (...args: unknown[]) matcher ingen metoder i conditional type
 	[K in keyof OppgaveQueryModel]: OppgaveQueryModel[K] extends (...args: any[]) => OppgaveQueryModel ? K : never;
 }[keyof OppgaveQueryModel];
 
@@ -63,22 +63,22 @@ const applyFunctions = (initialValue: IdentifiedOppgaveQuery, fns: Array<QueryFu
 // -------------------- Export --------------------
 
 export {
-	removeFilter,
-	addGruppeFilter,
-	addFeltverdiFilter,
-	removeSelectFelt,
-	addEnkelSelectFelt,
 	addAggregertSelectFelt,
-	updateFilter,
-	updateSelectFelt,
-	updateAggregertSelectFelt,
+	addAggregertSortering,
+	addEnkelSelectFelt,
+	addFeltverdiFilter,
+	addGruppeFilter,
+	addSortering,
+	applyFunctions,
 	moveSelectFelt,
+	moveSortering,
+	removeFilter,
+	removeSelectFelt,
 	removeSortering,
 	resetSortering,
-	addSortering,
-	updateSortering,
-	addAggregertSortering,
+	updateAggregertSelectFelt,
 	updateAggregertSortering,
-	moveSortering,
-	applyFunctions,
+	updateFilter,
+	updateSelectFelt,
+	updateSortering,
 };

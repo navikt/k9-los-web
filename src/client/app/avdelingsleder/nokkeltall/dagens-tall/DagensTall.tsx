@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import { Box, Detail, HGrid, HStack, Heading, Select, ToggleGroup } from '@navikt/ds-react';
-import { useHentDagensTall } from 'api/queries/avdelingslederQueries';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { Box, Detail, Heading, HGrid, HStack, Select, ToggleGroup } from '@navikt/ds-react';
+import { useHentDagensTall } from 'api/queries/avdelingslederQueries';
+import dayjs from 'dayjs';
+import { useState } from 'react';
 import Teller3 from './Teller3';
 
 const serieLabels: Record<string, string> = {

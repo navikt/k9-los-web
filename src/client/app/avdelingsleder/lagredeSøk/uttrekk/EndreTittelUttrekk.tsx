@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { Button, TextField } from '@navikt/ds-react';
-import { Uttrekk, useEndreUttrekkTittel } from 'api/queries/avdelingslederQueries';
+import { type Uttrekk, useEndreUttrekkTittel } from 'api/queries/avdelingslederQueries';
+import { useEffect, useState } from 'react';
 
 export function EndreTittelUttrekk({
 	uttrekk,
@@ -37,7 +37,6 @@ export function EndreTittelUttrekk({
 				}
 			}}
 		>
-			{/* eslint-disable jsx-a11y/no-autofocus */}
 			<TextField
 				label="Tittel"
 				hideLabel
@@ -48,7 +47,6 @@ export function EndreTittelUttrekk({
 				maxLength={100}
 				autoFocus
 			/>
-			{/* eslint-enable jsx-a11y/no-autofocus */}
 			<Button variant="secondary" disabled={isPending} type="submit" size="medium">
 				Lagre
 			</Button>

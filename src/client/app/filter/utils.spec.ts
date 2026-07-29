@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Synlighet, Verdiforklaring } from './filterTsTypes';
+import { Synlighet, type Verdiforklaring } from './filterTsTypes';
 import { sorterGrupperinger, sorterVerdiforklaringer } from './utils';
 
 const v = (visningsnavn: string, rekkefølge: number | undefined, gruppering?: string): Verdiforklaring => ({

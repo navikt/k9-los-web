@@ -1,5 +1,5 @@
-import AlleKodeverk from 'kodeverk/alleKodeverkTsType';
-import KodeverkType from 'kodeverk/kodeverkTyper';
+import type AlleKodeverk from 'kodeverk/alleKodeverkTsType';
+import type KodeverkType from 'kodeverk/kodeverkTyper';
 
 export const getKodeverknavnFraKode = (
 	kode: string,

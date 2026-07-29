@@ -1,35 +1,20 @@
-import React, { FunctionComponent, useMemo, useState } from 'react';
 import { Loader } from '@navikt/ds-react';
 import { useAlleSaksbehandlerKoerV3 } from 'api/queries/saksbehandlerQueries';
-import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
-import { OppgavekøV3, OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
+import type { FunctionComponent } from 'react';
+import type { OppgavekøV3, OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import OppgavekoPanel from './components/OppgavekoPanel';
 
 const BehandlingskoerIndex: FunctionComponent = () => {
-	const [valgtOppgavekoId, setValgtOppgavekoId] = useState('');
 	const { data: oppgavekoerV3, isLoading } = useAlleSaksbehandlerKoerV3();
 
 	const mapKøV3 = (kø: OppgavekøV3): OppgavekøV3MedNavn => ({ ...kø, navn: kø.tittel, id: `${kø.id}__V3` });
-	const oppgavekoer = (oppgavekoerV3 || []).map(mapKøV3);
-
-	const behandlingskoerContextValue = useMemo(
-		() => ({
-			oppgavekoer,
-			setValgtOppgavekoId,
-			valgtOppgavekoId,
-		}),
-		[oppgavekoer, valgtOppgavekoId, setValgtOppgavekoId],
-	);
+	const oppgavekoer = (oppgavekoerV3 ?? []).map(mapKøV3);
 
 	if (isLoading) {
 		return <Loader />;
 	}
 
-	return (
-		<BehandlingskoerContext.Provider value={behandlingskoerContextValue}>
-			<OppgavekoPanel />
-		</BehandlingskoerContext.Provider>
-	);
+	return <OppgavekoPanel oppgavekoer={oppgavekoer} />;
 };
 
 export default BehandlingskoerIndex;

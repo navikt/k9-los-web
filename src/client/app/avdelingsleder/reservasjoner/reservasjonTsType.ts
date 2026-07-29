@@ -1,5 +1,5 @@
-import KodeverkMedNavn from 'kodeverk/kodeverkMedNavnTsType';
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
+import type KodeverkMedNavn from 'kodeverk/kodeverkMedNavnTsType';
+import type { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 
 type Reservasjon = Readonly<{
 	oppgavenøkkel: OppgaveNøkkel;

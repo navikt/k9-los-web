@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
-import { OppgaveQuery, Oppgaverad } from 'filter/filterTsTypes';
+import type { OppgaveQuery, Oppgaverad } from 'filter/filterTsTypes';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 export const useSøkOppgaver = () =>

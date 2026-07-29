@@ -1,11 +1,8 @@
-import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import dayjs from 'dayjs';
 import {
 	UNSAFE_Combobox as AkselCombobox,
 	Button,
 	DatePicker,
-	DateValidationT,
+	type DateValidationT,
 	ErrorMessage,
 	Modal,
 	Skeleton,
@@ -13,6 +10,10 @@ import {
 	useDatepicker,
 } from '@navikt/ds-react';
 import { useEndreReservasjoner, useGetAlleSaksbehandlere } from 'api/queries/saksbehandlerQueries';
+import dayjs from 'dayjs';
+import type React from 'react';
+import { type FunctionComponent, useCallback, useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface FlyttReservasjonType {
 	reservasjonsnøkkel: string;

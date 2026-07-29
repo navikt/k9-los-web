@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useRef } from 'react';
-import { useNavigate } from 'react-router';
 import { MenuGridIcon } from '@navikt/aksel-icons';
 import { ActionMenu, InternalHeader, Spacer, Theme } from '@navikt/ds-react';
 import Endringslogg from '@navikt/endringslogg';
-import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
+import DriftsmeldingPanel from 'app/components/DriftsmeldingPanel';
+import { type FunctionComponent, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import styles from './headerWithErrorPanel.module.css';
 
 const isDev = !window.location.hostname.includes('intern.nav.no');

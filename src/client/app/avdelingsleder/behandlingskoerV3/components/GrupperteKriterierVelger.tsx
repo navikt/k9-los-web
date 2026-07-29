@@ -1,9 +1,9 @@
-import React, { FunctionComponent } from 'react';
 import { Synlighet } from 'filter/filterTsTypes';
 import SearchDropdownMedPredefinerteVerdier, {
-	SearchDropdownPredefinerteVerdierProps,
+	type SearchDropdownPredefinerteVerdierProps,
 } from 'filter/parts/SearchDropdownMedPredefinerteVerdier';
 import { sorterGrupperinger, sorterVerdiforklaringer } from 'filter/utils';
+import type { FunctionComponent } from 'react';
 
 const GrupperteKriterierVelger: FunctionComponent<
 	SearchDropdownPredefinerteVerdierProps & { skjulValgteVerdierUnderDropdown?: boolean }

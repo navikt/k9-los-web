@@ -1,8 +1,4 @@
-.oppgaveContainer {
-}
 @media all and (max-width: 1650px) {
-	.oppgaveContainer {
-	}
 	.leftColumn {
 		width: 100%;
 	}
@@ -29,7 +25,5 @@
 .avdelingslederContent {
 	margin-bottom: 20px;
 	margin-right: 20px;
-	min-width: -webkit-fill-available;
-	min-width: -moz-available;
 	width: fit-content;
 }

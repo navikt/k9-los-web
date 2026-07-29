@@ -1,4 +1,4 @@
-import { QueryClientConfig } from '@tanstack/react-query';
+import type { QueryClientConfig } from '@tanstack/react-query';
 import axios from 'axios';
 import { callId } from 'utils/call-id';
 

@@ -1,12 +1,12 @@
-import React, { FunctionComponent, useEffect, useMemo } from 'react';
-import { Route, Routes } from 'react-router';
 import { withSentryReactRouterV7Routing } from '@sentry/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import AppContext from 'app/AppContext';
 import apiPaths from 'api/apiPaths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
+import AppContext from 'app/AppContext';
 import AvdelingslederIndex from 'avdelingsleder/AvdelingslederIndex';
-import { Oppgavefelt } from 'filter/filterTsTypes';
+import type { Oppgavefelt } from 'filter/filterTsTypes';
+import { type FunctionComponent, useEffect, useMemo } from 'react';
+import { Route, Routes } from 'react-router';
 import SaksbehandlerIndex from 'saksbehandler/SaksbehandlerIndex';
 import AdminIndex from '../../admin/AdminIndex';
 import MissingPage from './MissingPage';

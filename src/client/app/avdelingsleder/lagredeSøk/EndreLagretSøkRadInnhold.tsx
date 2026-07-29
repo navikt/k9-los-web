@@ -1,8 +1,12 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
 import { FilesIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Heading, TextField } from '@navikt/ds-react';
-import { LagretSøk, useEndreLagretSøk, useKopierLagretSøk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
+import {
+	type LagretSøk,
+	useEndreLagretSøk,
+	useKopierLagretSøk,
+	useSlettLagretSøk,
+} from 'api/queries/avdelingslederQueries';
+import { useForm } from 'react-hook-form';
 
 interface FormData {
 	tittel: string;

@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from 'react';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
-import { Driftsmelding } from './driftsmeldingTsType';
+import type { FunctionComponent } from 'react';
+import type { Driftsmelding } from './driftsmeldingTsType';
 
 type TsProps = Readonly<{
 	valgtDriftsmelding: Driftsmelding;
@@ -30,7 +30,6 @@ const SletteDriftsmeldingModal: FunctionComponent<TsProps> = ({
 	>
 		<Modal.Body>Ønsker du å slette driftmelding?</Modal.Body>
 		<Modal.Footer>
-			{/* eslint-disable-next-line jsx-a11y/no-autofocus */}
 			<Button variant="primary" onClick={() => fjernDriftsmelding(valgtDriftsmelding)} autoFocus>
 				Ja
 			</Button>

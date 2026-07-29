@@ -1,10 +1,9 @@
-import React from 'react';
-import dayjs from 'dayjs';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { BodyShort, ErrorMessage, Loader, Table } from '@navikt/ds-react';
 import { useNesteOppgaverFraKø } from 'api/queries/saksbehandlerQueries';
+import dayjs from 'dayjs';
 import styles from 'saksbehandler/behandlingskoer/components/oppgavetabeller/oppgaverTabell.module.css';
 import { getKoId } from 'saksbehandler/behandlingskoer/utils';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 export const OppgavetabellV3 = ({ køId }: { køId: string }) => {
 	const { data: { rader, kolonner } = {}, error, isLoading, isSuccess } = useNesteOppgaverFraKø(getKoId(køId));

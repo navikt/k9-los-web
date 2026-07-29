@@ -1,6 +1,5 @@
-import React from 'react';
 import { BodyShort, Detail } from '@navikt/ds-react';
-import { OppgavekøV3 } from 'types/OppgavekøV3Type';
+import type { OppgavekøV3 } from 'types/OppgavekøV3Type';
 
 interface OwnProps {
 	oppgavekø: OppgavekøV3;

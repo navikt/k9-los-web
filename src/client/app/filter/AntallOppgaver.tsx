@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
-import { UseMutationResult, useMutation } from '@tanstack/react-query';
 import { ArrowsCirclepathIcon } from '@navikt/aksel-icons';
 import { Button, Label, Skeleton } from '@navikt/ds-react';
+import { type UseMutationResult, useMutation } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
+import { useContext, useState } from 'react';
 import { FilterContext } from './FilterContext';
-import { OppgaveQuery } from './filterTsTypes';
+import type { OppgaveQuery } from './filterTsTypes';
 
 interface OwnProps {
 	setQueryError: (error: string) => void;

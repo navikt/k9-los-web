@@ -1,5 +1,5 @@
-import KodeverkMedNavn from 'kodeverk/kodeverkMedNavnTsType';
-import { OppgaveNøkkel } from './OppgaveNøkkel';
+import type KodeverkMedNavn from 'kodeverk/kodeverkMedNavnTsType';
+import type { OppgaveNøkkel } from './OppgaveNøkkel';
 
 type OppgaveV3 = {
 	søkersNavn: string;

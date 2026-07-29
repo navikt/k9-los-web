@@ -1,5 +1,5 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
 import { captureException, withScope } from '@sentry/browser';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 
 interface OwnProps {
 	errorMessageCallback: (error: string) => void;

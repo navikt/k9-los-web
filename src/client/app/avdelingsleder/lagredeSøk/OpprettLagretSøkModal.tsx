@@ -1,7 +1,6 @@
-import React from 'react';
+import type { RenderModalProps } from 'sharedComponents/ModalButton';
 import { Alert, Button, Heading, Modal } from '@navikt/ds-react';
 import { useOpprettLagretSøk } from 'api/queries/avdelingslederQueries';
-import { RenderModalProps } from 'sharedComponents/ModalButton';
 
 export function OpprettLagretSøkModal({ open, closeModal }: RenderModalProps) {
 	const { isError: backendError, isPending, mutate: opprettLagretSøk } = useOpprettLagretSøk();

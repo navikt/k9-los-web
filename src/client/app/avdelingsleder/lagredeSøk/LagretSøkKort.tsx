@@ -1,8 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
 import { ChevronDownIcon, ChevronRightIcon, PencilIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Skeleton } from '@navikt/ds-react';
+import { type LagretSøk, type Uttrekk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
-import { LagretSøk, Uttrekk, useSlettLagretSøk } from 'api/queries/avdelingslederQueries';
 import { EndreTittel } from 'avdelingsleder/lagredeSøk/EndreTittel';
 import { KopierLagretSøkDialog } from 'avdelingsleder/lagredeSøk/KopierLagretSøkDialog';
 import { KriterierBoks } from 'avdelingsleder/lagredeSøk/KriterierBoks';
@@ -10,6 +9,8 @@ import { SlettLagretSøkDialog } from 'avdelingsleder/lagredeSøk/SlettLagretSø
 import { OpprettUttrekkDialog } from 'avdelingsleder/lagredeSøk/uttrekk/OpprettUttrekkDialog';
 import { UttrekkKort } from 'avdelingsleder/lagredeSøk/uttrekk/UttrekkKort';
 import { utledFilterBeskrivelse } from 'filter/queryBeskrivelseUtils';
+import type React from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 export function LagretSøkKort({
 	lagretSøk,

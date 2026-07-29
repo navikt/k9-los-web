@@ -1,8 +1,8 @@
-import { useContext } from 'react';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { FilterContext } from 'filter/FilterContext';
 import { OppgavefilterKode } from 'filter/filterTsTypes';
 import { addSortering } from 'filter/queryUtils';
+import { useContext } from 'react';
 
 interface QuickAddOrderItem {
 	kode: OppgavefilterKode;

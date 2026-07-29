@@ -1,10 +1,10 @@
-import React, { FunctionComponent, useState } from 'react';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Box, Button, Heading, List, Skeleton } from '@navikt/ds-react';
 import { useHentAndreSaksbehandleresKøer, useSlettSaksbehandler } from 'api/queries/avdelingslederQueries';
 import SletteSaksbehandlerModal from 'avdelingsleder/bemanning/components/SletteSaksbehandlerModal';
-import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
-import { OppgaveKoIdOgTittel } from 'types/OppgavekøV3Type';
+import type { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
+import { type FunctionComponent, useState } from 'react';
+import type { OppgaveKoIdOgTittel } from 'types/OppgavekøV3Type';
 
 const KøListe = ({
 	title,

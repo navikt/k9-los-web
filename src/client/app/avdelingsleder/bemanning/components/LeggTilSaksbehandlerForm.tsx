@@ -1,8 +1,9 @@
-import React, { FunctionComponent, useState } from 'react';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { PlusIcon } from '@navikt/aksel-icons';
 import { Button, Label, TextField } from '@navikt/ds-react';
 import { useHentSaksbehandlereAvdelingsleder, useLeggTilSaksbehandler } from 'api/queries/avdelingslederQueries';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import type React from 'react';
+import { type FunctionComponent, useState } from 'react';
 
 // Flyttet fra tidligere fil validators.js
 const isEmpty = (text: string) => text === null || text === undefined || text.toString().trim().length === 0;

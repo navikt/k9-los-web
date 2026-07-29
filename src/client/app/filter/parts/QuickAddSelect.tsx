@@ -1,9 +1,9 @@
-import { useContext } from 'react';
 import { PlusIcon } from '@navikt/aksel-icons';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { OppgavefilterKode } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, updateSelectFelt } from 'filter/queryUtils';
+import { useContext } from 'react';
 
 const QUICK_ADD_KOLONNER: OppgavefilterKode[] = [
 	OppgavefilterKode.Saksnummer,

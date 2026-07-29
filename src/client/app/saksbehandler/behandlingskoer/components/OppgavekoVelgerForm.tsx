@@ -1,23 +1,25 @@
-import React, { FunctionComponent, ReactNode, useContext } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { BodyShort, Button, ReadMore, Select, Skeleton } from '@navikt/ds-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
 import { useAntallOppgaverIKoV3UtenReserverte } from 'api/queries/saksbehandlerQueries';
 import { useMount } from 'hooks/UseMount';
-import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
+import type { Dispatch, FunctionComponent, ReactNode, SetStateAction } from 'react';
+import type { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import {
 	getValueFromLocalStorage,
 	removeValueFromLocalStorage,
 	setValueInLocalStorage,
 } from 'utils/localStorageHelper';
-import { Saksbehandler } from '../saksbehandlerTsType';
+import type { Saksbehandler } from '../saksbehandlerTsType';
 import { getKoId } from '../utils';
 import OppsummeringAvKø from './OppusmmeringAvKø';
 import styles from './oppgavekoVelgerForm.module.css';
 
 interface OwnProps {
+	oppgavekoer: OppgavekøV3MedNavn[];
+	valgtOppgavekoId: string;
+	setValgtOppgavekoId: Dispatch<SetStateAction<string>>;
 	plukkNyOppgave: () => void;
 	loadingOppgaveFraKo: boolean;
 }
@@ -50,7 +52,7 @@ const getDefaultOppgaveko = (oppgavekoer: Array<OppgavekøV3MedNavn>) => {
 		removeValueFromLocalStorage('id');
 	}
 
-	const sortertOppgavekoer = oppgavekoer.sort((oppgaveko1, oppgaveko2) =>
+	const sortertOppgavekoer = oppgavekoer.toSorted((oppgaveko1, oppgaveko2) =>
 		oppgaveko1.navn.localeCompare(oppgaveko2.navn),
 	);
 	return sortertOppgavekoer.length > 0 ? sortertOppgavekoer[0].id : undefined;
@@ -60,11 +62,16 @@ const getDefaultOppgaveko = (oppgavekoer: Array<OppgavekøV3MedNavn>) => {
  * OppgavekoVelgerForm
  *
  */
-export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({ plukkNyOppgave, loadingOppgaveFraKo }) => {
-	const { oppgavekoer, valgtOppgavekoId, setValgtOppgavekoId } = useContext(BehandlingskoerContext);
+export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({
+	oppgavekoer,
+	valgtOppgavekoId,
+	setValgtOppgavekoId,
+	plukkNyOppgave,
+	loadingOppgaveFraKo,
+}) => {
 	const queryClient = useQueryClient();
 
-	const oppgavekoerSortertAlfabetisk = oppgavekoer.sort((a, b) => a.navn.localeCompare(b.navn));
+	const oppgavekoerSortertAlfabetisk = oppgavekoer.toSorted((a, b) => a.navn.localeCompare(b.navn));
 	const harKoer = !!oppgavekoerSortertAlfabetisk.length;
 	const valgtKoId = getDefaultOppgaveko(oppgavekoerSortertAlfabetisk);
 	const { data: antallIValgtKø, isLoading: isLoadingAntallIValgtKø } = useAntallOppgaverIKoV3UtenReserverte(

@@ -1,16 +1,16 @@
 import {
-	DefaultError,
-	UseQueryOptions,
+	type DefaultError,
 	keepPreviousData,
+	type UseQueryOptions,
 	useMutation,
 	useQuery,
 	useQueryClient,
 } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
-import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
-import Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
-import { OppgaveQuery, SelectFelt } from 'filter/filterTsTypes';
-import { OppgaveKoIdOgTittel, OppgavekøV3, OppgavekøV3Enkel, OppgavekøerV3 } from 'types/OppgavekøV3Type';
+import type { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
+import type Reservasjon from 'avdelingsleder/reservasjoner/reservasjonTsType';
+import type { OppgaveQuery, SelectFelt } from 'filter/filterTsTypes';
+import type { OppgaveKoIdOgTittel, OppgavekøerV3, OppgavekøV3, OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
 import { axiosInstance } from 'utils/reactQueryConfig';
 
 export const useHentSaksbehandlereAvdelingsleder = () =>
@@ -130,7 +130,7 @@ export const useSlettKøMutation = (callback?: () => void) => {
 export const useOppdaterKøMutation = (callback: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (payload: { ['key']: string }) =>
+		mutationFn: (payload: { key: string }) =>
 			axiosInstance.post(`${apiPaths.oppdaterOppgaveko}`, { ...payload }).then((res) => res.data),
 
 		onSuccess: (props) => {

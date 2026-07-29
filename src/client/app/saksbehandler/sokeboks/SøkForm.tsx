@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { Search } from '@navikt/ds-react';
+import { useState } from 'react';
 
 export function SøkForm(props: {
 	loading: boolean;
@@ -21,33 +21,34 @@ export function SøkForm(props: {
 	};
 
 	return (
-		<form
-			role="search"
-			onSubmit={(e) => {
-				setFeilmelding(undefined);
-				e.preventDefault();
-				if (søkeord) {
-					props.utførSøk({
-						søkeord,
-					});
-				} else {
-					setFeilmelding('Søkeordet kan ikke være tomt');
-				}
-			}}
-		>
-			<Search
-				error={feilmelding}
-				label="Søk på saksnummer, personnummer eller journalpost-id"
-				variant="primary"
-				hideLabel={false}
-				onChange={endreSøkeord}
-				htmlSize={40}
-				onClear={props.nullstillSøk}
-				value={søkeord}
-				clearButton
+		<search>
+			<form
+				onSubmit={(e) => {
+					setFeilmelding(undefined);
+					e.preventDefault();
+					if (søkeord) {
+						props.utførSøk({
+							søkeord,
+						});
+					} else {
+						setFeilmelding('Søkeordet kan ikke være tomt');
+					}
+				}}
 			>
-				<Search.Button loading={props.loading}>Søk</Search.Button>
-			</Search>
-		</form>
+				<Search
+					error={feilmelding}
+					label="Søk på saksnummer, personnummer eller journalpost-id"
+					variant="primary"
+					hideLabel={false}
+					onChange={endreSøkeord}
+					htmlSize={40}
+					onClear={props.nullstillSøk}
+					value={søkeord}
+					clearButton
+				>
+					<Search.Button loading={props.loading}>Søk</Search.Button>
+				</Search>
+			</form>
+		</search>
 	);
 }

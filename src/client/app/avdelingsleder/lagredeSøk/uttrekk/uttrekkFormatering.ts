@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
+import { type Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
 // Sideeffekt: registrerer dayjs-plugins (bl.a. duration) som formatCelleVerdi er avhengig av.
 import 'utils/dateUtils';
 

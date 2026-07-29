@@ -1,11 +1,11 @@
-import React, { useContext, useMemo } from 'react';
+import type { RenderModalProps } from 'sharedComponents/ModalButton';
 import { Heading, Modal } from '@navikt/ds-react';
+import { type LagretSøk, useEndreLagretSøk, useNyttLagretSøk } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
-import { LagretSøk, useEndreLagretSøk, useNyttLagretSøk } from 'api/queries/avdelingslederQueries';
+import { type FeltverdiOppgavefilter, OppgavefilterKode, type OppgaveQuery } from 'filter/filterTsTypes';
 import { KøKriterieEditorContent } from 'filter/KøKriterieEditor';
 import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
-import { FeltverdiOppgavefilter, OppgaveQuery, OppgavefilterKode } from 'filter/filterTsTypes';
-import { RenderModalProps } from 'sharedComponents/ModalButton';
+import { useContext, useMemo } from 'react';
 
 type EndreKriterierProps = RenderModalProps & {
 	tittel: string;

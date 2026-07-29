@@ -1,9 +1,9 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 import { init } from '@sentry/browser';
 import { breadcrumbsIntegration, reactRouterV7BrowserTracingIntegration } from '@sentry/react';
 import AppContainer from 'app/AppContainer';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 
 const environment = window.location.hostname;
 

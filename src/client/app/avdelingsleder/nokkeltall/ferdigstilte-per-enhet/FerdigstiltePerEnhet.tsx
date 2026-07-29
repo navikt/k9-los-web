@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import { EChartsOption } from 'echarts';
-import { Box, Detail, HStack, Heading, Select, ToggleGroup } from '@navikt/ds-react';
-import { useHentFerdigstiltePerEnhet } from 'api/queries/avdelingslederQueries';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { Box, Detail, Heading, HStack, Select, ToggleGroup } from '@navikt/ds-react';
+import { useHentFerdigstiltePerEnhet } from 'api/queries/avdelingslederQueries';
+import dayjs from 'dayjs';
+import type { EChartsOption } from 'echarts';
+import { useState } from 'react';
 import { grafHeight } from '../../../../styles/echartStyle';
 
 export default function FerdigstiltePerEnhet() {
