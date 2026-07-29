@@ -1,5 +1,5 @@
-import { IdentifiedOppgaveQuery, tilIdentifiedQuery } from 'filter/filterFrontendTypes';
-import { Oppgavefelt, OppgavefilterKode, Oppgaverad, Synlighet, TolkesSom } from 'filter/filterTsTypes';
+import { type IdentifiedOppgaveQuery, tilIdentifiedQuery } from 'filter/filterFrontendTypes';
+import { type Oppgavefelt, OppgavefilterKode, type Oppgaverad, Synlighet, TolkesSom } from 'filter/filterTsTypes';
 
 export const oppgaveQueryForDuration: IdentifiedOppgaveQuery = tilIdentifiedQuery({
 	filtere: [

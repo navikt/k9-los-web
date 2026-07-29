@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from 'react';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { BodyLong, Button, Modal } from '@navikt/ds-react';
-import { Saksbehandler } from '../saksbehandlerTsType';
+import type { FunctionComponent } from 'react';
+import type { Saksbehandler } from '../saksbehandlerTsType';
 
 type OwnProps = Readonly<{
 	valgtSaksbehandler: Saksbehandler;

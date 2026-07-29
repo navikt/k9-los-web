@@ -1,6 +1,6 @@
-import React, { FormEvent, FunctionComponent, useState } from 'react';
 import { Button, TextField } from '@navikt/ds-react';
 import { useLagreDriftsmelding } from 'api/queries/driftsmeldingQueries';
+import { type FormEvent, type FunctionComponent, useState } from 'react';
 
 /**
  * LeggTilDriftsmeldingForm

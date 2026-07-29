@@ -1,5 +1,5 @@
-import { OppgaveNøkkel } from 'types/OppgaveNøkkel';
-import OppgaveV3 from 'types/OppgaveV3';
+import type { OppgaveNøkkel } from 'types/OppgaveNøkkel';
+import type OppgaveV3 from 'types/OppgaveV3';
 
 interface BaseReservasjonV3 {
 	reservertAvIdent: string;

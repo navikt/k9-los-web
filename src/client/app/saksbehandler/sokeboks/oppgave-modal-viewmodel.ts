@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
 	useEndreReservasjoner,
 	useHentAktivReservasjonForOppgave,
@@ -7,8 +6,9 @@ import {
 	useReserverOppgaveMutation,
 	useSisteOppgaverMutation,
 } from 'api/queries/saksbehandlerQueries';
+import { useState } from 'react';
 import { modalInnhold } from 'saksbehandler/sokeboks/modal-innhold';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 const endreWindowLocationTilFagsystem = (oppgave: SøkeboksOppgaveDto) => {
 	window.location.assign(oppgave.oppgavebehandlingsUrl);

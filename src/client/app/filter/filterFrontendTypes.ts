@@ -1,9 +1,9 @@
 import { v4 as uuid } from 'uuid';
-import {
+import type {
 	CombineOppgavefilter,
 	FeltverdiOppgavefilter,
-	OppgaveQuery,
 	Oppgavefilter,
+	OppgaveQuery,
 	OrderFelt,
 	SelectFelt,
 } from './filterTsTypes';

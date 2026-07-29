@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
-import { OppgaveQuery } from './filterTsTypes';
+import { useContext } from 'react';
+import type { OppgaveQuery } from './filterTsTypes';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
 import { addFeltverdiFilter, addGruppeFilter } from './queryUtils';
 

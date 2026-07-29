@@ -1,7 +1,8 @@
-import React from 'react';
-import { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
+import SearchWithDropdown, {
+	type SearchWithDropdownProps,
+} from 'sharedComponents/searchWithDropdown/SearchWithDropdown';
+import type { FeltverdiOppgavefilter, Oppgavefelt } from 'filter/filterTsTypes';
 import { sorterVerdiforklaringer } from 'filter/utils';
-import SearchWithDropdown, { SearchWithDropdownProps } from 'sharedComponents/searchWithDropdown/SearchWithDropdown';
 
 export interface SearchDropdownPredefinerteVerdierProps extends Partial<SearchWithDropdownProps> {
 	feltdefinisjon: Oppgavefelt;

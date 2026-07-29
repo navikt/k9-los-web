@@ -1,4 +1,5 @@
-import React, { FunctionComponent } from 'react';
+import type React from 'react';
+import type { FunctionComponent } from 'react';
 import styles from './avdelingslederDashboard.module.css';
 
 type OwnProps = Readonly<{
@@ -10,11 +11,9 @@ type OwnProps = Readonly<{
  */
 const AvdelingslederDashboard: FunctionComponent<OwnProps> = ({ children }) => (
 	<div>
-		<div className={styles.oppgaveContainer}>
-			<div className={styles.gridContainer}>
-				<div className={styles.leftColumn}>
-					<div className={styles.avdelingslederContent}>{children}</div>
-				</div>
+		<div className={styles.gridContainer}>
+			<div className={styles.leftColumn}>
+				<div className={styles.avdelingslederContent}>{children}</div>
 			</div>
 		</div>
 	</div>

@@ -1,5 +1,3 @@
-import React, { useContext } from 'react';
-import dayjs from 'dayjs';
 import {
 	Checkbox,
 	CheckboxGroup,
@@ -11,18 +9,21 @@ import {
 	useRangeDatepicker,
 } from '@navikt/ds-react';
 import GrupperteKriterierVelger from 'avdelingsleder/behandlingskoerV3/components/GrupperteKriterierVelger';
+import dayjs from 'dayjs';
 import { FilterContext } from 'filter/FilterContext';
-import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
+import type { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
+import { type Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import {
-	OPERATORS,
 	calculateDays,
 	harGruppering,
 	mapBooleanToStringArray,
 	mapStringToBooleanArray,
+	OPERATORS,
 	sorterVerdiforklaringer,
 } from 'filter/utils';
+import type React from 'react';
+import { useContext } from 'react';
 import MultiSelectKriterie from './MultiSelectKriterie';
 
 const KriterieVerdi = ({

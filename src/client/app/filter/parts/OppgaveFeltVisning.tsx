@@ -1,6 +1,5 @@
-import React from 'react';
 import dayjs from 'dayjs';
-import { Oppgavefelt, Oppgavefeltverdi, TolkesSom } from 'filter/filterTsTypes';
+import { type Oppgavefelt, type Oppgavefeltverdi, TolkesSom } from 'filter/filterTsTypes';
 import { harGruppering } from 'filter/utils';
 import 'utils/dateUtils';
 

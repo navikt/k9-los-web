@@ -1,11 +1,11 @@
-import React, { FunctionComponent, useState } from 'react';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Checkbox, Heading, Table } from '@navikt/ds-react';
 import { useSlettDriftsmelding, useToggleDriftsmelding } from 'api/queries/driftsmeldingQueries';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { type FunctionComponent, useState } from 'react';
 import { dateTimeFormat } from 'utils/dateUtils';
+import type { Driftsmelding } from './driftsmeldingTsType';
 import SletteDriftsmeldingerModal from './SletteDriftsmeldingerModal';
-import { Driftsmelding } from './driftsmeldingTsType';
 
 interface OwnProps {
 	driftsmeldinger: Driftsmelding[];

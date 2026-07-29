@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { FilesIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Dialog, TextField } from '@navikt/ds-react';
-import { LagretSøk, useKopierLagretSøk } from 'api/queries/avdelingslederQueries';
+import { type LagretSøk, useKopierLagretSøk } from 'api/queries/avdelingslederQueries';
+import { useState } from 'react';
 
 interface Props {
 	lagretSøk: LagretSøk;
@@ -35,7 +35,6 @@ export function KopierLagretSøkDialog({ lagretSøk, onNyOpprettet }: Props) {
 					<Dialog.Title>{harTittel ? `Kopier lagret søk '${lagretSøk.tittel}'` : 'Kopier lagret søk'}</Dialog.Title>
 				</Dialog.Header>
 				<Dialog.Body>
-					{/* eslint-disable jsx-a11y/no-autofocus */}
 					<TextField
 						label="Tittel på kopi"
 						value={tittel}
@@ -44,7 +43,6 @@ export function KopierLagretSøkDialog({ lagretSøk, onNyOpprettet }: Props) {
 						maxLength={100}
 						autoFocus
 					/>
-					{/* eslint-enable jsx-a11y/no-autofocus */}
 					{isError && (
 						<Alert variant="error" className="mt-4">
 							Kunne ikke kopiere søket. Prøv igjen.

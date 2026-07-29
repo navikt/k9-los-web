@@ -1,9 +1,9 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
 import { Button, Checkbox, ErrorMessage, Heading, Modal, TextField } from '@navikt/ds-react';
 import { useKopierKøMutation } from 'api/queries/avdelingslederQueries';
 import { useMount } from 'hooks/UseMount';
-import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
+import type React from 'react';
+import { useForm } from 'react-hook-form';
+import type { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
 
 interface Props {
 	lukk: () => void;

@@ -1,9 +1,9 @@
-import React, { FunctionComponent, useState } from 'react';
 import { Skeleton, Table } from '@navikt/ds-react';
 import { useHentSaksbehandlereAvdelingsleder } from 'api/queries/avdelingslederQueries';
 import LeggTilSaksbehandlerForm from 'avdelingsleder/bemanning/components/LeggTilSaksbehandlerForm';
 import SaksbehandlerInfo from 'avdelingsleder/bemanning/components/SaksbehandlerInfo';
-import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
+import type { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
+import { type FunctionComponent, useState } from 'react';
 
 const SkeletonRad = () => (
 	<Table.ExpandableRow content={null}>

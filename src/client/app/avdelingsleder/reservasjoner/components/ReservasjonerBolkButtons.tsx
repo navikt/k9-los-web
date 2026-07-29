@@ -1,8 +1,7 @@
-import React from 'react';
+import ModalButton from 'sharedComponents/ModalButton';
 import { Button } from '@navikt/ds-react';
 import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonerModal';
 import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
-import ModalButton from 'sharedComponents/ModalButton';
 
 interface Props {
 	valgteReservasjoner: Array<{ reservasjonsnøkkel: string; begrunnelse: string }>;

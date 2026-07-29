@@ -1,7 +1,5 @@
-import React, { useContext, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
-import { DragEndEvent } from '@dnd-kit/core/dist/types';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core/dist/types';
 import {
 	SortableContext,
 	sortableKeyboardCoordinates,
@@ -9,7 +7,6 @@ import {
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import _ from 'lodash';
 import {
 	ArrowsUpDownIcon,
 	LayersIcon,
@@ -34,32 +31,41 @@ import {
 	UNSAFE_Combobox,
 	VStack,
 } from '@navikt/ds-react';
+import { type LagretSøk, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
-import { LagretSøk, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
-import { FilterContext, FilterContextType } from 'filter/FilterContext';
-import OppgaveQueryModel from 'filter/OppgaveQueryModel';
-import { IdentifiedOppgaveQuery, WithNodeId, fjernNodeIdFraQuery, tilIdentified } from 'filter/filterFrontendTypes';
+import { FilterContext, type FilterContextType } from 'filter/FilterContext';
+import {
+	fjernNodeIdFraQuery,
+	type IdentifiedOppgaveQuery,
+	tilIdentified,
+	type WithNodeId,
+} from 'filter/filterFrontendTypes';
 import {
 	AggregertFunksjon,
-	EnkelOrderFelt,
-	EnkelSelectFelt,
-	OppgaveQuery,
-	Oppgavefelt,
+	type EnkelOrderFelt,
+	type EnkelSelectFelt,
+	type Oppgavefelt,
 	OppgavefilterKode,
-	OrderFelt,
-	SelectFelt,
+	type OppgaveQuery,
+	type OrderFelt,
+	type SelectFelt,
 	Synlighet,
 } from 'filter/filterTsTypes';
+import OppgaveQueryModel from 'filter/OppgaveQueryModel';
 import OppgaveSelectFelter from 'filter/parts/OppgaveSelectFelter';
 import {
-	QueryFunction,
 	addSortering,
 	applyFunctions,
 	moveSortering,
+	type QueryFunction,
 	removeSortering,
 	updateSortering,
 } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
+import _ from 'lodash';
+import type React from 'react';
+import { useContext, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { QueryBoksStyle } from '../QueryBoksStyle';
 
 type UttrekkType = 'antall' | 'gruppert' | 'oppgaver';

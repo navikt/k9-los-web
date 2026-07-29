@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import dayjs from 'dayjs';
-import { EChartsOption } from 'echarts';
-import { HStack, Heading, HelpText, Select } from '@navikt/ds-react';
-import { useHentNyeOgFerdigstilteSisteSyvDager } from 'api/queries/saksbehandlerQueries';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
-import { grafHeight, graferOpacity, legendStyle } from '../../../../styles/echartStyle';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { Heading, HelpText, HStack, Select } from '@navikt/ds-react';
+import { useHentNyeOgFerdigstilteSisteSyvDager } from 'api/queries/saksbehandlerQueries';
+import dayjs from 'dayjs';
+import type { EChartsOption } from 'echarts';
+import { useState } from 'react';
+import { graferOpacity, grafHeight, legendStyle } from '../../../../styles/echartStyle';
 
 export default function SaksbehandlerNøkkeltall() {
 	const [gruppe, setGruppe] = useState('ALLE');

@@ -1,8 +1,8 @@
-import { FunctionComponent } from 'react';
-import dayjs from 'dayjs';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Heading } from '@navikt/ds-react';
 import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
+import dayjs from 'dayjs';
+import type { FunctionComponent } from 'react';
 import styles from './driftsmeldingPanel.module.css';
 
 const DriftsmeldingPanel: FunctionComponent = () => {

@@ -1,4 +1,4 @@
-import { OppgaveQuery } from 'filter/filterTsTypes';
+import type { OppgaveQuery } from 'filter/filterTsTypes';
 
 export interface OppgaveKoIdOgTittel {
 	id: string;

@@ -1,5 +1,5 @@
+import type { Oppgavefelt } from 'filter/filterTsTypes';
 import { createContext } from 'react';
-import { Oppgavefelt } from 'filter/filterTsTypes';
 
 interface AppContextTypes {
 	felter: Oppgavefelt[];

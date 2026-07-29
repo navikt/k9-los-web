@@ -1,6 +1,6 @@
-import { FunctionComponent } from 'react';
 import { Box } from '@navikt/ds-react';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
+import type { FunctionComponent } from 'react';
 import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
 import SaksstotteIndex from '../saksstotte/SaksstotteIndex';

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Dialog, ErrorMessage, TextField } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { useNyKøMutation } from 'api/queries/avdelingslederQueries';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 interface FormValues {
 	tittel: string;
@@ -48,7 +48,6 @@ const NyKøDialog = ({ onSuccessCallback }: OwnProps) => {
 				</Dialog.Header>
 				<Dialog.Body>
 					<form id="form" onSubmit={handleSubmit(onSubmit)}>
-						{/* eslint-disable jsx-a11y/no-autofocus */}
 						<TextField
 							className="my-6 max-w"
 							label="Kønavn"
@@ -59,7 +58,6 @@ const NyKøDialog = ({ onSuccessCallback }: OwnProps) => {
 								minLength: { value: 3, message: 'Må være minst 3 tegn' },
 							})}
 						/>
-						{/* eslint-enable jsx-a11y/no-autofocus */}
 						{mutation.isError && <ErrorMessage>Noe gikk galt ved oppretting av kø.</ErrorMessage>}
 					</form>
 				</Dialog.Body>

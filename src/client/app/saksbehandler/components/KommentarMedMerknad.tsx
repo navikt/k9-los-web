@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ChatElipsisIcon } from '@navikt/aksel-icons';
 import { BodyShort, Button, Popover } from '@navikt/ds-react';
-import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { useRef, useState } from 'react';
+import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { getDateAndTime } from 'utils/dateUtils';
 
 const KommentarMedMerknad = ({ reservasjon }: { reservasjon: ReservasjonV3 }) => {
@@ -10,7 +10,7 @@ const KommentarMedMerknad = ({ reservasjon }: { reservasjon: ReservasjonV3 }) =>
 	const [showTooltip, setShowTooltip] = useState(false);
 	const { date, time } = getDateAndTime(reservasjon.reservertFra);
 
-	if (!reservasjon || !reservasjon.kommentar) {
+	if (!reservasjon?.kommentar) {
 		return null;
 	}
 	return (
@@ -25,12 +25,10 @@ const KommentarMedMerknad = ({ reservasjon }: { reservasjon: ReservasjonV3 }) =>
 			/>
 			<Popover open={showTooltip} onClose={() => setShowTooltip(false)} anchorEl={ref.current}>
 				<Popover.Content>
-					<>
-						<BodyShort size="small">{`Reservasjon endret av ${reservasjon.endretAvNavn || 'Ukjent'}`}</BodyShort>
-						<BodyShort size="small">{`${date} ${time}`}</BodyShort>
-						<VerticalSpacer sixteenPx />
-						<BodyShort size="small">{reservasjon.kommentar}</BodyShort>
-					</>
+					<BodyShort size="small">{`Reservasjon endret av ${reservasjon.endretAvNavn || 'Ukjent'}`}</BodyShort>
+					<BodyShort size="small">{`${date} ${time}`}</BodyShort>
+					<VerticalSpacer sixteenPx />
+					<BodyShort size="small">{reservasjon.kommentar}</BodyShort>
 				</Popover.Content>
 			</Popover>
 		</>

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { HStack, HelpText, Switch } from '@navikt/ds-react';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { HelpText, HStack, Switch } from '@navikt/ds-react';
+import type React from 'react';
+import { useState } from 'react';
 
 export default function FeatureSwitch(props: {
 	enabled: React.ReactNode;

@@ -1,9 +1,9 @@
+import { validateToken } from '@navikt/oasis';
 import cors from 'cors';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { decodeJwt } from 'jose';
-import { validateToken } from '@navikt/oasis';
 import config from './src/config.js';
 import logger from './src/log.js';
 import reverseProxy from './src/reverse-proxy.js';
@@ -63,14 +63,14 @@ async function startApp() {
 		);
 
 		// Liveness and readiness probes for Kubernetes / nais
-		server.get('/health/isAlive', (req, res) => {
+		server.get('/health/isAlive', (_req, res) => {
 			res.status(200).send('Alive');
 		});
-		server.get('/health/isReady', (req, res) => {
+		server.get('/health/isReady', (_req, res) => {
 			res.status(200).send('Ready');
 		});
 
-		server.get(['/oauth2/login'], async (req, res) => {
+		server.get(['/oauth2/login'], async (_req, res) => {
 			res.status(502).send({
 				message: 'Wonderwall must handle /oauth2/login',
 			});
@@ -123,7 +123,7 @@ async function startApp() {
 		// serve static files
 		const rootDir = './dist';
 		server.use('/public', express.static('./dist/public'));
-		server.use(/^\/(?!.*dist)(?!api).*$/, limiter, (req, res) => {
+		server.use(/^\/(?!.*dist)(?!api).*$/, limiter, (_req, res) => {
 			res.sendFile('index.html', { root: rootDir });
 		});
 

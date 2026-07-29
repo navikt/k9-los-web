@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Chips } from '@navikt/ds-react';
+import { useState } from 'react';
 
 type groupObject = {
 	label: string;
@@ -56,7 +56,7 @@ export const SelectedValues = ({ values, remove, removeAllValues }: Props) => {
 		return [...new Set(groups)].sort();
 	};
 	const groups = getUniqueGroups();
-	if (!values || !values.length) {
+	if (!values?.length) {
 		return null;
 	}
 	return (

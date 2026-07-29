@@ -1,5 +1,5 @@
-import React, { FunctionComponent, ReactNode } from 'react';
 import { BodyShort, Detail } from '@navikt/ds-react';
+import type { FunctionComponent, ReactNode } from 'react';
 import styles from './labelWithHeader.module.css';
 
 interface OwnProps {

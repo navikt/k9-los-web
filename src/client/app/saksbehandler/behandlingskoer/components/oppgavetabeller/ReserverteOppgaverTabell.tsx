@@ -1,14 +1,14 @@
-import { FunctionComponent, useState } from 'react';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react';
 import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
-import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { type FunctionComponent, useState } from 'react';
+import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
 import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
-import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
 import styles from './oppgaverTabell.module.css';
+import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
 
 const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);

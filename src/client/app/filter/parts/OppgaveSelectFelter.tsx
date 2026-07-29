@@ -1,6 +1,5 @@
-import { FunctionComponent, useContext, useMemo, useState } from 'react';
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core';
-import { DragEndEvent } from '@dnd-kit/core/dist/types';
+import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core/dist/types';
 import {
 	SortableContext,
 	sortableKeyboardCoordinates,
@@ -12,10 +11,11 @@ import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icon
 import { Button, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
-import { WithNodeId } from 'filter/filterFrontendTypes';
-import { EnkelSelectFelt, Oppgavefelt, SelectFelt, Synlighet } from 'filter/filterTsTypes';
+import type { WithNodeId } from 'filter/filterFrontendTypes';
+import { type EnkelSelectFelt, type Oppgavefelt, type SelectFelt, Synlighet } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
+import { type FunctionComponent, useContext, useMemo, useState } from 'react';
 import QuickAddSelect from './QuickAddSelect';
 
 const SortableEnkelField: FunctionComponent<{

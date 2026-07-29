@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import type { FunctionComponent } from 'react';
 import styles from './oppgaverTabellMenyAntallOppgaver.module.css';
 
 interface OwnProps {

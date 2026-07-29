@@ -1,5 +1,5 @@
-import React, { FunctionComponent } from 'react';
 import classnames from 'classnames/bind';
+import type { FunctionComponent } from 'react';
 import styles from './verticalSpacer.module.css';
 
 const classNames = classnames.bind(styles);

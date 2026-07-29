@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react';
-import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import { useHentDriftsmeldinger } from 'api/queries/driftsmeldingQueries';
+import type { FunctionComponent } from 'react';
 import DriftsmeldingerTabell from './DriftsmeldingerTabell';
 import LeggTilDriftsmeldingForm from './LeggTilDriftsmeldingForm';
 

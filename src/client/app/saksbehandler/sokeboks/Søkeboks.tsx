@@ -1,10 +1,9 @@
-import React from 'react';
-import { useSearchParams } from 'react-router';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { useSøkOppgaveV3 } from 'api/queries/saksbehandlerQueries';
 import { useMount } from 'hooks/UseMount';
+import { useSearchParams } from 'react-router';
 import { SøkForm } from 'saksbehandler/sokeboks/SøkForm';
 import { SøkResultat } from 'saksbehandler/sokeboks/SøkResultat';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 const saksnummerEllerJournalpostId = /^(?:\w{5}|\w{7}|\d{9})$/;
 

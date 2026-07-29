@@ -1,5 +1,5 @@
-import { FunctionComponent, ReactElement } from 'react';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
+import type { FunctionComponent, ReactElement } from 'react';
 
 interface OwnProps {
 	children: ReactElement | ReactElement[];

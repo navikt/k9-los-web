@@ -1,6 +1,6 @@
-import React, { FunctionComponent } from 'react';
 import { Button, Modal } from '@navikt/ds-react';
 import { useOpphevReservasjoner } from 'api/queries/saksbehandlerQueries';
+import type { FunctionComponent } from 'react';
 
 type OwnProps = Readonly<{
 	open: boolean;

@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
+import { HastesakIkon } from 'sharedComponents/HastesakIkon';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Table } from '@navikt/ds-react';
+import type { ReactNode } from 'react';
 import { OppgaveModal } from 'saksbehandler/sokeboks/OppgaveModal';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
-import { HastesakIkon } from 'sharedComponents/HastesakIkon';
+import type { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 export function OppgaveTabellRad(props: {
 	oppgave: SøkeboksOppgaveDto;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import IkkeTilgang from 'avdelingsleder/components/IkkeTilgang';
 import SaksbehandlerDashboard from './components/SaksbehandlerDashboard';

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Oppgavefelt, TolkesSom, Verdiforklaring } from './filterTsTypes';
+import { type Oppgavefelt, TolkesSom, type Verdiforklaring } from './filterTsTypes';
 
 /** Reservert verdi for separator-element i UNSAFE_Combobox. */
 export const COMBOBOX_SEPARATOR_VALUE = '__separator__';

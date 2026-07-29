@@ -1,7 +1,7 @@
-import React, { ReactNode, useState } from 'react';
 import { Table } from '@navikt/ds-react';
+import { type ReactNode, useState } from 'react';
 import { OppgaveTabellRad } from 'saksbehandler/sokeboks/OppgaveTabellRad';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 export function OppgaveTabell(props: { oppgaver: SøkeboksOppgaveDto[] }) {
 	const [modal, setModal] = useState<ReactNode>();

@@ -1,6 +1,6 @@
-import { FunctionComponent } from 'react';
-import { Link } from 'react-router';
 import { BodyShort } from '@navikt/ds-react';
+import type { FunctionComponent } from 'react';
+import { Link } from 'react-router';
 
 const MissingPage: FunctionComponent = () => (
 	<div className="bg-ax-neutral-200 flex m-auto justify-center">

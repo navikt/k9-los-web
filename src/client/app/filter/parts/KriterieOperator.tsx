@@ -1,11 +1,11 @@
-import React, { ChangeEvent, useContext, useEffect, useMemo } from 'react';
 import { Select } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
-import { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
+import type { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { TolkesSom } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS, operatorsFraTolkesSom } from 'filter/utils';
+import { type ChangeEvent, useContext, useEffect, useMemo } from 'react';
 
 function KriterieOperator({
 	oppgavefilter,

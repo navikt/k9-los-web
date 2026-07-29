@@ -1,18 +1,18 @@
-import React, { FunctionComponent, ReactNode, useContext } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { BodyShort, Button, ReadMore, Select, Skeleton } from '@navikt/ds-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
 import { useAntallOppgaverIKoV3UtenReserverte } from 'api/queries/saksbehandlerQueries';
 import { useMount } from 'hooks/UseMount';
+import { type FunctionComponent, type ReactNode, useContext } from 'react';
 import BehandlingskoerContext from 'saksbehandler/BehandlingskoerContext';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
-import { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
+import type { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import {
 	getValueFromLocalStorage,
 	removeValueFromLocalStorage,
 	setValueInLocalStorage,
 } from 'utils/localStorageHelper';
-import { Saksbehandler } from '../saksbehandlerTsType';
+import type { Saksbehandler } from '../saksbehandlerTsType';
 import { getKoId } from '../utils';
 import OppsummeringAvKø from './OppusmmeringAvKø';
 import styles from './oppgavekoVelgerForm.module.css';

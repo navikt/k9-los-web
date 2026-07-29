@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button, Checkbox, ErrorMessage, Label, Search, UNSAFE_Combobox as UnstableCombobox } from '@navikt/ds-react';
 import { useMount } from 'hooks/UseMount';
+import type React from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { SelectedValues } from './SelectedValues';
 import styles from './searchWithDropdown.module.css';
 
@@ -84,7 +85,7 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 	const selectedValuesKey = JSON.stringify(selectedValues);
 	// isOpen, selectedValues og getSuggestion er bevisst utelatt: effekten skal kun reagere
 	// på at forelderens verdier faktisk endrer innhold, ikke på at dropdownen åpnes/lukkes.
-	/* eslint-disable react-hooks/exhaustive-deps */
+	// biome-ignore lint/correctness/useExhaustiveDependencies: se kommentaren over — selectedValuesKey er den bevisste triggeren
 	useEffect(() => {
 		// Ikke overskriv lokal state mens dropdown er åpen — lokal state er autoritativ
 		if (!isInitialMount.current && isOpen) return;
@@ -99,7 +100,6 @@ const GroupedSearchWithDropdown: React.FC<SearchWithDropdownProps> = (props) => 
 		}
 		setCurrentInput('');
 	}, [selectedValuesKey]);
-	/* eslint-enable react-hooks/exhaustive-deps */
 
 	// Avgjør kun ved mount om seksjonen under streken skal være åpen. Skal ikke
 	// tvinge den åpen igjen dersom brukeren lukker den.

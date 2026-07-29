@@ -1,7 +1,6 @@
-import React from 'react';
 import { Table } from '@navikt/ds-react';
-import { IdentifiedOppgaveQuery } from 'filter/filterFrontendTypes';
-import { Oppgavefelt, Oppgaverad } from 'filter/filterTsTypes';
+import type { IdentifiedOppgaveQuery } from 'filter/filterFrontendTypes';
+import type { Oppgavefelt, Oppgaverad } from 'filter/filterTsTypes';
 import { visningsnavnForFelt } from '../utils';
 import OppgaveFeltVisning from './OppgaveFeltVisning';
 

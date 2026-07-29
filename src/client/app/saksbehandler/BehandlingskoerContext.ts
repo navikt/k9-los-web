@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
+import type { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 
 export type Behandlingskoer = {
 	oppgavekoer: OppgavekøV3MedNavn[];

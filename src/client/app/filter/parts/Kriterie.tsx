@@ -1,12 +1,13 @@
-import React, { useContext, useMemo } from 'react';
-import { v4 as uuid } from 'uuid';
 import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import { removeFilter } from 'filter/queryUtils';
 import { harGruppering } from 'filter/utils';
-import { IdentifiedFeltverdiOppgavefilter } from '../filterFrontendTypes';
+import type React from 'react';
+import { useContext, useMemo } from 'react';
+import { v4 as uuid } from 'uuid';
+import type { IdentifiedFeltverdiOppgavefilter } from '../filterFrontendTypes';
 import { Aksjonspunktvisning } from './Aksjonspunktvisning';
 import KriterieOperator from './KriterieOperator';
 import KriterieVerdi from './KriterieVerdi';

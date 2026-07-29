@@ -1,18 +1,27 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import _ from 'lodash';
+import ModalButton from 'sharedComponents/ModalButton';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ArrowUndoIcon, PencilIcon } from '@navikt/aksel-icons';
-import { BodyShort, Button, Checkbox, ErrorMessage, Heading, Loader, Search, SortState, Table } from '@navikt/ds-react';
+import {
+	BodyShort,
+	Button,
+	Checkbox,
+	ErrorMessage,
+	Heading,
+	Loader,
+	Search,
+	type SortState,
+	Table,
+} from '@navikt/ds-react';
 import { useAvdelingslederReservasjoner } from 'api/queries/avdelingslederQueries';
 import ReservasjonerBolkButtons from 'avdelingsleder/reservasjoner/components/ReservasjonerBolkButtons';
 import kodeverkTyper from 'kodeverk/kodeverkTyper';
+import _ from 'lodash';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonerModal';
 import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
-import ModalButton from 'sharedComponents/ModalButton';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getDateAndTime } from 'utils/dateUtils';
 import { getKodeverknavnFraKode } from 'utils/kodeverkUtils';
-import Reservasjon from '../reservasjonTsType';
+import type Reservasjon from '../reservasjonTsType';
 import styles from './AvdelingslederReservasjonerTabell.module.css';
 
 type ReservasjonTableData = {

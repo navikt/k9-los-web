@@ -2,13 +2,13 @@ import dayjs from 'dayjs';
 import 'utils/dateUtils';
 import {
 	AGGREGERT_FUNKSJON_VISNINGSNAVN,
-	CombineOppgavefilter,
-	FeltverdiOppgavefilter,
-	OppgaveQuery,
-	Oppgavefelt,
-	Oppgavefilter,
-	OrderFelt,
-	SelectFelt,
+	type CombineOppgavefilter,
+	type FeltverdiOppgavefilter,
+	type Oppgavefelt,
+	type Oppgavefilter,
+	type OppgaveQuery,
+	type OrderFelt,
+	type SelectFelt,
 	TolkesSom,
 } from './filterTsTypes';
 import { OPERATORS } from './utils';
@@ -153,7 +153,6 @@ function traverserFiltere(filtere: Oppgavefilter[], felter: Oppgavefelt[]): Filt
 				beskrivelser.push(beskrivelseForFeltverdiFilter(filter, felter));
 			}
 		} else if (isCombineOppgavefilter(filter)) {
-			// eslint-disable-next-line @typescript-eslint/no-use-before-define
 			beskrivelser.push(beskrivelseForCombineFilter(filter, felter));
 		}
 	}

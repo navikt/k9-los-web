@@ -1,8 +1,7 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import SearchWithDropdown, { SearchWithDropdownProps } from './SearchWithDropdown';
+import SearchWithDropdown, { type SearchWithDropdownProps } from './SearchWithDropdown';
 
 const suggestions = [
 	{ label: 'Label 1', value: 'Value 1', group: 'Group 1' },

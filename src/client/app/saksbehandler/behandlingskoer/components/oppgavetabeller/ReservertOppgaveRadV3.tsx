@@ -1,13 +1,14 @@
-import React, { ReactNode, useState } from 'react';
-import dayjs from 'dayjs';
 import { MenuHamburgerIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button, Table } from '@navikt/ds-react';
 import { useForlengOppgavereservasjon, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
-import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
+import dayjs from 'dayjs';
+import type React from 'react';
+import { type ReactNode, useState } from 'react';
 import FlyttReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/FlyttReservasjonerModal';
 import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/menu/OpphevReservasjonerModal';
+import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
-import OppgaveV3 from 'types/OppgaveV3';
+import type OppgaveV3 from 'types/OppgaveV3';
 import { dateTimeFormat } from 'utils/dateUtils';
 import styles from './oppgaverTabell.module.css';
 
@@ -93,7 +94,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({ oppgave, reserv
 							/>
 						</ActionMenu.Trigger>
 						<ActionMenu.Content>
-							<ActionMenu.Group aria-label="">
+							<ActionMenu.Group aria-label="Handlinger på reservert oppgave">
 								<ActionMenu.Item onSelect={openOpphevModal}>
 									Legg oppgave <br />
 									tilbake i felles kø

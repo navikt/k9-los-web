@@ -1,7 +1,6 @@
-import React from 'react';
 import { Alert, BodyShort, Button, Modal } from '@navikt/ds-react';
 import { useOppgaveModalViewModel } from 'saksbehandler/sokeboks/oppgave-modal-viewmodel';
-import { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type { SøkeboksOppgaveDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
 export function OppgaveModal(props: { oppgave: SøkeboksOppgaveDto; open: boolean; closeModal: () => void }) {
 	const { harHentetData, heading, modaltekst, feilmelding, knapper } = useOppgaveModalViewModel(

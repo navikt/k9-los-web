@@ -1,10 +1,10 @@
-import { FunctionComponent, useContext, useState } from 'react';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ChevronDownIcon, ChevronRightIcon, ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Heading, Label, Modal } from '@navikt/ds-react';
 import { usePlukkOppgaveMutation, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
+import { type FunctionComponent, useContext, useState } from 'react';
 import { BehandlingskoerContext } from 'saksbehandler/BehandlingskoerContext';
 import ReserverteOppgaverTabell from 'saksbehandler/behandlingskoer/components/oppgavetabeller/ReserverteOppgaverTabell';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { getKoId } from '../utils';
 import { OppgavekoVelgerForm } from './OppgavekoVelgerForm';
 import styles from './oppgavekoPanel.module.css';

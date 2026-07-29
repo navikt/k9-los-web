@@ -1,14 +1,14 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
-import { useIdleTimer } from 'react-idle-timer';
 import { getWebInstrumentations, initializeFaro } from '@grafana/faro-web-sdk';
 import { TracingInstrumentation } from '@grafana/faro-web-tracing';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Button, Modal } from '@navikt/ds-react';
+import { type FunctionComponent, useEffect, useState } from 'react';
+import { useIdleTimer } from 'react-idle-timer';
 import '../../styles/global.css';
-import ErrorBoundary from './ErrorBoundary';
-import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
+import ErrorBoundary from './ErrorBoundary';
+import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
 
 /**
  * AppIndex

@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { ChevronDownIcon, EyeIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Dialog, Loader, Pagination, Table } from '@navikt/ds-react';
+import { type Uttrekk, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
-import { Uttrekk, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 import {
 	AGGREGERT_FUNKSJON_VISNINGSNAVN,
-	AggregertFunksjon,
-	Oppgavefelt,
-	SelectFelt,
+	type AggregertFunksjon,
+	type Oppgavefelt,
+	type SelectFelt,
 	Synlighet,
 	TolkesSom,
 } from 'filter/filterTsTypes';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import 'utils/dateUtils';
 import { formatCelleVerdi, harFormatering } from './uttrekkFormatering';
 
@@ -183,6 +183,7 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 											const kanFormateres = formaterbare.has(idx);
 											return (
 												<ActionMenu.CheckboxItem
+													// biome-ignore lint/suspicious/noArrayIndexKey: kolonnene identifiseres av indeks i seleksjonsmodellen og reordnes aldri
 													key={idx}
 													checked={kanFormateres && formaterKolonner.has(idx)}
 													onCheckedChange={() => toggleFormatering(idx)}
@@ -197,6 +198,7 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 									<ActionMenu.Group label="Vis kolonner">
 										{data.kolonner.map((kolonne, idx) => (
 											<ActionMenu.CheckboxItem
+												// biome-ignore lint/suspicious/noArrayIndexKey: kolonnene identifiseres av indeks i seleksjonsmodellen og reordnes aldri
 												key={idx}
 												checked={synligeKolonner.has(idx)}
 												onCheckedChange={() => toggleSynlighet(idx)}
@@ -218,33 +220,31 @@ export function UttrekkResultatDialog({ uttrekk }: { uttrekk: Uttrekk }) {
 					)}
 					{isError && <Alert variant="error">Kunne ikke hente resultat. Prøv igjen.</Alert>}
 					{data && data.rader.length > 0 && (
-						<>
-							<div className="overflow-x-auto">
-								<Table size="small">
-									<Table.Header>
-										<Table.Row>
-											{visKolonneIndekser.map((idx) => (
-												<Table.HeaderCell key={idx}>{kolonneVisningsnavn(data.kolonner[idx], felter)}</Table.HeaderCell>
-											))}
-										</Table.Row>
-									</Table.Header>
-									<Table.Body>
-										{data.rader.map((rad) => (
-											<Table.Row key={rad.id}>
-												{visKolonneIndekser.map((idx) => {
-													const feltdef = finnFeltdef(felter, data.kolonner[idx]);
-													return (
-														<Table.DataCell key={idx}>
-															{formatCelleVerdi(rad.kolonner[idx], feltdef, formaterKolonner.has(idx))}
-														</Table.DataCell>
-													);
-												})}
-											</Table.Row>
+						<div className="overflow-x-auto">
+							<Table size="small">
+								<Table.Header>
+									<Table.Row>
+										{visKolonneIndekser.map((idx) => (
+											<Table.HeaderCell key={idx}>{kolonneVisningsnavn(data.kolonner[idx], felter)}</Table.HeaderCell>
 										))}
-									</Table.Body>
-								</Table>
-							</div>
-						</>
+									</Table.Row>
+								</Table.Header>
+								<Table.Body>
+									{data.rader.map((rad) => (
+										<Table.Row key={rad.id}>
+											{visKolonneIndekser.map((idx) => {
+												const feltdef = finnFeltdef(felter, data.kolonner[idx]);
+												return (
+													<Table.DataCell key={idx}>
+														{formatCelleVerdi(rad.kolonner[idx], feltdef, formaterKolonner.has(idx))}
+													</Table.DataCell>
+												);
+											})}
+										</Table.Row>
+									))}
+								</Table.Body>
+							</Table>
+						</div>
 					)}
 					{data && data.rader.length === 0 && <BodyShort>Ingen rader i uttrekket.</BodyShort>}
 				</Dialog.Body>

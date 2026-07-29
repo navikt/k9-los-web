@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { Loader, Skeleton, type SortState, Table } from '@navikt/ds-react';
 import { useQueries } from '@tanstack/react-query';
-import dayjs from 'dayjs';
-import { Loader, Skeleton, SortState, Table } from '@navikt/ds-react';
 import apiPaths from 'api/apiPaths';
 import { useAlleKoer } from 'api/queries/avdelingslederQueries';
 import NyKøDialog from 'avdelingsleder/behandlingskoerV3/NyKøDialog';
-import { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
+import dayjs from 'dayjs';
+import React, { useState } from 'react';
+import type { OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
 import { axiosInstance } from 'utils/reactQueryConfig';
 import BehandlingsKoForm from './BehandlingsKoForm';
 import KopierKø from './KopierKø';

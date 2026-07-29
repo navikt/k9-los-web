@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
 import { Select } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS } from 'filter/utils';
+import { useContext } from 'react';
 
 function OperatorSelect({ oppgavefilter }) {
 	const { updateQuery } = useContext(FilterContext);

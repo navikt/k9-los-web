@@ -1,6 +1,6 @@
 import React from 'react';
-import { IdentifiedOppgaveQuery, WithNodeId } from './filterFrontendTypes';
-import { QueryFunction } from './queryUtils';
+import type { IdentifiedOppgaveQuery, WithNodeId } from './filterFrontendTypes';
+import type { QueryFunction } from './queryUtils';
 
 export type FilterContextType = {
 	oppgaveQuery: IdentifiedOppgaveQuery;

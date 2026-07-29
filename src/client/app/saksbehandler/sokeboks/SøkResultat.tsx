@@ -1,9 +1,7 @@
-import React from 'react';
 import { OppgaveTabell } from 'saksbehandler/sokeboks/OppgaveTabell';
 import { PersonInfo } from 'saksbehandler/sokeboks/PersonInfo';
-import { Søkeresultat } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type { Søkeresultat } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function assertNever(_: never) {}
 
 export function SøkResultat({ søkeresultat }: { søkeresultat: Søkeresultat | undefined }) {

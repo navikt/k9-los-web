@@ -1,7 +1,7 @@
-import React, { FunctionComponent } from 'react';
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
+import type { FunctionComponent } from 'react';
 import SisteOppgaver from 'saksbehandler/saksstotte/components/SisteOppgaver';
 import SaksbehandlerNøkkeltall from 'saksbehandler/saksstotte/nokkeltall/SaksbehandlerNøkkeltall';
-import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 
 /**
  * SaksstottePaneler

@@ -1,7 +1,6 @@
-import React from 'react';
 import { FigureInwardIcon, FigureOutwardIcon } from '@navikt/aksel-icons';
 import { Detail, Heading } from '@navikt/ds-react';
-import { SøkeboksPersonDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
+import type { SøkeboksPersonDto } from 'saksbehandler/sokeboks/søkeboks-oppgave-dto';
 import { dateFormat } from 'utils/dateUtils';
 
 export function PersonInfo({ person }: { person: SøkeboksPersonDto }) {

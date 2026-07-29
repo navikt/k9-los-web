@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { PencilIcon } from '@navikt/aksel-icons';
-import { Alert, Button, ErrorMessage, Heading, Label, Modal, TextField, Textarea } from '@navikt/ds-react';
-import AppContext from 'app/AppContext';
-import { useHentSaksbehandlereAvdelingsleder, useKo, useOppdaterKøMutation } from 'api/queries/avdelingslederQueries';
-import { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
-import KøKriterieEditor from 'filter/KøKriterieEditor';
-import { OppgaveQuery, OppgavefilterKode } from 'filter/filterTsTypes';
 import SearchWithDropdown from 'sharedComponents/searchWithDropdown/SearchWithDropdown';
-import { OppgavekøV3 } from 'types/OppgavekøV3Type';
+import { PencilIcon } from '@navikt/aksel-icons';
+import { Alert, Button, ErrorMessage, Heading, Label, Modal, Textarea, TextField } from '@navikt/ds-react';
+import { useHentSaksbehandlereAvdelingsleder, useKo, useOppdaterKøMutation } from 'api/queries/avdelingslederQueries';
+import AppContext from 'app/AppContext';
+import type { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
+import { OppgavefilterKode, type OppgaveQuery } from 'filter/filterTsTypes';
+import KøKriterieEditor from 'filter/KøKriterieEditor';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import type { OppgavekøV3 } from 'types/OppgavekøV3Type';
 
 enum fieldnames {
 	TITTEL = 'tittel',
@@ -76,6 +76,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 		defaultValuesRef.current = defaultValues;
 	});
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: ekspandert og versjon er bevisste triggere, ikke verdier effekten leser
 	useEffect(() => {
 		formMethods.reset(defaultValuesRef.current);
 	}, [ekspandert, versjon, formMethods]);

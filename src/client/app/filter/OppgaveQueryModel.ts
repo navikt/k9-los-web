@@ -1,24 +1,24 @@
 import { v4 as uuid } from 'uuid';
 import {
-	IdentifiedCombineOppgavefilter,
-	IdentifiedOppgaveQuery,
-	IdentifiedOppgavefilter,
-	WithNodeId,
 	fjernNodeIdFraQuery,
+	type IdentifiedCombineOppgavefilter,
+	type IdentifiedOppgavefilter,
+	type IdentifiedOppgaveQuery,
 	isIdentifiedQuery,
 	tilIdentifiedQuery,
+	type WithNodeId,
 } from './filterFrontendTypes';
 import {
 	AggregertFunksjon,
-	AggregertOrderFelt,
-	AggregertSelectFelt,
-	EnkelOrderFelt,
-	EnkelSelectFelt,
-	FeltverdiOppgavefilter,
-	OppgaveQuery,
-	Oppgavefilter,
-	OrderFelt,
-	SelectFelt,
+	type AggregertOrderFelt,
+	type AggregertSelectFelt,
+	type EnkelOrderFelt,
+	type EnkelSelectFelt,
+	type FeltverdiOppgavefilter,
+	type Oppgavefilter,
+	type OppgaveQuery,
+	type OrderFelt,
+	type SelectFelt,
 } from './filterTsTypes';
 
 const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
@@ -98,7 +98,9 @@ export default class OppgaveQueryModel {
 		} else {
 			node.filtere
 				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
-				.forEach((f) => this.internalRemoveFilter(f, nodeId));
+				.forEach((f) => {
+					this.internalRemoveFilter(f, nodeId);
+				});
 		}
 		return this;
 	}
@@ -157,7 +159,9 @@ export default class OppgaveQueryModel {
 		} else {
 			node.filtere
 				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
-				.forEach((f) => this.internalAddFeltverdiFilter(f, nodeId, data));
+				.forEach((f) => {
+					this.internalAddFeltverdiFilter(f, nodeId, data);
+				});
 		}
 		return this;
 	}
@@ -178,7 +182,9 @@ export default class OppgaveQueryModel {
 		} else {
 			node.filtere
 				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
-				.forEach((f) => this.internalUpdateFilter(f, nodeId, data));
+				.forEach((f) => {
+					this.internalUpdateFilter(f, nodeId, data);
+				});
 		}
 		return this;
 	}
@@ -199,7 +205,9 @@ export default class OppgaveQueryModel {
 		} else {
 			node.filtere
 				.filter((f): f is IdentifiedCombineOppgavefilter => f.type === 'combine')
-				.forEach((f) => this.internalAddGruppe(f, nodeId));
+				.forEach((f) => {
+					this.internalAddGruppe(f, nodeId);
+				});
 		}
 		return this;
 	}
