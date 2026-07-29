@@ -2,11 +2,15 @@ import { Select } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
 import { updateFilter } from 'filter/queryUtils';
 import { OPERATORS } from 'filter/utils';
-import { useContext } from 'react';
+import { type ChangeEvent, useContext } from 'react';
 
-function OperatorSelect({ oppgavefilter }) {
+type Props = {
+	oppgavefilter: { id: string; operator: string };
+};
+
+function OperatorSelect({ oppgavefilter }: Props) {
 	const { updateQuery } = useContext(FilterContext);
-	const handleChangeOperator = (event) => {
+	const handleChangeOperator = (event: ChangeEvent<HTMLSelectElement>) => {
 		updateQuery([
 			updateFilter(oppgavefilter.id, {
 				operator: event.target.value,

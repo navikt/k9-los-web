@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { type Oppgavefelt, type Oppgavefeltverdi, TolkesSom } from 'filter/filterTsTypes';
+import { type Oppgavefelt, type Oppgavefeltverdi, TolkesSom, type Verdiforklaring } from 'filter/filterTsTypes';
 import { harGruppering } from 'filter/utils';
 import 'utils/dateUtils';
 
@@ -8,9 +8,9 @@ interface Props {
 	felt: Oppgavefeltverdi;
 }
 
-function getVerdiforklaringer(felt, oppgaveFelt, format = false) {
-	const mapFunc = (v) => {
-		const verdiforklaring = oppgaveFelt.verdiforklaringer.find((item) => item.verdi === v);
+function getVerdiforklaringer(felt: Oppgavefeltverdi, oppgaveFelt: Oppgavefelt, format = false) {
+	const mapFunc = (v: string) => {
+		const verdiforklaring = oppgaveFelt.verdiforklaringer.find((item: Verdiforklaring) => item.verdi === v);
 		if (!verdiforklaring) return v;
 		return format ? `${verdiforklaring.visningsnavn} (${v})` : verdiforklaring.visningsnavn;
 	};

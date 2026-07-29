@@ -1,5 +1,12 @@
 import { render, screen } from '@testing-library/react';
-import { type Oppgavefelt, type Oppgavefeltverdi, OppgavefilterKode, Synlighet, TolkesSom } from 'filter/filterTsTypes';
+import {
+	type Oppgavefelt,
+	type Oppgavefeltverdi,
+	OppgavefilterKode,
+	Synlighet,
+	TolkesSom,
+	type Verdiforklaring,
+} from 'filter/filterTsTypes';
 import { describe, expect, it } from 'vitest';
 import OppgaveFeltVisning from './OppgaveFeltVisning';
 
@@ -14,7 +21,7 @@ const lagFelt = (overrides: Partial<Oppgavefelt> & Pick<Oppgavefelt, 'kode'>): O
 	...overrides,
 });
 
-const lagVerdiforklaring = (verdi: string, visningsnavn: string, gruppering?: string) => ({
+const lagVerdiforklaring = (verdi: string, visningsnavn: string, gruppering?: string): Verdiforklaring => ({
 	verdi,
 	visningsnavn,
 	gruppering,

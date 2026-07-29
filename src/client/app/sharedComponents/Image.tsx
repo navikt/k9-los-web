@@ -48,7 +48,7 @@ const Image: FunctionComponent<OwnProps> = ({
 	}, []);
 
 	const onKeyDownFn = useCallback(
-		(e) => {
+		(e: KeyboardEvent) => {
 			if (e.key === 'Enter' || e.key === ' ') {
 				if (onKeyDown) {
 					onKeyDown(e);

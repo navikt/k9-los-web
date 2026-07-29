@@ -2,7 +2,7 @@ import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import type { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { type Oppgavefelt, Synlighet } from 'filter/filterTsTypes';
+import { type Oppgavefelt, type Oppgavefilter, Synlighet } from 'filter/filterTsTypes';
 import { type QueryFunction, removeFilter, updateFilter } from 'filter/queryUtils';
 import { COMBOBOX_SEPARATOR_VALUE, comboboxSeparatorStyle } from 'filter/utils';
 import { useContext, useMemo, useState } from 'react';
@@ -79,7 +79,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 
 		const { område, kode } = kriterie;
 
-		const updateData = { område, kode, verdi: undefined };
+		const updateData: Partial<Oppgavefilter> = { område, kode, verdi: undefined };
 		updateQuery([updateFilter(oppgavefilter._nodeId, updateData)]);
 	};
 

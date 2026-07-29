@@ -21,5 +21,6 @@ export function SøkResultat({ søkeresultat }: { søkeresultat: Søkeresultat |
 			);
 		default:
 			assertNever(søkeresultat);
+			return null;
 	}
 }

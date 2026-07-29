@@ -90,7 +90,7 @@ interface KopierKøPayload {
 export const useAvdelingslederReservasjoner = (
 	options?: Omit<UseQueryOptions<Reservasjon[], DefaultError, Reservasjon[]>, 'queryKey'>,
 ) =>
-	useQuery<Reservasjon[], unknown, Reservasjon[]>({
+	useQuery<Reservasjon[]>({
 		queryKey: [apiPaths.avdelinglederReservasjoner],
 		...options,
 	});
@@ -130,7 +130,7 @@ export const useSlettKøMutation = (callback?: () => void) => {
 export const useOppdaterKøMutation = (callback: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation({
-		mutationFn: (payload: { key: string }) =>
+		mutationFn: (payload: OppgavekøV3) =>
 			axiosInstance.post(`${apiPaths.oppdaterOppgaveko}`, { ...payload }).then((res) => res.data),
 
 		onSuccess: (props) => {
@@ -153,7 +153,7 @@ export const useOppdaterKøMutation = (callback: () => void) => {
 };
 
 export const useKo = (id: string, options?: Omit<UseQueryOptions<OppgavekøV3>, 'queryKey'>) =>
-	useQuery<OppgavekøV3, unknown, OppgavekøV3>({
+	useQuery<OppgavekøV3>({
 		...options,
 		queryKey: [apiPaths.hentOppgaveko(id)],
 	});

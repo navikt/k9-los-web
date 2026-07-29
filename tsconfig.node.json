@@ -9,6 +9,7 @@
 		"moduleResolution": "NodeNext",
 		"verbatimModuleSyntax": true,
 		"moduleDetection": "force",
+		"strict": true,
 		"noEmit": true
 	},
 	"include": ["vite.config.ts"]
