@@ -1,1 +1,3 @@
+# Full kjøring på hele repoet er et bevisst valg – ikke bytt til lint-staged.
+# Se «Linting og formatering» i AGENTS.md og PR #4337.
 pnpm verify

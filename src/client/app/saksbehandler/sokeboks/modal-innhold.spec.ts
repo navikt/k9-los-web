@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import NavAnsatt from 'app/navAnsattTsType';
 import ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { modalInnhold as modalInnholdOriginal } from 'saksbehandler/sokeboks/modal-innhold';
@@ -52,7 +53,7 @@ const modalInnhold = (
 };
 
 describe('Skal lage riktig modalinnhold', () => {
-	test('på vent, ikke reservert', () => {
+	it('på vent, ikke reservert', () => {
 		const resultat = modalInnhold({ status: 'Venter' }, { kanReservere: true }, null);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er satt på vent',
@@ -63,7 +64,7 @@ describe('Skal lage riktig modalinnhold', () => {
 		});
 	});
 
-	test('på vent, reservert av en annen', () => {
+	it('på vent, reservert av en annen', () => {
 		const resultat = modalInnhold(
 			{
 				status: 'Venter',
@@ -84,7 +85,7 @@ describe('Skal lage riktig modalinnhold', () => {
 		});
 	});
 
-	test('ikke reservert, kan reservere selv', () => {
+	it('ikke reservert, kan reservere selv', () => {
 		const resultat = modalInnhold({}, { kanReservere: true }, null);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er ikke reservert',
@@ -95,7 +96,7 @@ describe('Skal lage riktig modalinnhold', () => {
 		});
 	});
 
-	test('ikke reservert, kan ikke reservere selv', () => {
+	it('ikke reservert, kan ikke reservere selv', () => {
 		const resultat = modalInnhold({}, { kanReservere: false }, null);
 		expect(resultat).toStrictEqual({
 			heading: 'Oppgaven er ikke reservert',
@@ -106,7 +107,7 @@ describe('Skal lage riktig modalinnhold', () => {
 		});
 	});
 
-	test('reservert av andre, kan ikke reservere selv', () => {
+	it('reservert av andre, kan ikke reservere selv', () => {
 		const resultat = modalInnhold(
 			{},
 			{ kanReservere: false },
@@ -125,7 +126,7 @@ describe('Skal lage riktig modalinnhold', () => {
 		});
 	});
 
-	test('reservert av andre, kan reservere selv', () => {
+	it('reservert av andre, kan reservere selv', () => {
 		const resultat = modalInnhold(
 			{},
 			{ kanReservere: true },
@@ -144,7 +145,7 @@ describe('Skal lage riktig modalinnhold', () => {
 		});
 	});
 
-	test('reservert på seg selv', () => {
+	it('reservert på seg selv', () => {
 		const resultat = modalInnhold(
 			{},
 			{ kanReservere: true },

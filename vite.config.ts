@@ -1,6 +1,6 @@
 /// <reference types="vitest/config" />
-import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [
@@ -38,10 +38,13 @@ export default defineConfig({
 		sourcemap: true,
 	},
 	test: {
-		globals: true,
 		environment: 'jsdom',
 		setupFiles: ['./setup/setup-test-env.ts'],
-		include: ['src/**/*.spec.{js,jsx,ts,tsx}', 'setup/**/*.spec.ts'],
-		exclude: ['**/node_modules/**', '**/dist/**']
+		include: ['src/**/*.spec.{js,jsx,ts,tsx}'],
+		env: { TZ: 'Europe/Oslo' },
+		restoreMocks: true,
+		coverage: {
+			exclude: ['**/testdata.ts', '**/*.d.ts', '**/*.spec.*', 'setup/**'],
+		},
 	},
 });

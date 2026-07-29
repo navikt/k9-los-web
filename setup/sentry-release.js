@@ -1,5 +1,5 @@
-import { execSync } from 'node:child_process';
 import { SentryCli } from '@sentry/cli';
+import { execSync } from 'node:child_process';
 
 function hentRelease() {
 	return execSync('git rev-parse --short HEAD').toString().trim();

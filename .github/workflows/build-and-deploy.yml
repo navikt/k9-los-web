@@ -40,6 +40,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: Installere dependencies
         run: pnpm install --frozen-lockfile
+      - name: Lint og formatsjekk
+        run: pnpm verify
       - name: Tester
         run: pnpm test --maxWorkers=2
       - name: Bygge kode

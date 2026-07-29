@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Synlighet, Verdiforklaring } from './filterTsTypes';
 import { sorterGrupperinger, sorterVerdiforklaringer } from './utils';
 

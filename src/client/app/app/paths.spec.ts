@@ -1,4 +1,5 @@
 import { Location } from 'react-router';
+import { describe, expect, it } from 'vitest';
 import { getPanelLocationCreator } from './paths';
 
 const lagLocation = (search: string): Location => ({

@@ -56,7 +56,6 @@
 		"@types/react-dom": "19.2.1",
 		"@vitejs/plugin-react": "6.0.4",
 		"@vitest/coverage-v8": "4.1.10",
-		"cross-env": "10.1.0",
 		"husky": "9.1.7",
 		"jsdom": "30.0.0",
 		"oxlint": "1.75.0",
@@ -74,8 +73,8 @@
 		"preview": "vite preview",
 		"lint": "oxlint --deny-warnings",
 		"lint:fix": "oxlint --fix",
-		"format": "prettier --write src/client",
-		"format:check": "prettier --check src/client",
+		"format": "prettier --write src server setup \"*.{ts,js,json,md,html}\"",
+		"format:check": "prettier --check src server setup \"*.{ts,js,json,md,html}\"",
 		"verify": "tsc -b && pnpm lint && pnpm format:check",
 		"sentry-release": "node ./setup/sentry-release.js",
 		"prepare": "husky"

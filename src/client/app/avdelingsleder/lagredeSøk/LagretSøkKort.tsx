@@ -112,11 +112,11 @@ export function LagretSøkKort({
 					) : (
 						<div className="flex items-center gap-1">
 							{harEgendefinertTittel ? (
-								<span className={`${lagretSøkKollapset ? 'text-ax-neutral-800 text-ax-medium' : ''}`}>
+								<span className={`${lagretSøkKollapset ? 'text-ax-neutral-800 text-base' : ''}`}>
 									{lagretSøk.tittel}
 								</span>
 							) : (
-								<span className={`italic text-ax-neutral-600 ${lagretSøkKollapset ? 'text-ax-medium' : ''}`}>
+								<span className={`italic text-ax-neutral-600 ${lagretSøkKollapset ? 'text-base' : ''}`}>
 									Ingen tittel
 								</span>
 							)}
@@ -147,7 +147,7 @@ export function LagretSøkKort({
 			</div>
 
 			{lagretSøkKollapset ? (
-				<div className="w-full text-ax-small text-ax-neutral-700 flex flex-col">
+				<div className="w-full text-sm text-ax-neutral-700 flex flex-col">
 					{filterBeskrivelse && filterBeskrivelse.length > 0 && (
 						<div>
 							<span className="font-medium">Kriterier: </span>
@@ -164,7 +164,7 @@ export function LagretSøkKort({
 					</div>
 
 					{/* Rad 3: Antall oppgaver */}
-					<div className="text-md text-ax-neutral-800 mb-4">{antallVisning}</div>
+					<div className="text-ax-neutral-800 mb-4">{antallVisning}</div>
 
 					{/* Rad 4: Uttrekk-visning */}
 					<div className="">

@@ -4,12 +4,12 @@
 		"target": "ES2023",
 		"lib": ["ES2023"],
 		"module": "NodeNext",
-		"types": ["node", "vitest/globals"],
+		"types": ["node"],
 		"skipLibCheck": true,
 		"moduleResolution": "NodeNext",
 		"verbatimModuleSyntax": true,
 		"moduleDetection": "force",
 		"noEmit": true
 	},
-	"include": ["vite.config.ts", "setup/**/*.spec.ts"]
+	"include": ["vite.config.ts"]
 }
