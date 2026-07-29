@@ -1,17 +1,18 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 import OppgaveQueryResultat from './OppgaveQueryResultat';
 import { felter, oppgaveQueryForDate, oppgaveQueryForDuration, oppgaverMedDate, oppgaverMedDuration } from './testdata';
 
 describe('OppgaveQueryResultat', () => {
-	it('should render table headers with correct visningsnavn', () => {
+	it('viser kolonneoverskrifter med riktig visningsnavn', () => {
 		render(
 			<OppgaveQueryResultat felter={felter} oppgaveQuery={oppgaveQueryForDuration} oppgaver={oppgaverMedDuration} />,
 		);
 		expect(screen.getByText('Akkumulert ventetid saksbehandler for tidligere versjoner')).toBeInTheDocument();
 	});
 
-	it('should render duration correctly', () => {
+	it('viser varighet riktig', () => {
 		render(
 			<OppgaveQueryResultat felter={felter} oppgaveQuery={oppgaveQueryForDuration} oppgaver={oppgaverMedDuration} />,
 		);
@@ -27,7 +28,7 @@ describe('OppgaveQueryResultat', () => {
 		expect(screen.getByText('175d 4t')).toBeInTheDocument();
 	});
 
-	it('should render date correctly', () => {
+	it('viser dato riktig', () => {
 		render(<OppgaveQueryResultat felter={felter} oppgaveQuery={oppgaveQueryForDate} oppgaver={oppgaverMedDate} />);
 		const expectedDates = [
 			'21.12.2022',

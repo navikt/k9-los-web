@@ -432,9 +432,7 @@ const OppgaverConstrainedOrderFelter: React.FC = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			{orderFields.length === 0 && (
-				<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen sortering lagt til</div>
-			)}
+			{orderFields.length === 0 && <div className="text-ax-neutral-500 italic mt-1 mb-1">Ingen sortering lagt til</div>}
 			<Button
 				type="button"
 				className="self-start -ml-1 px-1"
@@ -539,7 +537,7 @@ function GruppertKonfig({
 						</SortableContext>
 					</DndContext>
 					{groupByFelter.length === 0 && (
-						<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen kolonner lagt til</div>
+						<div className="text-ax-neutral-500 italic mt-1 mb-1">Ingen kolonner lagt til</div>
 					)}
 					<QuickAddGroupBy groupByFelter={groupByFelter} oppgaveFelter={oppgaveFelter} onAdd={onQuickAddGroupBy} />
 					<Button
@@ -578,7 +576,7 @@ function GruppertKonfig({
 						</SortableContext>
 					</DndContext>
 					{sorteringer.length === 0 && (
-						<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen sortering lagt til</div>
+						<div className="text-ax-neutral-500 italic mt-1 mb-1">Ingen sortering lagt til</div>
 					)}
 					<Button
 						type="button"

@@ -154,7 +154,7 @@ const OppgaveSelectFelter = () => {
 				</SortableContext>
 			</DndContext>
 			{oppgaveQuery.select.length === 0 && (
-				<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen kolonner lagt til</div>
+				<div className="text-ax-neutral-500 italic mt-1 mb-1">Ingen kolonner lagt til</div>
 			)}
 			<QuickAddSelect />
 			<div className="flex gap-2">

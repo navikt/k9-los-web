@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { Oppgavefelt, Synlighet, TolkesSom } from 'filter/filterTsTypes';
 import { formatCelleVerdi, harFormatering } from './uttrekkFormatering';
 
@@ -92,11 +93,9 @@ describe('formatCelleVerdi', () => {
 		const feltdef = lagFeltdef({ tolkes_som: TolkesSom.Timestamp });
 
 		it('formaterer ISO-timestamp til norsk format', () => {
-			const resultat = formatCelleVerdi('2026-04-01T12:06:00Z', feltdef, true);
-			expect(resultat).toContain('apr');
-			expect(resultat).toContain('2026');
-			// Klokkeslett avhenger av tidssone, sjekk bare at det inneholder "kl." eller timer:minutter-mønster
-			expect(resultat).toMatch(/\d{2}:\d{2}/);
+			// TZ er låst til Europe/Oslo i vite.config.ts, så klokkeslettet er forutsigbart.
+			// 12:06 UTC er 14:06 norsk sommertid.
+			expect(formatCelleVerdi('2026-04-01T12:06:00Z', feltdef, true)).toBe('1. april 2026, kl. 14:06');
 		});
 
 		it('faller tilbake til råverdi ved ugyldig dato', () => {

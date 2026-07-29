@@ -26,16 +26,19 @@ Før du kjører `pnpm install`, sett opp lokal NPM for autentisering mot GitHub 
 
 0. Legg inn azure-mock i /etc/hosts. Hvis ikke dette er utført får man følgende feilmelding: ErrorCaused by: java.net.UnknownHostException: azure-mock.
    Verdi som skal legges inn i hosts filen:
+
 ```
 
 127.0.0.1 azure-mock
 
 ```
 
-1. Kjør opp docker-containerene i verdikjede (https://github.com/navikt/k9-verdikjede) 
+1. Kjør opp docker-containerene i verdikjede (https://github.com/navikt/k9-verdikjede)
+
 ```
    docker-compose up -d k9-los
 ```
+
 2. Kjør opp k9-los-web lokalt med pnpm dev
 3. Opprett ønsket kø i avdelingslederpanelet og legg til saksbehandler i køen
 4. Kjør tester i verdikjede for å opprette saker. Man kan slette deler av testene for å få behandlinger som ikke er ferdigstilt.
@@ -46,17 +49,19 @@ Før du kjører `pnpm install`, sett opp lokal NPM for autentisering mot GitHub 
 Nå kan du søke opp saksnummeret eller søkeren i k9-los-web. Dersom oppgaven matcher kriteriene i en av dine køer vil den også dukke opp i listen over oppgaver.
 
 ##### Bygge k9-los-web i docker og kjøre mot k9-los-web i veridkjede
+
 1. pnpm build
 2. docker build -t k9-los-web:din-valgfrie-tag
-3. 
+3.
+
 ```
    docker run -p 8031:8031 --env IS_VERDIKJEDE=true --env PORT=8031 --env PROXY_CONFIG='{"apis":[{"path":"/api/k9-los-api","url":"http://host.docker.internal:8020","scopes":"api://k9-los-web/.default", "backendPath":"/api"}]}' k9-los-web:din-valgfrie-tag
 ```
-
 
 ### For NAV-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen **#k9-los**.
 
 ## Kode generert av GitHub Copilot
+
 Dette repoet bruker GitHub Copilot til å generere kode.

@@ -1,5 +1,4 @@
-import dayjs from 'dayjs';
-import durationPlugin from 'dayjs/plugin/duration';
+import { describe, expect, it } from 'vitest';
 import {
 	AggregertFunksjon,
 	FeltverdiOppgavefilter,
@@ -18,8 +17,6 @@ import {
 	utledOrderBeskrivelse,
 	utledSelectBeskrivelse,
 } from './queryBeskrivelseUtils';
-
-dayjs.extend(durationPlugin);
 
 describe('queryBeskrivelseUtils', () => {
 	const felter: Oppgavefelt[] = [

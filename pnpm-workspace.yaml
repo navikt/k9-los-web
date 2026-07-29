@@ -10,10 +10,7 @@ injectWorkspacePackages: true
 # Dette må stå eksplisitt – ellers feiler `pnpm install` med ERR_PNPM_IGNORED_BUILDS.
 allowBuilds:
   '@sentry/cli': false
-  core-js: false
   esbuild: false
-  msw: false
-  unrs-resolver: false
 
 # Ikke kjør `pnpm install` på nytt før hvert `pnpm run`-script.
 # Registryet er token-gated, så en auto-reinstall ville kreve token ved hver kommando.

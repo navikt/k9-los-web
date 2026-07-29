@@ -177,9 +177,7 @@ const OppgaveOrderFelter = () => {
 					))}
 				</SortableContext>
 			</DndContext>
-			{orderFields.length === 0 && (
-				<div className="text-ax-neutral-500 italic text-md mt-1 mb-1">Ingen sortering lagt til</div>
-			)}
+			{orderFields.length === 0 && <div className="text-ax-neutral-500 italic mt-1 mb-1">Ingen sortering lagt til</div>}
 			<QuickAddOrder />
 			<div className="flex gap-2">
 				<Button
