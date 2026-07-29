@@ -1,16 +1,12 @@
 import { SentryCli } from '@sentry/cli';
-import { execSync } from 'node:child_process';
-
-function hentRelease() {
-	return execSync('git rev-parse --short HEAD').toString().trim();
-}
 
 async function opprettReleaseTilSentry() {
-	const release = hentRelease();
+	// Samme verdi som frontend-bygget ble kompilert med, slik at source maps matcher releasen.
+	const release = process.env.VITE_SENTRY_RELEASE;
 	const authToken = process.env.SENTRY_AUTH_TOKEN;
 
 	if (!release) {
-		throw new Error('Klarte ikke å utlede release fra git');
+		throw new Error('"VITE_SENTRY_RELEASE" er ikke satt – må være samme verdi som ble brukt under bygget');
 	}
 
 	if (!authToken) {
