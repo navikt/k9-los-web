@@ -1,4 +1,4 @@
-import type { QueryClientConfig } from '@tanstack/react-query';
+import type { QueryClientConfig, QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
 import { callId } from 'utils/call-id';
 
@@ -15,13 +15,26 @@ export const axiosInstance = axios.create({
 	withCredentials: true,
 });
 
-export const defaultQuery = async <T>({ queryKey }) => {
-	const { data } = await axiosInstance.get<T>(queryKey[0], axiosConfig);
+export const defaultQuery = async ({ queryKey }: QueryFunctionContext) => {
+	const [url] = queryKey;
+	if (typeof url !== 'string') {
+		throw new Error(`Ugyldig queryKey: forventet streng, fikk ${typeof url}`);
+	}
+	const { data } = await axiosInstance.get<unknown>(url, axiosConfig);
 	return data;
 };
 
-export const defaultMutation = async <T>({ url, body }) => {
-	const { data } = await axiosInstance.post<T>(url, body, axiosConfig);
+export const defaultMutation = async (variables: unknown) => {
+	if (
+		typeof variables !== 'object' ||
+		variables === null ||
+		!('url' in variables) ||
+		typeof variables.url !== 'string'
+	) {
+		throw new Error('Ugyldige mutation-variabler: forventet et objekt med url');
+	}
+	const body = 'body' in variables ? variables.body : undefined;
+	const { data } = await axiosInstance.post<unknown>(variables.url, body, axiosConfig);
 	return data;
 };
 
@@ -35,4 +48,4 @@ export const config = {
 			mutationFn: defaultMutation,
 		},
 	},
-} as QueryClientConfig;
+} satisfies QueryClientConfig;

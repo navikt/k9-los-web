@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
 import { useAntallOppgaverIKoV3UtenReserverte } from 'api/queries/saksbehandlerQueries';
 import { useMount } from 'hooks/UseMount';
-import type { Dispatch, FunctionComponent, ReactNode, SetStateAction } from 'react';
+import type { ChangeEvent, Dispatch, FunctionComponent, ReactNode, SetStateAction } from 'react';
 import type { OppgavekøV3MedNavn } from 'types/OppgavekøV3Type';
 import {
 	getValueFromLocalStorage,
@@ -98,7 +98,7 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({
 		}
 	});
 
-	const handleSelectKo = (event) => {
+	const handleSelectKo = (event: ChangeEvent<HTMLSelectElement>) => {
 		const koId = event.target.value;
 		setValgtOppgavekoId(koId);
 		setValueInLocalStorage('id', koId);
@@ -116,7 +116,7 @@ export const OppgavekoVelgerForm: FunctionComponent<OwnProps> = ({
 	return (
 		<div className={styles.oppgavevelgerform_container}>
 			<div className="flex">
-				<div className="w-[260px] flex-shrink-0 flex-grow-0 mr-8">
+				<div className="w-65 shrink-0 grow-0 mr-8">
 					<Select label="Velg oppgavekø" value={valgtOppgavekoId} onChange={handleSelectKo}>
 						{oppgavekoerSortertAlfabetisk.map((oppgaveko) => (
 							<option key={oppgaveko.id} value={`${oppgaveko.id}`}>

@@ -29,6 +29,8 @@ interface BehandlingsKoFormProps extends BaseProps {
 	alleSaksbehandlere: Saksbehandler[];
 }
 
+type LagreKøSkjemaData = Omit<OppgavekøV3, 'saksbehandlerIds'> & { saksbehandlerIds: string[] };
+
 const saksbehandlereMapper = (saksbehandlere: Saksbehandler[]) => {
 	const relevanteEnheterForAvdelingsleder = ['2103', '4403', '4410'];
 	const isProd = window.location.hostname.includes('intern.nav.no');
@@ -88,7 +90,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 	}, [visSuksess]);
 
 	const formaterteSaksbehandlere = saksbehandlereMapper(alleSaksbehandlere);
-	const onSubmit = (data) => {
+	const onSubmit = (data: LagreKøSkjemaData) => {
 		lagreMutation.mutate({
 			...data,
 			saksbehandlerIds: (data.saksbehandlerIds || []).map(Number),

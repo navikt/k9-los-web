@@ -11,6 +11,34 @@ import BehandlingsKoForm from './BehandlingsKoForm';
 import KopierKø from './KopierKø';
 import SlettKø from './SlettKø';
 
+type KøRad = OppgavekøV3Enkel & {
+	antallUtenReserverte?: number;
+	antallMedReserverte?: number;
+	isLoading?: boolean;
+	isError?: boolean;
+};
+
+type SortKey = 'tittel' | 'antallSaksbehandlere' | 'antallUtenReserverte' | 'sistEndret';
+type KøSortState = Omit<SortState, 'orderBy'> & { orderBy: SortKey };
+
+const erSortKey = (sortKey: string): sortKey is SortKey =>
+	['tittel', 'antallSaksbehandlere', 'antallUtenReserverte', 'sistEndret'].includes(sortKey);
+
+const sorteringsverdi: Record<SortKey, (rad: KøRad) => string | number> = {
+	tittel: (rad) => rad.tittel.toLowerCase(),
+	antallSaksbehandlere: (rad) => rad.antallSaksbehandlere,
+	antallUtenReserverte: (rad) => rad.antallUtenReserverte ?? 0,
+	sistEndret: (rad) => (rad.sistEndret ? new Date(rad.sistEndret).getTime() : 0),
+};
+
+const sammenlign = (a: KøRad, b: KøRad, orderBy: SortKey) => {
+	const aVerdi = sorteringsverdi[orderBy](a);
+	const bVerdi = sorteringsverdi[orderBy](b);
+	if (aVerdi < bVerdi) return -1;
+	if (aVerdi > bVerdi) return 1;
+	return 0;
+};
+
 function scrollToId(id: string) {
 	const maxAttempts = 50;
 	let attempts = 0;
@@ -99,11 +127,11 @@ const BehandlingskoerIndex = () => {
 	const { results: køerMedAntallOppgaver, isSuccess: isSuccessAll } = useBerikMedAntallOppgaverIndividuelt(
 		initielleKøer || [],
 	);
-	const [sort, setSort] = useState<SortState | undefined>({
+	const [sort, setSort] = useState<KøSortState | undefined>({
 		orderBy: 'tittel',
 		direction: 'ascending',
 	});
-	const [ekspanderteKøer, setEkspanderteKøer] = useState([]);
+	const [ekspanderteKøer, setEkspanderteKøer] = useState<string[]>([]);
 	const [køSomNettoppBleLaget, setKøSomNettoppBleLaget] = useState('');
 
 	const toggleExpand = (køId: string) => {
@@ -119,7 +147,9 @@ const BehandlingskoerIndex = () => {
 		}
 	}, [køSomNettoppBleLaget]);
 
-	const handleSort = (sortKey) => {
+	const handleSort = (sortKey: string) => {
+		if (!erSortKey(sortKey)) return;
+
 		const newDirection =
 			sort && sortKey === sort.orderBy && sort.direction === 'ascending' ? 'descending' : 'ascending';
 		setSort((prevState) =>
@@ -133,25 +163,11 @@ const BehandlingskoerIndex = () => {
 		const køer = køerMedAntallOppgaver || initielleKøer;
 		if (!køer || !sort) return køer;
 
-		return køer.slice().sort((a, b) => {
-			const comparator = (itemA, itemB, orderBy) => {
-				let aVal = itemA[orderBy];
-				let bVal = itemB[orderBy];
-				if (orderBy === 'sistEndret') {
-					aVal = aVal ? new Date(aVal).getTime() : 0;
-					bVal = bVal ? new Date(bVal).getTime() : 0;
-				}
-				if (orderBy === 'tittel') {
-					aVal = aVal?.toLowerCase();
-					bVal = bVal?.toLowerCase();
-				}
-				if (bVal < aVal || bVal === undefined) return -1;
-				if (bVal > aVal) return 1;
-				return 0;
-			};
-
-			return sort.direction === 'ascending' ? comparator(b, a, sort.orderBy) : comparator(a, b, sort.orderBy);
-		});
+		return (køer as KøRad[])
+			.slice()
+			.sort((a, b) =>
+				sort.direction === 'ascending' ? sammenlign(a, b, sort.orderBy) : sammenlign(b, a, sort.orderBy),
+			);
 	};
 
 	if (isLoading) return <Loader />;

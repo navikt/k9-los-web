@@ -14,7 +14,13 @@ const endreWindowLocationTilFagsystem = (oppgave: SøkeboksOppgaveDto) => {
 	window.location.assign(oppgave.oppgavebehandlingsUrl);
 };
 
-const harIkkeHentetData = {
+const harIkkeHentetData: {
+	harHentetData: false;
+	heading: undefined;
+	modaltekst: undefined;
+	feilmelding: undefined;
+	knapper: undefined;
+} = {
 	harHentetData: false,
 	heading: undefined,
 	modaltekst: undefined,
@@ -69,7 +75,7 @@ export const useOppgaveModalViewModel = (oppgave: SøkeboksOppgaveDto, closeModa
 	};
 
 	return {
-		harHentetData: harHentetInnloggetSaksbehandler && harHentetAktivReservasjon,
+		harHentetData: true,
 		heading,
 		modaltekst,
 		feilmelding,

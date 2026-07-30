@@ -35,6 +35,9 @@ type ReservasjonTableData = {
 
 // Snevrer inn typesettingen av vanlig SortState, slik at kun felter som finnes i tabellen kan sorteres på
 type ReservasjonTableDataSortState = SortState & { orderBy: keyof ReservasjonTableData };
+const erReservasjonSortKey = (sortKey: string): sortKey is keyof ReservasjonTableData =>
+	['reservasjon', 'id', 'navn', 'ytelse', 'type', 'reservertTil'].includes(sortKey);
+
 const comparator = (a: ReservasjonTableData, b: ReservasjonTableData, orderBy: keyof ReservasjonTableData) => {
 	switch (orderBy) {
 		case 'reservasjon':
@@ -76,7 +79,9 @@ const AvdelingslederReservasjonerTabell = () => {
 	);
 	const [sort, setSort] = useState<ReservasjonTableDataSortState>({ orderBy: 'navn', direction: 'ascending' });
 
-	const handleSort = (sortKey: keyof ReservasjonTableData) => {
+	const handleSort = (sortKey: string) => {
+		if (!erReservasjonSortKey(sortKey)) return;
+
 		const newSort: ReservasjonTableDataSortState =
 			sort && sortKey === sort.orderBy && sort.direction === 'descending'
 				? undefined

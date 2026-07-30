@@ -1,7 +1,7 @@
 import { Heading } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import React, { useMemo } from 'react';
-import { FilterContext } from './FilterContext';
+import { FilterContext, type FilterContextType } from './FilterContext';
 import type { OppgaveQuery } from './filterTsTypes';
 import OppgaveQueryModel from './OppgaveQueryModel';
 import OppgavefilterPanel from './parts/OppgavefilterPanel';
@@ -16,7 +16,7 @@ const KøKriterieViewer = ({ query, tittel }: OwnProps) => {
 
 	const { felter } = React.useContext(AppContext);
 
-	const filterContextValues = useMemo(
+	const filterContextValues = useMemo<FilterContextType>(
 		() => ({
 			oppgaveQuery,
 			updateQuery: () => {},
