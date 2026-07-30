@@ -6,11 +6,12 @@ import log from './log.js';
 
 const xTimestamp = 'x-Timestamp';
 const stripTrailingSlash = (str) => (str.endsWith('/') ? str.slice(0, -1) : str);
+const requestPath = (req) => url.parse(req.originalUrl).pathname;
 
 const proxyOptions = (api) => ({
 	timeout: 20000,
 	proxyReqOptDecorator: async (options, req) => {
-		log.info(`Proxy request started for ${req.originalUrl}`);
+		log.info(`Proxy request started for ${requestPath(req)}`);
 
 		if (process.env.IS_VERDIKJEDE === 'true') {
 			log.info('IS_VERDIKJEDE is true, skipping token processing.');
@@ -36,7 +37,7 @@ const proxyOptions = (api) => ({
 						}
 						options.headers.Authorization = `Bearer ${obo.token}`;
 						log.info(
-							`Sending request to ${api.url} with path ${req.originalUrl} at ${new Date(requestTime).toISOString()}`,
+							`Sending request to ${api.url} with path ${requestPath(req)} at ${new Date(requestTime).toISOString()}`,
 						);
 						resolve(options);
 					},
@@ -57,7 +58,7 @@ const proxyOptions = (api) => ({
 		const urlFromRequest = url.parse(req.originalUrl);
 		let path = urlFromRequest.pathname;
 
-		log.debug(`Resolving proxy path for request: ${req.originalUrl}`);
+		log.debug(`Resolving proxy path for request: ${urlFromRequest.pathname}`);
 
 		const PROXY_CONFIG = configValueAsJson({ name: 'PROXY_CONFIG' });
 		PROXY_CONFIG.apis.forEach((proxyEntry) => {
@@ -68,13 +69,15 @@ const proxyOptions = (api) => ({
 		});
 		const queryString = urlFromRequest.query;
 		const newPath = (pathFromApi || '') + (path || '') + (queryString ? `?${queryString}` : '');
-		log.info(`Proxying request from '${req.originalUrl}' to '${stripTrailingSlash(urlFromApi.href)}${newPath}'`);
+		log.info(
+			`Proxying request from '${urlFromRequest.pathname}' to '${stripTrailingSlash(urlFromApi.href)}${pathFromApi}${path}'`,
+		);
 		return newPath;
 	},
 	userResHeaderDecorator: (headers, userReq, _userRes, proxyReq, proxyRes) => {
 		const { statusCode } = proxyRes;
 		const requestTime = Date.now() - proxyReq.getHeader(xTimestamp);
-		const melding = `${statusCode} ${proxyRes.statusMessage}: ${userReq.method} - ${userReq.originalUrl} (${requestTime}ms)`;
+		const melding = `${statusCode} ${proxyRes.statusMessage}: ${userReq.method} - ${requestPath(userReq)} (${requestTime}ms)`;
 		if (statusCode >= 500) {
 			log.warning(melding);
 		} else {
@@ -112,7 +115,7 @@ const timedOut = (req, _res, next) => {
 	if (!req.timedout) {
 		next();
 	} else {
-		log.warning(`Request for ${req.originalUrl} timed out!`);
+		log.warning(`Request for ${requestPath(req)} timed out!`);
 	}
 };
 

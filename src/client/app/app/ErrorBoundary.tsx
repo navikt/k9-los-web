@@ -1,3 +1,4 @@
+import { captureException as captureApmException } from '@nais/apm';
 import { captureException, withScope } from '@sentry/browser';
 import { Component, type ErrorInfo, type ReactNode } from 'react';
 
@@ -18,6 +19,7 @@ export class ErrorBoundary extends Component<OwnProps, State> {
 
 	componentDidCatch(error: Error, info: ErrorInfo): void {
 		const { errorMessageCallback } = this.props;
+		captureApmException(error, { context: { componentStack: info.componentStack } });
 
 		withScope((scope) => {
 			Object.keys(info).forEach((key) => {
@@ -35,8 +37,6 @@ export class ErrorBoundary extends Component<OwnProps, State> {
 					.find((line) => !!line),
 			].join(' '),
 		);
-
-		console.error(error);
 	}
 
 	render(): ReactNode {

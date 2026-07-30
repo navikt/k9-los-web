@@ -1,14 +1,17 @@
-import type { MetaApp } from '@grafana/faro-web-sdk';
-
 declare global {
 	interface Window {
 		nais?: {
 			telemetryCollectorURL: string;
-			app: MetaApp;
+			app: {
+				name: string;
+				namespace?: string;
+				version?: string;
+			};
 		};
 	}
 
 	interface ImportMetaEnv {
+		readonly VITE_APP_VERSION?: string;
 		readonly VITE_SENTRY_RELEASE?: string;
 	}
 
@@ -16,3 +19,5 @@ declare global {
 		readonly env: ImportMetaEnv;
 	}
 }
+
+export {};

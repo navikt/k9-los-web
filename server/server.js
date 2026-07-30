@@ -30,6 +30,7 @@ async function startApp() {
 					directives: {
 						'default-src': ["'self'", "'unsafe-inline'"],
 						'base-uri': ["'self'"],
+						'script-src': ["'self'", 'https://cdn.nav.no'],
 						'connect-src': [
 							"'self'",
 							'https://sentry.gc.nav.no',
@@ -38,8 +39,8 @@ async function startApp() {
 							process.env.NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL,
 						],
 						'font-src': ["'self'", 'https://cdn.nav.no', 'data:'],
-						'img-src': ["'self'", 'data:', 'blob:'],
-						'style-src': ["'self'", "'unsafe-inline'"],
+						'img-src': ["'self'", 'https://cdn.nav.no', 'data:', 'blob:'],
+						'style-src': ["'self'", 'https://cdn.nav.no', "'unsafe-inline'"],
 						'frame-src': ["'self'"],
 						'child-src': ["'self'"],
 						'media-src': ["'none'"],

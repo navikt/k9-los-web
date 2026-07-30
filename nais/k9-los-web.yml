@@ -36,6 +36,25 @@ spec:
     min: 2
     max: 4
     cpuThresholdPercentage: 50
+  resources:
+    limits:
+      memory: {{resources.limits.memory}}
+    requests:
+      cpu: {{resources.requests.cpu}}
+      memory: {{resources.requests.memory}}
+  observability:
+    autoInstrumentation:
+      enabled: {{observability.autoInstrumentation.enabled}}
+      runtime: {{observability.autoInstrumentation.runtime}}
+      destinations:
+      {{#each observability.autoInstrumentation.destinations}}
+        - id: {{this.id}}
+      {{/each}}
+    logging:
+      destinations:
+      {{#each observability.logging.destinations}}
+        - id: {{this.id}}
+      {{/each}}
   accessPolicy:
     outbound:
       external:
