@@ -5,7 +5,8 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 
-const naisConfigUrl = '/public/nais.js';
+// Entry-modulen lastes fra CDN, men runtime-konfigurasjonen finnes på app-originen.
+const naisConfigUrl = new URL('/public/nais.js', window.location.origin).href;
 const { default: naisConfig } = await import(/* @vite-ignore */ naisConfigUrl);
 window.nais = naisConfig;
 
