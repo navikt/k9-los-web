@@ -50,11 +50,21 @@ jobs:
       - name: Bygge kode
         run: pnpm build
         env:
+          VITE_APP_VERSION: ${{ github.sha }}
+          VITE_CDN_BASE: https://cdn.nav.no/k9saksbehandling/k9-los-web/${{ github.sha }}/
           VITE_SENTRY_RELEASE: ${{ steps.sentry-release.outputs.id }}
+      - name: Last opp frontend-assets til CDN
+        uses: nais/deploy/actions/cdn-upload/v2@9ce59af14f70c3a7093ba1e20d6679af2b1c7be9 # v2
+        with:
+          team: k9saksbehandling
+          source: dist/public
+          destination: k9-los-web/${{ github.sha }}/public
+          source_keep_parent_name: false
       - name: Opprett release med Sentry
         run: pnpm sentry-release
         env:
           VITE_SENTRY_RELEASE: ${{ steps.sentry-release.outputs.id }}
+          VITE_CDN_BASE: https://cdn.nav.no/k9saksbehandling/k9-los-web/${{ github.sha }}/
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         # Lager en selvstendig server-deploy med kun serverens prod-dependencies, da det er det eneste som trenger å være med på docker imaget.
         # node-linker=hoisted gir en flat node_modules uten symlenker, som kopieres rent inn i Docker (symlenker bryter BuildKit sin checksum-beregning).
@@ -67,7 +77,7 @@ jobs:
       - uses: nais/docker-build-push@31c3a7321909bcb20799fdf46153fec721fd9512 # v0
         id: docker-push
         with:
-          tag: 'latest'
+          tag: ${{ github.sha }}
           team: k9saksbehandling
 
       - name: Deploy k9-los-web til dev
