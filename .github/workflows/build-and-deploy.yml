@@ -53,6 +53,13 @@ jobs:
           VITE_APP_VERSION: ${{ github.sha }}
           VITE_CDN_BASE: https://cdn.nav.no/k9saksbehandling/k9-los-web/${{ github.sha }}/
           VITE_SENTRY_RELEASE: ${{ steps.sentry-release.outputs.id }}
+      - name: Verifiser CDN-build
+        env:
+          CDN_BASE: https://cdn.nav.no/k9saksbehandling/k9-los-web/${{ github.sha }}/
+        run: |
+          grep -Fq "$CDN_BASE" dist/index.html
+          grep -Fq "window.location.origin" dist/public/index-*.js
+          test -n "$(find dist/public -name '*.js.map' -print -quit)"
       - name: Last opp frontend-assets til CDN
         uses: nais/deploy/actions/cdn-upload/v2@9ce59af14f70c3a7093ba1e20d6679af2b1c7be9 # v2
         with:

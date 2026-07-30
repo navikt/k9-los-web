@@ -36,6 +36,7 @@ async function startApp() {
 							'https://sentry.gc.nav.no',
 							'https://endringslogg.intern.dev.nav.no',
 							'https://endringslogg.intern.nav.no',
+							'https://cdn.nav.no',
 							process.env.NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL,
 						],
 						'font-src': ["'self'", 'https://cdn.nav.no', 'data:'],
@@ -124,6 +125,7 @@ async function startApp() {
 		// serve static files
 		const rootDir = './dist';
 		server.use('/public', express.static('./dist/public'));
+		server.use('/public', (_req, res) => res.sendStatus(404));
 		server.use(/^\/(?!.*dist)(?!api).*$/, limiter, (_req, res) => {
 			res.sendFile('index.html', { root: rootDir });
 		});
