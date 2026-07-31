@@ -561,9 +561,6 @@ packages:
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
 
-  '@grafana/faro-core@2.8.2':
-    resolution: {integrity: sha512-63C6+N/P9/ySUMaGut8yVb1DkPuHS5I/lfRm97+aDXFj3+8pxRT/QzyXNe0r6KMU5O95wC9FLVGxG9ZvkwEhJQ==}
-
   '@grafana/faro-core@2.9.0':
     resolution: {integrity: sha512-v7vrNYuoW273hOQ3rQgo3wYYBD8kH5TTfFes0dbsx2/8L+BclIsrsRCUHdlCqme2ZP42iyLkyPgCSDav8S0Niw==}
 
@@ -581,9 +578,6 @@ packages:
         optional: true
       react-router-dom:
         optional: true
-
-  '@grafana/faro-web-sdk@2.8.2':
-    resolution: {integrity: sha512-WnUDnyQSQRq22Nb5kqm+g9SellSEUfiEuWQ7Pgwnvj5tnIO72E9JHNnJdurk4MveX8ulWrdyKxyk1L10FUJyzg==}
 
   '@grafana/faro-web-sdk@2.9.0':
     resolution: {integrity: sha512-CfeIoW8m/9Y4LEASQpflhRSg1hJRqJ0gUADdmSFVI6f134+DWoT9e9qsO3v64mSuUPsdD3qYi2EkO+16u7hhTQ==}
@@ -3352,11 +3346,6 @@ snapshots:
 
   '@floating-ui/utils@0.2.12': {}
 
-  '@grafana/faro-core@2.8.2':
-    dependencies:
-      '@opentelemetry/api': 1.9.1
-      '@opentelemetry/otlp-transformer': 0.219.0(@opentelemetry/api@1.9.1)
-
   '@grafana/faro-core@2.9.0':
     dependencies:
       '@opentelemetry/api': 1.9.1
@@ -3374,12 +3363,6 @@ snapshots:
       react-router-dom: 7.18.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
     transitivePeerDependencies:
       - supports-color
-
-  '@grafana/faro-web-sdk@2.8.2':
-    dependencies:
-      '@grafana/faro-core': 2.8.2
-      ua-parser-js: 1.0.41
-      web-vitals: 5.3.0
 
   '@grafana/faro-web-sdk@2.9.0':
     dependencies:
@@ -3464,7 +3447,7 @@ snapshots:
   '@nais/apm@0.4.0(@grafana/faro-react@2.9.0(react-dom@19.2.7(react@19.2.7))(react-router-dom@7.18.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-router@8.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(supports-color@7.2.0))(react-dom@19.2.7(react@19.2.7))(react-router-dom@7.18.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-router@8.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(supports-color@7.2.0)':
     dependencies:
       '@grafana/faro-react': 2.9.0(react-dom@19.2.7(react@19.2.7))(react-router-dom@7.18.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react-router@8.3.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(supports-color@7.2.0)
-      '@grafana/faro-web-sdk': 2.8.2
+      '@grafana/faro-web-sdk': 2.9.0
       '@grafana/faro-web-tracing': 2.8.2(supports-color@7.2.0)
       '@grafana/rrweb': 2.0.0-grafana.2
       '@grafana/rrweb-snapshot': 2.0.0-grafana.2
