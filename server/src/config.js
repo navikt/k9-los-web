@@ -60,7 +60,7 @@ const getProxyConfig = () => {
 	const config = configValueAsJson({ name: 'PROXY_CONFIG' });
 	if (!config.apis) {
 		logger.error("Config: 'PROXY_CONFIG' mangler 'apis' entry.");
-		exit(1);
+		process.exit(1);
 	}
 	config.apis.forEach((entry, index) => {
 		if (!entry.path) {
@@ -71,8 +71,24 @@ const getProxyConfig = () => {
 			logger.error(`Api entry ${index} mangler 'url'`);
 			process.exit(1);
 		}
-		if (!entry.scopes) {
+		// Overgangsordning: 'auth' ble innført etter at PROXY_CONFIG allerede var i bruk
+		// i k9-verdikjede. Entries uten 'auth' tolkes som 'obo', slik at gammel og ny
+		// konfigurasjon kan leve side om side mens begge repoene rulles ut.
+		// TODO: krev 'auth' eksplisitt når k9-verdikjede er oppdatert.
+		if (entry.auth === undefined) {
+			logger.warning(`Api entry ${index} mangler 'auth', antar 'obo'. Sett 'auth' eksplisitt.`);
+			entry.auth = 'obo';
+		}
+		if (!['none', 'obo'].includes(entry.auth)) {
+			logger.error(`Api entry ${index} har ugyldig 'auth'. Gyldige verdier: 'none', 'obo'`);
+			process.exit(1);
+		}
+		if (entry.auth === 'obo' && !entry.scopes) {
 			logger.error(`Api entry ${index} mangler 'scopes'`);
+			process.exit(1);
+		}
+		if (entry.auth === 'none' && entry.scopes) {
+			logger.error(`Api entry ${index} med 'auth: none' skal ikke ha 'scopes'`);
 			process.exit(1);
 		}
 	});

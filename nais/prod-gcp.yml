@@ -5,13 +5,19 @@ outboundExternalHosts:
   - k9-los-api.prod-fss-pub.nais.io
 proxyRedirects:
   - path: "/api/k9-los-api"
+    auth: "obo"
     scope: "api://prod-fss.k9saksbehandling.k9-los-api/.default"
     url: "https://k9-los-api.prod-fss-pub.nais.io"
     backendPath: "/api"
   - path: "/api/forvaltning"
+    auth: "obo"
     scope: "api://prod-fss.k9saksbehandling.k9-los-api/.default"
     url: "https://k9-los-api.prod-fss-pub.nais.io"
     backendPath: "/forvaltning"
+  - path: "/api/endringslogg"
+    auth: "none"
+    url: "http://endringslogg"
+    backendPath: ""
 resources:
   limits:
     memory: 200Mi
