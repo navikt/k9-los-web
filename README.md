@@ -55,7 +55,7 @@ Nå kan du søke opp saksnummeret eller søkeren i k9-los-web. Dersom oppgaven m
 3.
 
 ```
-   docker run -p 8031:8031 --env IS_VERDIKJEDE=true --env PORT=8031 --env PROXY_CONFIG='{"apis":[{"path":"/api/k9-los-api","url":"http://host.docker.internal:8020","scopes":"api://k9-los-web/.default", "backendPath":"/api"}]}' k9-los-web:din-valgfrie-tag
+   docker run -p 8031:8031 --env IS_VERDIKJEDE=true --env PORT=8031 --env PROXY_CONFIG='{"apis":[{"path":"/api/k9-los-api","url":"http://host.docker.internal:8020","auth":"obo","scopes":"api://k9-los-web/.default", "backendPath":"/api"}]}' k9-los-web:din-valgfrie-tag
 ```
 
 ### For NAV-ansatte

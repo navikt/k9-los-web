@@ -34,8 +34,6 @@ async function startApp() {
 						'connect-src': [
 							"'self'",
 							'https://sentry.gc.nav.no',
-							'https://endringslogg.intern.dev.nav.no',
-							'https://endringslogg.intern.nav.no',
 							'https://cdn.nav.no',
 							process.env.NAIS_FRONTEND_TELEMETRY_COLLECTOR_URL,
 						],

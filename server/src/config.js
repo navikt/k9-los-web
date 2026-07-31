@@ -60,7 +60,7 @@ const getProxyConfig = () => {
 	const config = configValueAsJson({ name: 'PROXY_CONFIG' });
 	if (!config.apis) {
 		logger.error("Config: 'PROXY_CONFIG' mangler 'apis' entry.");
-		exit(1);
+		process.exit(1);
 	}
 	config.apis.forEach((entry, index) => {
 		if (!entry.path) {
@@ -71,8 +71,16 @@ const getProxyConfig = () => {
 			logger.error(`Api entry ${index} mangler 'url'`);
 			process.exit(1);
 		}
-		if (!entry.scopes) {
+		if (!['none', 'obo'].includes(entry.auth)) {
+			logger.error(`Api entry ${index} har ugyldig eller manglende 'auth'`);
+			process.exit(1);
+		}
+		if (entry.auth === 'obo' && !entry.scopes) {
 			logger.error(`Api entry ${index} mangler 'scopes'`);
+			process.exit(1);
+		}
+		if (entry.auth === 'none' && entry.scopes) {
+			logger.error(`Api entry ${index} med 'auth: none' skal ikke ha 'scopes'`);
 			process.exit(1);
 		}
 	});

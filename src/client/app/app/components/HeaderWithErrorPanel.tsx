@@ -9,17 +9,6 @@ import styles from './headerWithErrorPanel.module.css';
 
 const isDev = !window.location.hostname.includes('intern.nav.no');
 
-const endringsloggBackendUrl = (() => {
-	// I påvente av oppsett for proxy settes url direkte her
-	if (window.location.hostname.includes('localhost')) {
-		return '/api/endringslogg';
-	}
-	if (window.location.hostname.includes('dev')) {
-		return 'https://endringslogg.intern.dev.nav.no';
-	}
-	return 'https://endringslogg.intern.nav.no';
-})();
-
 const HeaderWithErrorPanel: FunctionComponent = () => {
 	const navigate = useNavigate();
 
@@ -78,7 +67,7 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 								userId={innloggetSaksbehandler?.brukerIdent}
 								appId="K9_SAK"
 								appName="K9 Sak"
-								backendUrl={endringsloggBackendUrl}
+								backendUrl="/api/endringslogg"
 								stil="lys"
 								alignLeft
 								maxEntries={150}

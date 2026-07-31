@@ -3,6 +3,7 @@ import { requestOboToken, validateToken } from '@navikt/oasis';
 import proxy from 'express-http-proxy';
 import config, { configValueAsJson } from './config.js';
 import log from './log.js';
+import { removeCredentials } from './proxy-headers.js';
 
 const xTimestamp = 'x-Timestamp';
 const stripTrailingSlash = (str) => (str.endsWith('/') ? str.slice(0, -1) : str);
@@ -12,6 +13,13 @@ const proxyOptions = (api) => ({
 	timeout: 20000,
 	proxyReqOptDecorator: async (options, req) => {
 		log.info(`Proxy request started for ${requestPath(req)}`);
+		const requestTime = Date.now();
+		options.headers[xTimestamp] = requestTime;
+
+		if (api.auth === 'none') {
+			removeCredentials(options.headers);
+			return options;
+		}
 
 		if (process.env.IS_VERDIKJEDE === 'true') {
 			log.info('IS_VERDIKJEDE is true, skipping token processing.');
@@ -21,11 +29,9 @@ const proxyOptions = (api) => ({
 			const token = req.headers.authorization.replace('Bearer ', '');
 			const validationResult = await validateToken(token);
 			if (!validationResult.ok) {
-				log.error('Token validation failed:', validationResult.error);
+				throw new Error('Token validation failed');
 			}
-			const requestTime = Date.now();
-			options.headers[xTimestamp] = requestTime;
-			delete options.headers.cookie;
+			removeCredentials(options.headers);
 
 			return new Promise((resolve, reject) => {
 				log.debug(`Requesting OBO token for scopes: ${api.scopes}`);
@@ -35,7 +41,7 @@ const proxyOptions = (api) => ({
 							log.error('Error getting OBO token:', obo.error);
 							reject(obo.error);
 						}
-						options.headers.Authorization = `Bearer ${obo.token}`;
+						options.headers.authorization = `Bearer ${obo.token}`;
 						log.info(
 							`Sending request to ${api.url} with path ${requestPath(req)} at ${new Date(requestTime).toISOString()}`,
 						);

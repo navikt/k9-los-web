@@ -57,6 +57,8 @@ spec:
       {{/each}}
   accessPolicy:
     outbound:
+      rules:
+        - application: endringslogg
       external:
       {{#each outboundExternalHosts as |host|}}
        - host: {{host}}
@@ -72,7 +74,7 @@ spec:
     - name: PROXY_CONFIG
       value: '{"apis":[
               {{#each proxyRedirects}}
-                {"path":"{{path}}", "url":"{{url}}", "scopes":"{{scope}}", "backendPath":"{{backendPath}}"}{{#unless @last}},{{/unless}}
+                {"path":"{{path}}", "url":"{{url}}", "auth":"{{auth}}"{{#if scope}}, "scopes":"{{scope}}"{{/if}}, "backendPath":"{{backendPath}}"}{{#unless @last}},{{/unless}}
               {{/each}}
               ]}'
   {{#each env}}
