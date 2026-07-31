@@ -39,7 +39,7 @@ const proxyOptions = (api) => ({
 					(obo) => {
 						if (!obo.ok) {
 							log.error('Error getting OBO token:', obo.error);
-							reject(obo.error);
+							return reject(obo.error);
 						}
 						options.headers.authorization = `Bearer ${obo.token}`;
 						log.info(
