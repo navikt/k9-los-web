@@ -1,11 +1,11 @@
+import { ApmErrorBoundary } from '@nais/apm/react';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
-import { Button, Modal } from '@navikt/ds-react';
+import { Alert, Button, Modal } from '@navikt/ds-react';
 import { type FunctionComponent, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import '../../styles/global.css';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
-import ErrorBoundary from './ErrorBoundary';
 import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
 
 /**
@@ -18,7 +18,6 @@ import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
  */
 
 const AppIndex: FunctionComponent = () => {
-	const [crashMessage, setCrashMessage] = useState<string>();
 	const [sessionHarUtlopt, setSessionHarUtlopt] = useState<boolean>(false);
 
 	const timeout = 1000 * 60 * 58;
@@ -32,32 +31,35 @@ const AppIndex: FunctionComponent = () => {
 		onIdle: handleOnIdle,
 	});
 
-	const addErrorMessageAndSetAsCrashed = (error: string) => {
-		setCrashMessage(error);
-	};
-
 	return (
-		<ErrorBoundary errorMessageCallback={addErrorMessageAndSetAsCrashed}>
-			<InnloggetSaksbehandlerResolver>
-				<HeaderWithErrorPanel />
-				{sessionHarUtlopt && (
-					<Modal
-						className="min-w-[500px]"
-						open
-						onClose={() => window.location.reload()}
-						header={{ heading: 'Sesjonen er utløpt', icon: <ExclamationmarkTriangleIcon />, closeButton: false }}
-					>
-						<Modal.Body>
-							Økten din har utløpt etter en periode med inaktivitet. Vennligst logg inn på nytt for å fortsette.
-						</Modal.Body>
-						<Modal.Footer>
-							<Button onClick={() => window.location.reload()}>Logg inn på nytt</Button>
-						</Modal.Footer>
-					</Modal>
-				)}
-				{!crashMessage && <Home />}
-			</InnloggetSaksbehandlerResolver>
-		</ErrorBoundary>
+		<InnloggetSaksbehandlerResolver>
+			<HeaderWithErrorPanel />
+			{sessionHarUtlopt && (
+				<Modal
+					className="min-w-[500px]"
+					open
+					onClose={() => window.location.reload()}
+					header={{ heading: 'Sesjonen er utløpt', icon: <ExclamationmarkTriangleIcon />, closeButton: false }}
+				>
+					<Modal.Body>
+						Økten din har utløpt etter en periode med inaktivitet. Vennligst logg inn på nytt for å fortsette.
+					</Modal.Body>
+					<Modal.Footer>
+						<Button onClick={() => window.location.reload()}>Logg inn på nytt</Button>
+					</Modal.Footer>
+				</Modal>
+			)}
+			<ApmErrorBoundary
+				fingerprint="app-root"
+				fallback={
+					<Alert variant="error" className="mt-5">
+						Det oppstod en teknisk feil. Last siden på nytt.
+					</Alert>
+				}
+			>
+				<Home />
+			</ApmErrorBoundary>
+		</InnloggetSaksbehandlerResolver>
 	);
 };
 

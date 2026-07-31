@@ -44,15 +44,11 @@ jobs:
         run: pnpm verify
       - name: Tester
         run: pnpm test --maxWorkers=2
-      - name: Utlede Sentry-release
-        id: sentry-release
-        run: echo "id=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
       - name: Bygge kode
         run: pnpm build
         env:
           VITE_APP_VERSION: ${{ github.sha }}
           VITE_CDN_BASE: https://cdn.nav.no/k9saksbehandling/k9-los-web/${{ github.sha }}/
-          VITE_SENTRY_RELEASE: ${{ steps.sentry-release.outputs.id }}
       - name: Verifiser CDN-build
         env:
           CDN_BASE: https://cdn.nav.no/k9saksbehandling/k9-los-web/${{ github.sha }}/
@@ -67,12 +63,6 @@ jobs:
           source: dist/public
           destination: k9-los-web/${{ github.sha }}/public
           source_keep_parent_name: false
-      - name: Opprett release med Sentry
-        run: pnpm sentry-release
-        env:
-          VITE_SENTRY_RELEASE: ${{ steps.sentry-release.outputs.id }}
-          VITE_CDN_BASE: https://cdn.nav.no/k9saksbehandling/k9-los-web/${{ github.sha }}/
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         # Lager en selvstendig server-deploy med kun serverens prod-dependencies, da det er det eneste som trenger å være med på docker imaget.
         # node-linker=hoisted gir en flat node_modules uten symlenker, som kopieres rent inn i Docker (symlenker bryter BuildKit sin checksum-beregning).
       - name: Lag server-deploy

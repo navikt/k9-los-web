@@ -1,4 +1,4 @@
-import { withSentryReactRouterV7Routing } from '@sentry/react';
+import { ApmRoutes } from '@nais/apm/react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import apiPaths from 'api/apiPaths';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
@@ -6,7 +6,7 @@ import AppContext from 'app/AppContext';
 import AvdelingslederIndex from 'avdelingsleder/AvdelingslederIndex';
 import type { Oppgavefelt } from 'filter/filterTsTypes';
 import { type FunctionComponent, useEffect, useMemo } from 'react';
-import { Route, Routes } from 'react-router';
+import { Route } from 'react-router';
 import SaksbehandlerIndex from 'saksbehandler/SaksbehandlerIndex';
 import AdminIndex from '../../admin/AdminIndex';
 import MissingPage from './MissingPage';
@@ -17,7 +17,6 @@ import MissingPage from './MissingPage';
  * Presentasjonskomponent. Wrapper for sideinnholdet som vises under header.
  */
 
-const SentryRoutes = withSentryReactRouterV7Routing(Routes);
 const Home: FunctionComponent = () => {
 	const { data, isSuccess: harHentetFelter } = useQuery<{ felter: Oppgavefelt[] }>({
 		queryKey: [apiPaths.hentOppgaveFelter],
@@ -51,12 +50,12 @@ const Home: FunctionComponent = () => {
 	return (
 		<div className="mt-5">
 			<AppContext.Provider value={contextValues}>
-				<SentryRoutes>
+				<ApmRoutes>
 					<Route path="/" element={<SaksbehandlerIndex />} />
 					<Route path="/avdelingsleder" element={<AvdelingslederIndex />} />
 					<Route path="/admin" element={<AdminIndex />} />
 					<Route path="*" element={<MissingPage />} />
-				</SentryRoutes>
+				</ApmRoutes>
 			</AppContext.Provider>
 		</div>
 	);
