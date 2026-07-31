@@ -13,6 +13,7 @@
 		"@dnd-kit/core": "6.3.1",
 		"@dnd-kit/sortable": "10.0.0",
 		"@dnd-kit/utilities": "3.2.2",
+		"@grafana/faro-react": "2.9.0",
 		"@nais/apm": "0.4.0",
 		"@navikt/aksel-icons": "8.15.0",
 		"@navikt/ds-css": "8.15.0",
@@ -20,9 +21,6 @@
 		"@navikt/ds-tailwind": "8.15.0",
 		"@navikt/ds-tokens": "8.15.0",
 		"@navikt/endringslogg": "2.0.1",
-		"@sentry/browser": "10.64.0",
-		"@sentry/cli": "3.6.0",
-		"@sentry/react": "10.64.0",
 		"@tailwindcss/postcss": "4.3.3",
 		"@tanstack/react-query": "5.101.2",
 		"axios": "1.18.1",
@@ -72,7 +70,6 @@
 		"format": "biome format",
 		"fix": "biome check --write",
 		"verify": "tsc -b && biome ci --error-on-warnings",
-		"sentry-release": "node ./setup/sentry-release.js",
 		"prepare": "husky"
 	},
 	"packageManager": "pnpm@11.15.1"
