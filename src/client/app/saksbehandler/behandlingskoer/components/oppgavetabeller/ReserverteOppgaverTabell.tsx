@@ -2,17 +2,19 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react';
 import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
-import { type FunctionComponent, useState } from 'react';
+import { type FunctionComponent, useRef, useState } from 'react';
 import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
 import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
 import styles from './oppgaverTabell.module.css';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
-import { sorterOppgaverIReservasjon, sorterReservasjoner } from './reserverteOppgaverSortering';
+import { useRadFlyttAnimasjon } from './radFlyttAnimasjon';
+import { nøkkelStreng, sorterOppgaverIReservasjon, sorterReservasjoner } from './reserverteOppgaverSortering';
 
 const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
+	const tabellinnholdRef = useRef<HTMLTableSectionElement>(null);
 
 	const { data: reservasjoner, isLoading, isSuccess, isError } = useSaksbehandlerReservasjoner();
 
@@ -28,6 +30,14 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 
 	const antallReservasjoner =
 		reservasjoner?.reduce((previousValue, reservasjon) => previousValue + countReservations(reservasjon), 0) || 0;
+
+	const rader = sorterReservasjoner(reservasjoner ?? []).flatMap((reservasjon) =>
+		sorterOppgaverIReservasjon(
+			reservasjon.reserverteV3Oppgaver?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN) ?? [],
+		).map((oppgave) => ({ oppgave, reservasjon, radnøkkel: nøkkelStreng(oppgave.oppgaveNøkkel) })),
+	);
+
+	useRadFlyttAnimasjon(tabellinnholdRef, rader.map((rad) => rad.radnøkkel).join());
 
 	return (
 		<>
@@ -64,18 +74,15 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 							<Table.HeaderCell className="w-10" />
 						</Table.Row>
 					</Table.Header>
-					<Table.Body>
-						{sorterReservasjoner(reservasjoner).map((reservasjon) =>
-							sorterOppgaverIReservasjon(
-								reservasjon.reserverteV3Oppgaver?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN) ?? [],
-							).map((oppgave) => (
-								<ReservertOppgaveRadV3
-									key={oppgave.oppgaveNøkkel.oppgaveEksternId}
-									oppgave={oppgave}
-									reservasjon={reservasjon}
-								/>
-							)),
-						)}
+					<Table.Body ref={tabellinnholdRef}>
+						{rader.map(({ oppgave, reservasjon, radnøkkel }) => (
+							<ReservertOppgaveRadV3
+								key={radnøkkel}
+								radnøkkel={radnøkkel}
+								oppgave={oppgave}
+								reservasjon={reservasjon}
+							/>
+						))}
 					</Table.Body>
 				</Table>
 			)}

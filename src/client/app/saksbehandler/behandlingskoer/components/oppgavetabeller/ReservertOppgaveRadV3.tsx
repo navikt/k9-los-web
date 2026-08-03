@@ -11,15 +11,18 @@ import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
 import type OppgaveV3 from 'types/OppgaveV3';
 import { dateTimeFormat } from 'utils/dateUtils';
 import styles from './oppgaverTabell.module.css';
+import { RAD_NØKKEL_ATTRIBUTT } from './radFlyttAnimasjon';
 
 interface OwnProps {
 	oppgave: OppgaveV3;
 	reservasjon: ReservasjonV3;
+	/** Stabil identitet som knytter raden til flytteanimasjonen. */
+	radnøkkel: string;
 }
 
 type Props = OwnProps;
 
-const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({ oppgave, reservasjon }) => {
+const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({ oppgave, reservasjon, radnøkkel }) => {
 	const [modal, setModal] = useState<ReactNode>(null);
 
 	const { mutate: leggTilSisteOppgaver } = useSisteOppgaverMutation();
@@ -64,7 +67,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({ oppgave, reserv
 	};
 
 	return (
-		<Table.Row key={oppgave.oppgaveNøkkel.oppgaveEksternId} className={styles.isUnderBehandling}>
+		<Table.Row {...{ [RAD_NØKKEL_ATTRIBUTT]: radnøkkel }} className={styles.isUnderBehandling}>
 			<Table.DataCell onClick={tilOppgave} className={styles.soekerPadding}>
 				{oppgave.søkersNavn ? `${oppgave.søkersNavn} ${oppgave.søkersPersonnr}` : '<navn>'}
 			</Table.DataCell>
