@@ -9,6 +9,7 @@ import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
 import styles from './oppgaverTabell.module.css';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
+import { sorterOppgaverIReservasjon, sorterReservasjoner } from './reserverteOppgaverSortering';
 
 const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
@@ -64,19 +65,17 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{reservasjoner
-							.sort((a, b) => new Date(a.reservertTil).getTime() - new Date(b.reservertTil).getTime())
-							.map((reservasjon) =>
-								reservasjon.reserverteV3Oppgaver
-									?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN)
-									.map((oppgave) => (
-										<ReservertOppgaveRadV3
-											key={oppgave.oppgaveNøkkel.oppgaveEksternId}
-											oppgave={oppgave}
-											reservasjon={reservasjon}
-										/>
-									)),
-							)}
+						{sorterReservasjoner(reservasjoner).map((reservasjon) =>
+							sorterOppgaverIReservasjon(
+								reservasjon.reserverteV3Oppgaver?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN) ?? [],
+							).map((oppgave) => (
+								<ReservertOppgaveRadV3
+									key={oppgave.oppgaveNøkkel.oppgaveEksternId}
+									oppgave={oppgave}
+									reservasjon={reservasjon}
+								/>
+							)),
+						)}
 					</Table.Body>
 				</Table>
 			)}
