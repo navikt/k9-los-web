@@ -38,10 +38,10 @@ spec:
     cpuThresholdPercentage: 50
   resources:
     limits:
-      memory: {{resources.limits.memory}}
+      memory: 200Mi
     requests:
-      cpu: {{resources.requests.cpu}}
-      memory: {{resources.requests.memory}}
+      cpu: 100m
+      memory: 100Mi
   observability:
     autoInstrumentation:
       enabled: {{observability.autoInstrumentation.enabled}}
