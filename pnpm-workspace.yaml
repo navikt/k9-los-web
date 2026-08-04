@@ -14,3 +14,17 @@ allowBuilds:
 # Ikke kjør `pnpm install` på nytt før hvert `pnpm run`-script.
 # Registryet er token-gated, så en auto-reinstall ville kreve token ved hver kommando.
 verifyDepsBeforeRun: false
+
+# Vi installerer ikke peers automatisk; alt vi bruker skal stå i package.json.
+# Konkret utslag: @nais/apm og @grafana/faro-react deklarerer react-router-dom
+# som peer, og pnpm dro derfor inn react-router-dom@7 -> react-router@7, en
+# versjon vi ikke bruker, men som ga sikkerhetsvarsler i lockfila.
+autoInstallPeers: false
+
+# @nais/apm importerer aldri react-router-dom (routing-hjelperne tar exports inn
+# som props), og markerer den som optional peer fra 0.5.0. GitHub Packages tar
+# derimot ikke med peerDependenciesMeta i registry-metadataen, så pnpm ser peeren
+# som påkrevd og advarer. Advarselen er trygg å ignorere.
+peerDependencyRules:
+  ignoreMissing:
+    - react-router-dom
