@@ -2,8 +2,8 @@ import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons';
 import { BodyShort, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react';
 import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
+import classnames from 'classnames/bind';
 import { type FunctionComponent, useRef, useState } from 'react';
-import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
 import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
@@ -12,32 +12,31 @@ import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
 import { useRadFlyttAnimasjon } from './radFlyttAnimasjon';
 import { nøkkelStreng, sorterOppgaverIReservasjon, sorterReservasjoner } from './reserverteOppgaverSortering';
 
+const classNames = classnames.bind(styles);
+
 const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
-	const tabellinnholdRef = useRef<HTMLTableSectionElement>(null);
+	const tabellRef = useRef<HTMLTableElement>(null);
 
 	const { data: reservasjoner, isLoading, isSuccess, isError } = useSaksbehandlerReservasjoner();
 
-	const countReservations = (reservasjon: ReservasjonV3) => {
-		const v3OppgaverSomSkalVises = reservasjon.reserverteV3Oppgaver?.filter(
-			(v) => v.oppgavestatus === OppgavestatusV3.AAPEN,
-		);
-		if (v3OppgaverSomSkalVises?.length > 0) {
-			return v3OppgaverSomSkalVises.length;
-		}
-		return 0;
-	};
+	/**
+	 * Én gruppe per reservasjon. Alle oppgavene i gruppen deler reservasjonsnøkkel,
+	 * og handlingene gjelder derfor hele gruppen — ikke den enkelte oppgaven.
+	 */
+	const reservasjonsgrupper = sorterReservasjoner(reservasjoner ?? [])
+		.map((reservasjon) => ({
+			reservasjon,
+			oppgaver: sorterOppgaverIReservasjon(reservasjon.reserverteV3Oppgaver),
+		}))
+		.filter((gruppe) => gruppe.oppgaver.length > 0);
 
-	const antallReservasjoner =
-		reservasjoner?.reduce((previousValue, reservasjon) => previousValue + countReservations(reservasjon), 0) || 0;
+	const antallReservasjoner = reservasjonsgrupper.reduce((antall, gruppe) => antall + gruppe.oppgaver.length, 0);
 
-	const rader = sorterReservasjoner(reservasjoner ?? []).flatMap((reservasjon) =>
-		sorterOppgaverIReservasjon(
-			reservasjon.reserverteV3Oppgaver?.filter((v) => v.oppgavestatus === OppgavestatusV3.AAPEN) ?? [],
-		).map((oppgave) => ({ oppgave, reservasjon, radnøkkel: nøkkelStreng(oppgave.oppgaveNøkkel) })),
+	useRadFlyttAnimasjon(
+		tabellRef,
+		reservasjonsgrupper.flatMap((gruppe) => gruppe.oppgaver.map((o) => nøkkelStreng(o.oppgaveNøkkel))).join(),
 	);
-
-	useRadFlyttAnimasjon(tabellinnholdRef, rader.map((rad) => rad.radnøkkel).join());
 
 	return (
 		<>
@@ -63,7 +62,7 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 				</>
 			)}
 			{antallReservasjoner > 0 && isSuccess && visReservasjoner && (
-				<Table>
+				<Table ref={tabellRef}>
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell>Søker</Table.HeaderCell>
@@ -74,16 +73,23 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 							<Table.HeaderCell className="w-10" />
 						</Table.Row>
 					</Table.Header>
-					<Table.Body ref={tabellinnholdRef}>
-						{rader.map(({ oppgave, reservasjon, radnøkkel }) => (
-							<ReservertOppgaveRadV3
-								key={radnøkkel}
-								radnøkkel={radnøkkel}
-								oppgave={oppgave}
-								reservasjon={reservasjon}
-							/>
-						))}
-					</Table.Body>
+					{reservasjonsgrupper.map(({ reservasjon, oppgaver }) => (
+						<Table.Body
+							key={reservasjon.reservasjonsnøkkel}
+							className={classNames('reservasjonsgruppe', { flereOppgaver: oppgaver.length > 1 })}
+						>
+							{oppgaver.map((oppgave, indeks) => (
+								<ReservertOppgaveRadV3
+									key={nøkkelStreng(oppgave.oppgaveNøkkel)}
+									radnøkkel={nøkkelStreng(oppgave.oppgaveNøkkel)}
+									oppgave={oppgave}
+									reservasjon={reservasjon}
+									antallOppgaverIReservasjonen={oppgaver.length}
+									visHandlinger={indeks === 0}
+								/>
+							))}
+						</Table.Body>
+					))}
 				</Table>
 			)}
 		</>
