@@ -15,7 +15,7 @@
  * hører sammen og deles av handlingene som vises én gang for gruppen.
  */
 .flereOppgaver > tr > td:first-child {
-	box-shadow: inset var(--ax-space-2) 0 0 0 var(--color-ax-border-success);
+	/* box-shadow: inset var(--ax-space-2) 0 0 0 var(--color-ax-border-success); */
 }
 
 .gruppeforklaring {
