@@ -1,4 +1,4 @@
-import { MenuHamburgerIcon } from '@navikt/aksel-icons';
+import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button, Detail, Table } from '@navikt/ds-react';
 import { useForlengOppgavereservasjon, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
 import dayjs from 'dayjs';
@@ -9,7 +9,6 @@ import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/m
 import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
 import type OppgaveV3 from 'types/OppgaveV3';
-import { dateTimeFormat } from 'utils/dateUtils';
 import styles from './oppgaverTabell.module.css';
 import { RAD_NØKKEL_ATTRIBUTT } from './radFlyttAnimasjon';
 
@@ -34,6 +33,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 	reservasjon,
 	radnøkkel,
 	antallOppgaverIReservasjonen,
+	// biome-ignore lint/correctness/noUnusedFunctionParameters: Hvis handlingen bare skal vises på første rad i gruppen, må vi vite om det er første rad. Ellers ser det ut som hver oppgave har egne handlinger. Slett hvis det ikke blir aktuelt.
 	visHandlinger,
 }) => {
 	const [modal, setModal] = useState<ReactNode>(null);
@@ -84,60 +84,61 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 		);
 	};
 
+	const formaterYtelse = (ytelsestype: OppgaveV3['ytelsestype']): string => {
+		if (ytelsestype.kode === 'OMP_AO' || ytelsestype.kode === 'OMP_KS' || ytelsestype.kode === 'OMP_MA') {
+			return 'Omsorgsdager';
+		}
+		return ytelsestype.navn;
+	};
+
 	return (
 		<Table.Row {...{ [RAD_NØKKEL_ATTRIBUTT]: radnøkkel }} className={styles.isUnderBehandling}>
-			<Table.DataCell onClick={tilOppgave} className={styles.soekerPadding}>
-				{oppgave.søkersNavn ? `${oppgave.søkersNavn} ${oppgave.søkersPersonnr}` : '<navn>'}
+			<Table.DataCell>
+				{oppgave.søkersNavn}
+				<br />
+				<Detail>{oppgave.søkersPersonnr}</Detail>
 			</Table.DataCell>
-			<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
-				{oppgave.saksnummer || oppgave.journalpostId}
-			</Table.DataCell>
-			<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
-				{oppgave.behandlingstype.navn}
-			</Table.DataCell>
-			<Table.DataCell onClick={tilOppgave} className="hover:cursor-pointer">
-				{(oppgave.opprettetTidspunkt && dayjs(oppgave.opprettetTidspunkt).format('DD.MM.YYYY')) || '-'}
-			</Table.DataCell>
-			<Table.DataCell onClick={tilOppgave} className={`${styles.reservertTil} hover:cursor-pointer`}>
-				Reservert til {dateTimeFormat(reservasjon.reservertTil)}
+			<Table.DataCell>{oppgave.saksnummer || oppgave.journalpostId}</Table.DataCell>
+			<Table.DataCell>{formaterYtelse(oppgave.ytelsestype)}</Table.DataCell>
+			<Table.DataCell>{oppgave.behandlingstype.navn}</Table.DataCell>
+			<Table.DataCell>
+				<KommentarMedMerknad reservasjon={reservasjon} />
 			</Table.DataCell>
 			<Table.DataCell>
-				{visHandlinger && (
-					<>
-						{modal}
-						<div className="flex justify-end items-center gap-8">
-							{flereOppgaver && (
-								<Detail className={styles.gruppeforklaring}>Gjelder {antallOppgaverIReservasjonen} oppgaver</Detail>
-							)}
-							<KommentarMedMerknad reservasjon={reservasjon} />
-							<ActionMenu>
-								<ActionMenu.Trigger>
-									<Button
-										variant="tertiary"
-										className="p-1 mr-4"
-										icon={<MenuHamburgerIcon title={handlingerBeskrivelse} />}
-										size="medium"
-									/>
-								</ActionMenu.Trigger>
-								<ActionMenu.Content>
-									<ActionMenu.Group aria-label={handlingerBeskrivelse}>
-										<ActionMenu.Item onSelect={openOpphevModal}>
-											{flereOppgaver ? 'Legg oppgavene' : 'Legg oppgave'} <br />
-											tilbake i felles kø
-										</ActionMenu.Item>
-										<ActionMenu.Divider />
-										<ActionMenu.Item onSelect={forlengOppgaveReservasjon} disabled={forlengOppgaveReservasjonIsPending}>
-											Forleng din reservasjon av
-											<br /> {flereOppgaver ? 'oppgavene' : 'oppgaven'} med 24 timer
-										</ActionMenu.Item>
-										<ActionMenu.Divider />
-										<ActionMenu.Item onSelect={openEndreModal}>Endre og/eller flytte reservasjon</ActionMenu.Item>
-									</ActionMenu.Group>
-								</ActionMenu.Content>
-							</ActionMenu>
-						</div>
-					</>
-				)}
+				{reservasjon.reservertTil && dayjs(reservasjon.reservertTil).format('DD.MM.YYYY')}
+			</Table.DataCell>
+			<Table.DataCell>
+				<div className="flex items-center gap-3">
+					<Button variant="secondary" size="small" onClick={tilOppgave} iconPosition="right">
+						Åpne
+					</Button>
+					{modal}
+					<ActionMenu>
+						<ActionMenu.Trigger>
+							<Button
+								variant="secondary"
+								className="p-1"
+								icon={<MenuElipsisVerticalIcon title={handlingerBeskrivelse} />}
+								size="medium"
+							/>
+						</ActionMenu.Trigger>
+						<ActionMenu.Content>
+							<ActionMenu.Group aria-label={handlingerBeskrivelse}>
+								<ActionMenu.Item onSelect={openOpphevModal}>
+									{flereOppgaver ? 'Legg oppgavene' : 'Legg oppgave'} <br />
+									tilbake i felles kø
+								</ActionMenu.Item>
+								<ActionMenu.Divider />
+								<ActionMenu.Item onSelect={forlengOppgaveReservasjon} disabled={forlengOppgaveReservasjonIsPending}>
+									Forleng din reservasjon av
+									<br /> {flereOppgaver ? 'oppgavene' : 'oppgaven'} med 24 timer
+								</ActionMenu.Item>
+								<ActionMenu.Divider />
+								<ActionMenu.Item onSelect={openEndreModal}>Endre og/eller flytte reservasjon</ActionMenu.Item>
+							</ActionMenu.Group>
+						</ActionMenu.Content>
+					</ActionMenu>
+				</div>
 			</Table.DataCell>
 		</Table.Row>
 	);

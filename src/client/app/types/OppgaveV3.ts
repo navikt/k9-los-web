@@ -4,6 +4,7 @@ import type { OppgaveNøkkel } from './OppgaveNøkkel';
 type OppgaveV3 = {
 	søkersNavn: string;
 	søkersPersonnr: string;
+	ytelsestype: KodeverkMedNavn;
 	behandlingstype: KodeverkMedNavn;
 	opprettetTidspunkt?: string;
 	saksnummer: string;
