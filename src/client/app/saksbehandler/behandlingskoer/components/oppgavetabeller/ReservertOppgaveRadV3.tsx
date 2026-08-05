@@ -9,7 +9,6 @@ import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/m
 import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
 import type OppgaveV3 from 'types/OppgaveV3';
-import styles from './oppgaverTabell.module.css';
 import { RAD_NØKKEL_ATTRIBUTT } from './radFlyttAnimasjon';
 
 interface OwnProps {
@@ -92,7 +91,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 	};
 
 	return (
-		<Table.Row {...{ [RAD_NØKKEL_ATTRIBUTT]: radnøkkel }} className={styles.isUnderBehandling}>
+		<Table.Row {...{ [RAD_NØKKEL_ATTRIBUTT]: radnøkkel }}>
 			<Table.DataCell>
 				{oppgave.søkersNavn}
 				<br />

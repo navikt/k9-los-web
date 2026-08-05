@@ -1,13 +1,26 @@
-.isUnderBehandling {
-	background-color: #ffeccc;
-}
-
 /*
  * Hver reservasjon er en egen tbody. Skillet må være tydeligere enn Aksels egne
  * radlinjer, ellers ser gruppegrensen ut som en helt vanlig rad.
  */
 .reservasjonsgruppe:not(:first-of-type) > tr > td {
 	border-top: 1px solid var(--ax-border-neutral);
+}
+
+/*
+ * Zebra-striping per reservasjon, ikke per rad: alle oppgavene i én reservasjon
+ * deler farge, og neste reservasjon får den andre fargen. Aksels egen
+ * zebraStripes striper per rad og kan derfor ikke brukes her.
+ *
+ * Begge nyansene er warning-tokens, slik at tabellen beholder det gule preget
+ * som markerer at oppgavene er under behandling. Kontrasten mellom dem er
+ * bevisst minimal — den skal bare antyde hvor én reservasjon slutter.
+ */
+.reservasjonsgruppe:nth-of-type(odd) > tr {
+	background-color: var(--ax-bg-warning-moderate);
+}
+
+.reservasjonsgruppe:nth-of-type(even) > tr {
+	background-color: var(--ax-bg-warning-soft);
 }
 
 /*
