@@ -1,9 +1,16 @@
 /*
- * Hver reservasjon er en egen tbody. Skillet må være tydeligere enn Aksels egne
- * radlinjer, ellers ser gruppegrensen ut som en helt vanlig rad.
+ * Reglene under står i stigende spesifisitetsrekkefølge (basis → zebra → aktiv
+ * gruppe). Rekkefølgen er ikke kosmetisk: den er det noDescendingSpecificity
+ * håndhever, og den gjør at den aktive markeringen faktisk vinner over zebraen.
  */
-.reservasjonsgruppe:not(:first-of-type) > tr > td {
-	border-top: 1px solid var(--ax-border-neutral);
+.reservasjonsgruppe > tr {
+	transition: background-color 100ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reservasjonsgruppe > tr {
+		transition: none;
+	}
 }
 
 /*
@@ -24,11 +31,27 @@
 }
 
 /*
- * Når en reservasjon har flere oppgaver, markerer en loddrett strek at radene
- * hører sammen og deles av handlingene som vises én gang for gruppen.
+ * Hver reservasjon er en egen tbody. Skillet må være tydeligere enn Aksels egne
+ * radlinjer, ellers ser gruppegrensen ut som en helt vanlig rad.
  */
-.flereOppgaver > tr > td:first-child {
-	/* box-shadow: inset var(--ax-space-2) 0 0 0 var(--color-ax-border-success); */
+.reservasjonsgruppe:not(:first-of-type) > tr > td {
+	border-top: 1px solid var(--ax-border-neutral);
+}
+
+/*
+ * Handlingene i menyen gjelder hele reservasjonen, ikke raden du klikket på.
+ * Derfor markeres hele gruppen mens menyen står åpen, slik at det er tydelig
+ * hvilke oppgaver en «legg tilbake i kø» eller «forleng» vil treffe.
+ *
+ * Triggeren beholder aria-expanded i DOM-en mens menyen er åpen (innholdet
+ * portales ut), så :has() på gruppen fanger tilstanden uten ekstra React-state.
+ */
+.reservasjonsgruppe:has([aria-haspopup='menu'][aria-expanded='true']) > tr {
+	background-color: var(--ax-bg-warning-moderate-hover);
+}
+
+.reservasjonsgruppe:has([aria-haspopup='menu'][aria-expanded='true']) > tr > td:first-child {
+	box-shadow: inset var(--ax-space-2) 0 0 0 var(--ax-border-warning);
 }
 
 .gruppeforklaring {

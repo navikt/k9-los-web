@@ -11,6 +11,11 @@ const tidspunkt = (verdi: string | undefined): number => {
 	return Number.isNaN(millisekunder) ? Number.POSITIVE_INFINITY : millisekunder;
 };
 
+const dato = (verdi: string | undefined): string | undefined => {
+	if (!verdi) return undefined;
+	return verdi.split('T')[0];
+};
+
 /**
  * Sammensatt oppgavenøkkel gir en stabil identitet når tidspunktene er like.
  * Samme identitet brukes som React-nøkkel og for å gjenkjenne rader som flyttes.
@@ -36,5 +41,6 @@ export const sorterOppgaverIReservasjon = (oppgaver: OppgaveV3[]): OppgaveV3[] =
 export const sorterReservasjoner = (reservasjoner: ReservasjonV3[]): ReservasjonV3[] =>
 	reservasjoner.toSorted(
 		(a, b) =>
-			tidspunkt(a.reservertTil) - tidspunkt(b.reservertTil) || a.reservasjonsnøkkel.localeCompare(b.reservasjonsnøkkel),
+			dato(a.reservertTil)?.localeCompare(dato(b.reservertTil) ?? '') ||
+			a.reservasjonsnøkkel.localeCompare(b.reservasjonsnøkkel),
 	);
