@@ -7,5 +7,11 @@ export function idKolonneTittel(oppgaver: { saksnummer?: string; journalpostId?:
 	if (oppgaver.every((oppgave) => !oppgave.saksnummer && oppgave.journalpostId)) {
 		return 'Journalpost';
 	}
-	return <>Sak/journalpost</>;
+	return (
+		<>
+			Sak/
+			<wbr />
+			journalpost
+		</>
+	);
 }
