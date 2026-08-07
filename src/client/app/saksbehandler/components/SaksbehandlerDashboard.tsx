@@ -1,9 +1,11 @@
+import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { Box } from '@navikt/ds-react';
 import { useInnloggetSaksbehandler } from 'api/queries/saksbehandlerQueries';
 import type { FunctionComponent } from 'react';
+import SisteOppgaver from 'saksbehandler/saksstotte/components/SisteOppgaver';
+import SaksbehandlerNøkkeltall from 'saksbehandler/saksstotte/nokkeltall/SaksbehandlerNøkkeltall';
 import { Søkeboks } from 'saksbehandler/sokeboks/Søkeboks';
 import BehandlingskoerIndex from '../behandlingskoer/BehandlingskoerIndex';
-import SaksstotteIndex from '../saksstotte/SaksstotteIndex';
 import styles from './saksbehandlerDashboard.module.css';
 
 export const SaksbehandlerDashboard: FunctionComponent = () => {
@@ -27,7 +29,9 @@ export const SaksbehandlerDashboard: FunctionComponent = () => {
 					</div>
 					<div className={styles.rightColumn}>
 						<Box background="raised" borderRadius="4" padding="space-16">
-							<SaksstotteIndex />
+							<SisteOppgaver />
+							<VerticalSpacer twentyPx />
+							<SaksbehandlerNøkkeltall />
 						</Box>
 					</div>
 				</div>

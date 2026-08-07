@@ -1,14 +1,30 @@
-import { Button, Modal } from '@navikt/ds-react';
+import { BodyShort, Button, Modal } from '@navikt/ds-react';
 import { useOpphevReservasjoner } from 'api/queries/saksbehandlerQueries';
 import type { FunctionComponent } from 'react';
 
 type OwnProps = Readonly<{
 	open: boolean;
 	reservasjonsnøkler: Array<string>;
+	antallOppgaver?: number;
 	closeModal: () => void;
 }>;
 
-export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, closeModal, reservasjonsnøkler }) => {
+export const opphevReservasjonerTekst = (antallReservasjoner: number, antallOppgaver?: number) => {
+	if (antallReservasjoner > 1) {
+		return `Er du sikker på at du vil oppheve ${antallReservasjoner} reservasjoner?`;
+	}
+	if (antallOppgaver && antallOppgaver > 1) {
+		return `Er du sikker på at du vil oppheve reservasjonen av ${antallOppgaver} oppgaver?`;
+	}
+	return 'Er du sikker på at du vil oppheve reservasjonen?';
+};
+
+export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({
+	open,
+	closeModal,
+	reservasjonsnøkler,
+	antallOppgaver,
+}) => {
 	const { mutate: opphevReservasjoner } = useOpphevReservasjoner();
 
 	const antall = reservasjonsnøkler.length;
@@ -22,9 +38,7 @@ export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({ open, cl
 			onClose={closeModal}
 		>
 			<Modal.Body>
-				{antall > 1
-					? `Er du sikker på at du vil oppheve ${antall} reservasjoner?`
-					: 'Er du sikker på at du vil oppheve reservasjonen?'}
+				<BodyShort>{opphevReservasjonerTekst(antall, antallOppgaver)}</BodyShort>
 			</Modal.Body>
 			<Modal.Footer>
 				<Button
