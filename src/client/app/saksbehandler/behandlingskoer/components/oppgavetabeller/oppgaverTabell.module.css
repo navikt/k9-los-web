@@ -1,6 +1,65 @@
-.isUnderBehandling {
-	background-color: #ffeccc;
+/*
+ * Reglene under står i stigende spesifisitetsrekkefølge (basis → zebra → aktiv
+ * gruppe). Rekkefølgen er ikke kosmetisk: den er det noDescendingSpecificity
+ * håndhever, og den gjør at den aktive markeringen faktisk vinner over zebraen.
+ */
+.reservasjonsgruppe > tr {
+	transition: background-color 100ms ease-out;
 }
+
+@media (prefers-reduced-motion: reduce) {
+	.reservasjonsgruppe > tr {
+		transition: none;
+	}
+}
+
+/*
+ * Zebra-striping per reservasjon, ikke per rad: alle oppgavene i én reservasjon
+ * deler farge, og neste reservasjon får den andre fargen. Aksels egen
+ * zebraStripes striper per rad og kan derfor ikke brukes her.
+ *
+ * Begge nyansene er warning-tokens, slik at tabellen beholder det gule preget
+ * som markerer at oppgavene er under behandling. Kontrasten mellom dem er
+ * bevisst minimal — den skal bare antyde hvor én reservasjon slutter.
+ */
+.reservasjonsgruppe:nth-of-type(odd) > tr {
+	background-color: var(--ax-bg-warning-moderate);
+}
+
+.reservasjonsgruppe:nth-of-type(even) > tr {
+	background-color: var(--ax-bg-warning-soft);
+}
+
+/*
+ * Hver reservasjon er en egen tbody. Skillet må være tydeligere enn Aksels egne
+ * radlinjer, ellers ser gruppegrensen ut som en helt vanlig rad.
+ */
+.reservasjonsgruppe:not(:first-of-type) > tr > td {
+	border-top: 1px solid var(--ax-border-neutral);
+}
+
+/*
+ * Handlingene i menyen gjelder hele reservasjonen, ikke raden du klikket på.
+ * Derfor markeres hele gruppen mens menyen står åpen, slik at det er tydelig
+ * hvilke oppgaver en «legg tilbake i kø» eller «forleng» vil treffe.
+ *
+ * Meny- og kommentartriggeren beholder aria-expanded i DOM-en mens innholdet
+ * er åpent (innholdet portales ut), så :has() fanger tilstanden uten ekstra
+ * React-state på tabellnivå.
+ */
+.reservasjonsgruppe:has([data-marker-reservasjonsgruppe][aria-expanded='true']) > tr {
+	background-color: var(--ax-bg-warning-moderate-hover);
+}
+
+.reservasjonsgruppe:has([data-marker-reservasjonsgruppe][aria-expanded='true']) > tr > td:first-child {
+	box-shadow: inset var(--ax-space-4) 0 0 0 var(--ax-border-warning);
+}
+
+.gruppeforklaring {
+	color: var(--ax-text-neutral-subtle);
+	white-space: nowrap;
+}
+
 .image {
 	padding: 14px;
 }
