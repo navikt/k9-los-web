@@ -69,20 +69,26 @@ const OppgavekoPanel: FunctionComponent<OwnProps> = ({ oppgavekoer }) => {
 				</Modal>
 			)}
 			<div className={styles.behandlingskoerContainer}>
-				<button
-					type="button"
-					className={styles.behandlingskoerKnapp}
-					onClick={() => setVisBehandlingerIKo(!visBehandlingerIKo)}
-				>
-					{visBehandlingerIKo ? (
-						<ChevronDownIcon className={styles.chevron} />
-					) : (
-						<ChevronRightIcon className={styles.chevron} />
-					)}
-					<Label>Neste oppgaver</Label>
-				</button>
+				<div className={styles.behandlingskoerHeader}>
+					<button
+						type="button"
+						className={styles.behandlingskoerKnapp}
+						aria-expanded={visBehandlingerIKo}
+						aria-controls="neste-oppgaver"
+						onClick={() => setVisBehandlingerIKo(!visBehandlingerIKo)}
+					>
+						{visBehandlingerIKo ? (
+							<ChevronDownIcon className={styles.chevron} aria-hidden />
+						) : (
+							<ChevronRightIcon className={styles.chevron} aria-hidden />
+						)}
+						<Label>Neste oppgaver</Label>
+					</button>
+				</div>
 
-				{visBehandlingerIKo && valgtOppgaveko && <OppgavetabellV3 køId={valgtOppgavekoId} />}
+				<div id="neste-oppgaver" className={styles.behandlingskoerInnhold}>
+					{visBehandlingerIKo && valgtOppgaveko && <OppgavetabellV3 køId={valgtOppgavekoId} />}
+				</div>
 			</div>
 		</div>
 	);

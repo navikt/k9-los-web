@@ -9,6 +9,7 @@ import OpphevReservasjonerModal from 'saksbehandler/behandlingskoer/components/m
 import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import KommentarMedMerknad from 'saksbehandler/components/KommentarMedMerknad';
 import type OppgaveV3 from 'types/OppgaveV3';
+import { OppgavestatusV3 } from 'types/OppgaveV3';
 import { RAD_NØKKEL_ATTRIBUTT } from './radFlyttAnimasjon';
 
 interface OwnProps {
@@ -92,7 +93,15 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 				<br />
 				<Detail>{oppgave.søkersPersonnr}</Detail>
 			</Table.DataCell>
-			<Table.DataCell>{oppgave.saksnummer || oppgave.journalpostId}</Table.DataCell>
+			<Table.DataCell>
+				{oppgave.saksnummer || oppgave.journalpostId}
+				{oppgave.oppgavestatus === OppgavestatusV3.VENTER && (
+					<>
+						<br />
+						<Detail>På vent</Detail>
+					</>
+				)}
+			</Table.DataCell>
 			<Table.DataCell>
 				{oppgave.behandlingstype.navn}
 				{oppgave.ytelsestype && (

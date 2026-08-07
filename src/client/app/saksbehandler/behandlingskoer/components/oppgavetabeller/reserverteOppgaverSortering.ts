@@ -1,6 +1,7 @@
 import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import type { OppgaveNøkkel } from 'types/OppgaveNøkkel';
 import type OppgaveV3 from 'types/OppgaveV3';
+import { OppgavestatusV3 } from 'types/OppgaveV3';
 
 /**
  * Tidspunkt som ikke lar seg tolke sorteres sist, slik at rekkefølgen forblir
@@ -32,6 +33,13 @@ export const sorterOppgaverIReservasjon = (oppgaver: OppgaveV3[]): OppgaveV3[] =
 		(a, b) =>
 			tidspunkt(a.opprettetTidspunkt) - tidspunkt(b.opprettetTidspunkt) ||
 			nøkkelStreng(a.oppgaveNøkkel).localeCompare(nøkkelStreng(b.oppgaveNøkkel)),
+	);
+
+export const filtrerOppgaverEtterStatus = (oppgaver: OppgaveV3[], visOppgaverPåVent: boolean): OppgaveV3[] =>
+	oppgaver.filter(
+		(oppgave) =>
+			oppgave.oppgavestatus === OppgavestatusV3.AAPEN ||
+			(visOppgaverPåVent && oppgave.oppgavestatus === OppgavestatusV3.VENTER),
 	);
 
 /**
