@@ -65,6 +65,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 						reservertAvIdent: reservasjon.reservertAvIdent,
 					},
 				]}
+				antallOppgaver={antallOppgaverIReservasjonen}
 			/>,
 		);
 	};
@@ -79,15 +80,9 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 				open
 				closeModal={() => setModal(null)}
 				reservasjonsnøkler={[reservasjon.reservasjonsnøkkel]}
+				antallOppgaver={antallOppgaverIReservasjonen}
 			/>,
 		);
-	};
-
-	const formaterYtelse = (ytelsestype: OppgaveV3['ytelsestype']): string => {
-		if (ytelsestype.kode === 'OMP_AO' || ytelsestype.kode === 'OMP_KS' || ytelsestype.kode === 'OMP_MA') {
-			return 'Omsorgsdager';
-		}
-		return ytelsestype.navn;
 	};
 
 	return (
@@ -98,13 +93,21 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 				<Detail>{oppgave.søkersPersonnr}</Detail>
 			</Table.DataCell>
 			<Table.DataCell>{oppgave.saksnummer || oppgave.journalpostId}</Table.DataCell>
-			<Table.DataCell>{formaterYtelse(oppgave.ytelsestype)}</Table.DataCell>
-			<Table.DataCell>{oppgave.behandlingstype.navn}</Table.DataCell>
 			<Table.DataCell>
-				<KommentarMedMerknad reservasjon={reservasjon} />
+				{oppgave.behandlingstype.navn}
+				{oppgave.ytelsestype && (
+					<>
+						<br />
+						<Detail>{oppgave.ytelsestype?.navn}</Detail>
+					</>
+				)}
 			</Table.DataCell>
+			<Table.DataCell>{dayjs(oppgave.opprettetTidspunkt).format('DD.MM.YYYY')}</Table.DataCell>
 			<Table.DataCell>
-				{reservasjon.reservertTil && dayjs(reservasjon.reservertTil).format('DD.MM.YYYY')}
+				<div className="flex items-center gap-3">
+					{reservasjon.reservertTil && dayjs(reservasjon.reservertTil).format('DD.MM.YYYY')}
+					<KommentarMedMerknad reservasjon={reservasjon} />
+				</div>
 			</Table.DataCell>
 			<Table.DataCell>
 				<div className="flex items-center gap-3">
@@ -119,6 +122,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 								className="p-1"
 								icon={<MenuElipsisVerticalIcon title={handlingerBeskrivelse} />}
 								size="medium"
+								data-marker-reservasjonsgruppe
 							/>
 						</ActionMenu.Trigger>
 						<ActionMenu.Content>

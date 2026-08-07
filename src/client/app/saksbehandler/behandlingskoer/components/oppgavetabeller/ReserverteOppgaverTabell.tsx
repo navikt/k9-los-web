@@ -4,6 +4,7 @@ import { BodyShort, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react'
 import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
 import classnames from 'classnames/bind';
 import { type FunctionComponent, useRef, useState } from 'react';
+import { idKolonneTittel } from 'saksbehandler/tabellvisning';
 import * as kopanelStyles from '../oppgavekoPanel.module.css';
 import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
 import styles from './oppgaverTabell.module.css';
@@ -65,11 +66,12 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell>Søker</Table.HeaderCell>
-							<Table.HeaderCell>Sak</Table.HeaderCell>
-							<Table.HeaderCell>Ytelse</Table.HeaderCell>
+							<Table.HeaderCell>
+								{idKolonneTittel(reservasjoner.flatMap((r) => r.reserverteV3Oppgaver))}
+							</Table.HeaderCell>
 							<Table.HeaderCell>Behandlingstype</Table.HeaderCell>
-							<Table.HeaderCell></Table.HeaderCell>
-							<Table.HeaderCell>Reservert&nbsp;til</Table.HeaderCell>
+							<Table.HeaderCell>Oppgave opprettet</Table.HeaderCell>
+							<Table.HeaderCell>Reservert t.o.m.</Table.HeaderCell>
 							<Table.HeaderCell>Handlinger</Table.HeaderCell>
 						</Table.Row>
 					</Table.Header>

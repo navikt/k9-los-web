@@ -43,15 +43,16 @@
  * Derfor markeres hele gruppen mens menyen står åpen, slik at det er tydelig
  * hvilke oppgaver en «legg tilbake i kø» eller «forleng» vil treffe.
  *
- * Triggeren beholder aria-expanded i DOM-en mens menyen er åpen (innholdet
- * portales ut), så :has() på gruppen fanger tilstanden uten ekstra React-state.
+ * Meny- og kommentartriggeren beholder aria-expanded i DOM-en mens innholdet
+ * er åpent (innholdet portales ut), så :has() fanger tilstanden uten ekstra
+ * React-state på tabellnivå.
  */
-.reservasjonsgruppe:has([aria-haspopup='menu'][aria-expanded='true']) > tr {
+.reservasjonsgruppe:has([data-marker-reservasjonsgruppe][aria-expanded='true']) > tr {
 	background-color: var(--ax-bg-warning-moderate-hover);
 }
 
-.reservasjonsgruppe:has([aria-haspopup='menu'][aria-expanded='true']) > tr > td:first-child {
-	box-shadow: inset var(--ax-space-2) 0 0 0 var(--ax-border-warning);
+.reservasjonsgruppe:has([data-marker-reservasjonsgruppe][aria-expanded='true']) > tr > td:first-child {
+	box-shadow: inset var(--ax-space-4) 0 0 0 var(--ax-border-warning);
 }
 
 .gruppeforklaring {
