@@ -2,7 +2,11 @@ import type ReservasjonV3 from 'saksbehandler/behandlingskoer/ReservasjonV3Dto';
 import type OppgaveV3 from 'types/OppgaveV3';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
 import { describe, expect, it } from 'vitest';
-import { sorterOppgaverIReservasjon, sorterReservasjoner } from './reserverteOppgaverSortering';
+import {
+	filtrerOppgaverEtterStatus,
+	sorterOppgaverIReservasjon,
+	sorterReservasjoner,
+} from './reserverteOppgaverSortering';
 
 const oppgave = (
 	oppgaveEksternId: string,
@@ -126,5 +130,24 @@ describe('sorterOppgaverIReservasjon', () => {
 		);
 
 		expect(rader).toEqual(['a1', 'b1', 'b2']);
+	});
+});
+
+describe('filtrerOppgaverEtterStatus', () => {
+	const oppgaver = [
+		oppgave('åpen'),
+		oppgave('venter', undefined, { oppgavestatus: OppgavestatusV3.VENTER }),
+		oppgave('lukket', undefined, { oppgavestatus: OppgavestatusV3.LUKKET }),
+	];
+
+	it('viser bare åpne oppgaver som standard', () => {
+		expect(filtrerOppgaverEtterStatus(oppgaver, false).map((o) => o.oppgaveNøkkel.oppgaveEksternId)).toEqual(['åpen']);
+	});
+
+	it('inkluderer oppgaver på vent når dette er valgt', () => {
+		expect(filtrerOppgaverEtterStatus(oppgaver, true).map((o) => o.oppgaveNøkkel.oppgaveEksternId)).toEqual([
+			'åpen',
+			'venter',
+		]);
 	});
 });
