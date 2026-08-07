@@ -17,6 +17,12 @@ export type Flytting = {
 	forskyvning: number;
 };
 
+export const skalAnimereQueryoppdatering = (
+	forrigeDataUpdatedAt: number | null,
+	dataUpdatedAt: number,
+	animasjonArmert: boolean,
+): boolean => forrigeDataUpdatedAt !== null && dataUpdatedAt !== forrigeDataUpdatedAt && animasjonArmert;
+
 /**
  * Sammenligner posisjonene før og etter en ny sortering. Kun rader som finnes i
  * begge målingene og som faktisk har flyttet seg skal animeres.
@@ -72,12 +78,28 @@ const avbrytAnimasjoner = (animasjoner: Map<string, Animation>): void => {
  *
  * `rekkefølge` skal være en streng som endrer seg når radrekkefølgen endres.
  */
-export const useRadFlyttAnimasjon = (containerRef: RefObject<HTMLElement | null>, rekkefølge: string): void => {
+export const useRadFlyttAnimasjon = (
+	containerRef: RefObject<HTMLElement | null>,
+	rekkefølge: string,
+	dataUpdatedAt: number,
+	animasjonArmert: { current: boolean },
+): void => {
 	const forrigePosisjoner = useRef<Map<string, number> | null>(null);
+	const forrigeDataUpdatedAt = useRef<number | null>(null);
 	const aktiveAnimasjoner = useRef(new Map<string, Animation>());
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: rekkefølge er hookens argument, og endrer seg når radene bytter plass. Det er nettopp da vi skal måle på nytt.
 	useLayoutEffect(() => {
+		const erNyQueryoppdatering =
+			forrigeDataUpdatedAt.current !== null && dataUpdatedAt !== forrigeDataUpdatedAt.current;
+		const skalAnimere = skalAnimereQueryoppdatering(
+			forrigeDataUpdatedAt.current,
+			dataUpdatedAt,
+			animasjonArmert.current,
+		);
+		forrigeDataUpdatedAt.current = dataUpdatedAt;
+		if (erNyQueryoppdatering) animasjonArmert.current = false;
+
 		const container = containerRef.current;
 		if (!container) return;
 
@@ -89,7 +111,7 @@ export const useRadFlyttAnimasjon = (containerRef: RefObject<HTMLElement | null>
 		const forrige = forrigePosisjoner.current;
 		forrigePosisjoner.current = nyePosisjoner;
 
-		if (!forrige || foretrekkerRedusertBevegelse()) return;
+		if (!forrige || !skalAnimere || foretrekkerRedusertBevegelse()) return;
 
 		beregnFlyttinger(forrige, nyePosisjoner).forEach(({ nøkkel, forskyvning }) => {
 			const rad = container.querySelector<HTMLElement>(`[${RAD_NØKKEL_ATTRIBUTT}="${CSS.escape(nøkkel)}"]`);
@@ -108,7 +130,7 @@ export const useRadFlyttAnimasjon = (containerRef: RefObject<HTMLElement | null>
 				// En avbrutt animasjon avviser Promise og er ikke en feil her.
 				.catch((): void => undefined);
 		});
-	}, [containerRef, rekkefølge]);
+	}, [containerRef, rekkefølge, dataUpdatedAt, animasjonArmert]);
 
 	useMount(() => {
 		const animasjoner = aktiveAnimasjoner.current;

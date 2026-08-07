@@ -24,6 +24,7 @@ interface OwnProps {
 	 * i gruppen. Ellers ser det ut som hver oppgave har egne handlinger.
 	 */
 	visHandlinger: boolean;
+	onActionmenuEndring: () => void;
 }
 
 type Props = OwnProps;
@@ -35,12 +36,13 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 	antallOppgaverIReservasjonen,
 	// biome-ignore lint/correctness/noUnusedFunctionParameters: Hvis handlingen bare skal vises på første rad i gruppen, må vi vite om det er første rad. Ellers ser det ut som hver oppgave har egne handlinger. Slett hvis det ikke blir aktuelt.
 	visHandlinger,
+	onActionmenuEndring,
 }) => {
 	const [modal, setModal] = useState<ReactNode>(null);
 
 	const { mutate: leggTilSisteOppgaver } = useSisteOppgaverMutation();
 	const { mutate: forlengOppgaveReservasjonMutate, isPending: forlengOppgaveReservasjonIsPending } =
-		useForlengOppgavereservasjon();
+		useForlengOppgavereservasjon(onActionmenuEndring);
 
 	const flereOppgaver = antallOppgaverIReservasjonen > 1;
 	const handlingerBeskrivelse = flereOppgaver
@@ -67,6 +69,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 					},
 				]}
 				antallOppgaver={antallOppgaverIReservasjonen}
+				onReservasjonEndret={onActionmenuEndring}
 			/>,
 		);
 	};
@@ -82,6 +85,7 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 				closeModal={() => setModal(null)}
 				reservasjonsnøkler={[reservasjon.reservasjonsnøkkel]}
 				antallOppgaver={antallOppgaverIReservasjonen}
+				onReservasjonOpphevet={onActionmenuEndring}
 			/>,
 		);
 	};

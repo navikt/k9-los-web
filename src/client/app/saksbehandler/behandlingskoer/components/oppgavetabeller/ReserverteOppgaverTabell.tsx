@@ -24,8 +24,9 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
 	const [visOppgaverPåVent, setVisOppgaverPåVent] = useState(false);
 	const tabellRef = useRef<HTMLTableElement>(null);
+	const actionmenuEndringVenter = useRef(false);
 
-	const { data: reservasjoner, isLoading, isSuccess, isError } = useSaksbehandlerReservasjoner();
+	const { data: reservasjoner, dataUpdatedAt, isLoading, isSuccess, isError } = useSaksbehandlerReservasjoner();
 	const harOppgaverPåVent = reservasjoner?.some((reservasjon) =>
 		reservasjon.reserverteV3Oppgaver.some((oppgave) => oppgave.oppgavestatus === OppgavestatusV3.VENTER),
 	);
@@ -46,7 +47,12 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const visteOppgaver = reservasjonsgrupper.flatMap((gruppe) => gruppe.oppgaver);
 	const antallReservasjoner = visteOppgaver.length;
 
-	useRadFlyttAnimasjon(tabellRef, visteOppgaver.map((oppgave) => nøkkelStreng(oppgave.oppgaveNøkkel)).join());
+	useRadFlyttAnimasjon(
+		tabellRef,
+		visteOppgaver.map((oppgave) => nøkkelStreng(oppgave.oppgaveNøkkel)).join(),
+		dataUpdatedAt,
+		actionmenuEndringVenter,
+	);
 
 	return (
 		<>
@@ -110,6 +116,9 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 										reservasjon={reservasjon}
 										antallOppgaverIReservasjonen={oppgaver.length}
 										visHandlinger={indeks === 0}
+										onActionmenuEndring={() => {
+											actionmenuEndringVenter.current = true;
+										}}
 									/>
 								))}
 							</Table.Body>
