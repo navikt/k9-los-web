@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { beregnFlyttinger } from './radFlyttAnimasjon';
+import { beregnFlyttinger, skalAnimereQueryoppdatering } from './radFlyttAnimasjon';
 
 const posisjoner = (oppføringer: Array<[string, number]>) => new Map(oppføringer);
 
@@ -49,5 +49,23 @@ describe('beregnFlyttinger', () => {
 			{ nøkkel: 'gruppe-1', forskyvning: -30 },
 			{ nøkkel: 'gruppe-2', forskyvning: -30 },
 		]);
+	});
+});
+
+describe('skalAnimereQueryoppdatering', () => {
+	it('animerer en ny queryoppdatering når actionmenu har armert animasjonen', () => {
+		expect(skalAnimereQueryoppdatering(100, 200, true)).toBe(true);
+	});
+
+	it('animerer ikke queryoppdateringer uten handling fra actionmenu', () => {
+		expect(skalAnimereQueryoppdatering(100, 200, false)).toBe(false);
+	});
+
+	it('animerer ikke lokale visningsendringer uten nye querydata', () => {
+		expect(skalAnimereQueryoppdatering(100, 100, true)).toBe(false);
+	});
+
+	it('animerer ikke ved første datalast', () => {
+		expect(skalAnimereQueryoppdatering(null, 100, true)).toBe(false);
 	});
 });

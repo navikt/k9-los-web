@@ -7,6 +7,7 @@ type OwnProps = Readonly<{
 	reservasjonsnøkler: Array<string>;
 	antallOppgaver?: number;
 	closeModal: () => void;
+	onReservasjonOpphevet?: () => void;
 }>;
 
 export const opphevReservasjonerTekst = (antallReservasjoner: number, antallOppgaver?: number) => {
@@ -24,8 +25,9 @@ export const OpphevReservasjonerModal: FunctionComponent<OwnProps> = ({
 	closeModal,
 	reservasjonsnøkler,
 	antallOppgaver,
+	onReservasjonOpphevet,
 }) => {
-	const { mutate: opphevReservasjoner } = useOpphevReservasjoner();
+	const { mutate: opphevReservasjoner } = useOpphevReservasjoner(onReservasjonOpphevet);
 
 	const antall = reservasjonsnøkler.length;
 

@@ -28,6 +28,7 @@ interface OwnProps {
 	closeModal: () => void;
 	reservasjoner?: FlyttReservasjonType[];
 	antallOppgaver?: number;
+	onReservasjonEndret?: () => void;
 }
 
 const harFlereReservasjoner = (reservasjoner: FlyttReservasjonType[]) => reservasjoner && reservasjoner.length > 1;
@@ -60,8 +61,9 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({
 	closeModal,
 	reservasjoner,
 	antallOppgaver,
+	onReservasjonEndret,
 }) => {
-	const { mutate: flyttReservasjoner, isPending } = useEndreReservasjoner(closeModal);
+	const { mutate: flyttReservasjoner, isPending } = useEndreReservasjoner(closeModal, onReservasjonEndret);
 	const { data: saksbehandlere, isLoading, error } = useGetAlleSaksbehandlere({ placeholderData: [] });
 	const oppgaveantallTekst = antallOppgaverTekst(antallOppgaver);
 	const uniqueSaksbehandlere = Array.from(new Set(saksbehandlere.map((a) => a.brukerIdent))).map((brukerIdent) =>
