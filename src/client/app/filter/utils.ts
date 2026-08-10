@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { finnFelt } from './feltIdentitet';
 import { type Oppgavefelt, TolkesSom, type Verdiforklaring } from './filterTsTypes';
 
 /** Reservert verdi for separator-element i UNSAFE_Combobox. */
@@ -70,13 +71,8 @@ export const operatorsFraTolkesSom = (tolkesSom: string, antallVerdiforklaringer
 	}
 };
 
-export const visningsnavnForFelt = (felter: Oppgavefelt[], område: string, kode: string) => {
-	const result = felter.find((felt) => felt.område === område && felt.kode === kode);
-	if (result !== null) {
-		return result.visningsnavn;
-	}
-	return kode;
-};
+export const visningsnavnForFelt = (felter: Oppgavefelt[], område: string | null, kode: string) =>
+	finnFelt(felter, { område, kode })?.visningsnavn ?? kode;
 
 export const mapBooleanToStringArray = (values: (string | null)[]): string[] =>
 	values.map((value) => {

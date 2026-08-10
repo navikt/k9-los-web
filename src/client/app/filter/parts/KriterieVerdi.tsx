@@ -11,8 +11,9 @@ import {
 import GrupperteKriterierVelger from 'avdelingsleder/behandlingskoerV3/components/GrupperteKriterierVelger';
 import dayjs from 'dayjs';
 import { FilterContext } from 'filter/FilterContext';
+import { FELTREFERANSER, sammeFelt } from 'filter/feltIdentitet';
 import type { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
-import { type Oppgavefelt, OppgavefilterKode, TolkesSom } from 'filter/filterTsTypes';
+import { type Oppgavefelt, TolkesSom } from 'filter/filterTsTypes';
 import { updateFilter } from 'filter/queryUtils';
 import {
 	calculateDays,
@@ -132,7 +133,7 @@ const KriterieVerdi = ({
 		);
 	}
 
-	if (feltdefinisjon?.kode === OppgavefilterKode.Personbeskyttelse) {
+	if (feltdefinisjon && sammeFelt(feltdefinisjon, FELTREFERANSER.personbeskyttelse)) {
 		return (
 			<Select
 				label="Personbeskyttelse"
@@ -214,7 +215,7 @@ const KriterieVerdi = ({
 			>
 				<HStack gap="space-20" wrap>
 					<Checkbox value="ja">Ja</Checkbox>
-					{feltdefinisjon.kode !== OppgavefilterKode.Hastesak ? <Checkbox value="nei">Nei</Checkbox> : null}
+					{!sammeFelt(feltdefinisjon, FELTREFERANSER.hastesak) ? <Checkbox value="nei">Nei</Checkbox> : null}
 				</HStack>
 			</CheckboxGroup>
 		);

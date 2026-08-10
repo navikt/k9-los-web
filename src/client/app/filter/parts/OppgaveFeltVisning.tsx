@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { finnFelt } from 'filter/feltIdentitet';
 import { type Oppgavefelt, type Oppgavefeltverdi, TolkesSom, type Verdiforklaring } from 'filter/filterTsTypes';
 import { harGruppering } from 'filter/utils';
 import 'utils/dateUtils';
@@ -19,7 +20,7 @@ function getVerdiforklaringer(felt: Oppgavefeltverdi, oppgaveFelt: Oppgavefelt, 
 }
 
 const OppgaveFeltVisning = ({ felt, oppgaveFelter }: Props) => {
-	const oppgaveFelt = oppgaveFelter.find((v) => v.kode === felt.kode);
+	const oppgaveFelt = finnFelt(oppgaveFelter, felt);
 
 	if (!oppgaveFelt || !felt.verdi) {
 		return <div>-</div>;

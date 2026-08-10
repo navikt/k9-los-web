@@ -11,6 +11,7 @@ import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icon
 import { Button, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import { feltIdentitet, feltreferanseFraIdentitet, finnFelt } from 'filter/feltIdentitet';
 import type { WithNodeId } from 'filter/filterFrontendTypes';
 import { type EnkelSelectFelt, type Oppgavefelt, type SelectFelt, Synlighet } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, moveSelectFelt, removeSelectFelt, updateSelectFelt } from 'filter/queryUtils';
@@ -36,22 +37,27 @@ const SortableEnkelField: FunctionComponent<{
 
 	const valgteFelterFraAndreRader = select
 		.filter((s) => s._nodeId !== felt._nodeId && s.type === 'enkel' && s.kode)
-		.map((s) => (s as WithNodeId<EnkelSelectFelt>).kode);
-	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
+		.map((s) => feltIdentitet(s as WithNodeId<EnkelSelectFelt>));
+	const gjeldendeIdentitet = felt.kode ? feltIdentitet(felt) : undefined;
+	const tilgjengeligeFelter = felter.filter(
+		(f) => !valgteFelterFraAndreRader.includes(feltIdentitet(f)) || feltIdentitet(f) === gjeldendeIdentitet,
+	);
 
 	const options = useMemo(() => {
 		const primærvalg = tilgjengeligeFelter.filter((v) => v.synlighet === Synlighet.OverStreken);
 		const avanserteValg = tilgjengeligeFelter.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
-		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
+		const optionsList = primærvalg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn }));
 		if (avanserteValg.length > 0) {
 			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
-			optionsList.push(...avanserteValg.map((v) => ({ value: v.kode, label: v.visningsnavn })));
+			optionsList.push(...avanserteValg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn })));
 		}
 		return optionsList;
 	}, [tilgjengeligeFelter]);
 
-	const selectedOptions = felt.kode ? options.filter((o) => o.value === felt.kode).map((o) => o.label) : [];
+	const selectedOptions = gjeldendeIdentitet
+		? options.filter((o) => o.value === gjeldendeIdentitet).map((o) => o.label)
+		: [];
 
 	const containerClass = `selectFeltCombobox-${felt._nodeId.replace(/[^a-zA-Z0-9]/g, '')}`;
 
@@ -114,7 +120,8 @@ const OppgaveSelectFelter = () => {
 	};
 
 	const handleUpdateEnkel = (felt: WithNodeId<EnkelSelectFelt>, newValue: string) => {
-		const oppgavefelt = felter.find((f) => f.kode === newValue);
+		const referanse = feltreferanseFraIdentitet(newValue);
+		const oppgavefelt = referanse ? finnFelt(felter, referanse) : undefined;
 		if (oppgavefelt) {
 			updateQuery([
 				updateSelectFelt(felt._nodeId, {

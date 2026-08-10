@@ -11,6 +11,7 @@ import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icon
 import { Button, Select, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import { feltIdentitet, feltreferanseFraIdentitet, finnFelt } from 'filter/feltIdentitet';
 import type { WithNodeId } from 'filter/filterFrontendTypes';
 import { type EnkelOrderFelt, type Oppgavefelt, type OrderFelt, Synlighet } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
@@ -37,22 +38,27 @@ const SortableEnkelOrderField: FunctionComponent<{
 
 	const valgteFelterFraAndreRader = order
 		.filter((o) => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode)
-		.map((o) => (o as WithNodeId<EnkelOrderFelt>).kode);
-	const tilgjengeligeFelter = felter.filter((f) => !valgteFelterFraAndreRader.includes(f.kode) || f.kode === felt.kode);
+		.map((o) => feltIdentitet(o as WithNodeId<EnkelOrderFelt>));
+	const gjeldendeIdentitet = felt.kode ? feltIdentitet(felt) : undefined;
+	const tilgjengeligeFelter = felter.filter(
+		(f) => !valgteFelterFraAndreRader.includes(feltIdentitet(f)) || feltIdentitet(f) === gjeldendeIdentitet,
+	);
 
 	const options = useMemo(() => {
 		const primærvalg = tilgjengeligeFelter.filter((v) => v.synlighet === Synlighet.OverStreken);
 		const avanserteValg = tilgjengeligeFelter.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
-		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
+		const optionsList = primærvalg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn }));
 		if (avanserteValg.length > 0) {
 			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
-			optionsList.push(...avanserteValg.map((v) => ({ value: v.kode, label: v.visningsnavn })));
+			optionsList.push(...avanserteValg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn })));
 		}
 		return optionsList;
 	}, [tilgjengeligeFelter]);
 
-	const selectedOptions = felt.kode ? options.filter((o) => o.value === felt.kode).map((o) => o.label) : [];
+	const selectedOptions = gjeldendeIdentitet
+		? options.filter((o) => o.value === gjeldendeIdentitet).map((o) => o.label)
+		: [];
 
 	const containerClass = `orderFeltCombobox-${felt._nodeId.replace(/[^a-zA-Z0-9]/g, '')}`;
 
@@ -130,8 +136,9 @@ const OppgaveOrderFelter = () => {
 		updateQuery([addSortering(null)]);
 	};
 
-	const handleUpdateKode = (nodeId: string, kode: string) => {
-		const oppgavefelt = felter.find((f) => f.kode === kode);
+	const handleUpdateKode = (nodeId: string, identitet: string) => {
+		const referanse = feltreferanseFraIdentitet(identitet);
+		const oppgavefelt = referanse ? finnFelt(felter, referanse) : undefined;
 		if (oppgavefelt) {
 			updateQuery([
 				updateSortering(nodeId, {

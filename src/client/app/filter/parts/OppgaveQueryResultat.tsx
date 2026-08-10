@@ -1,4 +1,5 @@
 import { Table } from '@navikt/ds-react';
+import { feltIdentitet } from 'filter/feltIdentitet';
 import type { IdentifiedOppgaveQuery } from 'filter/filterFrontendTypes';
 import type { Oppgavefelt, Oppgaverad } from 'filter/filterTsTypes';
 import { visningsnavnForFelt } from '../utils';
@@ -33,7 +34,7 @@ const OppgaveQueryResultat = ({ felter, oppgaveQuery, oppgaver }: Props) => (
 			{oppgaver.map((oppgave) => (
 				<Table.Row key={oppgave.id}>
 					{oppgave.felter.map((felt) => (
-						<Table.DataCell key={felt.kode}>
+						<Table.DataCell key={feltIdentitet(felt)}>
 							<OppgaveFeltVisning felt={felt} oppgaveFelter={felter} />
 						</Table.DataCell>
 					))}

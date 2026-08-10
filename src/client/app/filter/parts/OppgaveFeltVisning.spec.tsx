@@ -120,10 +120,24 @@ describe('OppgaveFeltVisning', () => {
 	it('viser aksjonspunkter med kode i parentes', () => {
 		render(
 			<OppgaveFeltVisning
-				felt={lagFeltverdi(OppgavefilterKode.Aksjonspunkt, ['9001', '9999'])}
+				felt={{ område: 'K9', kode: OppgavefilterKode.Aksjonspunkt, verdi: ['9001', '9999'] }}
 				oppgaveFelter={oppgaveFelter}
 			/>,
 		);
 		expect(screen.getByText('Kontroller legeerklæring (9001), 9999')).toBeInTheDocument();
+	});
+
+	it('bruker feltdefinisjonen fra riktig område når koden er lik', () => {
+		const felterMedLikKode = [
+			lagFelt({ område: 'K9', kode: 'status', verdiforklaringer: [lagVerdiforklaring('ÅPEN', 'K9-status')] }),
+			lagFelt({ område: 'ANNET', kode: 'status', verdiforklaringer: [lagVerdiforklaring('ÅPEN', 'Annen status')] }),
+		];
+
+		render(
+			<OppgaveFeltVisning felt={{ område: 'ANNET', kode: 'status', verdi: 'ÅPEN' }} oppgaveFelter={felterMedLikKode} />,
+		);
+
+		expect(screen.getByText('Annen status')).toBeInTheDocument();
+		expect(screen.queryByText('K9-status')).not.toBeInTheDocument();
 	});
 });

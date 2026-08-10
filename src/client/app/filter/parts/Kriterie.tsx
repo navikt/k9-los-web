@@ -2,6 +2,7 @@ import { TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import { type Feltreferanse, finnFelt, sammeFelt } from 'filter/feltIdentitet';
 import { removeFilter } from 'filter/queryUtils';
 import { harGruppering } from 'filter/utils';
 import type React from 'react';
@@ -14,20 +15,18 @@ import KriterieVerdi from './KriterieVerdi';
 
 interface Props {
 	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
-	paakrevdeKoder: string[];
+	paakrevdeFelter: Feltreferanse[];
 	readOnly: boolean;
 }
 
-const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeKoder = [], readOnly = false }) => {
+const Kriterie: React.FC<Props> = ({ oppgavefilter, paakrevdeFelter = [], readOnly = false }) => {
 	const testID = useMemo(() => uuid(), []);
 
 	const { updateQuery } = useContext(FilterContext);
 	const { felter: kriterierSomKanVelges } = useContext(AppContext);
-	const feltdefinisjon = kriterierSomKanVelges.find(
-		(fd) => fd.område === oppgavefilter.område && fd.kode === oppgavefilter.kode,
-	);
+	const feltdefinisjon = finnFelt(kriterierSomKanVelges, oppgavefilter);
 
-	const kriterieErPåkrevd = paakrevdeKoder.some((v) => v === feltdefinisjon?.kode);
+	const kriterieErPåkrevd = feltdefinisjon ? paakrevdeFelter.some((felt) => sammeFelt(felt, feltdefinisjon)) : false;
 	return (
 		<div id={`feltpanel-${testID}`} className="rounded bg-ax-bg-accent-moderate p-4">
 			<div className="flex gap-4">

@@ -2,6 +2,7 @@ import { ChevronDownIcon, EyeIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Alert, BodyShort, Button, Dialog, Loader, Pagination, Table } from '@navikt/ds-react';
 import { type Uttrekk, useHentUttrekkResultat } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
+import { finnFelt } from 'filter/feltIdentitet';
 import {
 	AGGREGERT_FUNKSJON_VISNINGSNAVN,
 	type AggregertFunksjon,
@@ -31,11 +32,12 @@ function calculateDefaultPageSize(): number {
 
 function finnFeltdefForAggregert(
 	felter: Oppgavefelt[],
+	område: string | null | undefined,
 	kode: string | null | undefined,
 	funksjon: AggregertFunksjon,
 ): Pick<Oppgavefelt, 'område' | 'kode' | 'visningsnavn'> {
 	const funksjonsNavn = AGGREGERT_FUNKSJON_VISNINGSNAVN[funksjon];
-	const feltDef = kode ? felter.find((f) => f.kode === kode) : undefined;
+	const feltDef = kode ? finnFelt(felter, { område: område ?? null, kode }) : undefined;
 	if (!feltDef) {
 		return { visningsnavn: kode ? `${funksjonsNavn}(${kode})` : funksjonsNavn, kode: kode ?? '', område: '' };
 	}
@@ -48,7 +50,7 @@ function finnFeltdefForAggregert(
 function finnFeltdef(felter: Oppgavefelt[], kolonne: SelectFelt): Oppgavefelt | undefined {
 	if (kolonne.type === 'aggregert') {
 		return {
-			...finnFeltdefForAggregert(felter, kolonne.kode, kolonne.funksjon),
+			...finnFeltdefForAggregert(felter, kolonne.område, kolonne.kode, kolonne.funksjon),
 			tolkes_som: TolkesSom.String,
 			verdiforklaringer: null,
 			verdiforklaringerErUttømmende: false,
@@ -56,7 +58,7 @@ function finnFeltdef(felter: Oppgavefelt[], kolonne: SelectFelt): Oppgavefelt | 
 			listetype: false,
 		};
 	}
-	return felter.find((f) => f.kode === kolonne.kode);
+	return finnFelt(felter, kolonne);
 }
 
 function kolonneVisningsnavn(kolonne: SelectFelt, felter: Oppgavefelt[]): string {

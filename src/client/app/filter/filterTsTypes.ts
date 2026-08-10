@@ -1,6 +1,6 @@
 export type FeltverdiOppgavefilter = {
 	type: 'feltverdi';
-	område: string;
+	område: string | null;
 	kode: string;
 	operator: string;
 	verdi: string[];
@@ -22,7 +22,7 @@ export type OppgaveQuery = {
 
 export type EnkelOrderFelt = {
 	type: 'enkel';
-	område: string;
+	område: string | null;
 	kode: string;
 	økende: boolean;
 };
@@ -69,7 +69,7 @@ export type AggregertOrderFelt = {
 export type OrderFelt = EnkelOrderFelt | AggregertOrderFelt;
 
 export type Oppgavefeltverdi = {
-	område: string;
+	område: string | null;
 	kode: string;
 	verdi: string | string[];
 };
@@ -102,7 +102,7 @@ export enum TolkesSom {
 }
 
 export type Oppgavefelt = {
-	område: string;
+	område: string | null;
 	kode: string;
 	visningsnavn: string;
 	beskrivelse?: string;

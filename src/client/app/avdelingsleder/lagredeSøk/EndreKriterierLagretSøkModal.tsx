@@ -2,7 +2,8 @@ import type { RenderModalProps } from 'sharedComponents/ModalButton';
 import { Heading, Modal } from '@navikt/ds-react';
 import { type LagretSøk, useEndreLagretSøk, useNyttLagretSøk } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
-import { type FeltverdiOppgavefilter, OppgavefilterKode, type OppgaveQuery } from 'filter/filterTsTypes';
+import { FELTREFERANSER, sammeFelt } from 'filter/feltIdentitet';
+import type { FeltverdiOppgavefilter, OppgaveQuery } from 'filter/filterTsTypes';
 import { KøKriterieEditorContent } from 'filter/KøKriterieEditor';
 import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
 import { useContext, useMemo } from 'react';
@@ -33,14 +34,14 @@ export function EndreKriterierLagretSøkModal({
 	const kode6 =
 		query.filtere.find((filter) => {
 			if (filter.type !== 'feltverdi') return false;
-			const { kode, verdi } = filter as FeltverdiOppgavefilter;
-			return kode === OppgavefilterKode.Personbeskyttelse && verdi.includes('KODE6');
+			const { verdi } = filter as FeltverdiOppgavefilter;
+			return sammeFelt(filter, FELTREFERANSER.personbeskyttelse) && verdi.includes('KODE6');
 		}) !== undefined;
 	const feltdefinisjoner = useContext(AppContext).felter;
 	const overstyrteFeltdefinisjoner = useMemo(
 		() => ({
 			felter: feltdefinisjoner.map((felt) => {
-				if (felt.kode === OppgavefilterKode.Personbeskyttelse) {
+				if (sammeFelt(felt, FELTREFERANSER.personbeskyttelse)) {
 					return {
 						...felt,
 						verdiforklaringer: kode6
@@ -74,8 +75,8 @@ export function EndreKriterierLagretSøkModal({
 						hovedknappTekst={lagretSøk ? 'Lagre' : 'Opprett'}
 					>
 						<KøKriterieEditorContent
-							paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
-							readOnlyKoder={kode6 ? [OppgavefilterKode.Personbeskyttelse] : []}
+							paakrevdeFelter={[FELTREFERANSER.oppgavestatus, FELTREFERANSER.personbeskyttelse]}
+							readOnlyFelter={kode6 ? [FELTREFERANSER.personbeskyttelse] : []}
 						/>
 					</KøKriterieEditorProvider>
 				</AppContext.Provider>

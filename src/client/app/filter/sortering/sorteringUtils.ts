@@ -50,7 +50,16 @@ export const mapKodeTilSorteringParams = (kode: SORTERING_ALTERNATIVER) => {
 	}
 };
 
-export const mapSorteringParamsTilKode = ({ kode, økende }: { kode: string; økende: boolean }) => {
+export const mapSorteringParamsTilKode = ({
+	område,
+	kode,
+	økende,
+}: {
+	område: string | null;
+	kode: string;
+	økende: boolean;
+}) => {
+	if (område !== 'K9') return null;
 	switch (kode) {
 		case koder.mottattDato:
 			return økende ? SORTERING_ALTERNATIVER.mottattDatoEldstTilNyest : SORTERING_ALTERNATIVER.mottattDatoNyestTilEldst;

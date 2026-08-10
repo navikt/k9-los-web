@@ -1,6 +1,7 @@
 import { PlusCircleIcon, TrashIcon } from '@navikt/aksel-icons';
 import { Button, Label, ToggleGroup } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
+import { type Feltreferanse, sammeFelt } from 'filter/feltIdentitet';
 import { addFeltverdiFilter, addGruppeFilter, type QueryFunction, removeFilter, updateFilter } from 'filter/queryUtils';
 import { useContext } from 'react';
 import { assertNever } from 'utils/assert-never';
@@ -13,16 +14,16 @@ interface OppgavefilterPanelProps {
 	oppgavefilter: IdentifiedOppgavefilter;
 	addGruppeOperation?: QueryFunction;
 	køvisning?: boolean;
-	paakrevdeKoder?: string[];
-	readOnlyKoder?: string[];
+	paakrevdeFelter?: Feltreferanse[];
+	readOnlyFelter?: Feltreferanse[];
 }
 
 const OppgavefilterPanel = ({
 	oppgavefilter,
 	addGruppeOperation,
 	køvisning,
-	paakrevdeKoder,
-	readOnlyKoder = [],
+	paakrevdeFelter,
+	readOnlyFelter = [],
 }: OppgavefilterPanelProps) => {
 	const { readOnly: contextReadOnly } = useContext(FilterContext);
 
@@ -31,7 +32,7 @@ const OppgavefilterPanel = ({
 			<VelgKriterie
 				oppgavefilter={oppgavefilter}
 				addGruppeOperation={addGruppeOperation}
-				paakrevdeKoder={paakrevdeKoder}
+				paakrevdeFelter={paakrevdeFelter}
 			/>
 		);
 	}
@@ -40,13 +41,20 @@ const OppgavefilterPanel = ({
 		return (
 			<Kriterie
 				oppgavefilter={oppgavefilter}
-				paakrevdeKoder={paakrevdeKoder}
-				readOnly={contextReadOnly || readOnlyKoder.includes(oppgavefilter.kode)}
+				paakrevdeFelter={paakrevdeFelter}
+				readOnly={contextReadOnly || readOnlyFelter.some((felt) => sammeFelt(felt, oppgavefilter))}
 			/>
 		);
 	}
 	if (oppgavefilter.type === 'combine') {
-		return <FilterGruppe oppgavefilter={oppgavefilter} køvisning={køvisning} />;
+		return (
+			<FilterGruppe
+				oppgavefilter={oppgavefilter}
+				køvisning={køvisning}
+				paakrevdeFelter={paakrevdeFelter}
+				readOnlyFelter={readOnlyFelter}
+			/>
+		);
 	}
 
 	return assertNever(oppgavefilter);
@@ -55,8 +63,10 @@ const OppgavefilterPanel = ({
 interface FilterGruppeProps {
 	oppgavefilter: IdentifiedCombineOppgavefilter;
 	køvisning: boolean;
+	paakrevdeFelter?: Feltreferanse[];
+	readOnlyFelter?: Feltreferanse[];
 }
-const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
+const FilterGruppe = ({ oppgavefilter, køvisning, paakrevdeFelter, readOnlyFelter }: FilterGruppeProps) => {
 	const { updateQuery, readOnly } = useContext(FilterContext);
 	const handleToggle = (value: string) => {
 		updateQuery([updateFilter(oppgavefilter._nodeId, { combineOperator: value })]);
@@ -94,6 +104,8 @@ const FilterGruppe = ({ oppgavefilter, køvisning }: FilterGruppeProps) => {
 						oppgavefilter={item}
 						addGruppeOperation={addGruppeFilter(oppgavefilter._nodeId)}
 						køvisning={køvisning}
+						paakrevdeFelter={paakrevdeFelter}
+						readOnlyFelter={readOnlyFelter}
 					/>
 				))}
 			</div>

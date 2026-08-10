@@ -1,6 +1,13 @@
 import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
+import {
+	type Feltreferanse,
+	feltIdentitet,
+	feltreferanseFraIdentitet,
+	finnFelt,
+	sammeFelt,
+} from 'filter/feltIdentitet';
 import type { IdentifiedFeltverdiOppgavefilter } from 'filter/filterFrontendTypes';
 import { type Oppgavefelt, type Oppgavefilter, Synlighet } from 'filter/filterTsTypes';
 import { type QueryFunction, removeFilter, updateFilter } from 'filter/queryUtils';
@@ -15,10 +22,10 @@ type ComboboxOption = {
 interface Props {
 	oppgavefilter: IdentifiedFeltverdiOppgavefilter;
 	addGruppeOperation: QueryFunction;
-	paakrevdeKoder: string[];
+	paakrevdeFelter: Feltreferanse[];
 }
 
-const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }: Props) => {
+const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeFelter = [] }: Props) => {
 	const { updateQuery, errors } = useContext(FilterContext);
 	const { felter } = useContext(AppContext);
 	const [valgtKriterie, setValgtKriterie] = useState<Oppgavefelt | '__gruppe'>();
@@ -31,9 +38,8 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 			: errors.find((e) => e._nodeId === oppgavefilter._nodeId && e.felt === 'kode')?.message;
 
 	const kriterierSomKanVelges = useMemo(
-		() =>
-			paakrevdeKoder.length > 0 ? felter.filter((kriterie) => paakrevdeKoder.some((v) => v !== kriterie.kode)) : felter,
-		[felter, paakrevdeKoder],
+		() => felter.filter((kriterie) => !paakrevdeFelter.some((påkrevd) => sammeFelt(påkrevd, kriterie))),
+		[felter, paakrevdeFelter],
 	);
 
 	// Avledet direkte fra kriterierSomKanVelges. Lå tidligere i state satt fra en useEffect,
@@ -42,10 +48,10 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 		const primærvalg = kriterierSomKanVelges?.filter((v) => v.synlighet === Synlighet.OverStreken);
 		const avanserteValg = kriterierSomKanVelges?.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
-		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
+		const optionsList = primærvalg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn }));
 		if (avanserteValg?.length > 0) {
 			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
-			optionsList.push(...avanserteValg.map((v) => ({ value: v.kode, label: v.visningsnavn })));
+			optionsList.push(...avanserteValg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn })));
 		}
 		optionsList.push({ label: 'Gruppe', value: '__gruppe' });
 		return optionsList;
@@ -58,7 +64,8 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeKoder = [] }
 			return;
 		}
 
-		const kriterie = kriterierSomKanVelges.find((k) => k.kode === value);
+		const referanse = feltreferanseFraIdentitet(value);
+		const kriterie = referanse ? finnFelt(kriterierSomKanVelges, referanse) : undefined;
 		setValgtKriterie(kriterie);
 	};
 

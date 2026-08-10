@@ -4,7 +4,8 @@ import { Alert, Button, ErrorMessage, Heading, Label, Modal, Textarea, TextField
 import { useHentSaksbehandlereAvdelingsleder, useKo, useOppdaterKøMutation } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
 import type { Saksbehandler } from 'avdelingsleder/bemanning/saksbehandlerTsType';
-import { OppgavefilterKode, type OppgaveQuery } from 'filter/filterTsTypes';
+import { FELTREFERANSER, sammeFelt } from 'filter/feltIdentitet';
+import type { OppgaveQuery } from 'filter/filterTsTypes';
 import KøKriterieEditor from 'filter/KøKriterieEditor';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -106,7 +107,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 	const overstyrteFeltdefinisjoner = useMemo(
 		() => ({
 			felter: feltdefinisjoner.map((felt) => {
-				if (felt.kode === OppgavefilterKode.Personbeskyttelse && !kø.skjermet) {
+				if (sammeFelt(felt, FELTREFERANSER.personbeskyttelse) && !kø.skjermet) {
 					return {
 						...felt,
 						verdiforklaringer: felt.verdiforklaringer.filter((v) => v.verdi !== 'KODE6'),
@@ -243,8 +244,8 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 								lagre={lagreIModal}
 								avbryt={() => setVisFilterModal(false)}
 								tittel="Kriterier for kø"
-								paakrevdeKoder={[OppgavefilterKode.Oppgavestatus, OppgavefilterKode.Personbeskyttelse]}
-								readOnlyKoder={kø.skjermet ? [OppgavefilterKode.Personbeskyttelse] : []}
+								paakrevdeFelter={[FELTREFERANSER.oppgavestatus, FELTREFERANSER.personbeskyttelse]}
+								readOnlyFelter={kø.skjermet ? [FELTREFERANSER.personbeskyttelse] : []}
 								visSortering
 								hovedknappTekst="Lagre"
 							/>

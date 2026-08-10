@@ -1,5 +1,6 @@
 import { PlusIcon } from '@navikt/aksel-icons';
 import { FilterContext } from 'filter/FilterContext';
+import { type Feltreferanse, feltIdentitet } from 'filter/feltIdentitet';
 import { OppgavefilterKode } from 'filter/filterTsTypes';
 import { addSortering } from 'filter/queryUtils';
 import { useContext } from 'react';
@@ -23,7 +24,11 @@ const QUICK_ADD_SORTERING: QuickAddOrderItem[] = [
 const QuickAddOrder = () => {
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
-	const valgteKoder = new Set(oppgaveQuery.order.filter((o) => o.kode).map((o) => o.kode));
+	const valgteFelter = new Set(
+		oppgaveQuery.order
+			.filter((o): o is typeof o & Feltreferanse => Boolean(o.kode) && o.område !== undefined)
+			.map(feltIdentitet),
+	);
 
 	const handleAdd = (item: QuickAddOrderItem) => {
 		updateQuery([
@@ -36,7 +41,7 @@ const QuickAddOrder = () => {
 		]);
 	};
 
-	const tilgjengelige = QUICK_ADD_SORTERING.filter((item) => !valgteKoder.has(item.kode));
+	const tilgjengelige = QUICK_ADD_SORTERING.filter((item) => !valgteFelter.has(feltIdentitet(item)));
 
 	if (tilgjengelige.length === 0) return null;
 
@@ -44,7 +49,7 @@ const QuickAddOrder = () => {
 		<div className="flex flex-wrap gap-2">
 			{tilgjengelige.map((item) => (
 				<button
-					key={item.kode}
+					key={feltIdentitet(item)}
 					type="button"
 					className={[
 						'cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed',

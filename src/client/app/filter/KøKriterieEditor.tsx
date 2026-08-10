@@ -1,6 +1,7 @@
 import { PlusCircleIcon } from '@navikt/aksel-icons';
 import { Button, Heading } from '@navikt/ds-react';
 import { FilterContext } from 'filter/FilterContext';
+import type { Feltreferanse } from 'filter/feltIdentitet';
 import KøKriterieEditorProvider from 'filter/KøKriterieEditorProvider';
 import { useContext } from 'react';
 import type { OppgaveQuery } from './filterTsTypes';
@@ -8,11 +9,11 @@ import OppgavefilterPanel from './parts/OppgavefilterPanel';
 import { addFeltverdiFilter, addGruppeFilter } from './queryUtils';
 
 export const KøKriterieEditorContent = ({
-	paakrevdeKoder,
-	readOnlyKoder,
+	paakrevdeFelter,
+	readOnlyFelter,
 }: {
-	paakrevdeKoder?: string[];
-	readOnlyKoder?: string[];
+	paakrevdeFelter?: Feltreferanse[];
+	readOnlyFelter?: Feltreferanse[];
 }) => {
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
@@ -25,8 +26,8 @@ export const KøKriterieEditorContent = ({
 						køvisning
 						oppgavefilter={item}
 						addGruppeOperation={addGruppeFilter(oppgaveQuery._nodeId)}
-						paakrevdeKoder={paakrevdeKoder}
-						readOnlyKoder={readOnlyKoder}
+						paakrevdeFelter={paakrevdeFelter}
+						readOnlyFelter={readOnlyFelter}
 					/>
 				))}
 			</div>
@@ -50,8 +51,8 @@ interface OwnProps {
 	avbryt: () => void;
 	initialQuery?: OppgaveQuery;
 	tittel: string;
-	paakrevdeKoder?: string[];
-	readOnlyKoder?: string[];
+	paakrevdeFelter?: Feltreferanse[];
+	readOnlyFelter?: Feltreferanse[];
 	visSortering?: boolean;
 	hovedknappTekst: string;
 }
@@ -61,8 +62,8 @@ const KøKriterieEditor = ({
 	lagre,
 	avbryt,
 	tittel,
-	paakrevdeKoder,
-	readOnlyKoder,
+	paakrevdeFelter,
+	readOnlyFelter,
 	visSortering,
 	hovedknappTekst,
 }: OwnProps) => {
@@ -77,7 +78,7 @@ const KøKriterieEditor = ({
 			<Heading size="small" spacing className="mt-3">
 				{tittel}
 			</Heading>
-			<KøKriterieEditorContent paakrevdeKoder={paakrevdeKoder} readOnlyKoder={readOnlyKoder} />
+			<KøKriterieEditorContent paakrevdeFelter={paakrevdeFelter} readOnlyFelter={readOnlyFelter} />
 		</KøKriterieEditorProvider>
 	);
 };

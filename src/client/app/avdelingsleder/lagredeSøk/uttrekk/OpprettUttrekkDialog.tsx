@@ -34,6 +34,7 @@ import {
 import { type LagretSøk, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
 import { FilterContext, type FilterContextType } from 'filter/FilterContext';
+import { type Feltreferanse, feltIdentitet, feltreferanseFraIdentitet, finnFelt } from 'filter/feltIdentitet';
 import {
 	fjernNodeIdFraQuery,
 	type IdentifiedOppgaveQuery,
@@ -123,22 +124,27 @@ const SortableGroupByField: React.FC<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const valgteFraAndreRader = alleFelter.filter((f) => f._nodeId !== felt._nodeId && f.kode).map((f) => f.kode);
-	const tilgjengelige = oppgaveFelter.filter((f) => !valgteFraAndreRader.includes(f.kode) || f.kode === felt.kode);
+	const valgteFraAndreRader = alleFelter.filter((f) => f._nodeId !== felt._nodeId && f.kode).map(feltIdentitet);
+	const gjeldendeIdentitet = felt.kode ? feltIdentitet(felt) : undefined;
+	const tilgjengelige = oppgaveFelter.filter(
+		(f) => !valgteFraAndreRader.includes(feltIdentitet(f)) || feltIdentitet(f) === gjeldendeIdentitet,
+	);
 
 	const options = useMemo(() => {
 		const primærvalg = tilgjengelige.filter((v) => v.synlighet === Synlighet.OverStreken);
 		const avanserteValg = tilgjengelige.filter((v) => v.synlighet === Synlighet.UnderStreken);
 
-		const optionsList = primærvalg.map((v) => ({ value: v.kode, label: v.visningsnavn }));
+		const optionsList = primærvalg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn }));
 		if (avanserteValg.length > 0) {
 			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
-			optionsList.push(...avanserteValg.map((v) => ({ value: v.kode, label: v.visningsnavn })));
+			optionsList.push(...avanserteValg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn })));
 		}
 		return optionsList;
 	}, [tilgjengelige]);
 
-	const selectedOptions = felt.kode ? options.filter((o) => o.value === felt.kode).map((o) => o.label) : [];
+	const selectedOptions = gjeldendeIdentitet
+		? options.filter((o) => o.value === gjeldendeIdentitet).map((o) => o.label)
+		: [];
 
 	const containerClass = `groupByCombobox-${felt._nodeId.replace(/[^a-zA-Z0-9]/g, '')}`;
 
@@ -183,35 +189,35 @@ const SortableGroupByField: React.FC<{
 
 // --- Gruppert konfigurasjon ---
 
-const QUICK_ADD_GROUP_BY_KOLONNER: OppgavefilterKode[] = [
-	OppgavefilterKode.Ytelsestype,
-	OppgavefilterKode.BehandlingTypekode,
-	OppgavefilterKode.Behandlingsårsak,
-	OppgavefilterKode.AktivVenteårsak,
-	OppgavefilterKode.Oppgavestatus,
+const QUICK_ADD_GROUP_BY_KOLONNER: Feltreferanse[] = [
+	{ område: 'K9', kode: OppgavefilterKode.Ytelsestype },
+	{ område: 'K9', kode: OppgavefilterKode.BehandlingTypekode },
+	{ område: 'K9', kode: OppgavefilterKode.Behandlingsårsak },
+	{ område: 'K9', kode: OppgavefilterKode.AktivVenteårsak },
+	{ område: null, kode: OppgavefilterKode.Oppgavestatus },
 ];
 
 const QuickAddGroupBy: React.FC<{
 	groupByFelter: WithNodeId<EnkelSelectFelt>[];
 	oppgaveFelter: Oppgavefelt[];
-	onAdd: (kode: string) => void;
+	onAdd: (felt: Feltreferanse) => void;
 }> = ({ groupByFelter, oppgaveFelter, onAdd }) => {
-	const valgteKoder = new Set(groupByFelter.filter((f) => f.kode).map((f) => f.kode));
+	const valgteFelter = new Set(groupByFelter.filter((f) => f.kode).map(feltIdentitet));
 
-	const tilgjengelige = QUICK_ADD_GROUP_BY_KOLONNER.map((kode) => {
-		if (valgteKoder.has(kode)) return null;
-		const oppgavefelt = oppgaveFelter.find((f) => f.kode === kode);
+	const tilgjengelige = QUICK_ADD_GROUP_BY_KOLONNER.map((referanse) => {
+		if (valgteFelter.has(feltIdentitet(referanse))) return null;
+		const oppgavefelt = finnFelt(oppgaveFelter, referanse);
 		if (!oppgavefelt) return null;
-		return { kode: kode as string, visningsnavn: oppgavefelt.visningsnavn };
-	}).filter((x): x is { kode: string; visningsnavn: string } => x !== null);
+		return { referanse, visningsnavn: oppgavefelt.visningsnavn };
+	}).filter((x): x is { referanse: Feltreferanse; visningsnavn: string } => x !== null);
 
 	if (tilgjengelige.length === 0) return null;
 
 	return (
 		<div className="flex flex-wrap gap-2">
-			{tilgjengelige.map(({ kode, visningsnavn }) => (
+			{tilgjengelige.map(({ referanse, visningsnavn }) => (
 				<button
-					key={kode}
+					key={feltIdentitet(referanse)}
 					type="button"
 					className={[
 						'cursor-pointer inline-flex items-center gap-0.5 rounded-md border border-dashed',
@@ -219,7 +225,7 @@ const QuickAddGroupBy: React.FC<{
 						'hover:border-ax-neutral-700 hover:text-ax-neutral-900 hover:bg-ax-neutral-200',
 					].join(' ')}
 					style={{ fontSize: '0.9rem' }}
-					onClick={() => onAdd(kode)}
+					onClick={() => onAdd(referanse)}
 				>
 					<PlusIcon aria-hidden className="shrink-0" height="0.875rem" width="0.875rem" />
 					{visningsnavn}
@@ -320,9 +326,10 @@ const SortableOppgaverOrderField: React.FC<{
 
 	const valgteFraAndreRader = allOrder
 		.filter((o) => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode)
-		.map((o) => (o as WithNodeId<EnkelOrderFelt>).kode);
+		.map((o) => feltIdentitet(o as WithNodeId<EnkelOrderFelt>));
+	const gjeldendeIdentitet = felt.kode ? feltIdentitet(felt) : '';
 	const tilgjengelige = sorteringsAlternativer.filter(
-		(alt) => !valgteFraAndreRader.includes(alt.value) || alt.value === felt.kode,
+		(alt) => !valgteFraAndreRader.includes(alt.value) || alt.value === gjeldendeIdentitet,
 	);
 
 	return (
@@ -341,7 +348,7 @@ const SortableOppgaverOrderField: React.FC<{
 				label="Sorter på"
 				className="min-w-0 grow"
 				size="small"
-				value={felt.kode ?? ''}
+				value={gjeldendeIdentitet}
 				onChange={(e) => onUpdateKode(felt._nodeId, e.target.value)}
 			>
 				<option value="">Velg felt</option>
@@ -385,11 +392,14 @@ const OppgaverConstrainedOrderFelter: React.FC = () => {
 	const valgteKolonner = (oppgaveQuery?.select ?? [])
 		.filter((s): s is WithNodeId<EnkelSelectFelt> => s.type === 'enkel' && Boolean(s.kode))
 		.map((s) => {
-			const oppgavefelt = felter.find((f) => f.kode === s.kode);
-			return { kode: s.kode, visningsnavn: oppgavefelt?.visningsnavn ?? s.kode };
+			const oppgavefelt = finnFelt(felter, s);
+			return { referanse: s, visningsnavn: oppgavefelt?.visningsnavn ?? s.kode };
 		});
 
-	const sorteringsAlternativer = valgteKolonner.map((k) => ({ value: k.kode, label: k.visningsnavn }));
+	const sorteringsAlternativer = valgteKolonner.map((felt) => ({
+		value: feltIdentitet(felt.referanse),
+		label: felt.visningsnavn,
+	}));
 
 	const orderFields = oppgaveQuery?.order ?? [];
 
@@ -397,8 +407,9 @@ const OppgaverConstrainedOrderFelter: React.FC = () => {
 		updateQuery([addSortering(null)]);
 	};
 
-	const handleUpdateKode = (nodeId: string, kode: string) => {
-		const oppgavefelt = felter.find((f) => f.kode === kode);
+	const handleUpdateKode = (nodeId: string, identitet: string) => {
+		const referanse = feltreferanseFraIdentitet(identitet);
+		const oppgavefelt = referanse ? finnFelt(felter, referanse) : undefined;
 		if (oppgavefelt) {
 			updateQuery([updateSortering(nodeId, { område: oppgavefelt.område, kode: oppgavefelt.kode })]);
 		}
@@ -473,8 +484,8 @@ function GruppertKonfig({
 	sorteringer: GruppertSorteringsFelt[];
 	oppgaveFelter: Oppgavefelt[];
 	onAddGroupBy: () => void;
-	onQuickAddGroupBy: (kode: string) => void;
-	onUpdateGroupBy: (nodeId: string, kode: string) => void;
+	onQuickAddGroupBy: (felt: Feltreferanse) => void;
+	onUpdateGroupBy: (nodeId: string, identitet: string) => void;
 	onRemoveGroupBy: (nodeId: string) => void;
 	onMoveGroupBy: (oldIndex: number, newIndex: number) => void;
 	onAddSortering: () => void;
@@ -515,13 +526,13 @@ function GruppertKonfig({
 	const valgteGroupByNavn = groupByFelter
 		.filter((f) => f.kode)
 		.map((f) => {
-			const felt = oppgaveFelter.find((of) => of.kode === f.kode);
-			return { kode: f.kode, visningsnavn: felt?.visningsnavn ?? f.kode };
+			const felt = finnFelt(oppgaveFelter, f);
+			return { referanse: f, visningsnavn: felt?.visningsnavn ?? f.kode };
 		});
 
 	const sorteringsAlternativer = [
 		{ value: '__antall__', label: 'Antall' },
-		...valgteGroupByNavn.map((f) => ({ value: f.kode, label: f.visningsnavn })),
+		...valgteGroupByNavn.map((felt) => ({ value: feltIdentitet(felt.referanse), label: felt.visningsnavn })),
 	];
 
 	return (
@@ -670,7 +681,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				if (lagretSøk.query.order.length > 0) {
 					setGruppertSorteringer(
 						lagretSøk.query.order.map((order) => ({
-							felt: order.type === 'aggregert' ? '__antall__' : order.kode,
+							felt: order.type === 'aggregert' ? '__antall__' : feltIdentitet(order),
 							økende: order.økende,
 							_nodeId: crypto.randomUUID(),
 						})),
@@ -725,8 +736,8 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 		setGruppertValideringsfeil(null);
 	};
 
-	const handleQuickAddGroupBy = (kode: string) => {
-		const oppgavefelt = felter.find((f) => f.kode === kode);
+	const handleQuickAddGroupBy = (referanse: Feltreferanse) => {
+		const oppgavefelt = finnFelt(felter, referanse);
 		if (!oppgavefelt) return;
 		setGroupByFelter((prev) => [
 			...prev,
@@ -735,8 +746,9 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 		setGruppertValideringsfeil(null);
 	};
 
-	const handleUpdateGroupBy = (nodeId: string, kode: string) => {
-		const oppgavefelt = felter.find((f) => f.kode === kode);
+	const handleUpdateGroupBy = (nodeId: string, identitet: string) => {
+		const referanse = feltreferanseFraIdentitet(identitet);
+		const oppgavefelt = referanse ? finnFelt(felter, referanse) : undefined;
 		if (!oppgavefelt) return;
 		setGroupByFelter((prev) =>
 			prev.map((f) => (f._nodeId === nodeId ? { ...f, kode: oppgavefelt.kode, område: oppgavefelt.område } : f)),
@@ -839,7 +851,8 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 						økende: sortering.økende,
 					});
 				} else {
-					const oppgavefelt = felter.find((f) => f.kode === sortering.felt);
+					const referanse = feltreferanseFraIdentitet(sortering.felt);
+					const oppgavefelt = referanse ? finnFelt(felter, referanse) : undefined;
 					if (oppgavefelt) {
 						orderFelter.push({
 							type: 'enkel',
