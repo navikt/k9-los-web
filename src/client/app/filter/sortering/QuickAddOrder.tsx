@@ -1,6 +1,6 @@
 import { PlusIcon } from '@navikt/aksel-icons';
 import { FilterContext } from 'filter/FilterContext';
-import { type Feltreferanse, feltIdentitet } from 'filter/feltIdentitet';
+import { type Feltreferanse, feltIdentitet, sammeFelt } from 'filter/feltIdentitet';
 import { OppgavefilterKode } from 'filter/filterTsTypes';
 import { addSortering } from 'filter/queryUtils';
 import { useContext } from 'react';
@@ -24,11 +24,9 @@ const QUICK_ADD_SORTERING: QuickAddOrderItem[] = [
 const QuickAddOrder = () => {
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
-	const valgteFelter = new Set(
-		oppgaveQuery.order
-			.filter((o): o is typeof o & Feltreferanse => Boolean(o.kode) && o.område !== undefined)
-			.map(feltIdentitet),
-	);
+	const valgteFelter: Feltreferanse[] = oppgaveQuery.order
+		.filter((o) => o.type === 'enkel' && o.kode !== null)
+		.map((o) => ({ område: o.område ?? null, kode: o.kode as string }));
 
 	const handleAdd = (item: QuickAddOrderItem) => {
 		updateQuery([
@@ -41,7 +39,7 @@ const QuickAddOrder = () => {
 		]);
 	};
 
-	const tilgjengelige = QUICK_ADD_SORTERING.filter((item) => !valgteFelter.has(feltIdentitet(item)));
+	const tilgjengelige = QUICK_ADD_SORTERING.filter((item) => !valgteFelter.some((valgt) => sammeFelt(valgt, item)));
 
 	if (tilgjengelige.length === 0) return null;
 

@@ -1,7 +1,7 @@
 export type FeltverdiOppgavefilter = {
 	type: 'feltverdi';
 	område: string | null;
-	kode: string;
+	kode: string | null;
 	operator: string;
 	verdi: string[];
 };
@@ -23,14 +23,14 @@ export type OppgaveQuery = {
 export type EnkelOrderFelt = {
 	type: 'enkel';
 	område: string | null;
-	kode: string;
+	kode: string | null;
 	økende: boolean;
 };
 
 export type EnkelSelectFelt = {
 	type: 'enkel';
 	område: string | null;
-	kode: string;
+	kode: string | null;
 };
 
 export enum AggregertFunksjon {

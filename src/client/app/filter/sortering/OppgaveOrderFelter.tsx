@@ -11,7 +11,7 @@ import { MenuHamburgerIcon, PlusCircleIcon, TrashIcon } from '@navikt/aksel-icon
 import { Button, Select, UNSAFE_Combobox, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
-import { feltIdentitet, feltreferanseFraIdentitet, finnFelt } from 'filter/feltIdentitet';
+import { feltIdentitet, feltreferanseFraIdentitet, finnFelt, sammeFelt } from 'filter/feltIdentitet';
 import type { WithNodeId } from 'filter/filterFrontendTypes';
 import { type EnkelOrderFelt, type Oppgavefelt, type OrderFelt, Synlighet } from 'filter/filterTsTypes';
 import { addSortering, moveSortering, removeSortering, updateSortering } from 'filter/queryUtils';
@@ -36,12 +36,11 @@ const SortableEnkelOrderField: FunctionComponent<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const valgteFelterFraAndreRader = order
-		.filter((o) => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode)
-		.map((o) => feltIdentitet(o as WithNodeId<EnkelOrderFelt>));
-	const gjeldendeIdentitet = felt.kode ? feltIdentitet(felt) : undefined;
+	const valgteFelterFraAndreRader = order.filter(
+		(o): o is WithNodeId<EnkelOrderFelt> => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode !== null,
+	);
 	const tilgjengeligeFelter = felter.filter(
-		(f) => !valgteFelterFraAndreRader.includes(feltIdentitet(f)) || feltIdentitet(f) === gjeldendeIdentitet,
+		(f) => !valgteFelterFraAndreRader.some((valgt) => sammeFelt(f, valgt)) || (felt.kode && sammeFelt(f, felt)),
 	);
 
 	const options = useMemo(() => {
@@ -56,8 +55,8 @@ const SortableEnkelOrderField: FunctionComponent<{
 		return optionsList;
 	}, [tilgjengeligeFelter]);
 
-	const selectedOptions = gjeldendeIdentitet
-		? options.filter((o) => o.value === gjeldendeIdentitet).map((o) => o.label)
+	const selectedOptions = felt.kode
+		? options.filter((o) => feltreferanseFraIdentitet(o.value)?.kode === felt.kode).map((o) => o.label)
 		: [];
 
 	const containerClass = `orderFeltCombobox-${felt._nodeId.replace(/[^a-zA-Z0-9]/g, '')}`;

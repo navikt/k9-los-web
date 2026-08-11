@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
-import { finnFelt } from './feltIdentitet';
+import { FELT_SENTINELLER, finnFelt } from './feltIdentitet';
 import { type Oppgavefelt, TolkesSom, type Verdiforklaring } from './filterTsTypes';
 
 /** Reservert verdi for separator-element i UNSAFE_Combobox. */
-export const COMBOBOX_SEPARATOR_VALUE = '__separator__';
+export const COMBOBOX_SEPARATOR_VALUE = FELT_SENTINELLER.separator;
 
 /**
  * Genererer CSS som gjør separator-opsjonen til en synlig strek.

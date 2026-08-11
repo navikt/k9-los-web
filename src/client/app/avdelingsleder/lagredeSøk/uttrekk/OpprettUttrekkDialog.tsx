@@ -34,7 +34,14 @@ import {
 import { type LagretSøk, useEndreLagretSøk, useOpprettUttrekk } from 'api/queries/avdelingslederQueries';
 import AppContext from 'app/AppContext';
 import { FilterContext, type FilterContextType } from 'filter/FilterContext';
-import { type Feltreferanse, feltIdentitet, feltreferanseFraIdentitet, finnFelt } from 'filter/feltIdentitet';
+import {
+	FELT_SENTINELLER,
+	type Feltreferanse,
+	feltIdentitet,
+	feltreferanseFraIdentitet,
+	finnFelt,
+	sammeFelt,
+} from 'filter/feltIdentitet';
 import {
 	fjernNodeIdFraQuery,
 	type IdentifiedOppgaveQuery,
@@ -124,10 +131,9 @@ const SortableGroupByField: React.FC<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const valgteFraAndreRader = alleFelter.filter((f) => f._nodeId !== felt._nodeId && f.kode).map(feltIdentitet);
-	const gjeldendeIdentitet = felt.kode ? feltIdentitet(felt) : undefined;
+	const valgteFraAndreRader = alleFelter.filter((f) => f._nodeId !== felt._nodeId && f.kode);
 	const tilgjengelige = oppgaveFelter.filter(
-		(f) => !valgteFraAndreRader.includes(feltIdentitet(f)) || feltIdentitet(f) === gjeldendeIdentitet,
+		(f) => !valgteFraAndreRader.some((valgt) => sammeFelt(f, valgt)) || (felt.kode && sammeFelt(f, felt)),
 	);
 
 	const options = useMemo(() => {
@@ -142,8 +148,8 @@ const SortableGroupByField: React.FC<{
 		return optionsList;
 	}, [tilgjengelige]);
 
-	const selectedOptions = gjeldendeIdentitet
-		? options.filter((o) => o.value === gjeldendeIdentitet).map((o) => o.label)
+	const selectedOptions = felt.kode
+		? options.filter((o) => feltreferanseFraIdentitet(o.value)?.kode === felt.kode).map((o) => o.label)
 		: [];
 
 	const containerClass = `groupByCombobox-${felt._nodeId.replace(/[^a-zA-Z0-9]/g, '')}`;
@@ -202,10 +208,10 @@ const QuickAddGroupBy: React.FC<{
 	oppgaveFelter: Oppgavefelt[];
 	onAdd: (felt: Feltreferanse) => void;
 }> = ({ groupByFelter, oppgaveFelter, onAdd }) => {
-	const valgteFelter = new Set(groupByFelter.filter((f) => f.kode).map(feltIdentitet));
+	const valgteFelter = groupByFelter.filter((f) => f.kode);
 
 	const tilgjengelige = QUICK_ADD_GROUP_BY_KOLONNER.map((referanse) => {
-		if (valgteFelter.has(feltIdentitet(referanse))) return null;
+		if (valgteFelter.some((valgt) => sammeFelt(valgt, referanse))) return null;
 		const oppgavefelt = finnFelt(oppgaveFelter, referanse);
 		if (!oppgavefelt) return null;
 		return { referanse, visningsnavn: oppgavefelt.visningsnavn };
@@ -324,13 +330,16 @@ const SortableOppgaverOrderField: React.FC<{
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const valgteFraAndreRader = allOrder
-		.filter((o) => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode)
-		.map((o) => feltIdentitet(o as WithNodeId<EnkelOrderFelt>));
-	const gjeldendeIdentitet = felt.kode ? feltIdentitet(felt) : '';
-	const tilgjengelige = sorteringsAlternativer.filter(
-		(alt) => !valgteFraAndreRader.includes(alt.value) || alt.value === gjeldendeIdentitet,
+	const valgteFraAndreRader = allOrder.filter(
+		(o): o is WithNodeId<EnkelOrderFelt> => o._nodeId !== felt._nodeId && o.type === 'enkel' && o.kode !== null,
 	);
+	const tilgjengelige = sorteringsAlternativer.filter((alt) => {
+		const referanse = feltreferanseFraIdentitet(alt.value);
+		if (!referanse) return false;
+		return (
+			!valgteFraAndreRader.some((valgt) => sammeFelt(valgt, referanse)) || (felt.kode && referanse.kode === felt.kode)
+		);
+	});
 
 	return (
 		<div ref={setNodeRef} style={style} className="flex items-center gap-2">
@@ -348,7 +357,7 @@ const SortableOppgaverOrderField: React.FC<{
 				label="Sorter på"
 				className="min-w-0 grow"
 				size="small"
-				value={gjeldendeIdentitet}
+				value={felt.kode ? feltIdentitet(felt) : ''}
 				onChange={(e) => onUpdateKode(felt._nodeId, e.target.value)}
 			>
 				<option value="">Velg felt</option>
@@ -390,7 +399,7 @@ const OppgaverConstrainedOrderFelter: React.FC = () => {
 	);
 
 	const valgteKolonner = (oppgaveQuery?.select ?? [])
-		.filter((s): s is WithNodeId<EnkelSelectFelt> => s.type === 'enkel' && Boolean(s.kode))
+		.filter((s): s is WithNodeId<EnkelSelectFelt> => s.type === 'enkel' && s.kode !== null)
 		.map((s) => {
 			const oppgavefelt = finnFelt(felter, s);
 			return { referanse: s, visningsnavn: oppgavefelt?.visningsnavn ?? s.kode };
@@ -531,7 +540,7 @@ function GruppertKonfig({
 		});
 
 	const sorteringsAlternativer = [
-		{ value: '__antall__', label: 'Antall' },
+		{ value: FELT_SENTINELLER.antall, label: 'Antall' },
 		...valgteGroupByNavn.map((felt) => ({ value: feltIdentitet(felt.referanse), label: felt.visningsnavn })),
 	];
 
@@ -681,13 +690,16 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 				if (lagretSøk.query.order.length > 0) {
 					setGruppertSorteringer(
 						lagretSøk.query.order.map((order) => ({
-							felt: order.type === 'aggregert' ? '__antall__' : feltIdentitet(order),
+							felt:
+								order.type === 'aggregert' || order.kode === null
+									? FELT_SENTINELLER.antall
+									: feltIdentitet(order as EnkelOrderFelt & { kode: string }),
 							økende: order.økende,
 							_nodeId: crypto.randomUUID(),
 						})),
 					);
 				} else {
-					setGruppertSorteringer([{ felt: '__antall__', økende: false, _nodeId: crypto.randomUUID() }]);
+					setGruppertSorteringer([{ felt: FELT_SENTINELLER.antall, økende: false, _nodeId: crypto.randomUUID() }]);
 				}
 			} else {
 				setGroupByFelter([]);
@@ -717,7 +729,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 
 		if (newType === 'gruppert') {
 			setGroupByFelter([]);
-			setGruppertSorteringer([{ felt: '__antall__', økende: false, _nodeId: crypto.randomUUID() }]);
+			setGruppertSorteringer([{ felt: FELT_SENTINELLER.antall, økende: false, _nodeId: crypto.randomUUID() }]);
 		}
 
 		if (newType === 'oppgaver') {
@@ -844,7 +856,7 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 			const orderFelter: OppgaveQuery['order'] = [];
 			for (const sortering of gruppertSorteringer) {
 				if (!sortering.felt) continue;
-				if (sortering.felt === '__antall__') {
+				if (sortering.felt === FELT_SENTINELLER.antall) {
 					orderFelter.push({
 						type: 'aggregert',
 						funksjon: AggregertFunksjon.ANTALL,
@@ -895,8 +907,8 @@ export function OpprettUttrekkDialog({ lagretSøk, antall, onOpprettet }: Oppret
 			// oppgaver
 			if (!formData) return;
 			const query = fjernNodeIdFraQuery(formData.query);
-			const select = query.select.filter((s) => s.type === 'enkel' && Boolean(s.kode));
-			const order = query.order.filter((o) => o.type === 'enkel' && Boolean(o.kode));
+			const select = query.select.filter((s) => s.type === 'enkel' && s.kode !== null);
+			const order = query.order.filter((o) => o.type === 'enkel' && o.kode !== null);
 
 			if (select.length === 0) {
 				setError('query', { type: 'custom', message: 'Uttrekket må ha minst en kolonne' });

@@ -2,6 +2,7 @@ import { BodyLong, Button, Label, UNSAFE_Combobox } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
 import {
+	FELT_SENTINELLER,
 	type Feltreferanse,
 	feltIdentitet,
 	feltreferanseFraIdentitet,
@@ -28,7 +29,7 @@ interface Props {
 const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeFelter = [] }: Props) => {
 	const { updateQuery, errors } = useContext(FilterContext);
 	const { felter } = useContext(AppContext);
-	const [valgtKriterie, setValgtKriterie] = useState<Oppgavefelt | '__gruppe'>();
+	const [valgtKriterie, setValgtKriterie] = useState<Oppgavefelt | typeof FELT_SENTINELLER.gruppe>();
 	const [fritekst, setFritekst] = useState('');
 	const [klikketLeggTilUtenÅVelgeKriterie, setKlikketLeggTilUtenÅVelgeKriterie] = useState(false);
 	// error fra modellen
@@ -53,13 +54,13 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeFelter = [] 
 			optionsList.push({ value: COMBOBOX_SEPARATOR_VALUE, label: '' });
 			optionsList.push(...avanserteValg.map((v) => ({ value: feltIdentitet(v), label: v.visningsnavn })));
 		}
-		optionsList.push({ label: 'Gruppe', value: '__gruppe' });
+		optionsList.push({ label: 'Gruppe', value: FELT_SENTINELLER.gruppe });
 		return optionsList;
 	}, [kriterierSomKanVelges]);
 
 	const handleSelect = (value: string) => {
 		if (value === COMBOBOX_SEPARATOR_VALUE) return;
-		if (value === '__gruppe') {
+		if (value === FELT_SENTINELLER.gruppe) {
 			setValgtKriterie(value);
 			return;
 		}
@@ -76,7 +77,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeFelter = [] 
 		}
 
 		if (typeof kriterie === 'string') {
-			if (kriterie === '__gruppe') {
+			if (kriterie === FELT_SENTINELLER.gruppe) {
 				const operations = [removeFilter(oppgavefilter._nodeId), addGruppeOperation];
 				updateQuery(operations);
 				return;
@@ -112,7 +113,7 @@ const VelgKriterie = ({ oppgavefilter, addGruppeOperation, paakrevdeFelter = [] 
 					</Button>
 				</div>
 			</div>
-			{valgtKriterie !== '__gruppe' && valgtKriterie?.beskrivelse && (
+			{valgtKriterie !== FELT_SENTINELLER.gruppe && valgtKriterie?.beskrivelse && (
 				<div className="mt-[-0.125rem]">
 					<Label size="small">Beskrivelse:</Label>
 					<BodyLong className="mt-1" size="small">

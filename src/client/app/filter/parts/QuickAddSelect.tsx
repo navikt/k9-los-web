@@ -1,7 +1,7 @@
 import { PlusIcon } from '@navikt/aksel-icons';
 import AppContext from 'app/AppContext';
 import { FilterContext } from 'filter/FilterContext';
-import { type Feltreferanse, feltIdentitet, finnFelt } from 'filter/feltIdentitet';
+import { type Feltreferanse, feltIdentitet, finnFelt, sammeFelt } from 'filter/feltIdentitet';
 import { OppgavefilterKode } from 'filter/filterTsTypes';
 import { addEnkelSelectFelt, updateSelectFelt } from 'filter/queryUtils';
 import { useContext } from 'react';
@@ -21,11 +21,9 @@ const QuickAddSelect = () => {
 	const { felter } = useContext(AppContext);
 	const { oppgaveQuery, updateQuery } = useContext(FilterContext);
 
-	const valgteFelter = new Set(
-		oppgaveQuery.select
-			.filter((s): s is typeof s & Feltreferanse => Boolean(s.kode) && s.område !== undefined)
-			.map(feltIdentitet),
-	);
+	const valgteFelter: Feltreferanse[] = oppgaveQuery.select
+		.filter((s) => s.type === 'enkel' && s.kode !== null)
+		.map((s) => ({ område: s.område ?? null, kode: s.kode as string }));
 
 	const handleAdd = (referanse: Feltreferanse) => {
 		const oppgavefelt = finnFelt(felter, referanse);
@@ -43,7 +41,9 @@ const QuickAddSelect = () => {
 		]);
 	};
 
-	const tilgjengelige = QUICK_ADD_KOLONNER.filter((referanse) => !valgteFelter.has(feltIdentitet(referanse)))
+	const tilgjengelige = QUICK_ADD_KOLONNER.filter(
+		(referanse) => !valgteFelter.some((valgt) => sammeFelt(valgt, referanse)),
+	)
 		.map((referanse) => {
 			const oppgavefelt = finnFelt(felter, referanse);
 			if (!oppgavefelt) return null;

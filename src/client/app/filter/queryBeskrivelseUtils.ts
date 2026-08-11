@@ -33,11 +33,11 @@ export interface OrderBeskrivelse {
 	økende: boolean;
 }
 
-function finnFeltdefinisjon(felter: Oppgavefelt[], område: string, kode: string): Oppgavefelt | undefined {
+function finnFeltdefinisjon(felter: Oppgavefelt[], område: string | null, kode: string): Oppgavefelt | undefined {
 	return felter.find((f) => f.område === område && f.kode === kode);
 }
 
-function hentVisningsnavn(felter: Oppgavefelt[], område: string, kode: string): string {
+function hentVisningsnavn(felter: Oppgavefelt[], område: string | null, kode: string): string {
 	const feltdefinisjon = finnFeltdefinisjon(felter, område, kode);
 	return feltdefinisjon?.visningsnavn ?? kode;
 }
@@ -124,6 +124,9 @@ function bestemSammenføyning(tolkesSom: TolkesSom | undefined, operator: string
 }
 
 function beskrivelseForFeltverdiFilter(filter: FeltverdiOppgavefilter, felter: Oppgavefelt[]): FilterBeskrivelse {
+	if (!filter.kode) {
+		return { feltnavn: 'Ukjent felt', verdier: filter.verdi ?? [], sammenføyning: {} };
+	}
 	const feltdefinisjon = finnFeltdefinisjon(felter, filter.område, filter.kode);
 	const feltnavn = hentVisningsnavn(felter, filter.område, filter.kode);
 	const verdier = formaterVerdier(filter.verdi, feltdefinisjon);
@@ -181,7 +184,7 @@ function beskrivelseForSelectFelt(selectFelt: SelectFelt, felter: Oppgavefelt[])
 		return { feltnavn: funksjonNavn };
 	}
 	return {
-		feltnavn: hentVisningsnavn(felter, selectFelt.område, selectFelt.kode),
+		feltnavn: selectFelt.kode ? hentVisningsnavn(felter, selectFelt.område, selectFelt.kode) : 'Ukjent felt',
 	};
 }
 
@@ -197,7 +200,7 @@ function beskrivelseForOrderFelt(orderFelt: OrderFelt, felter: Oppgavefelt[]): O
 		return { feltnavn: funksjonNavn, økende: orderFelt.økende };
 	}
 	return {
-		feltnavn: hentVisningsnavn(felter, orderFelt.område, orderFelt.kode),
+		feltnavn: orderFelt.kode ? hentVisningsnavn(felter, orderFelt.område, orderFelt.kode) : 'Ukjent felt',
 		økende: orderFelt.økende,
 	};
 }

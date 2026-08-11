@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { feltIdentitet, feltreferanseFraIdentitet, finnFelt, sammeFelt } from './feltIdentitet';
+import { FELT_SENTINELLER, feltIdentitet, feltreferanseFraIdentitet, finnFelt, sammeFelt } from './feltIdentitet';
 import { type Oppgavefelt, Synlighet, TolkesSom } from './filterTsTypes';
 
 const felt = (område: string | null, kode: string): Oppgavefelt => ({
@@ -27,5 +27,11 @@ describe('feltIdentitet', () => {
 		const referanse = { område: null as string | null, kode: 'oppgavestatus' };
 
 		expect(feltreferanseFraIdentitet(feltIdentitet(referanse))).toEqual(referanse);
+	});
+
+	it('avviser reserverte sentineller', () => {
+		for (const sentinel of Object.values(FELT_SENTINELLER)) {
+			expect(feltreferanseFraIdentitet(sentinel)).toBeUndefined();
+		}
 	});
 });
