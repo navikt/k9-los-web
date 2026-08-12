@@ -1,13 +1,12 @@
 import VerticalSpacer from 'sharedComponents/VerticalSpacer';
 import { ChevronDownIcon, ChevronRightIcon } from '@navikt/aksel-icons';
-import { BodyShort, ErrorMessage, Label, Loader, Switch, Table } from '@navikt/ds-react';
+import { BodyShort, Chips, ErrorMessage, Label, Loader, Table } from '@navikt/ds-react';
 import { useSaksbehandlerReservasjoner } from 'api/queries/saksbehandlerQueries';
 import classnames from 'classnames/bind';
 import { type FunctionComponent, useRef, useState } from 'react';
 import { idKolonneTittel } from 'saksbehandler/tabellvisning';
 import { OppgavestatusV3 } from 'types/OppgaveV3';
 import * as kopanelStyles from '../oppgavekoPanel.module.css';
-import OppgaveTabellMenyAntallOppgaver from './OppgaveTabellMenyAntallOppgaver';
 import styles from './oppgaverTabell.module.css';
 import ReservertOppgaveRadV3 from './ReservertOppgaveRadV3';
 import { useRadFlyttAnimasjon } from './radFlyttAnimasjon';
@@ -22,14 +21,16 @@ const classNames = classnames.bind(styles);
 
 const ReserverteOppgaverTabell: FunctionComponent = () => {
 	const [visReservasjoner, setVisReservasjoner] = useState(true);
+	const [visÅpne, setVisÅpne] = useState(true);
 	const [visOppgaverPåVent, setVisOppgaverPåVent] = useState(false);
 	const tabellRef = useRef<HTMLTableElement>(null);
 	const actionmenuEndringVenter = useRef(false);
 
 	const { data: reservasjoner, dataUpdatedAt, isLoading, isSuccess, isError } = useSaksbehandlerReservasjoner();
-	const harOppgaverPåVent = reservasjoner?.some((reservasjon) =>
-		reservasjon.reserverteV3Oppgaver.some((oppgave) => oppgave.oppgavestatus === OppgavestatusV3.VENTER),
-	);
+
+	const alleOppgaver = (reservasjoner ?? []).flatMap((r) => r.reserverteV3Oppgaver);
+	const antallÅpne = alleOppgaver.filter((o) => o.oppgavestatus === OppgavestatusV3.AAPEN).length;
+	const antallPåVent = alleOppgaver.filter((o) => o.oppgavestatus === OppgavestatusV3.VENTER).length;
 
 	/**
 	 * Én gruppe per reservasjon. Alle oppgavene i gruppen deler reservasjonsnøkkel,
@@ -39,13 +40,12 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 		.map((reservasjon) => ({
 			reservasjon,
 			oppgaver: sorterOppgaverIReservasjon(
-				filtrerOppgaverEtterStatus(reservasjon.reserverteV3Oppgaver, visOppgaverPåVent),
+				filtrerOppgaverEtterStatus(reservasjon.reserverteV3Oppgaver, visÅpne, visOppgaverPåVent),
 			),
 		}))
 		.filter((gruppe) => gruppe.oppgaver.length > 0);
 
 	const visteOppgaver = reservasjonsgrupper.flatMap((gruppe) => gruppe.oppgaver);
-	const antallReservasjoner = visteOppgaver.length;
 
 	useRadFlyttAnimasjon(
 		tabellRef,
@@ -56,7 +56,7 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 
 	return (
 		<>
-			<div className={kopanelStyles.behandlingskoerHeader}>
+			<div className="flex gap-2 items-center">
 				<button
 					type="button"
 					className={kopanelStyles.behandlingskoerKnapp}
@@ -70,28 +70,30 @@ const ReserverteOppgaverTabell: FunctionComponent = () => {
 						<ChevronRightIcon className={kopanelStyles.chevron} aria-hidden />
 					)}
 					<Label>Reserverte oppgaver</Label>
-					{isSuccess && <OppgaveTabellMenyAntallOppgaver tekst={`${antallReservasjoner} reserverte`} />}
 				</button>
-				{visReservasjoner && harOppgaverPåVent && (
-					<Switch
-						size="small"
-						checked={visOppgaverPåVent}
-						onChange={(event) => setVisOppgaverPåVent(event.target.checked)}
-					>
-						Vis oppgaver på vent
-					</Switch>
+				{visReservasjoner && isSuccess && (antallÅpne > 0 || antallPåVent > 0) && (
+					<Chips size="medium" data-color="neutral">
+						<Chips.Toggle selected={visÅpne} onClick={() => setVisÅpne((v) => !v)} color="neutral">
+							{`${antallÅpne} åpne`}
+						</Chips.Toggle>
+						{antallPåVent > 0 && (
+							<Chips.Toggle selected={visOppgaverPåVent} onClick={() => setVisOppgaverPåVent((v) => !v)}>
+								{`${antallPåVent} på vent`}
+							</Chips.Toggle>
+						)}
+					</Chips>
 				)}
 			</div>
 			<div id="reserverte-oppgaver">
 				{isLoading && visReservasjoner && <Loader size="large" className={styles.spinner} />}
 				{isError && visReservasjoner && <ErrorMessage>Noe gikk galt ved lasting av reservasjoner</ErrorMessage>}
-				{antallReservasjoner === 0 && isSuccess && visReservasjoner && (
+				{visteOppgaver.length === 0 && isSuccess && visReservasjoner && (
 					<>
 						<VerticalSpacer eightPx />
 						<BodyShort size="small">Det er ingen reserverte oppgaver</BodyShort>
 					</>
 				)}
-				{antallReservasjoner > 0 && isSuccess && visReservasjoner && (
+				{visteOppgaver.length > 0 && isSuccess && visReservasjoner && (
 					<Table ref={tabellRef}>
 						<Table.Header>
 							<Table.Row>

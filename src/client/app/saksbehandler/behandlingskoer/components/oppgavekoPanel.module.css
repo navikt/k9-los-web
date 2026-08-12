@@ -2,12 +2,6 @@
 	margin-bottom: 30px;
 	padding: 20px;
 }
-.behandlingskoerHeader {
-	align-items: center;
-	display: flex;
-	justify-content: space-between;
-	width: 100%;
-}
 .behandlingskoerKnapp {
 	align-items: center;
 	background-color: transparent;

@@ -141,11 +141,13 @@ describe('filtrerOppgaverEtterStatus', () => {
 	];
 
 	it('viser bare åpne oppgaver som standard', () => {
-		expect(filtrerOppgaverEtterStatus(oppgaver, false).map((o) => o.oppgaveNøkkel.oppgaveEksternId)).toEqual(['åpen']);
+		expect(filtrerOppgaverEtterStatus(oppgaver, true, false).map((o) => o.oppgaveNøkkel.oppgaveEksternId)).toEqual([
+			'åpen',
+		]);
 	});
 
 	it('inkluderer oppgaver på vent når dette er valgt', () => {
-		expect(filtrerOppgaverEtterStatus(oppgaver, true).map((o) => o.oppgaveNøkkel.oppgaveEksternId)).toEqual([
+		expect(filtrerOppgaverEtterStatus(oppgaver, true, true).map((o) => o.oppgaveNøkkel.oppgaveEksternId)).toEqual([
 			'åpen',
 			'venter',
 		]);

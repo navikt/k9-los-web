@@ -35,11 +35,11 @@ export const sorterOppgaverIReservasjon = (oppgaver: OppgaveV3[]): OppgaveV3[] =
 			nøkkelStreng(a.oppgaveNøkkel).localeCompare(nøkkelStreng(b.oppgaveNøkkel)),
 	);
 
-export const filtrerOppgaverEtterStatus = (oppgaver: OppgaveV3[], visOppgaverPåVent: boolean): OppgaveV3[] =>
+export const filtrerOppgaverEtterStatus = (oppgaver: OppgaveV3[], visÅpne: boolean, visPåVent: boolean): OppgaveV3[] =>
 	oppgaver.filter(
 		(oppgave) =>
-			oppgave.oppgavestatus === OppgavestatusV3.AAPEN ||
-			(visOppgaverPåVent && oppgave.oppgavestatus === OppgavestatusV3.VENTER),
+			(visÅpne && oppgave.oppgavestatus === OppgavestatusV3.AAPEN) ||
+			(visPåVent && oppgave.oppgavestatus === OppgavestatusV3.VENTER),
 	);
 
 /**
