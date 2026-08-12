@@ -1,25 +1,33 @@
 import { CopyButton } from '@navikt/ds-react';
-import type { FunctionComponent, ReactNode } from 'react';
+import { cloneElement, type FunctionComponent, type ReactElement, type ReactNode, useState } from 'react';
 import styles from './kopierbarVerdi.module.css';
 
-/**
- * Rendrer en verdi der en kopiknapp vises ved hover/fokus. Knappen er
- * alltid i DOM-en (bare usynlig), slik at rad- og kolonnehøyde ikke
- * endrer seg når den dukker opp.
- */
 interface Props {
 	copyText: string;
 	title: string;
 	children: ReactNode;
 }
 
-const KopierbarVerdi: FunctionComponent<Props> = ({ copyText, title, children }) => (
-	<span className={styles.wrapper}>
-		<span className={styles.innhold}>{children}</span>
-		<span className={styles.knapp}>
-			<CopyButton copyText={copyText} title={title} size="xsmall" />
-		</span>
-	</span>
-);
+interface KopieringsområdeProps {
+	children: ReactElement<{ className?: string }>;
+}
+
+export const Kopieringsområde: FunctionComponent<KopieringsområdeProps> = ({ children }) =>
+	cloneElement(children, {
+		className: [children.props.className, styles.område].filter(Boolean).join(' '),
+	});
+
+const KopierbarVerdi: FunctionComponent<Props> = ({ copyText, title, children }) => {
+	const [kopiert, setKopiert] = useState(false);
+
+	return (
+		<div className={`${styles.wrapper} ${kopiert ? styles.kopiert : ''}`}>
+			<div className={styles.innhold}>{children}</div>
+			<div className={styles.knapp}>
+				<CopyButton copyText={copyText} title={title} size="xsmall" onActiveChange={setKopiert} />
+			</div>
+		</div>
+	);
+};
 
 export default KopierbarVerdi;

@@ -1,4 +1,4 @@
-import KopierbarVerdi from 'sharedComponents/KopierbarVerdi';
+import KopierbarVerdi, { Kopieringsområde } from 'sharedComponents/KopierbarVerdi';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button, Detail, Table } from '@navikt/ds-react';
 import { useForlengOppgavereservasjon, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
@@ -95,24 +95,28 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 
 	return (
 		<Table.Row {...{ [RAD_NØKKEL_ATTRIBUTT]: radnøkkel }}>
-			<Table.DataCell>
-				{oppgave.søkersNavn}
-				<br />
-				<KopierbarVerdi copyText={oppgave.søkersPersonnr} title="Kopier fødselsnummer">
-					<Detail>{oppgave.søkersPersonnr}</Detail>
-				</KopierbarVerdi>
-			</Table.DataCell>
-			<Table.DataCell>
-				<KopierbarVerdi copyText={oppgave.saksnummer || oppgave.journalpostId} title={`Kopier ${tittel}`}>
-					{oppgave.saksnummer || oppgave.journalpostId}
-				</KopierbarVerdi>
-				{oppgave.oppgavestatus === OppgavestatusV3.VENTER && (
-					<>
-						<br />
-						<Detail>På vent</Detail>
-					</>
-				)}
-			</Table.DataCell>
+			<Kopieringsområde>
+				<Table.DataCell>
+					{oppgave.søkersNavn}
+					<br />
+					<KopierbarVerdi copyText={oppgave.søkersPersonnr} title="Kopier fødselsnummer">
+						<Detail>{oppgave.søkersPersonnr}</Detail>
+					</KopierbarVerdi>
+				</Table.DataCell>
+			</Kopieringsområde>
+			<Kopieringsområde>
+				<Table.DataCell>
+					<KopierbarVerdi copyText={oppgave.saksnummer || oppgave.journalpostId} title={`Kopier ${tittel}`}>
+						{oppgave.saksnummer || oppgave.journalpostId}
+					</KopierbarVerdi>
+					{oppgave.oppgavestatus === OppgavestatusV3.VENTER && (
+						<>
+							<br />
+							<Detail>På vent</Detail>
+						</>
+					)}
+				</Table.DataCell>
+			</Kopieringsområde>
 			<Table.DataCell>
 				{oppgave.behandlingstype.navn}
 				{oppgave.ytelsestype && (
