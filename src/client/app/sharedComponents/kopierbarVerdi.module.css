@@ -1,0 +1,64 @@
+.wrapper {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+}
+
+/*
+ * Kopiknappen er absolutt plassert like etter teksten. Den er alltid i
+ * DOM-en, men usynlig, slik at rad- og kolonnemål ikke endrer seg når den
+ * dukker opp. Knappen har imidlertid alltid pointer-events: auto — ellers
+ * ville ikke musa kunnet flyttes fra teksten til knappen: i det musa
+ * forlater teksten mister wrapperen :hover, knappen blir usynlig og
+ * uklikkbar i samme øyeblikk, og neste museposisjon treffer cellen.
+ *
+ * Teksten ligger over knappen (z-index) og er klikkgjennomtrengelig der
+ * de to overlapper, slik at knappen fortsatt kan treffes selv om den
+ * ligger under tekstområdet.
+ */
+.innhold {
+	position: relative;
+	z-index: 1;
+	pointer-events: none;
+}
+
+.knapp {
+	position: absolute;
+	left: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	margin-left: var(--ax-space-4);
+	opacity: 0;
+	transition: opacity 100ms ease-out;
+}
+
+/*
+ * Knappen vises når hele cellen hovres, ikke bare teksten. Det gir et større
+ * treffområde. Siden wrapperen ikke vet om forelderen, går vi via :global()
+ * til Aksels data-celle-klasse.
+ */
+.wrapper:hover .knapp,
+.wrapper:focus-within .knapp,
+:global(.aksel-table__data-cell):hover .knapp {
+	opacity: 1;
+}
+
+/*
+ * Når CopyButton er i "kopiert"-tilstand (data-active="true") skal
+ * check-ikonet være synlig en kort stund uansett hvor musa er. Men så
+ * snart musa er utenfor cellen, skal vi skjule den vanlige
+ * kopier-ikon-tilstanden igjen — ellers ville knappen "henge igjen"
+ * synlig et annet sted på siden.
+ */
+:global(.aksel-table__data-cell):not(:hover) .knapp:not(:has([data-active='true'])) {
+	opacity: 0;
+	/* Ingen fade — ellers ser man et kort glimt av kopier-ikonet i det
+	 * data-active forsvinner, fordi overgangen da går fra opacity 1 til 0. */
+	transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.knapp {
+		transition: none;
+	}
+}

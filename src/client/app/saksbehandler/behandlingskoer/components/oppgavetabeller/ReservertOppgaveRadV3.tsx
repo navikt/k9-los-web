@@ -1,3 +1,4 @@
+import KopierbarVerdi from 'sharedComponents/KopierbarVerdi';
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button, Detail, Table } from '@navikt/ds-react';
 import { useForlengOppgavereservasjon, useSisteOppgaverMutation } from 'api/queries/saksbehandlerQueries';
@@ -90,15 +91,21 @@ const ReservertOppgaveRadV3: React.FunctionComponent<Props> = ({
 		);
 	};
 
+	const tittel = oppgave.saksnummer ? 'saksnummer' : 'journalpost-id';
+
 	return (
 		<Table.Row {...{ [RAD_NØKKEL_ATTRIBUTT]: radnøkkel }}>
 			<Table.DataCell>
 				{oppgave.søkersNavn}
 				<br />
-				<Detail>{oppgave.søkersPersonnr}</Detail>
+				<KopierbarVerdi copyText={oppgave.søkersPersonnr} title="Kopier fødselsnummer">
+					<Detail>{oppgave.søkersPersonnr}</Detail>
+				</KopierbarVerdi>
 			</Table.DataCell>
 			<Table.DataCell>
-				{oppgave.saksnummer || oppgave.journalpostId}
+				<KopierbarVerdi copyText={oppgave.saksnummer || oppgave.journalpostId} title={`Kopier ${tittel}`}>
+					{oppgave.saksnummer || oppgave.journalpostId}
+				</KopierbarVerdi>
 				{oppgave.oppgavestatus === OppgavestatusV3.VENTER && (
 					<>
 						<br />
