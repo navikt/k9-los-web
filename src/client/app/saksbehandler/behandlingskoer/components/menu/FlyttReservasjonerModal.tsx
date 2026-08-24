@@ -1,5 +1,6 @@
 import {
 	UNSAFE_Combobox as AkselCombobox,
+	BodyShort,
 	Button,
 	DatePicker,
 	type DateValidationT,
@@ -26,9 +27,14 @@ interface OwnProps {
 	open: boolean;
 	closeModal: () => void;
 	reservasjoner?: FlyttReservasjonType[];
+	antallOppgaver?: number;
+	onReservasjonEndret?: () => void;
 }
 
 const harFlereReservasjoner = (reservasjoner: FlyttReservasjonType[]) => reservasjoner && reservasjoner.length > 1;
+
+export const antallOppgaverTekst = (antallOppgaver?: number) =>
+	antallOppgaver && antallOppgaver > 1 ? `Reservasjonen gjelder ${antallOppgaver} oppgaver.` : null;
 
 const initialValues = (reservasjoner: FlyttReservasjonType[]) => {
 	if (harFlereReservasjoner(reservasjoner)) {
@@ -50,9 +56,16 @@ const initialValues = (reservasjoner: FlyttReservasjonType[]) => {
  *
  * Presentasjonskomponent. Modal som lar en søke opp en saksbehandler som saken skal flyttes til. En kan også begrunne hvorfor saken skal flyttes.
  */
-export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, closeModal, reservasjoner }) => {
-	const { mutate: flyttReservasjoner, isPending } = useEndreReservasjoner(closeModal);
+export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({
+	open,
+	closeModal,
+	reservasjoner,
+	antallOppgaver,
+	onReservasjonEndret,
+}) => {
+	const { mutate: flyttReservasjoner, isPending } = useEndreReservasjoner(closeModal, onReservasjonEndret);
 	const { data: saksbehandlere, isLoading, error } = useGetAlleSaksbehandlere({ placeholderData: [] });
+	const oppgaveantallTekst = antallOppgaverTekst(antallOppgaver);
 	const uniqueSaksbehandlere = Array.from(new Set(saksbehandlere.map((a) => a.brukerIdent))).map((brukerIdent) =>
 		saksbehandlere.find((a) => a.brukerIdent === brukerIdent),
 	);
@@ -153,6 +166,7 @@ export const FlyttReservasjonerModal: FunctionComponent<OwnProps> = ({ open, clo
 				})}
 			>
 				<Modal.Body>
+					{oppgaveantallTekst && <BodyShort spacing>{oppgaveantallTekst}</BodyShort>}
 					{isLoading && <Skeleton height={80} />}
 					{(error || !saksbehandlere) && <ErrorMessage>Noe gikk galt ved henting av saksbehandlere</ErrorMessage>}
 					{saksbehandlere.length > 0 && (

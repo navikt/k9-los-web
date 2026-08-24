@@ -4,19 +4,22 @@
 }
 .behandlingskoerKnapp {
 	align-items: center;
-	background-color: white;
+	background-color: transparent;
 	border: 0;
+	cursor: pointer;
 	display: flex;
-	font-weight: normal;
-	padding-bottom: 0.5rem;
-	padding-left: 0;
-	padding-top: 0.5rem;
-	width: 100%;
+	font: inherit;
+	padding: 0.5rem 0;
+}
+.behandlingskoerKnapp:focus-visible {
+	box-shadow: 0 0 0 3px var(--ax-border-focus);
+	outline: 3px solid transparent;
 }
 .chevron {
+	flex-shrink: 0;
 	margin-left: -0.25rem;
 	margin-right: 0.25rem;
 }
-.behandlingskoerContainer > div {
+.behandlingskoerInnhold {
 	padding-left: 1.5rem;
 }

@@ -1,0 +1,41 @@
+.wrapper {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+}
+
+.innhold {
+	position: relative;
+	z-index: 1;
+}
+
+.knapp {
+	position: absolute;
+	left: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	margin-left: var(--ax-space-4);
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 100ms ease-out;
+}
+
+.wrapper:hover .knapp,
+.område:hover .knapp,
+.knapp:has(:focus-visible),
+.kopiert .knapp {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.område:not(:hover) .wrapper:not(:hover) .knapp:not(:has(:focus-visible)):not(:has([data-active='true'])) {
+	opacity: 0;
+	pointer-events: none;
+	transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.knapp {
+		transition: none;
+	}
+}

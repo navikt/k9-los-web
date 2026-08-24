@@ -69,11 +69,12 @@ export const useReserverOppgaveMutation = () => {
 	});
 };
 
-export const useEndreReservasjoner = (onSuccces?: () => void) => {
+export const useEndreReservasjoner = (onSuccces?: () => void, onBeforeInvalidation?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation<null, Error, EndreOppgaveType[]>({
 		mutationFn: (data) => axiosInstance.post(apiPaths.endreReservasjoner, data),
 		onSuccess: async () => {
+			onBeforeInvalidation?.();
 			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
 			await Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
@@ -102,11 +103,12 @@ export const usePlukkOppgaveMutation = (callback?: (oppgave: ReservasjonV3FraKø
 	});
 };
 
-export const useOpphevReservasjoner = () => {
+export const useOpphevReservasjoner = (onBeforeInvalidation?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: (data: Array<{ reservasjonsnøkkel: string }>) => axiosInstance.post(apiPaths.opphevReservasjoner, data),
 		onSuccess: () => {
+			onBeforeInvalidation?.();
 			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
 			return Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
@@ -116,15 +118,17 @@ export const useOpphevReservasjoner = () => {
 	});
 };
 
-export const useForlengOppgavereservasjon = () => {
+export const useForlengOppgavereservasjon = (onBeforeInvalidation?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: (data: { reservasjonsnøkkel: string }) => axiosInstance.post(apiPaths.forlengOppgavereservasjon, data),
-		onSuccess: () =>
-			Promise.all([
+		onSuccess: () => {
+			onBeforeInvalidation?.();
+			return Promise.all([
 				queryClient.invalidateQueries({ queryKey: [apiPaths.saksbehandlerReservasjoner] }),
 				queryClient.invalidateQueries({ queryKey: [apiPaths.avdelinglederReservasjoner] }),
-			]),
+			]);
+		},
 	});
 };
 
