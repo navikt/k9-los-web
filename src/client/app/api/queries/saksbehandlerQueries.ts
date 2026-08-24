@@ -72,7 +72,7 @@ export const useReserverOppgaveMutation = () => {
 export const useEndreReservasjoner = (onSuccces?: () => void) => {
 	const queryClient = useQueryClient();
 	return useMutation<null, Error, EndreOppgaveType[]>({
-		mutationFn: (data) => axiosInstance.post(apiPaths.endreReservasjoner, data),
+		mutationFn: (data) => axiosInstance.post<null>(apiPaths.endreReservasjoner, data).then((response) => response.data),
 		onSuccess: async () => {
 			queryClient.removeQueries({ queryKey: [apiPaths.hentAktivReservasjonForOppgave] });
 			await Promise.all([
