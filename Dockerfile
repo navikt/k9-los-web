@@ -1,4 +1,4 @@
-FROM gcr.io/distroless/nodejs26-debian13:nonroot
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26-slim
 
 ENV TZ="Europe/Oslo"
 ENV NODE_ENV=production
