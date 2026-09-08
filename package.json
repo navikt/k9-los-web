@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.9",
-		"@navikt/aksel": "8.16.1",
+		"@navikt/aksel": "8.16.2",
 		"@tanstack/react-query-devtools": "5.101.4",
 		"@testing-library/dom": "10.4.1",
 		"@testing-library/jest-dom": "7.0.1",
