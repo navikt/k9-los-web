@@ -72,7 +72,6 @@ const apiPaths = {
 	lastNedUttrekkCsv: (id: string) => `/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/csv`,
 	hentUttrekkJson: (id: string, offset: number, limit: number) =>
 		`/api/k9-los-api/ny-oppgavestyring/uttrekk/${id}/json?offset=${offset}&limit=${limit}`,
-	innloggetBrukersOmråder: '/api/k9-los-api/wip/innlogget-bruker/områder',
 };
 
 export default apiPaths;

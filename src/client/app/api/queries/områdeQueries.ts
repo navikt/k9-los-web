@@ -1,11 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
-import apiPaths from 'api/apiPaths';
+import { useHentInnloggetBrukersOmråder } from 'api/generated/los';
+import type { Omrader } from 'api/generated/los.schemas';
 
-export type Område = 'K9' | 'AKTIVITETSPENGER';
+export type Område = Omrader;
 
 export const useInnloggetBrukersOmråder = () =>
-	useQuery<Område[]>({
-		queryKey: [apiPaths.innloggetBrukersOmråder],
-		gcTime: Infinity,
-		staleTime: Infinity,
+	useHentInnloggetBrukersOmråder({
+		query: {
+			gcTime: Infinity,
+			staleTime: Infinity,
+		},
 	});
