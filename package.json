@@ -39,7 +39,7 @@
 		"uuid": "14.0.2"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.5.12",
+		"@biomejs/biome": "2.5.13",
 		"@navikt/aksel": "8.16.1",
 		"@tanstack/react-query-devtools": "5.102.8",
 		"@testing-library/dom": "10.4.1",
@@ -47,7 +47,7 @@
 		"@testing-library/react": "16.3.3",
 		"@testing-library/user-event": "14.6.7",
 		"@types/lodash": "4.17.25",
-		"@types/node": "26.5.0",
+		"@types/node": "26.5.1",
 		"@types/react": "19.2.18",
 		"@types/react-collapse": "5.0.4",
 		"@types/react-dom": "19.2.7",
@@ -56,7 +56,7 @@
 		"husky": "9.1.7",
 		"jsdom": "30.0.1",
 		"typescript": "7.0.2",
-		"vite": "8.2.2",
+		"vite": "8.3.0",
 		"vitest": "4.1.11"
 	},
 	"scripts": {
