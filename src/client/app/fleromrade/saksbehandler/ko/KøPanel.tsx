@@ -26,9 +26,9 @@ import { useOmråde } from 'fleromrade/OmrådeContext';
 import { useId, useState } from 'react';
 import { getValueFromLocalStorage, setValueInLocalStorage } from 'utils/localStorageHelper';
 import OppgaveModal from '../oppgave/OppgaveModal';
-import OppgaveSammendragTabell from '../oppgave/OppgaveSammendragTabell';
 import ReserverteOppgaver from '../reservasjoner/ReserverteOppgaver';
 import SammenleggbarOverskrift from '../SammenleggbarOverskrift';
+import NesteOppgaverTabell from './NesteOppgaverTabell';
 
 const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 	const { data: oppgaver, isPending, isError } = useOppgaverIKø(kø.id);
@@ -46,10 +46,7 @@ const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 
 	return (
 		<>
-			<OppgaveSammendragTabell
-				oppgaver={oppgaver}
-				onVelgOppgave={kø.frittValgAvOppgave ? setValgtOppgave : undefined}
-			/>
+			<NesteOppgaverTabell oppgaver={oppgaver} onVelgOppgave={kø.frittValgAvOppgave ? setValgtOppgave : undefined} />
 			{valgtOppgave && <OppgaveModal oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
 		</>
 	);

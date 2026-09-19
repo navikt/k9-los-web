@@ -148,8 +148,26 @@ describe('KøPanel', () => {
 		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
 
 		expect(useHentOppgaverISaksbehandlerko).toHaveBeenCalledWith('akt', 1, expect.anything());
-		expect(within(screen.getAllByRole('row')[1]).getByText('ABC12 (2026)')).toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Velg oppgave ABC12' })).not.toBeInTheDocument();
+	});
+
+	it('viser neste oppgaver med samme kolonner og rekkefølge som reserverte oppgaver', async () => {
+		const user = userEvent.setup();
+		renderMedOmråde(<KøPanel />);
+		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
+
+		const tabell = screen.getByRole('table');
+		expect(
+			within(tabell)
+				.getAllByRole('columnheader')
+				.map((kolonne) => kolonne.textContent),
+		).toEqual(['Søker', 'Sak', 'Behandlingstype', 'Oppgave opprettet']);
+		const [søker, sak, behandlingstype, opprettet] = within(within(tabell).getAllByRole('row')[1]).getAllByRole('cell');
+		expect(søker).toHaveTextContent('Kari Nordmann');
+		expect(within(søker).getByRole('button', { name: 'Kopier fødselsnummer' })).toBeInTheDocument();
+		expect(within(sak).getByRole('button', { name: 'Kopier saksnummer' })).toBeInTheDocument();
+		expect(behandlingstype).toHaveTextContent('FørstegangsbehandlingAktivitetspenger');
+		expect(opprettet).toHaveTextContent('07.09.2026');
 	});
 
 	it('lar brukeren velge oppgave fra listen når køen har fritt valg', async () => {
