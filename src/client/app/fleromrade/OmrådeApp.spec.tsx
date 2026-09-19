@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { InnloggetBrukerDtoNy, Tilganger } from 'api/generated/los.schemas';
 import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
 import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import type { ReactNode } from 'react';
-import { MemoryRouter, Routes, useLocation } from 'react-router';
+import { Routes } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import OmrådeApp from './OmrådeApp';
-import { OmrådeProvider } from './OmrådeContext';
+import { queryResultat, renderMedOmråde } from './testUtils';
 
 // Uten init av @nais/apm rendrer ApmRoutes ingenting. Rutesporingen er dekket av apmRouting.spec.tsx.
 vi.mock('@nais/apm/react', () => ({
@@ -39,27 +39,11 @@ const medBruker = (tilganger: Partial<Tilganger>, områder: string[] = ['AKTIVIT
 		navn: 'Ola Nordmann',
 		tilganger: { ...ingenTilganger, ...tilganger },
 	};
-	vi.mocked(useInnloggetBruker).mockReturnValue({
-		data: bruker,
-		isPending: false,
-		isError: false,
-	} as unknown as ReturnType<typeof useInnloggetBruker>);
-	vi.mocked(useInnloggetBrukersOmråder).mockReturnValue({ data: områder } as unknown as ReturnType<
-		typeof useInnloggetBrukersOmråder
-	>);
+	vi.mocked(useInnloggetBruker).mockReturnValue(queryResultat(bruker));
+	vi.mocked(useInnloggetBrukersOmråder).mockReturnValue(queryResultat(områder));
 };
 
-const Sti = () => <div data-testid="sti">{useLocation().pathname}</div>;
-
-const renderApp = (sti: string) =>
-	render(
-		<MemoryRouter initialEntries={[sti]}>
-			<OmrådeProvider område="AKTIVITETSPENGER">
-				<OmrådeApp />
-			</OmrådeProvider>
-			<Sti />
-		</MemoryRouter>,
-	);
+const renderApp = (sti: string) => renderMedOmråde(<OmrådeApp />, { sti });
 
 describe('OmrådeApp', () => {
 	it('viser områdets navn og brukeren i headeren', () => {
@@ -87,7 +71,7 @@ describe('OmrådeApp', () => {
 		renderApp('/akt');
 		await user.click(screen.getByRole('button', { name: 'Avdelingslederpanel' }));
 
-		expect(screen.getByTestId('sti')).toHaveTextContent('/akt/avdelingsleder');
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/akt/avdelingsleder');
 		expect(screen.getByRole('heading', { name: 'Avdelingslederpanel' })).toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Avdelingslederpanel' })).not.toBeInTheDocument();
 	});
@@ -109,7 +93,7 @@ describe('OmrådeApp', () => {
 		renderApp('/akt');
 		await user.click(screen.getByRole('button', { name: 'Driftsmeldinger' }));
 
-		expect(screen.getByTestId('sti')).toHaveTextContent('/akt/admin');
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/akt/admin');
 	});
 
 	it('lar brukere med flere områder bytte område', async () => {
@@ -119,7 +103,7 @@ describe('OmrådeApp', () => {
 		renderApp('/akt');
 		await user.click(screen.getByRole('button', { name: 'Bytt område' }));
 
-		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/$/);
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent(/^\/$/);
 	});
 
 	it('viser ikke bytt område for brukere med ett område', () => {

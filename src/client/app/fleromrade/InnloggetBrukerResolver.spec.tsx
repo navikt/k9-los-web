@@ -1,35 +1,24 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useHentInnloggetBruker } from 'api/generated/los';
 import { describe, expect, it, vi } from 'vitest';
 import InnloggetBrukerResolver from './InnloggetBrukerResolver';
-import { OmrådeProvider } from './OmrådeContext';
+import { queryResultat, renderMedOmråde } from './testUtils';
 
 vi.mock('api/generated/los', () => ({
 	useHentInnloggetBruker: vi.fn(),
 }));
 
-const queryResult = (overrides: Record<string, unknown>) =>
-	({
-		data: undefined,
-		isPending: false,
-		isError: false,
-		refetch: vi.fn(),
-		...overrides,
-	}) as unknown as ReturnType<typeof useHentInnloggetBruker>;
-
 const renderResolver = () =>
-	render(
-		<OmrådeProvider område="AKTIVITETSPENGER">
-			<InnloggetBrukerResolver>
-				<div>Innhold</div>
-			</InnloggetBrukerResolver>
-		</OmrådeProvider>,
+	renderMedOmråde(
+		<InnloggetBrukerResolver>
+			<div>Innhold</div>
+		</InnloggetBrukerResolver>,
 	);
 
 describe('InnloggetBrukerResolver', () => {
 	it('henter innlogget bruker for området i konteksten', () => {
-		vi.mocked(useHentInnloggetBruker).mockReturnValue(queryResult({ data: { brukerIdent: 'Z123456' } }));
+		vi.mocked(useHentInnloggetBruker).mockReturnValue(queryResultat({ brukerIdent: 'Z123456' }));
 
 		renderResolver();
 
@@ -38,7 +27,7 @@ describe('InnloggetBrukerResolver', () => {
 	});
 
 	it('venter med innholdet til brukeren er hentet', () => {
-		vi.mocked(useHentInnloggetBruker).mockReturnValue(queryResult({ isPending: true }));
+		vi.mocked(useHentInnloggetBruker).mockReturnValue(queryResultat(undefined, { isPending: true, isSuccess: false }));
 
 		renderResolver();
 
@@ -49,7 +38,9 @@ describe('InnloggetBrukerResolver', () => {
 	it('viser en feilmelding og lar brukeren prøve på nytt', async () => {
 		const user = userEvent.setup();
 		const refetch = vi.fn();
-		vi.mocked(useHentInnloggetBruker).mockReturnValue(queryResult({ isError: true, refetch }));
+		vi.mocked(useHentInnloggetBruker).mockReturnValue(
+			queryResultat(undefined, { isError: true, isSuccess: false, refetch }),
+		);
 
 		renderResolver();
 		await user.click(screen.getByRole('button', { name: 'Prøv på nytt' }));
