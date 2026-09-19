@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render } from '@testing-library/react';
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { MemoryRouter, useLocation } from 'react-router';
 import { vi } from 'vitest';
 import { OmrådeProvider } from './OmrådeContext';
@@ -38,6 +38,19 @@ export const renderMedOmråde = (ui: ReactElement, { sti = '/akt', område = 'AK
 			</MemoryRouter>
 		</QueryClientProvider>,
 	);
+};
+
+/** Wrapper for `renderHook` med QueryClient og områdekontekst. */
+export const lagHookWrapper = (område: Område = 'AKTIVITETSPENGER') => {
+	const queryClient = new QueryClient({
+		defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+	});
+	const Wrapper = ({ children }: { children: ReactNode }) => (
+		<QueryClientProvider client={queryClient}>
+			<OmrådeProvider område={område}>{children}</OmrådeProvider>
+		</QueryClientProvider>
+	);
+	return { wrapper: Wrapper, queryClient };
 };
 
 // Returtypen er `never` slik at resultatet kan gis til `mockReturnValue` for en hvilken som helst hook.
