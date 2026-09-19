@@ -58,7 +58,8 @@ const medBruker = (tilganger: Partial<Tilganger>, områder: string[] = ['AKTIVIT
 	vi.mocked(useInnloggetBrukersOmråder).mockReturnValue(queryResultat(områder));
 };
 
-const renderApp = (sti: string) => renderMedOmråde(<OmrådeApp />, { sti });
+const renderApp = (sti: string, område: 'K9' | 'AKTIVITETSPENGER' = 'AKTIVITETSPENGER') =>
+	renderMedOmråde(<OmrådeApp />, { sti, område });
 
 describe('OmrådeApp', () => {
 	it('viser områdets navn og brukeren i headeren', () => {
@@ -128,6 +129,23 @@ describe('OmrådeApp', () => {
 		renderApp('/akt');
 
 		expect(screen.queryByRole('button', { name: 'Bytt område' })).not.toBeInTheDocument();
+	});
+
+	it('fungerer for K9 på ny API under /k9-ny', async () => {
+		const user = userEvent.setup();
+		medBruker({ basis: true, oppgavestyring: true }, ['K9']);
+
+		renderApp('/k9-ny', 'K9');
+
+		expect(screen.getByRole('link', { name: 'Pleiepenger, omsorgspenger og opplæringspenger' })).toHaveAttribute(
+			'href',
+			'/k9-ny',
+		);
+		expect(screen.getByRole('heading', { name: 'Saksbehandlerforside' })).toBeInTheDocument();
+
+		await user.click(screen.getByRole('button', { name: 'Avdelingslederpanel' }));
+
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/k9-ny/avdelingsleder');
 	});
 
 	it('viser en side for ukjente stier med lenke til områdets forside', () => {

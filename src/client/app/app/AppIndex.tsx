@@ -46,7 +46,7 @@ const AppIndex: FunctionComponent = () => {
 			}
 		>
 			<OmrådeResolver
-				aktivitetspenger={<OmrådeApp />}
+				fleromrade={<OmrådeApp />}
 				k9={
 					<InnloggetSaksbehandlerResolver>
 						<HeaderWithErrorPanel />

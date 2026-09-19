@@ -1,16 +1,20 @@
 import { BodyShort, Box, Button, Heading, Loader, LocalAlert, VStack } from '@navikt/ds-react';
 import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { OmrådeProvider } from 'fleromrade/OmrådeContext';
-import { områdenavn, urlSegmentForOmråde } from 'fleromrade/områder';
+import { basisstiForOmråde, områdenavn, urlSegmentForOmråde } from 'fleromrade/områder';
 import { type FunctionComponent, type ReactElement, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 
 interface OwnProps {
+	/** K9 på legacy-API. */
 	k9: ReactElement;
-	aktivitetspenger: ReactElement;
+	/** Skallet for områder på ny API. Rendres med området i konteksten. */
+	fleromrade: ReactElement;
 }
 
-const aktivitetspengerSti = `/${urlSegmentForOmråde.AKTIVITETSPENGER}`;
+const aktivitetspengerSti = basisstiForOmråde.AKTIVITETSPENGER;
+const k9NyApiSti = basisstiForOmråde.K9;
+// Fagsystemene lenker tilbake med `/k9`. Den sendes til legacy-K9 uten prefiks.
 const k9Sti = `/${urlSegmentForOmråde.K9}`;
 
 const harPrefiks = (sti: string, prefiks: string) => sti === prefiks || sti.startsWith(`${prefiks}/`);
@@ -35,11 +39,11 @@ const IngenTilgang = ({ tittel }: { tittel: string }) => (
 );
 
 /**
- * Velger område ut fra URL-en. Aktivitetspenger ligger under `/akt`, mens K9 blir liggende på
- * dagens stier uten prefiks. Fagsystemene lenker tilbake med prefiks, så `/k9/...` skrives om
- * til stien uten prefiks. Brukere med bare ett område sendes automatisk til riktig sted.
+ * Velger område og modus ut fra URL-en. Aktivitetspenger ligger under `/akt`. K9 har to moduser: legacy på
+ * dagens stier uten prefiks, og ny API under `/k9-ny`. Fagsystemene lenker tilbake med `/k9/...`, som skrives
+ * om til legacy-stien uten prefiks. Brukere med bare ett område sendes automatisk til riktig sted.
  */
-const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, aktivitetspenger }) => {
+const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 	const { data: områder, isPending, isError, refetch } = useInnloggetBrukersOmråder();
 	const { pathname, search, hash } = useLocation();
 	const navigate = useNavigate();
@@ -89,7 +93,17 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, aktivitetspenger }) 
 		if (k9Valgt) {
 			setK9Valgt(false);
 		}
-		return <OmrådeProvider område="AKTIVITETSPENGER">{aktivitetspenger}</OmrådeProvider>;
+		return <OmrådeProvider område="AKTIVITETSPENGER">{fleromrade}</OmrådeProvider>;
+	}
+
+	if (harPrefiks(pathname, k9NyApiSti)) {
+		if (!harK9) {
+			return <IngenTilgang tittel={`Du har ikke tilgang til ${områdenavn.K9.toLowerCase()}`} />;
+		}
+		if (k9Valgt) {
+			setK9Valgt(false);
+		}
+		return <OmrådeProvider område="K9">{fleromrade}</OmrådeProvider>;
 	}
 
 	if (harPrefiks(pathname, k9Sti)) {

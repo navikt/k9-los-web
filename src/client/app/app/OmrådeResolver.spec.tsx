@@ -29,14 +29,15 @@ const K9App = () => (
 		<div>K9-app</div>
 		<Link to="/">Til K9-forsiden</Link>
 		<Link to="/akt">Til aktivitetspenger</Link>
+		<Link to="/k9-ny">Til K9 på ny API</Link>
 	</>
 );
 
-const AktivitetspengerApp = () => {
-	const { område } = useOmråde();
+const FlerområdeApp = () => {
+	const { område, basissti } = useOmråde();
 	return (
 		<>
-			<div>{`App for ${område}`}</div>
+			<div>{`App for ${område} på ${basissti}`}</div>
 			<Link to="/">Bytt område</Link>
 		</>
 	);
@@ -45,7 +46,7 @@ const AktivitetspengerApp = () => {
 const renderResolver = (sti: string) =>
 	render(
 		<MemoryRouter initialEntries={[sti]}>
-			<OmrådeResolver k9={<K9App />} aktivitetspenger={<AktivitetspengerApp />} />
+			<OmrådeResolver k9={<K9App />} fleromrade={<FlerområdeApp />} />
 			<Sti />
 		</MemoryRouter>,
 	);
@@ -97,7 +98,7 @@ describe('OmrådeResolver', () => {
 
 			renderResolver('/akt/avdelingsleder');
 
-			expect(screen.getByText('App for AKTIVITETSPENGER')).toBeInTheDocument();
+			expect(screen.getByText('App for AKTIVITETSPENGER på /akt')).toBeInTheDocument();
 		});
 
 		it('sender stier uten prefiks videre til /akt', () => {
@@ -105,7 +106,7 @@ describe('OmrådeResolver', () => {
 
 			renderResolver('/avdelingsleder?fane=reservasjoner');
 
-			expect(screen.getByText('App for AKTIVITETSPENGER')).toBeInTheDocument();
+			expect(screen.getByText('App for AKTIVITETSPENGER på /akt')).toBeInTheDocument();
 			expect(screen.getByTestId('sti')).toHaveTextContent('/akt/avdelingsleder?fane=reservasjoner');
 		});
 
@@ -152,7 +153,7 @@ describe('OmrådeResolver', () => {
 			renderResolver('/');
 			await user.click(screen.getByRole('button', { name: 'Aktivitetspenger' }));
 
-			expect(screen.getByText('App for AKTIVITETSPENGER')).toBeInTheDocument();
+			expect(screen.getByText('App for AKTIVITETSPENGER på /akt')).toBeInTheDocument();
 			expect(screen.getByTestId('sti')).toHaveTextContent(/^\/akt$/);
 		});
 
@@ -186,6 +187,49 @@ describe('OmrådeResolver', () => {
 			expect(screen.getByText('K9-app')).toBeInTheDocument();
 
 			await user.click(screen.getByRole('link', { name: 'Til aktivitetspenger' }));
+			await user.click(screen.getByRole('link', { name: 'Bytt område' }));
+
+			expect(screen.getByRole('heading', { name: 'Velg område' })).toBeInTheDocument();
+		});
+	});
+
+	describe('K9 på ny API', () => {
+		it('rendrer K9 på ny API under /k9-ny', () => {
+			medOmråder(['K9']);
+
+			renderResolver('/k9-ny/avdelingsleder');
+
+			expect(screen.getByText('App for K9 på /k9-ny')).toBeInTheDocument();
+			expect(screen.queryByText('K9-app')).not.toBeInTheDocument();
+		});
+
+		it('beholder legacy som standard for /k9 fra fagsystemet og stier uten prefiks', () => {
+			medOmråder(['K9']);
+
+			renderResolver('/k9/avdelingsleder');
+
+			expect(screen.getByText('K9-app')).toBeInTheDocument();
+			expect(screen.queryByText(/App for K9/)).not.toBeInTheDocument();
+		});
+
+		it('viser tilgangsfeil under /k9-ny uten tilgang til K9', () => {
+			medOmråder(['AKTIVITETSPENGER']);
+
+			renderResolver('/k9-ny');
+
+			expect(
+				screen.getByText('Du har ikke tilgang til pleiepenger, omsorgspenger og opplæringspenger'),
+			).toBeInTheDocument();
+		});
+
+		it('viser velgeren når brukeren bytter område fra K9 på ny API', async () => {
+			const user = userEvent.setup();
+			medOmråder(['K9', 'AKTIVITETSPENGER']);
+
+			renderResolver('/avdelingsleder');
+			await user.click(screen.getByRole('link', { name: 'Til K9 på ny API' }));
+			expect(screen.getByText('App for K9 på /k9-ny')).toBeInTheDocument();
+
 			await user.click(screen.getByRole('link', { name: 'Bytt område' }));
 
 			expect(screen.getByRole('heading', { name: 'Velg område' })).toBeInTheDocument();
