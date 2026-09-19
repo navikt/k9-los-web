@@ -1,10 +1,10 @@
 import { ApmErrorBoundary } from '@nais/apm/react';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Modal } from '@navikt/ds-react';
+import OmrådeApp from 'fleromrade/OmrådeApp';
 import { type FunctionComponent, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import '../../styles/global.css';
-import AktivitetspengerLandingPage from './AktivitetspengerLandingPage';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
 import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
@@ -46,7 +46,7 @@ const AppIndex: FunctionComponent = () => {
 			}
 		>
 			<OmrådeResolver
-				aktivitetspenger={<AktivitetspengerLandingPage />}
+				aktivitetspenger={<OmrådeApp />}
 				k9={
 					<InnloggetSaksbehandlerResolver>
 						<HeaderWithErrorPanel />
