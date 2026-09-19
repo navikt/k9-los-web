@@ -1,0 +1,34 @@
+.removeImage {
+	cursor: pointer;
+	padding: 5px;
+}
+.spinner {
+	left: 50%;
+}
+.chevron {
+	color: #0067c5;
+}
+.action {
+	color: #0067c5;
+	font-family: 'Source Sans Pro', Arial, sans-serif;
+	font-size: 18px;
+	letter-spacing: 0;
+	line-height: 23px;
+}
+.menuLine {
+	display: inline-flex;
+}
+.actionMenu {
+	padding-left: 20px;
+	padding-top: 20px;
+}
+.icon {
+	padding-right: 5px;
+}
+.titelContainer {
+	display: flex;
+	justify-content: space-between;
+}
+.titelContainer .sokfelt {
+	width: 20rem;
+}
