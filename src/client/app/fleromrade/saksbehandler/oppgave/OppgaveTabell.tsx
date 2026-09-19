@@ -7,12 +7,14 @@ import { dateFormat } from 'utils/dateUtils';
 
 interface Props {
 	oppgaver: OppgaveSammendragDto[];
-	/** Gir hver rad en knapp for å velge oppgaven. Brukes når køen har fritt valg av oppgave. */
+	/** Gir hver rad en knapp for å velge oppgaven, f.eks. i søket eller når køen har fritt valg av oppgave. */
 	onVelgOppgave?: (oppgave: OppgaveSammendragDto) => void;
 }
 
-/** Neste oppgaver i køen, med samme kolonner og visning som reserverte oppgaver. */
-const NesteOppgaverTabell = ({ oppgaver, onVelgOppgave }: Props) => {
+/**
+ * Oppgaver i søkeresultatet og i neste oppgaver i køen, med samme kolonner og visning som reserverte oppgaver.
+ */
+const OppgaveTabell = ({ oppgaver, onVelgOppgave }: Props) => {
 	const visHastesak = oppgaver.some((oppgave) => oppgave.hastesak);
 
 	return (
@@ -94,4 +96,4 @@ const NesteOppgaverTabell = ({ oppgaver, onVelgOppgave }: Props) => {
 	);
 };
 
-export default NesteOppgaverTabell;
+export default OppgaveTabell;

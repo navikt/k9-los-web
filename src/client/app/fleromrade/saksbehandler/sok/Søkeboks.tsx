@@ -7,7 +7,7 @@ import { useSearchParams } from 'react-router';
 import { PersonInfo } from 'saksbehandler/sokeboks/PersonInfo';
 import { SøkForm } from 'saksbehandler/sokeboks/SøkForm';
 import OppgaveModal from '../oppgave/OppgaveModal';
-import OppgaveSammendragTabell from '../oppgave/OppgaveSammendragTabell';
+import OppgaveTabell from '../oppgave/OppgaveTabell';
 
 const saksnummerEllerJournalpostId = /^(?:\w{5}|\w{7}|\d{9})$/;
 
@@ -31,7 +31,7 @@ const Søkeresultat = ({
 	return (
 		<VStack gap="space-16">
 			{person && <PersonInfo person={person} />}
-			<OppgaveSammendragTabell oppgaver={resultat.oppgaver} onVelgOppgave={onVelgOppgave} />
+			<OppgaveTabell oppgaver={resultat.oppgaver} onVelgOppgave={onVelgOppgave} />
 		</VStack>
 	);
 };

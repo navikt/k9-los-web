@@ -63,17 +63,41 @@ describe('Søkeboks', () => {
 		expect(søk).toHaveBeenCalledWith({ omrade: 'akt', data: { søkeord: 'ABC12' } });
 	});
 
-	it('viser personen og oppgavene i søkeresultatet', () => {
-		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
+	it('viser personen og oppgavene i søkeresultatet, med samme kolonner som reserverte oppgaver', () => {
+		medSøkeresultat({
+			type: 'MED_RESULTAT',
+			oppgaver: [
+				lagOppgaveSammendrag(),
+				lagOppgaveSammendrag({
+					saksnummer: 'LUK99',
+					oppgaveNøkkel: {
+						oppgaveEksternId: 'lukket',
+						oppgaveTypeEksternId: 'k9sak',
+						områdeEksternId: 'AKTIVITETSPENGER',
+					},
+					oppgavestatus: { kode: 'LUKKET', navn: 'Lukket' },
+				}),
+			],
+		} as SokeresultatSammendrag);
 
 		renderMedOmråde(<Søkeboks />);
 
 		expect(screen.getByRole('heading', { name: 'Kari Nordmann' })).toBeInTheDocument();
-		const rad = screen.getAllByRole('row')[1];
-		expect(within(rad).getByText('ABC12 (2026)')).toBeInTheDocument();
-		expect(within(rad).getByText('Aktivitetspenger')).toBeInTheDocument();
-		expect(within(rad).getByText('Førstegangsbehandling')).toBeInTheDocument();
-		expect(within(rad).getByText('Åpen')).toBeInTheDocument();
+		expect(screen.getAllByRole('columnheader').map((kolonne) => kolonne.textContent)).toEqual([
+			'Søker',
+			'Sak',
+			'Behandlingstype',
+			'Oppgave opprettet',
+			'Handlinger',
+		]);
+		const [søker, sak, behandlingstype, opprettet] = within(screen.getAllByRole('row')[1]).getAllByRole('cell');
+		expect(søker).toHaveTextContent('Kari Nordmann');
+		expect(within(søker).getByRole('button', { name: 'Kopier fødselsnummer' })).toBeInTheDocument();
+		expect(within(sak).getByRole('button', { name: 'Kopier saksnummer' })).toBeInTheDocument();
+		expect(sak).not.toHaveTextContent('Åpen');
+		expect(behandlingstype).toHaveTextContent('FørstegangsbehandlingAktivitetspenger');
+		expect(opprettet).toHaveTextContent('07.09.2026');
+		expect(within(screen.getAllByRole('row')[2]).getAllByRole('cell')[1]).toHaveTextContent('Lukket');
 	});
 
 	it('forteller når søket ikke ga treff eller brukeren mangler tilgang', () => {
