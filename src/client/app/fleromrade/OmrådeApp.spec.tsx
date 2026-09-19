@@ -19,6 +19,10 @@ vi.mock('fleromrade/api/innloggetBrukerQueries', () => ({
 	useInnloggetBruker: vi.fn(),
 }));
 
+vi.mock('fleromrade/saksbehandler/SaksbehandlerForside', () => ({
+	default: () => <h1>Saksbehandlerforside</h1>,
+}));
+
 vi.mock('fleromrade/api/driftsmeldingQueries', () => ({
 	useDriftsmeldinger: () => queryResultat([]),
 	useLeggTilDriftsmelding: () => ({ leggTil: vi.fn(), isPending: false }),
@@ -60,7 +64,7 @@ describe('OmrådeApp', () => {
 
 		expect(screen.getByRole('link', { name: 'Aktivitetspenger' })).toHaveAttribute('href', '/akt');
 		expect(screen.getByText('Ola Nordmann')).toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Saksbehandler' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Saksbehandlerforside' })).toBeInTheDocument();
 	});
 
 	it('krever basistilgang på forsiden', () => {

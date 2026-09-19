@@ -8,6 +8,7 @@ import InnloggetBrukerResolver from './InnloggetBrukerResolver';
 import KreverTilgang from './KreverTilgang';
 import SesjonUtløptModal from './SesjonUtløptModal';
 import SideFinnesIkke from './SideFinnesIkke';
+import SaksbehandlerForside from './saksbehandler/SaksbehandlerForside';
 import UnderUtvikling from './UnderUtvikling';
 
 /**
@@ -39,7 +40,7 @@ const OmrådeApp = () => {
 							index
 							element={
 								<KreverTilgang tilgang="basis">
-									<UnderUtvikling tittel="Saksbehandler" />
+									<SaksbehandlerForside />
 								</KreverTilgang>
 							}
 						/>
