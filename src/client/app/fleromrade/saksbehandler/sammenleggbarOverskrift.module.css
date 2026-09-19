@@ -1,0 +1,22 @@
+/* Samme utseende som de sammenleggbare overskriftene i legacy-K9 på feature/reservasjon-sortering. */
+
+.knapp {
+	align-items: center;
+	background-color: transparent;
+	border: 0;
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	padding: 0.5rem 0;
+}
+
+.knapp:focus-visible {
+	box-shadow: 0 0 0 3px var(--ax-border-focus);
+	outline: 3px solid transparent;
+}
+
+.chevron {
+	flex-shrink: 0;
+	margin-left: -0.25rem;
+	margin-right: 0.25rem;
+}

@@ -1,9 +1,10 @@
 import {
 	BodyShort,
+	Box,
 	Button,
 	Detail,
-	ExpansionCard,
 	Heading,
+	HGrid,
 	InlineMessage,
 	Loader,
 	Modal,
@@ -22,11 +23,12 @@ import {
 	useÅpneOppgave,
 } from 'fleromrade/api/saksbehandlerQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { getValueFromLocalStorage, setValueInLocalStorage } from 'utils/localStorageHelper';
 import OppgaveModal from '../oppgave/OppgaveModal';
 import OppgaveSammendragTabell from '../oppgave/OppgaveSammendragTabell';
 import ReserverteOppgaver from '../reservasjoner/ReserverteOppgaver';
+import SammenleggbarOverskrift from '../SammenleggbarOverskrift';
 
 const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 	const { data: oppgaver, isPending, isError } = useOppgaverIKø(kø.id);
@@ -73,10 +75,6 @@ const KøDetaljer = ({ kø }: { kø: OppgaveKo }) => {
 						))}
 				</ul>
 			</ReadMore>
-			<div>
-				<Detail>Beskrivelse av køen</Detail>
-				<BodyShort>{kø.beskrivelse || '–'}</BodyShort>
-			</div>
 		</VStack>
 	);
 };
@@ -90,6 +88,7 @@ const KøPanel = () => {
 	const [valgtKøId, setValgtKøId] = useState<number>();
 	const [melding, setMelding] = useState<'ingen-oppgaver' | 'mangler-lenke'>();
 	const [visNesteOppgaver, setVisNesteOppgaver] = useState(false);
+	const nesteOppgaverId = useId();
 
 	if (isPending) {
 		return <Loader title="Henter oppgavekøer" />;
@@ -130,41 +129,48 @@ const KøPanel = () => {
 				<BodyShort>Fant ingen oppgavekøer for deg.</BodyShort>
 			) : (
 				<>
-					<VStack gap="space-16">
-						<Select label="Velg oppgavekø" value={kø.id} onChange={(event) => velgKø(Number(event.target.value))}>
-							{sorterteKøer.map((k) => (
-								<option key={k.id} value={k.id}>
-									{k.tittel}
-								</option>
-							))}
-						</Select>
-						<KøDetaljer kø={kø} />
-						<div>
-							<Button loading={plukker} onClick={plukkNesteOppgave}>
-								Gi meg neste oppgave i køen
-							</Button>
-						</div>
-						{melding === 'mangler-lenke' && (
-							<InlineMessage status="warning">
-								Oppgaven er reservert på deg, men mangler lenke til fagsystemet. Du finner den under reserverte
-								oppgaver.
-							</InlineMessage>
-						)}
-					</VStack>
+					{/* Køvelgeren og neste oppgaver står i et lyseblått område, som i legacy-K9. */}
+					<Box background="accent-moderate" borderRadius="4" padding="space-16">
+						<VStack gap="space-16">
+							<HGrid columns={{ xs: 1, md: '20rem 1fr' }} gap="space-32">
+								<VStack gap="space-16">
+									<Select label="Velg oppgavekø" value={kø.id} onChange={(event) => velgKø(Number(event.target.value))}>
+										{sorterteKøer.map((k) => (
+											<option key={k.id} value={k.id}>
+												{k.tittel}
+											</option>
+										))}
+									</Select>
+									<KøDetaljer kø={kø} />
+									<div>
+										<Button loading={plukker} onClick={plukkNesteOppgave}>
+											Gi meg neste oppgave i køen
+										</Button>
+									</div>
+								</VStack>
+								<div>
+									<Detail>Beskrivelse av køen</Detail>
+									<BodyShort className="mt-4">{kø.beskrivelse || '–'}</BodyShort>
+								</div>
+							</HGrid>
+							{melding === 'mangler-lenke' && (
+								<InlineMessage status="warning">
+									Oppgaven er reservert på deg, men mangler lenke til fagsystemet. Du finner den under reserverte
+									oppgaver.
+								</InlineMessage>
+							)}
+							<div>
+								<SammenleggbarOverskrift
+									tittel="Neste oppgaver"
+									åpen={visNesteOppgaver}
+									onToggle={() => setVisNesteOppgaver(!visNesteOppgaver)}
+									innholdId={nesteOppgaverId}
+								/>
+								<div id={nesteOppgaverId}>{visNesteOppgaver && <NesteOppgaver kø={kø} />}</div>
+							</div>
+						</VStack>
+					</Box>
 					<ReserverteOppgaver />
-					<ExpansionCard
-						size="small"
-						aria-label="Neste oppgaver i køen"
-						open={visNesteOppgaver}
-						onToggle={setVisNesteOppgaver}
-					>
-						<ExpansionCard.Header>
-							<ExpansionCard.Title as="h3" size="small">
-								Neste oppgaver i køen
-							</ExpansionCard.Title>
-						</ExpansionCard.Header>
-						<ExpansionCard.Content>{visNesteOppgaver && <NesteOppgaver kø={kø} />}</ExpansionCard.Content>
-					</ExpansionCard>
 				</>
 			)}
 			<Modal

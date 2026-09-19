@@ -1,5 +1,5 @@
 import KopierbarVerdi, { Kopieringsområde } from 'sharedComponents/KopierbarVerdi';
-import { ChatElipsisIcon, ChevronDownIcon, ChevronRightIcon, MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
+import { ChatElipsisIcon, MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import {
 	ActionMenu,
 	BodyShort,
@@ -8,7 +8,6 @@ import {
 	Detail,
 	HStack,
 	InlineMessage,
-	Label,
 	Loader,
 	Popover,
 	Table,
@@ -19,6 +18,7 @@ import { useForlengReservasjon, useReserverteOppgaver, useÅpneOppgave } from 'f
 import { type ReactNode, useId, useRef, useState } from 'react';
 import { idKolonneTittel } from 'saksbehandler/tabellvisning';
 import { dateFormat, getDateAndTime } from 'utils/dateUtils';
+import SammenleggbarOverskrift from '../SammenleggbarOverskrift';
 import { visningsnavn } from '../visningsnavn';
 import FlyttReservasjonModal from './FlyttReservasjonModal';
 import OpphevReservasjonModal from './OpphevReservasjonModal';
@@ -237,20 +237,12 @@ const ReserverteOppgaver = () => {
 	return (
 		<VStack gap="space-8">
 			<HStack gap="space-8" align="center">
-				<button
-					type="button"
-					className={styles.overskriftKnapp}
-					aria-expanded={visReservasjoner}
-					aria-controls={innholdId}
-					onClick={() => setVisReservasjoner(!visReservasjoner)}
-				>
-					{visReservasjoner ? (
-						<ChevronDownIcon className={styles.chevron} aria-hidden />
-					) : (
-						<ChevronRightIcon className={styles.chevron} aria-hidden />
-					)}
-					<Label>Reserverte oppgaver</Label>
-				</button>
+				<SammenleggbarOverskrift
+					tittel="Reserverte oppgaver"
+					åpen={visReservasjoner}
+					onToggle={() => setVisReservasjoner(!visReservasjoner)}
+					innholdId={innholdId}
+				/>
 				{visReservasjoner && isSuccess && (antallÅpne > 0 || antallPåVent > 0) && (
 					<Chips size="medium" data-color="neutral">
 						<Chips.Toggle selected={visÅpne} onClick={() => setVisÅpne((vis) => !vis)}>

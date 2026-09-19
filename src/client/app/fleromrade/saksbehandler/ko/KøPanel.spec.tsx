@@ -39,6 +39,7 @@ const medKøer = (køer: OppgaveKo[]) => vi.mocked(useHentSaksbehandlersOppgavek
 const mutate = (mutasjon: never) => (mutasjon as { mutate: ReturnType<typeof vi.fn> }).mutate;
 
 beforeEach(() => {
+	vi.clearAllMocks();
 	stubLocalStorage();
 	medKøer([køB, køA]);
 	vi.mocked(useInnloggetBruker).mockReturnValue(queryResultat(innloggetBruker));
@@ -85,6 +86,23 @@ describe('KøPanel', () => {
 		expect(window.localStorage.getItem('valgtOppgaveko-akt')).toBe('2');
 	});
 
+	it('viser neste oppgaver i området med køvelgeren, og reserverte oppgaver under', async () => {
+		const user = userEvent.setup();
+		renderMedOmråde(<KøPanel />);
+
+		const nesteOppgaver = screen.getByRole('button', { name: 'Neste oppgaver' });
+		expect(nesteOppgaver).toHaveAttribute('aria-expanded', 'false');
+		expect(screen.getByRole('combobox', { name: 'Velg oppgavekø' }).compareDocumentPosition(nesteOppgaver)).toBe(
+			Node.DOCUMENT_POSITION_FOLLOWING,
+		);
+		expect(nesteOppgaver.compareDocumentPosition(screen.getByRole('button', { name: 'Reserverte oppgaver' }))).toBe(
+			Node.DOCUMENT_POSITION_FOLLOWING,
+		);
+
+		await user.click(nesteOppgaver);
+		expect(nesteOppgaver).toHaveAttribute('aria-expanded', 'true');
+	});
+
 	it('forteller når brukeren ikke har noen køer', () => {
 		medKøer([]);
 
@@ -127,7 +145,7 @@ describe('KøPanel', () => {
 
 		expect(useHentOppgaverISaksbehandlerko).not.toHaveBeenCalled();
 
-		await user.click(screen.getByRole('button', { name: 'Vis mer' }));
+		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
 
 		expect(useHentOppgaverISaksbehandlerko).toHaveBeenCalledWith('akt', 1, expect.anything());
 		expect(within(screen.getAllByRole('row')[1]).getByText('ABC12 (2026)')).toBeInTheDocument();
@@ -139,7 +157,7 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 
 		renderMedOmråde(<KøPanel />);
-		await user.click(screen.getByRole('button', { name: 'Vis mer' }));
+		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
 		await user.click(screen.getByRole('button', { name: 'Velg oppgave ABC12' }));
 
 		expect(screen.getByRole('dialog', { name: 'Oppgaven er ikke reservert' })).toBeInTheDocument();
