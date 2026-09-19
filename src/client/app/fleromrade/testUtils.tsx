@@ -53,6 +53,43 @@ export const queryResultat = <T,>(data: T, overstyring: Record<string, unknown> 
 		...overstyring,
 	}) as never;
 
+interface MutateOptions {
+	onSuccess?: (svar: unknown, variabler: unknown) => void;
+	onSettled?: () => void;
+}
+
+/** En mutation-hook der `mutate` lykkes med `svar` og kaller `onSuccess` og `onSettled` fra kallstedet. */
+export const mutationSomLykkes = (svar?: unknown): never =>
+	mutationResultat({
+		mutate: vi.fn((variabler: unknown, options?: MutateOptions) => {
+			options?.onSuccess?.(svar, variabler);
+			options?.onSettled?.();
+		}),
+	});
+
+/** Erstatter `window.location.assign`, som jsdom ikke støtter, og returnerer mocken. */
+export const stubNavigering = () => {
+	const assign = vi.fn();
+	vi.stubGlobal('location', { ...window.location, assign });
+	return assign;
+};
+
+/**
+ * Gir testen en tom localStorage i minnet. Node sin eksperimentelle localStorage skygger for jsdom sin,
+ * og er ikke tilgjengelig uten `--localstorage-file`.
+ */
+export const stubLocalStorage = () => {
+	const lager = new Map<string, string>();
+	const localStorage: Pick<Storage, 'getItem' | 'setItem' | 'removeItem' | 'clear'> = {
+		getItem: (nøkkel) => lager.get(nøkkel) ?? null,
+		setItem: (nøkkel, verdi) => lager.set(nøkkel, String(verdi)),
+		removeItem: (nøkkel) => lager.delete(nøkkel),
+		clear: () => lager.clear(),
+	};
+	vi.stubGlobal('localStorage', localStorage);
+	return localStorage;
+};
+
 /** Et resultat fra en generert mutation-hook. `mutate` er en mock som kan inspiseres. */
 export const mutationResultat = (overstyring: Record<string, unknown> = {}): never =>
 	({
