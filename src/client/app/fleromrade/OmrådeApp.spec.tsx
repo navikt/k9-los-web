@@ -23,6 +23,10 @@ vi.mock('fleromrade/saksbehandler/SaksbehandlerForside', () => ({
 	default: () => <h1>Saksbehandlerforside</h1>,
 }));
 
+vi.mock('fleromrade/avdelingsleder/AvdelingslederPanel', () => ({
+	default: () => <h1>Avdelingslederpanel</h1>,
+}));
+
 vi.mock('fleromrade/api/driftsmeldingQueries', () => ({
 	useDriftsmeldinger: () => queryResultat([]),
 	useLeggTilDriftsmelding: () => ({ leggTil: vi.fn(), isPending: false }),

@@ -3,13 +3,13 @@ import { Box, LocalAlert } from '@navikt/ds-react';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { Route } from 'react-router';
 import DriftsmeldingerSide from './admin/DriftsmeldingerSide';
+import AvdelingslederPanel from './avdelingsleder/AvdelingslederPanel';
 import Header from './Header';
 import InnloggetBrukerResolver from './InnloggetBrukerResolver';
 import KreverTilgang from './KreverTilgang';
 import SesjonUtløptModal from './SesjonUtløptModal';
 import SideFinnesIkke from './SideFinnesIkke';
 import SaksbehandlerForside from './saksbehandler/SaksbehandlerForside';
-import UnderUtvikling from './UnderUtvikling';
 
 /**
  * Områdenøytralt skall for appen: header, sesjonsmodal og ruter under områdets basissti.
@@ -48,7 +48,7 @@ const OmrådeApp = () => {
 							path="avdelingsleder"
 							element={
 								<KreverTilgang tilgang="oppgavestyring">
-									<UnderUtvikling tittel="Avdelingslederpanel" />
+									<AvdelingslederPanel />
 								</KreverTilgang>
 							}
 						/>
