@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { InnloggetBrukerDtoNy, Tilganger } from 'api/generated/los.schemas';
-import { useInnloggetBrukersOmråder } from 'api/queries/områdeQueries';
 import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
+import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import type { ReactNode } from 'react';
 import { MemoryRouter, Routes, useLocation } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
@@ -19,7 +19,7 @@ vi.mock('fleromrade/api/innloggetBrukerQueries', () => ({
 	useInnloggetBruker: vi.fn(),
 }));
 
-vi.mock('api/queries/områdeQueries', () => ({
+vi.mock('fleromrade/api/områdeQueries', () => ({
 	useInnloggetBrukersOmråder: vi.fn(),
 }));
 

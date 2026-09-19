@@ -1,6 +1,6 @@
 import { InternalHeader, Spacer } from '@navikt/ds-react';
-import { useInnloggetBrukersOmråder } from 'api/queries/områdeQueries';
 import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
+import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { områdenavn } from 'fleromrade/områder';
 import { Link, useLocation, useNavigate } from 'react-router';

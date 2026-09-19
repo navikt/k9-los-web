@@ -42,6 +42,30 @@
 		{
 			"includes": ["src/client/app/api/generated/**"],
 			"linter": { "enabled": false }
+		},
+		{
+			"includes": ["src/client/app/fleromrade/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"api/apiPaths": "Legacy-API. Bruk den genererte klienten i api/generated.",
+									"utils/reactQueryConfig": "Legacy-oppsett for spørringer. Bruk den genererte klienten i api/generated."
+								},
+								"patterns": [
+									{
+										"group": ["api/queries/*"],
+										"message": "Legacy-API. Bruk den genererte klienten i api/generated."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
 		}
 	],
 	"assist": { "enabled": true, "actions": { "source": { "organizeImports": "on" } } }

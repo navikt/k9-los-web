@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useInnloggetBrukersOmråder } from 'api/queries/områdeQueries';
+import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { Link, MemoryRouter, useLocation } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import OmrådeResolver from './OmrådeResolver';
 
-vi.mock('api/queries/områdeQueries', () => ({
+vi.mock('fleromrade/api/områdeQueries', () => ({
 	useInnloggetBrukersOmråder: vi.fn(),
 }));
 

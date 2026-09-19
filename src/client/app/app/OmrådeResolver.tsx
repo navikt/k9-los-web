@@ -1,5 +1,5 @@
 import { BodyShort, Box, Button, Heading, Loader, LocalAlert, VStack } from '@navikt/ds-react';
-import { useInnloggetBrukersOmråder } from 'api/queries/områdeQueries';
+import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { OmrådeProvider } from 'fleromrade/OmrådeContext';
 import { områdenavn, urlSegmentForOmråde } from 'fleromrade/områder';
 import { type FunctionComponent, type ReactElement, useState } from 'react';
