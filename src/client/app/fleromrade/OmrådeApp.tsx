@@ -2,6 +2,7 @@ import { ApmErrorBoundary, ApmRoutes } from '@nais/apm/react';
 import { Box, LocalAlert } from '@navikt/ds-react';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { Route } from 'react-router';
+import DriftsmeldingerSide from './admin/DriftsmeldingerSide';
 import Header from './Header';
 import InnloggetBrukerResolver from './InnloggetBrukerResolver';
 import KreverTilgang from './KreverTilgang';
@@ -54,7 +55,7 @@ const OmrådeApp = () => {
 							path="admin"
 							element={
 								<KreverTilgang tilgang="drift">
-									<UnderUtvikling tittel="Driftsmeldinger" />
+									<DriftsmeldingerSide />
 								</KreverTilgang>
 							}
 						/>

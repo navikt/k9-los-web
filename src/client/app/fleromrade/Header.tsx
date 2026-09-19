@@ -4,6 +4,7 @@ import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { områdenavn } from 'fleromrade/områder';
 import { Link, useLocation, useNavigate } from 'react-router';
+import DriftsmeldingBanner from './DriftsmeldingBanner';
 import styles from './header.module.css';
 
 const isDev = !window.location.hostname.includes('intern.nav.no');
@@ -47,6 +48,7 @@ const Header = () => {
 					</InternalHeader.Button>
 				)}
 			</InternalHeader>
+			<DriftsmeldingBanner />
 		</header>
 	);
 };

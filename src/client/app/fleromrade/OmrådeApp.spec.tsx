@@ -19,6 +19,13 @@ vi.mock('fleromrade/api/innloggetBrukerQueries', () => ({
 	useInnloggetBruker: vi.fn(),
 }));
 
+vi.mock('fleromrade/api/driftsmeldingQueries', () => ({
+	useDriftsmeldinger: () => queryResultat([]),
+	useLeggTilDriftsmelding: () => ({ leggTil: vi.fn(), isPending: false }),
+	useFjernDriftsmelding: () => ({ fjern: vi.fn() }),
+	useSettDriftsmeldingAktiv: () => ({ settAktiv: vi.fn() }),
+}));
+
 vi.mock('fleromrade/api/områdeQueries', () => ({
 	useInnloggetBrukersOmråder: vi.fn(),
 }));
@@ -94,6 +101,7 @@ describe('OmrådeApp', () => {
 		await user.click(screen.getByRole('button', { name: 'Driftsmeldinger' }));
 
 		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/akt/admin');
+		expect(screen.getByRole('heading', { name: 'Driftsmeldinger' })).toBeInTheDocument();
 	});
 
 	it('lar brukere med flere områder bytte område', async () => {
