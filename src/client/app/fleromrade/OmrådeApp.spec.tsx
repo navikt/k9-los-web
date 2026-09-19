@@ -19,6 +19,9 @@ vi.mock('fleromrade/api/innloggetBrukerQueries', () => ({
 	useInnloggetBruker: vi.fn(),
 }));
 
+// Pakken har en ESM-import som ikke lar seg løse i Node.
+vi.mock('@navikt/endringslogg', () => ({ default: () => <div>Endringslogg</div> }));
+
 vi.mock('fleromrade/saksbehandler/SaksbehandlerForside', () => ({
 	default: () => <h1>Saksbehandlerforside</h1>,
 }));
@@ -69,6 +72,8 @@ describe('OmrådeApp', () => {
 
 		expect(screen.getByRole('link', { name: 'Aktivitetspenger' })).toHaveAttribute('href', '/akt');
 		expect(screen.getByText('Ola Nordmann')).toBeInTheDocument();
+		expect(screen.queryByText('Endringslogg')).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Systemer og oppslagsverk' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Saksbehandlerforside' })).toBeInTheDocument();
 	});
 
@@ -142,6 +147,8 @@ describe('OmrådeApp', () => {
 			'/k9-ny',
 		);
 		expect(screen.getByRole('heading', { name: 'Saksbehandlerforside' })).toBeInTheDocument();
+		expect(screen.getByText('Endringslogg')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Systemer og oppslagsverk' })).toBeInTheDocument();
 
 		await user.click(screen.getByRole('button', { name: 'Avdelingslederpanel' }));
 

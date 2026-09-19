@@ -10,6 +10,10 @@ vi.mock('api/generated/los');
 vi.mock('fleromrade/api/innloggetBrukerQueries', () => ({ useInnloggetBruker: vi.fn() }));
 vi.mock('./sok/Søkeboks', () => ({ default: () => <div>Søkeboks</div> }));
 vi.mock('./ko/KøPanel', () => ({ default: () => <div>Køpanel</div> }));
+vi.mock('fleromrade/k9legacy/legacyKomponenter', async () => {
+	const { KunK9Legacy } = await import('fleromrade/k9legacy/KunK9Legacy');
+	return { LegacySaksbehandlerNøkkeltall: () => <KunK9Legacy>Legacy-nøkkeltall</KunK9Legacy> };
+});
 
 beforeEach(() => {
 	vi.mocked(useInnloggetBruker).mockReturnValue(queryResultat(innloggetBruker));
@@ -50,6 +54,15 @@ describe('SaksbehandlerForside', () => {
 
 		expect(screen.getByText('Søkeboks')).toBeInTheDocument();
 		expect(screen.queryByText('Køpanel')).not.toBeInTheDocument();
+	});
+
+	it('viser nøkkeltall fra legacy bare for K9', () => {
+		const { unmount } = renderMedOmråde(<SaksbehandlerForside />);
+		expect(screen.queryByText('Legacy-nøkkeltall')).not.toBeInTheDocument();
+		unmount();
+
+		renderMedOmråde(<SaksbehandlerForside />, { sti: '/k9-ny', område: 'K9' });
+		expect(screen.getByText('Legacy-nøkkeltall')).toBeInTheDocument();
 	});
 
 	it('forteller når brukeren ikke har siste oppgaver', () => {

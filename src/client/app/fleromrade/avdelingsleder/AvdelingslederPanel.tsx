@@ -1,7 +1,9 @@
-import { FileSearchIcon, PersonGroupIcon, TasklistIcon, TimerPauseIcon } from '@navikt/aksel-icons';
+import { BarChartIcon, FileSearchIcon, PersonGroupIcon, TasklistIcon, TimerPauseIcon } from '@navikt/aksel-icons';
 import { Box, Heading, InlineMessage, Loader, Tabs, VStack } from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { useOppgavefelter } from 'fleromrade/api/oppgaveQueries';
+import { useVisK9Legacy } from 'fleromrade/k9legacy/KunK9Legacy';
+import { LegacyAvdelingslederNøkkeltall, LegacyAvdelingslederStatus } from 'fleromrade/k9legacy/legacyKomponenter';
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import BehandlingskoerIndex from './koer/BehandlingskoerIndex';
@@ -10,7 +12,7 @@ import AvdelingslederReservasjonerTabell from './reservasjoner/components/Avdeli
 import SaksbehandlereTabell from './saksbehandlere/components/SaksbehandlereTabell';
 
 /** Fanene i avdelingslederpanelet. Verdiene er de samme som i K9, slik at lenker med `?fane=` virker likt. */
-const faner = [
+const fellesFaner = [
 	{
 		verdi: 'behandlingskoerV3',
 		navn: 'Oppgavekøer',
@@ -32,14 +34,25 @@ const faner = [
 	},
 ];
 
+/** Nøkkeltall-fanen bruker fortsatt legacy-API og finnes bare for K9. Den står etter lagrede søk, som i K9. */
+const legacyNøkkeltallFane = {
+	verdi: 'nokkeltall',
+	navn: 'Nøkkeltall',
+	ikon: <BarChartIcon aria-hidden />,
+	innhold: <LegacyAvdelingslederNøkkeltall />,
+};
+
 /**
- * Avdelingslederpanelet uten nøkkeltall og statuslinje. Komponentene i `filter/` leser oppgavefeltene fra
- * `AppContext`, så panelet gir dem feltene for området fra den nye klienten.
+ * Avdelingslederpanelet. For K9 vises også statuslinjen og nøkkeltall-fanen, som fortsatt bruker legacy-API.
+ * Komponentene i `filter/` leser oppgavefeltene fra `AppContext`, så panelet gir dem feltene for området fra
+ * den nye klienten.
  */
 const AvdelingslederPanel = () => {
 	const [søkeparametere, setSøkeparametere] = useSearchParams();
 	const { data: felter, isPending, isError } = useOppgavefelter();
 	const appContext = useMemo(() => ({ felter: felter ?? [] }), [felter]);
+	const visK9Legacy = useVisK9Legacy();
+	const faner = visK9Legacy ? fellesFaner.toSpliced(2, 0, legacyNøkkeltallFane) : fellesFaner;
 
 	const valgtFane = faner.some((fane) => fane.verdi === søkeparametere.get('fane'))
 		? søkeparametere.get('fane')
@@ -62,6 +75,7 @@ const AvdelingslederPanel = () => {
 				{isError && <InlineMessage status="error">Kunne ikke hente oppgavefeltene for området</InlineMessage>}
 				{felter && (
 					<AppContext.Provider value={appContext}>
+						<LegacyAvdelingslederStatus />
 						<Tabs value={valgtFane} onChange={velgFane}>
 							<Tabs.List>
 								{faner.map((fane) => (

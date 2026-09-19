@@ -44,7 +44,40 @@
 			"linter": { "enabled": false }
 		},
 		{
-			"includes": ["src/client/app/fleromrade/**"],
+			"includes": ["src/client/app/fleromrade/**", "!src/client/app/fleromrade/k9legacy/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"paths": {
+									"api/apiPaths": "Legacy-API. Bruk den genererte klienten i api/generated.",
+									"utils/reactQueryConfig": "Legacy-oppsett for spørringer. Bruk den genererte klienten i api/generated."
+								},
+								"patterns": [
+									{
+										"group": ["api/queries/*"],
+										"message": "Legacy-API. Bruk den genererte klienten i api/generated."
+									},
+									{
+										"group": [
+											"avdelingsleder/nokkeltall/*",
+											"avdelingsleder/status/*",
+											"avdelingsleder/statusfordeling/*",
+											"saksbehandler/saksstotte/nokkeltall/*"
+										],
+										"message": "K9-komponent uten flerområdestøtte. Bruk den via fleromrade/k9legacy, der den kun vises for K9."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["src/client/app/fleromrade/k9legacy/**"],
 			"linter": {
 				"rules": {
 					"style": {

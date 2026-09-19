@@ -6,6 +6,7 @@ import { områdenavn } from 'fleromrade/områder';
 import { Link, useLocation, useNavigate } from 'react-router';
 import DriftsmeldingBanner from './DriftsmeldingBanner';
 import styles from './header.module.css';
+import K9Headerelementer from './K9Headerelementer';
 
 const isDev = !window.location.hostname.includes('intern.nav.no');
 
@@ -41,6 +42,7 @@ const Header = () => {
 				{områder?.length > 1 && (
 					<InternalHeader.Button onClick={() => navigate('/')}>Bytt område</InternalHeader.Button>
 				)}
+				{område === 'K9' && <K9Headerelementer brukerIdent={bruker.brukerIdent} />}
 				<InternalHeader.User name={bruker.navn} description={bruker.brukerIdent} />
 				{isDev && (
 					<InternalHeader.Button type="button" onClick={loggUt}>

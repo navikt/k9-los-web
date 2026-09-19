@@ -1,5 +1,6 @@
 import { Box, HGrid, VStack } from '@navikt/ds-react';
 import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
+import { LegacySaksbehandlerNøkkeltall } from 'fleromrade/k9legacy/legacyKomponenter';
 import type { ReactNode } from 'react';
 import KøPanel from './ko/KøPanel';
 import SisteOppgaver from './SisteOppgaver';
@@ -28,7 +29,10 @@ const SaksbehandlerForside = () => {
 					)}
 				</VStack>
 				<Panel>
-					<SisteOppgaver />
+					<VStack gap="space-24">
+						<SisteOppgaver />
+						<LegacySaksbehandlerNøkkeltall />
+					</VStack>
 				</Panel>
 			</HGrid>
 		</Box>

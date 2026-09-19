@@ -21,6 +21,14 @@ vi.mock('./reservasjoner/components/AvdelingslederReservasjonerTabell', () => ({
 }));
 vi.mock('./saksbehandlere/components/SaksbehandlereTabell', () => ({ default: () => <div>Saksbehandlertabell</div> }));
 
+vi.mock('fleromrade/k9legacy/legacyKomponenter', async () => {
+	const { KunK9Legacy } = await import('fleromrade/k9legacy/KunK9Legacy');
+	return {
+		LegacyAvdelingslederStatus: () => <KunK9Legacy>Legacy-statuslinje</KunK9Legacy>,
+		LegacyAvdelingslederNøkkeltall: () => <KunK9Legacy>Legacy-nøkkeltall</KunK9Legacy>,
+	};
+});
+
 const medFelter = () =>
 	vi.mocked(useHentOppgavefelter).mockReturnValue(queryResultat([{ kode: 'oppgavestatus' }, { kode: 'ytelsestype' }]));
 
@@ -35,7 +43,7 @@ describe('AvdelingslederPanel', () => {
 		expect(screen.getByText('Køer: oppgavestatus, ytelsestype')).toBeInTheDocument();
 	});
 
-	it('har ikke fane for nøkkeltall', () => {
+	it('har ikke fane for nøkkeltall for aktivitetspenger', () => {
 		medFelter();
 
 		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder' });
@@ -46,6 +54,35 @@ describe('AvdelingslederPanel', () => {
 			'Reservasjoner',
 			'Saksbehandlere',
 		]);
+	});
+
+	it('viser statuslinje og nøkkeltall-fane fra legacy for K9', async () => {
+		const user = userEvent.setup();
+		medFelter();
+
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/k9-ny/avdelingsleder', område: 'K9' });
+
+		expect(screen.getByText('Legacy-statuslinje')).toBeInTheDocument();
+		expect(screen.getAllByRole('tab').map((fane) => fane.textContent)).toEqual([
+			'Oppgavekøer',
+			'Lagrede søk',
+			'Nøkkeltall',
+			'Reservasjoner',
+			'Saksbehandlere',
+		]);
+
+		await user.click(screen.getByRole('tab', { name: 'Nøkkeltall' }));
+
+		expect(screen.getByText('Legacy-nøkkeltall')).toBeInTheDocument();
+	});
+
+	it('viser ikke legacy-komponentene for aktivitetspenger', () => {
+		medFelter();
+
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder' });
+
+		expect(screen.queryByText('Legacy-statuslinje')).not.toBeInTheDocument();
+		expect(screen.queryByRole('tab', { name: 'Nøkkeltall' })).not.toBeInTheDocument();
 	});
 
 	it('åpner fanen fra URL-en og oppdaterer den ved fanebytte', async () => {
