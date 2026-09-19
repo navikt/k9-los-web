@@ -2,20 +2,49 @@ import { HastesakIkon } from 'sharedComponents/HastesakIkon';
 import KopierbarVerdi, { Kopieringsområde } from 'sharedComponents/KopierbarVerdi';
 import { Button, Detail, Table } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
+import type { KeyboardEvent, ReactElement, ReactNode } from 'react';
 import { idKolonneTittel } from 'saksbehandler/tabellvisning';
 import { dateFormat } from 'utils/dateUtils';
 
 interface Props {
 	oppgaver: OppgaveSammendragDto[];
-	/** Gir hver rad en knapp for å velge oppgaven, f.eks. i søket eller når køen har fritt valg av oppgave. */
-	onVelgOppgave?: (oppgave: OppgaveSammendragDto) => void;
+	/**
+	 * Hvordan en oppgave velges. `knapp` gir hver rad en Velg-knapp (neste oppgaver når køen har fritt valg).
+	 * `rad` gjør hele raden klikkbar og uten kopiknapper (søkeresultatet).
+	 */
+	velg?: { med: 'knapp' | 'rad'; onVelgOppgave: (oppgave: OppgaveSammendragDto) => void };
 }
+
+/** Viser verdien med kopiknapp, eller bare verdien når tabellen ikke skal ha kopiknapper. */
+const Verdi = ({
+	kopierbar,
+	copyText,
+	title,
+	children,
+}: {
+	kopierbar: boolean;
+	copyText: string;
+	title: string;
+	children: ReactNode;
+}) =>
+	kopierbar ? (
+		<KopierbarVerdi copyText={copyText} title={title}>
+			{children}
+		</KopierbarVerdi>
+	) : (
+		children
+	);
+
+const Celle = ({ kopierbar, children }: { kopierbar: boolean; children: ReactElement<{ className?: string }> }) =>
+	kopierbar ? <Kopieringsområde>{children}</Kopieringsområde> : children;
 
 /**
  * Oppgaver i søkeresultatet og i neste oppgaver i køen, med samme kolonner og visning som reserverte oppgaver.
  */
-const OppgaveTabell = ({ oppgaver, onVelgOppgave }: Props) => {
+const OppgaveTabell = ({ oppgaver, velg }: Props) => {
 	const visHastesak = oppgaver.some((oppgave) => oppgave.hastesak);
+	const klikkbarRad = velg?.med === 'rad';
+	const kopierbar = !klikkbarRad;
 
 	return (
 		<Table>
@@ -30,34 +59,49 @@ const OppgaveTabell = ({ oppgaver, onVelgOppgave }: Props) => {
 					<Table.HeaderCell scope="col">{idKolonneTittel(oppgaver)}</Table.HeaderCell>
 					<Table.HeaderCell scope="col">Behandlingstype</Table.HeaderCell>
 					<Table.HeaderCell scope="col">Oppgave opprettet</Table.HeaderCell>
-					{onVelgOppgave && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
+					{velg?.med === 'knapp' && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
 				{oppgaver.map((oppgave) => {
 					const id = oppgave.saksnummer || oppgave.journalpostId;
 					const idNavn = oppgave.saksnummer ? 'saksnummer' : 'journalpost-id';
+					const velgOppgave = () => velg?.onVelgOppgave(oppgave);
+					const radProps = klikkbarRad
+						? {
+								className: 'cursor-pointer',
+								tabIndex: 0,
+								onClick: velgOppgave,
+								onKeyDown: (event: KeyboardEvent) => {
+									if (event.key === 'Enter' || event.key === ' ') {
+										event.preventDefault();
+										velgOppgave();
+									}
+								},
+							}
+						: {};
 					return (
-						<Table.Row key={oppgave.oppgaveNøkkel.oppgaveEksternId}>
+						<Table.Row key={oppgave.oppgaveNøkkel.oppgaveEksternId} {...radProps}>
 							{visHastesak && <Table.DataCell>{oppgave.hastesak && <HastesakIkon />}</Table.DataCell>}
-							<Kopieringsområde>
+							<Celle kopierbar={kopierbar}>
 								<Table.DataCell>
 									{oppgave.person?.navn}
 									{oppgave.person?.fnr && (
 										<>
 											<br />
-											<KopierbarVerdi copyText={oppgave.person.fnr} title="Kopier fødselsnummer">
+											<Verdi kopierbar={kopierbar} copyText={oppgave.person.fnr} title="Kopier fødselsnummer">
 												<Detail>{oppgave.person.fnr}</Detail>
-											</KopierbarVerdi>
+											</Verdi>
 										</>
 									)}
 								</Table.DataCell>
-							</Kopieringsområde>
-							<Kopieringsområde>
+							</Celle>
+							<Celle kopierbar={kopierbar}>
 								<Table.DataCell>
-									<KopierbarVerdi copyText={id} title={`Kopier ${idNavn}`}>
+									<Verdi kopierbar={kopierbar} copyText={id} title={`Kopier ${idNavn}`}>
 										{id}
-									</KopierbarVerdi>
+										{oppgave.fagsakÅr && ` (${oppgave.fagsakÅr})`}
+									</Verdi>
 									{oppgave.oppgavestatus.kode !== 'AAPEN' && (
 										<>
 											<br />
@@ -65,7 +109,7 @@ const OppgaveTabell = ({ oppgaver, onVelgOppgave }: Props) => {
 										</>
 									)}
 								</Table.DataCell>
-							</Kopieringsområde>
+							</Celle>
 							<Table.DataCell>
 								{oppgave.behandlingstype?.navn}
 								{oppgave.ytelse?.navn && (
@@ -76,13 +120,13 @@ const OppgaveTabell = ({ oppgaver, onVelgOppgave }: Props) => {
 								)}
 							</Table.DataCell>
 							<Table.DataCell>{oppgave.opprettetTidspunkt && dateFormat(oppgave.opprettetTidspunkt)}</Table.DataCell>
-							{onVelgOppgave && (
+							{velg?.med === 'knapp' && (
 								<Table.DataCell>
 									<Button
 										variant="secondary"
 										size="small"
 										aria-label={`Velg oppgave ${id ?? ''}`}
-										onClick={() => onVelgOppgave(oppgave)}
+										onClick={velgOppgave}
 									>
 										Velg
 									</Button>

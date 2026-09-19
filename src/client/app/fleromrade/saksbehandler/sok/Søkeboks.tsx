@@ -31,7 +31,7 @@ const Søkeresultat = ({
 	return (
 		<VStack gap="space-16">
 			{person && <PersonInfo person={person} />}
-			<OppgaveTabell oppgaver={resultat.oppgaver} onVelgOppgave={onVelgOppgave} />
+			<OppgaveTabell oppgaver={resultat.oppgaver} velg={{ med: 'rad', onVelgOppgave }} />
 		</VStack>
 	);
 };

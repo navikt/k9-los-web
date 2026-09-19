@@ -165,6 +165,7 @@ describe('KøPanel', () => {
 		const [søker, sak, behandlingstype, opprettet] = within(within(tabell).getAllByRole('row')[1]).getAllByRole('cell');
 		expect(søker).toHaveTextContent('Kari Nordmann');
 		expect(within(søker).getByRole('button', { name: 'Kopier fødselsnummer' })).toBeInTheDocument();
+		expect(sak).toHaveTextContent('ABC12 (2026)');
 		expect(within(sak).getByRole('button', { name: 'Kopier saksnummer' })).toBeInTheDocument();
 		expect(behandlingstype).toHaveTextContent('FørstegangsbehandlingAktivitetspenger');
 		expect(opprettet).toHaveTextContent('07.09.2026');

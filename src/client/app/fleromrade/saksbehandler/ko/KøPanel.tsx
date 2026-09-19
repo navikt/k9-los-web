@@ -46,7 +46,10 @@ const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 
 	return (
 		<>
-			<OppgaveTabell oppgaver={oppgaver} onVelgOppgave={kø.frittValgAvOppgave ? setValgtOppgave : undefined} />
+			<OppgaveTabell
+				oppgaver={oppgaver}
+				velg={kø.frittValgAvOppgave ? { med: 'knapp', onVelgOppgave: setValgtOppgave } : undefined}
+			/>
 			{valgtOppgave && <OppgaveModal oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
 		</>
 	);
