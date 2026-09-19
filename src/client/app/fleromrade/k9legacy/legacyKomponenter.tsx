@@ -1,8 +1,6 @@
 import AvdelingslederNøkkeltall from 'avdelingsleder/nokkeltall/NokkeltallIndex';
-import Status from 'avdelingsleder/status/Status';
 import { StatusFordeling } from 'avdelingsleder/statusfordeling/StatusFordeling';
 import SaksbehandlerNøkkeltall from 'saksbehandler/saksstotte/nokkeltall/SaksbehandlerNøkkeltall';
-import FeatureSwitch from '../../FeatureSwitch';
 import { KunK9Legacy } from './KunK9Legacy';
 
 /*
@@ -17,21 +15,10 @@ export const LegacySaksbehandlerNøkkeltall = () => (
 	</KunK9Legacy>
 );
 
-/** Statuslinjen øverst i avdelingslederpanelet. Legacy-API: `nokkeltall/status` og `nokkeltall/statusfordeling`. */
+/** Statuslinjen øverst i avdelingslederpanelet. Legacy-API: `nokkeltall/statusfordeling`. */
 export const LegacyAvdelingslederStatus = () => (
 	<KunK9Legacy>
-		<FeatureSwitch
-			defaultValue={true}
-			enabled={<StatusFordeling />}
-			disabled={<Status />}
-			switchLabel="Vis ny statuslinje"
-			helpText={
-				<>
-					<p>Dette er funksjonalitet under utvikling.</p>
-					<p>Hensikten med den nye statuslinjen er å bedre se fordelingen på oppgavestatus.</p>
-				</>
-			}
-		/>
+		<StatusFordeling />
 	</KunK9Legacy>
 );
 
