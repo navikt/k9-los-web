@@ -1,0 +1,88 @@
+import { TrashIcon } from '@navikt/aksel-icons';
+import { BodyShort, Box, Button, Heading, List, Skeleton } from '@navikt/ds-react';
+import type { OppgaveKoIdOgTittel } from 'api/generated/los.schemas';
+import { useHentAndreSaksbehandleresKøer, useSlettSaksbehandler } from 'fleromrade/api/avdelingslederQueries';
+import SletteSaksbehandlerModal from 'fleromrade/avdelingsleder/saksbehandlere/components/SletteSaksbehandlerModal';
+import type { Saksbehandler } from 'fleromrade/avdelingsleder/saksbehandlere/saksbehandlerTsType';
+import { type FunctionComponent, useState } from 'react';
+
+const KøListe = ({
+	title,
+	data,
+	isSuccess = true,
+	isLoading = false,
+}: {
+	title: string;
+	data: OppgaveKoIdOgTittel[];
+	isSuccess?: boolean;
+	isLoading?: boolean;
+}) => {
+	const skeleton = <Skeleton width={80} />;
+	return (
+		<div>
+			<Heading as="h3" size="xsmall">
+				{title}
+			</Heading>
+			<Box marginBlock="space-12" asChild>
+				<List size="small">
+					{isLoading && (
+						<>
+							<List.Item>{skeleton}</List.Item>
+							<List.Item>{skeleton}</List.Item>
+							<List.Item>{skeleton}</List.Item>
+						</>
+					)}
+					{isSuccess && data.length === 0 && <BodyShort size="small">Ingen køer tildelt</BodyShort>}
+					{isSuccess && data.length > 0 && data.map(({ id, tittel }) => <List.Item key={id}>{tittel}</List.Item>)}
+				</List>
+			</Box>
+		</div>
+	);
+};
+
+interface OwnProps {
+	saksbehandler: Saksbehandler;
+}
+
+const SaksbehandlerInfo: FunctionComponent<OwnProps> = ({ saksbehandler }) => {
+	const [visSlettModal, setVisSlettModal] = useState(false);
+	const lukkSlettModal = () => {
+		setVisSlettModal(false);
+	};
+	const {
+		data: køerV3,
+		isLoading: isLoadingKøerV3,
+		isSuccess: isSuccessKøerV3,
+	} = useHentAndreSaksbehandleresKøer(saksbehandler.id);
+	const { mutate, isPending: isLoadingSlett } = useSlettSaksbehandler();
+	const slettSaksbehandler = () => mutate({ epost: saksbehandler.epost }, { onSuccess: lukkSlettModal });
+
+	return (
+		<div>
+			<div className="flex">
+				<KøListe title="Køer" data={køerV3} isSuccess={isSuccessKøerV3} isLoading={isLoadingKøerV3} />
+			</div>
+			{}
+			<Button
+				onClick={() => {
+					setVisSlettModal(true);
+				}}
+				className="bg-ax-danger-500 hover:bg-ax-danger-700 mt-6"
+				size="small"
+				icon={<TrashIcon height="1.5rem" width="1.5rem" />}
+			>
+				Slett saksbehandler
+			</Button>
+			{visSlettModal && (
+				<SletteSaksbehandlerModal
+					valgtSaksbehandler={saksbehandler}
+					closeSletteModal={lukkSlettModal}
+					slettSaksbehandler={slettSaksbehandler}
+					loading={isLoadingSlett}
+				/>
+			)}
+		</div>
+	);
+};
+
+export default SaksbehandlerInfo;
