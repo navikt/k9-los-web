@@ -130,10 +130,21 @@ export const usePlukkOppgave = () => {
 	};
 };
 
-export const useOpphevReservasjoner = () => {
+/**
+ * `førOppdatering` kjøres etter at endringen er lagret, men før reservasjonslistene hentes på nytt. Tabellen over
+ * reserverte oppgaver bruker den til å animere radene som flytter seg.
+ */
+export const useOpphevReservasjoner = (førOppdatering?: () => void) => {
 	const { urlSegment } = useOmråde();
-	const onSuccess = useOppdaterReservasjoner();
-	const { mutate, ...resten } = useGenerertOpphevReservasjoner({ mutation: { onSuccess } });
+	const oppdater = useOppdaterReservasjoner();
+	const { mutate, ...resten } = useGenerertOpphevReservasjoner({
+		mutation: {
+			onSuccess: () => {
+				førOppdatering?.();
+				return oppdater();
+			},
+		},
+	});
 	return {
 		...resten,
 		opphev: (reservasjonsnøkler: string[], options?: Parameters<typeof mutate>[1]) =>
@@ -144,20 +155,34 @@ export const useOpphevReservasjoner = () => {
 	};
 };
 
-export const useForlengReservasjon = () => {
+export const useForlengReservasjon = (førOppdatering?: () => void) => {
 	const { urlSegment } = useOmråde();
-	const onSuccess = useOppdaterReservasjoner();
-	const { mutate, ...resten } = useGenerertForlengReservasjon({ mutation: { onSuccess } });
+	const oppdater = useOppdaterReservasjoner();
+	const { mutate, ...resten } = useGenerertForlengReservasjon({
+		mutation: {
+			onSuccess: () => {
+				førOppdatering?.();
+				return oppdater();
+			},
+		},
+	});
 	return {
 		...resten,
 		forleng: (reservasjonsnøkkel: string) => mutate({ omrade: urlSegment, data: { reservasjonsnøkkel } }),
 	};
 };
 
-export const useEndreReservasjoner = () => {
+export const useEndreReservasjoner = (førOppdatering?: () => void) => {
 	const { urlSegment } = useOmråde();
-	const onSuccess = useOppdaterReservasjoner();
-	const { mutate, ...resten } = useGenerertEndreReservasjoner({ mutation: { onSuccess } });
+	const oppdater = useOppdaterReservasjoner();
+	const { mutate, ...resten } = useGenerertEndreReservasjoner({
+		mutation: {
+			onSuccess: () => {
+				førOppdatering?.();
+				return oppdater();
+			},
+		},
+	});
 	return {
 		...resten,
 		endre: (endringer: ReservasjonEndringDto[], options?: Parameters<typeof mutate>[1]) =>

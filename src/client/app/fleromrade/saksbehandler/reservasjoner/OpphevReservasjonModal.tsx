@@ -3,22 +3,30 @@ import { useOpphevReservasjoner } from 'fleromrade/api/saksbehandlerQueries';
 
 interface Props {
 	reservasjonsnøkler: string[];
+	/** Antall oppgaver som deler reservasjonen, når det bare er én reservasjon. */
+	antallOppgaver?: number;
 	lukk: () => void;
+	onOpphevet?: () => void;
 }
 
-const OpphevReservasjonModal = ({ reservasjonsnøkler, lukk }: Props) => {
-	const { opphev, isPending, isError } = useOpphevReservasjoner();
-	const antall = reservasjonsnøkler.length;
+export const opphevReservasjonerTekst = (antallReservasjoner: number, antallOppgaver?: number) => {
+	if (antallReservasjoner > 1) {
+		return `Er du sikker på at du vil oppheve ${antallReservasjoner} reservasjoner?`;
+	}
+	if (antallOppgaver && antallOppgaver > 1) {
+		return `Er du sikker på at du vil oppheve reservasjonen av ${antallOppgaver} oppgaver?`;
+	}
+	return 'Er du sikker på at du vil oppheve reservasjonen?';
+};
+
+const OpphevReservasjonModal = ({ reservasjonsnøkler, antallOppgaver, lukk, onOpphevet }: Props) => {
+	const { opphev, isPending, isError } = useOpphevReservasjoner(onOpphevet);
 
 	return (
 		<Modal open onClose={lukk} header={{ heading: 'Legge oppgaven tilbake i felles kø?' }} width="small">
 			<Modal.Body>
 				<VStack gap="space-8">
-					<BodyShort>
-						{antall > 1
-							? `Er du sikker på at du vil oppheve ${antall} reservasjoner?`
-							: 'Er du sikker på at du vil oppheve reservasjonen?'}
-					</BodyShort>
+					<BodyShort>{opphevReservasjonerTekst(reservasjonsnøkler.length, antallOppgaver)}</BodyShort>
 					{isError && <InlineMessage status="error">Kunne ikke oppheve reservasjonen. Prøv igjen.</InlineMessage>}
 				</VStack>
 			</Modal.Body>

@@ -1,4 +1,5 @@
 import {
+	BodyShort,
 	Button,
 	DatePicker,
 	InlineMessage,
@@ -16,8 +17,14 @@ import { type SubmitEvent, useState } from 'react';
 
 interface Props {
 	reservasjon: ReservasjonV3Dto;
+	/** Antall oppgaver som deler reservasjonen. */
+	antallOppgaver?: number;
 	lukk: () => void;
+	onEndret?: () => void;
 }
+
+export const antallOppgaverTekst = (antallOppgaver?: number) =>
+	antallOppgaver && antallOppgaver > 1 ? `Reservasjonen gjelder ${antallOppgaver} oppgaver.` : null;
 
 interface Feil {
 	saksbehandler?: string;
@@ -25,9 +32,10 @@ interface Feil {
 	begrunnelse?: string;
 }
 
-const FlyttReservasjonModal = ({ reservasjon, lukk }: Props) => {
+const FlyttReservasjonModal = ({ reservasjon, antallOppgaver, lukk, onEndret }: Props) => {
 	const { data: saksbehandlere, isPending: henterSaksbehandlere, isError } = useSaksbehandlereForReservasjon();
-	const { endre, isPending: lagrer, isError: lagringFeilet } = useEndreReservasjoner();
+	const { endre, isPending: lagrer, isError: lagringFeilet } = useEndreReservasjoner(onEndret);
+	const oppgaveantallTekst = antallOppgaverTekst(antallOppgaver);
 	const [brukerIdent, setBrukerIdent] = useState(reservasjon.reservertAvIdent ?? '');
 	const [reserverTil, setReserverTil] = useState<Date | undefined>(dayjs(reservasjon.reservertTil).toDate());
 	const [begrunnelse, setBegrunnelse] = useState(reservasjon.kommentar ?? '');
@@ -75,6 +83,7 @@ const FlyttReservasjonModal = ({ reservasjon, lukk }: Props) => {
 			<form onSubmit={onSubmit}>
 				<Modal.Body>
 					<VStack gap="space-24">
+						{oppgaveantallTekst && <BodyShort>{oppgaveantallTekst}</BodyShort>}
 						{henterSaksbehandlere && <Skeleton height={80} />}
 						{isError && <InlineMessage status="error">Kunne ikke hente saksbehandlere</InlineMessage>}
 						{saksbehandlere && (

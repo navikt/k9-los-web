@@ -1,0 +1,67 @@
+/* Samme utseende som legacy-visningen på feature/reservasjon-sortering. */
+
+.overskriftKnapp {
+	align-items: center;
+	background-color: transparent;
+	border: 0;
+	cursor: pointer;
+	display: flex;
+	font: inherit;
+	padding: 0.5rem 0;
+}
+
+.overskriftKnapp:focus-visible {
+	box-shadow: 0 0 0 3px var(--ax-border-focus);
+	outline: 3px solid transparent;
+}
+
+.chevron {
+	flex-shrink: 0;
+	margin-left: -0.25rem;
+	margin-right: 0.25rem;
+}
+
+/*
+ * Reglene under står i stigende spesifisitetsrekkefølge (basis → zebra → aktiv
+ * gruppe). Rekkefølgen er ikke kosmetisk: den er det noDescendingSpecificity
+ * håndhever, og den gjør at den aktive markeringen faktisk vinner over zebraen.
+ */
+.reservasjonsgruppe > tr {
+	transition: background-color 100ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reservasjonsgruppe > tr {
+		transition: none;
+	}
+}
+
+/*
+ * Zebra-striping per reservasjon, ikke per rad: alle oppgavene i én reservasjon
+ * deler farge, og neste reservasjon får den andre fargen. Aksels egen
+ * zebraStripes striper per rad og kan derfor ikke brukes her.
+ */
+.reservasjonsgruppe:nth-of-type(odd) > tr {
+	background-color: var(--ax-bg-warning-moderate);
+}
+
+.reservasjonsgruppe:nth-of-type(even) > tr {
+	background-color: var(--ax-bg-warning-soft);
+}
+
+/* Hver reservasjon er en egen tbody, og skillet må være tydeligere enn en vanlig radlinje. */
+.reservasjonsgruppe:not(:first-of-type) > tr > td {
+	border-top: 1px solid var(--ax-border-neutral);
+}
+
+/*
+ * Handlingene i menyen gjelder hele reservasjonen. Hele gruppen markeres mens menyen
+ * eller kommentaren står åpen, slik at det er tydelig hvilke oppgaver handlingen treffer.
+ */
+.reservasjonsgruppe:has([data-marker-reservasjonsgruppe][aria-expanded='true']) > tr {
+	background-color: var(--ax-bg-warning-moderate-hover);
+}
+
+.reservasjonsgruppe:has([data-marker-reservasjonsgruppe][aria-expanded='true']) > tr > td:first-child {
+	box-shadow: inset var(--ax-space-4) 0 0 0 var(--ax-border-warning);
+}
