@@ -37,13 +37,12 @@ export interface InnloggetBrukerDtoNy {
 	tilganger: Tilganger;
 }
 
-export interface LocalDateTime {
-	[key: string]: unknown;
-}
+/**
+ * Dato og tid uten tidssone, f.eks. 2026-09-18T17:49:21
+ */
+export type LocalDateTime = string;
 
-export interface Uuid {
-	[key: string]: unknown;
-}
+export type Uuid = string;
 
 export interface DriftsmeldingDto {
 	aktiv: boolean;
@@ -93,9 +92,7 @@ export interface OppgaveNokkelDto {
 	oppgaveTypeEksternId: string;
 }
 
-export interface LocalDate {
-	[key: string]: unknown;
-}
+export type LocalDate = string;
 
 export interface PersonSammendragDto {
 	dødsdato?: null | LocalDate;

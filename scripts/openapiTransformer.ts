@@ -103,8 +103,25 @@ const forkortKomponentnavn = (spec: JsonObjekt): JsonObjekt => {
 	return resultat;
 };
 
+// Backend beskriver Java-typer som serialiseres til strenger (f.eks. LocalDateTime og UUID) som tomme objekter.
+const strengtyper: Record<string, JsonObjekt> = {
+	'java.time.LocalDate': { type: 'string', format: 'date' },
+	'java.time.LocalDateTime': { type: 'string', description: 'Dato og tid uten tidssone, f.eks. 2026-09-18T17:49:21' },
+	'java.util.UUID': { type: 'string', format: 'uuid' },
+};
+
+const rettStrengtyper = (spec: JsonObjekt) => {
+	const skjemaer = erObjekt(spec.components) && erObjekt(spec.components.schemas) ? spec.components.schemas : {};
+	for (const [navn, skjema] of Object.entries(strengtyper)) {
+		if (navn in skjemaer) {
+			skjemaer[navn] = skjema;
+		}
+	}
+};
+
 export default defineTransformer((spec) => {
 	const kopi = structuredClone(spec) as unknown as JsonObjekt;
 	leggTilManglendeResponsbeskrivelser(kopi);
+	rettStrengtyper(kopi);
 	return forkortKomponentnavn(kopi) as unknown as OpenApiDocument;
 });
