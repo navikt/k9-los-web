@@ -1,16 +1,12 @@
 import { BodyShort, Box, Button, Heading, Loader, LocalAlert, VStack } from '@navikt/ds-react';
-import { type Område, useInnloggetBrukersOmråder } from 'api/queries/områdeQueries';
+import { useInnloggetBrukersOmråder } from 'api/queries/områdeQueries';
+import { type Område, områdenavn } from 'fleromrade/områder';
 import { type FunctionComponent, type ReactElement, useState } from 'react';
 
 interface OwnProps {
 	k9: ReactElement;
 	aktivitetspenger: ReactElement;
 }
-
-const områdenavn: Record<Område, string> = {
-	K9: 'Pleiepenger, omsorgspenger og opplæringspenger',
-	AKTIVITETSPENGER: 'Aktivitetspenger',
-};
 
 const Side = ({ children }: { children: ReactElement }) => (
 	<Box as="main" padding={{ xs: 'space-16', md: 'space-40' }}>

@@ -29,6 +29,7 @@
 			"avdelingsleder/*": ["./src/client/app/avdelingsleder/*"],
 			"saksbehandler/*": ["./src/client/app/saksbehandler/*"],
 			"filter/*": ["./src/client/app/filter/*"],
+			"fleromrade/*": ["./src/client/app/fleromrade/*"],
 			"types/*": ["./src/client/app/types/*"],
 			"utils/*": ["./src/client/app/utils/*"]
 		}

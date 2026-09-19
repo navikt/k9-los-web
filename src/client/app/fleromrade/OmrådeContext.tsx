@@ -1,0 +1,29 @@
+import type { OmradeUrlSegment } from 'api/generated/los.schemas';
+import { createContext, type ReactNode, useContext, useMemo } from 'react';
+import { type Område, urlSegmentForOmråde } from './områder';
+
+interface OmrådeKontekst {
+	område: Område;
+	urlSegment: OmradeUrlSegment;
+	/** Rotstien til området i appen, f.eks. `/akt`. */
+	basissti: string;
+}
+
+const OmrådeContext = createContext<OmrådeKontekst | undefined>(undefined);
+
+export const OmrådeProvider = ({ område, children }: { område: Område; children: ReactNode }) => {
+	const verdi = useMemo(() => {
+		const urlSegment = urlSegmentForOmråde[område];
+		return { område, urlSegment, basissti: `/${urlSegment}` };
+	}, [område]);
+
+	return <OmrådeContext.Provider value={verdi}>{children}</OmrådeContext.Provider>;
+};
+
+export const useOmråde = (): OmrådeKontekst => {
+	const kontekst = useContext(OmrådeContext);
+	if (!kontekst) {
+		throw new Error('useOmråde må brukes innenfor en OmrådeProvider');
+	}
+	return kontekst;
+};
