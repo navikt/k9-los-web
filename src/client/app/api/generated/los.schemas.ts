@@ -383,26 +383,20 @@ export interface ReservasjonV3Dto {
 }
 
 export interface AnnullerReservasjonDto {
-	oppgaveNøkkel?: null | OppgaveNokkelDto;
-	/** @nullable */
-	reservasjonsnøkkel?: string | null;
+	reservasjonsnøkkel: string;
 }
 
 export interface ForlengReservasjonDto {
 	/** @nullable */
 	kommentar?: string | null;
 	nyTilDato?: null | LocalDateTime;
-	oppgaveNøkkel?: null | OppgaveNokkelDto;
-	/** @nullable */
-	reservasjonsnøkkel?: string | null;
+	reservasjonsnøkkel: string;
 }
 
 export interface FlyttReservasjonDto {
 	begrunnelse: string;
 	brukerIdent: string;
-	oppgaveNøkkel?: null | OppgaveNokkelDto;
-	/** @nullable */
-	reservasjonsnøkkel?: string | null;
+	reservasjonsnøkkel: string;
 }
 
 export interface ReservasjonEndringDto {
@@ -410,9 +404,7 @@ export interface ReservasjonEndringDto {
 	begrunnelse?: string | null;
 	/** @nullable */
 	brukerIdent?: string | null;
-	oppgaveNøkkel?: null | OppgaveNokkelDto;
-	/** @nullable */
-	reservasjonsnøkkel?: string | null;
+	reservasjonsnøkkel: string;
 	reserverTil?: null | LocalDate;
 }
 
