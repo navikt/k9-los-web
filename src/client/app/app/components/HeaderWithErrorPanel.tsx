@@ -9,7 +9,12 @@ import styles from './headerWithErrorPanel.module.css';
 
 const isDev = !window.location.hostname.includes('intern.nav.no');
 
-const HeaderWithErrorPanel: FunctionComponent = () => {
+interface Props {
+	basissti?: string;
+	kanBytteOmråde?: boolean;
+}
+
+const HeaderWithErrorPanel: FunctionComponent<Props> = ({ basissti = '', kanBytteOmråde = false }) => {
 	const navigate = useNavigate();
 
 	const { data: innloggetSaksbehandler } = useInnloggetSaksbehandler();
@@ -17,15 +22,15 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 	const fixedHeaderRef = useRef(null);
 
 	const goTilAvdelingslederPanel = () => {
-		navigate('/avdelingsleder');
+		navigate(`${basissti}/avdelingsleder`);
 	};
 
 	const goTilDriftsmeldingerPanel = () => {
-		navigate('/admin');
+		navigate(`${basissti}/admin`);
 	};
 
 	const goToHomepage = () => {
-		navigate('/');
+		navigate(basissti || '/');
 	};
 
 	const loggUt = () => {
@@ -45,7 +50,7 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 			<InternalHeader>
 				<InternalHeader.Title
 					as="a"
-					href="/"
+					href={basissti || '/'}
 					onClick={(e) => {
 						e.preventDefault();
 						goToHomepage();
@@ -59,6 +64,9 @@ const HeaderWithErrorPanel: FunctionComponent = () => {
 				)}
 				{visAvdelingslederKnapp && (
 					<InternalHeader.Button onClick={goTilAvdelingslederPanel}>Avdelingslederpanel</InternalHeader.Button>
+				)}
+				{kanBytteOmråde && (
+					<InternalHeader.Button onClick={() => navigate('/velg-omrade')}>Bytt område</InternalHeader.Button>
 				)}
 				{innloggetSaksbehandler?.brukerIdent && (
 					<Theme theme="light">

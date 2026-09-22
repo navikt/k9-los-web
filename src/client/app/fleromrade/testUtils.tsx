@@ -20,20 +20,26 @@ interface Valg {
 	/** Startstien i routeren. Standard er `/akt`. */
 	sti?: string;
 	område?: Område;
+	kanBytteOmråde?: boolean;
 }
 
 /**
  * Rendrer med QueryClient, router og områdekontekst. Gjeldende sti kan leses fra
  * `screen.getByTestId('aktiv-sti')`.
  */
-export const renderMedOmråde = (ui: ReactElement, { sti = '/akt', område = 'AKTIVITETSPENGER' }: Valg = {}) => {
+export const renderMedOmråde = (
+	ui: ReactElement,
+	{ sti = '/akt', område = 'AKTIVITETSPENGER', kanBytteOmråde = false }: Valg = {},
+) => {
 	const queryClient = new QueryClient({
 		defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
 	});
 	return render(
 		<QueryClientProvider client={queryClient}>
 			<MemoryRouter initialEntries={[sti]}>
-				<OmrådeProvider område={område}>{ui}</OmrådeProvider>
+				<OmrådeProvider område={område} kanBytteOmråde={kanBytteOmråde}>
+					{ui}
+				</OmrådeProvider>
 				<AktivSti />
 			</MemoryRouter>
 		</QueryClientProvider>,

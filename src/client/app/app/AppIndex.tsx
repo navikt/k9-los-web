@@ -47,9 +47,9 @@ const AppIndex: FunctionComponent = () => {
 		>
 			<OmrådeResolver
 				fleromrade={<OmrådeApp />}
-				k9={
+				k9={(kanBytteOmråde) => (
 					<InnloggetSaksbehandlerResolver>
-						<HeaderWithErrorPanel />
+						<HeaderWithErrorPanel basissti="/k9" kanBytteOmråde={kanBytteOmråde} />
 						{sessionHarUtlopt && (
 							<Modal
 								className="min-w-[500px]"
@@ -73,10 +73,10 @@ const AppIndex: FunctionComponent = () => {
 								</Alert>
 							}
 						>
-							<Home />
+							<Home basissti="/k9" />
 						</ApmErrorBoundary>
 					</InnloggetSaksbehandlerResolver>
-				}
+				)}
 			/>
 		</ApmErrorBoundary>
 	);

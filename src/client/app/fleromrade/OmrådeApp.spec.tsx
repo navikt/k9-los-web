@@ -61,8 +61,8 @@ const medBruker = (tilganger: Partial<Tilganger>, områder: string[] = ['AKTIVIT
 	vi.mocked(useInnloggetBrukersOmråder).mockReturnValue(queryResultat(områder));
 };
 
-const renderApp = (sti: string, område: 'K9' | 'AKTIVITETSPENGER' = 'AKTIVITETSPENGER') =>
-	renderMedOmråde(<OmrådeApp />, { sti, område });
+const renderApp = (sti: string, område: 'K9' | 'AKTIVITETSPENGER' = 'AKTIVITETSPENGER', kanBytteOmråde = false) =>
+	renderMedOmråde(<OmrådeApp />, { sti, område, kanBytteOmråde });
 
 describe('OmrådeApp', () => {
 	it('viser områdets navn og brukeren i headeren', () => {
@@ -71,7 +71,8 @@ describe('OmrådeApp', () => {
 		renderApp('/akt');
 
 		expect(screen.getByRole('link', { name: 'Aktivitetspenger' })).toHaveAttribute('href', '/akt');
-		expect(screen.getByText('Ola Nordmann')).toBeInTheDocument();
+		expect(screen.getByText('Z123456')).toBeInTheDocument();
+		expect(screen.queryByText('Ola Nordmann')).not.toBeInTheDocument();
 		expect(screen.queryByText('Endringslogg')).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Systemer og oppslagsverk' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Saksbehandlerforside' })).toBeInTheDocument();
@@ -122,10 +123,10 @@ describe('OmrådeApp', () => {
 		const user = userEvent.setup();
 		medBruker({ basis: true }, ['K9', 'AKTIVITETSPENGER']);
 
-		renderApp('/akt');
+		renderApp('/akt', 'AKTIVITETSPENGER', true);
 		await user.click(screen.getByRole('button', { name: 'Bytt område' }));
 
-		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent(/^\/$/);
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/velg-omrade');
 	});
 
 	it('viser ikke bytt område for brukere med ett område', () => {

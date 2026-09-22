@@ -1,6 +1,5 @@
 import { InternalHeader, Spacer } from '@navikt/ds-react';
 import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
-import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { områdenavn } from 'fleromrade/områder';
 import { Link, useLocation, useNavigate } from 'react-router';
@@ -13,9 +12,8 @@ const isDev = !window.location.hostname.includes('intern.nav.no');
 const Header = () => {
 	const navigate = useNavigate();
 	const { pathname } = useLocation();
-	const { område, basissti } = useOmråde();
+	const { område, basissti, kanBytteOmråde } = useOmråde();
 	const { data: bruker } = useInnloggetBruker();
-	const { data: områder } = useInnloggetBrukersOmråder();
 
 	const avdelingslederSti = `${basissti}/avdelingsleder`;
 	const adminSti = `${basissti}/admin`;
@@ -39,11 +37,11 @@ const Header = () => {
 				{bruker.tilganger.oppgavestyring && !erPå(avdelingslederSti) && (
 					<InternalHeader.Button onClick={() => navigate(avdelingslederSti)}>Avdelingslederpanel</InternalHeader.Button>
 				)}
-				{områder?.length > 1 && (
-					<InternalHeader.Button onClick={() => navigate('/')}>Bytt område</InternalHeader.Button>
+				{kanBytteOmråde && (
+					<InternalHeader.Button onClick={() => navigate('/velg-omrade')}>Bytt område</InternalHeader.Button>
 				)}
 				{område === 'K9' && <K9Headerelementer brukerIdent={bruker.brukerIdent} />}
-				<InternalHeader.User name={bruker.navn} description={bruker.brukerIdent} />
+				<InternalHeader.User name={bruker.brukerIdent} />
 				{isDev && (
 					<InternalHeader.Button type="button" onClick={loggUt}>
 						Logg ut

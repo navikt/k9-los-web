@@ -1,21 +1,29 @@
 import { BodyShort, Box, Button, Heading, Loader, LocalAlert, VStack } from '@navikt/ds-react';
 import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { OmrådeProvider } from 'fleromrade/OmrådeContext';
-import { basisstiForOmråde, områdenavn, urlSegmentForOmråde } from 'fleromrade/områder';
-import { type FunctionComponent, type ReactElement, useState } from 'react';
+import { basisstiForOmråde, områdenavn } from 'fleromrade/områder';
+import type { FunctionComponent, ReactElement } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 
 interface OwnProps {
 	/** K9 på legacy-API. */
-	k9: ReactElement;
+	k9: (kanBytteOmråde: boolean) => ReactElement;
 	/** Skallet for områder på ny API. Rendres med området i konteksten. */
 	fleromrade: ReactElement;
 }
 
+type Appvalg = 'K9_LEGACY' | 'K9_NY' | 'AKTIVITETSPENGER';
+
+const erProd = window.location.hostname.includes('intern.nav.no');
+
+// Enkle, midlertidige funksjonsbrytere. Endre verdien lokalt for å teste kombinasjonene.
+const visLegacyOgNyK9 = !erProd;
+const aktiverAktivitetspenger = !erProd;
+
+const k9LegacySti = '/k9';
+const k9NySti = basisstiForOmråde.K9;
 const aktivitetspengerSti = basisstiForOmråde.AKTIVITETSPENGER;
-const k9NyApiSti = basisstiForOmråde.K9;
-// Fagsystemene lenker tilbake med `/k9`. Den sendes til legacy-K9 uten prefiks.
-const k9Sti = `/${urlSegmentForOmråde.K9}`;
+const områdevelgerSti = '/velg-omrade';
 
 const harPrefiks = (sti: string, prefiks: string) => sti === prefiks || sti.startsWith(`${prefiks}/`);
 
@@ -27,28 +35,27 @@ const Side = ({ children }: { children: ReactElement }) => (
 	</Box>
 );
 
-const IngenTilgang = ({ tittel }: { tittel: string }) => (
+const IngenTilgang = () => (
 	<Side>
 		<LocalAlert status="warning">
 			<LocalAlert.Header>
-				<LocalAlert.Title>{tittel}</LocalAlert.Title>
+				<LocalAlert.Title>Du har ikke tilgang til systemet</LocalAlert.Title>
 			</LocalAlert.Header>
 			<LocalAlert.Content>Kontakt brukerstøtte hvis du skal ha tilgang.</LocalAlert.Content>
 		</LocalAlert>
 	</Side>
 );
 
-/**
- * Velger område og modus ut fra URL-en. Aktivitetspenger ligger under `/akt`. K9 har to moduser: legacy på
- * dagens stier uten prefiks, og ny API under `/k9-ny`. Fagsystemene lenker tilbake med `/k9/...`, som skrives
- * om til legacy-stien uten prefiks. Brukere med bare ett område sendes automatisk til riktig sted.
- */
+const stiForValg: Record<Appvalg, string> = {
+	K9_LEGACY: k9LegacySti,
+	K9_NY: k9NySti,
+	AKTIVITETSPENGER: aktivitetspengerSti,
+};
+
 const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 	const { data: områder, isPending, isError, refetch } = useInnloggetBrukersOmråder();
 	const { pathname, search, hash } = useLocation();
 	const navigate = useNavigate();
-	// Husker at brukeren har valgt K9, slik at navigering tilbake til `/` i K9 ikke viser velgeren igjen.
-	const [k9Valgt, setK9Valgt] = useState(false);
 
 	if (isPending) {
 		return (
@@ -79,50 +86,40 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 		);
 	}
 
-	if (områder.length === 0) {
-		return <IngenTilgang tittel="Du har ikke tilgang til et område" />;
+	const valg: Appvalg[] = [];
+	if (områder.includes('K9')) {
+		valg.push('K9_LEGACY');
+		if (visLegacyOgNyK9) valg.push('K9_NY');
 	}
+	if (aktiverAktivitetspenger && områder.includes('AKTIVITETSPENGER')) valg.push('AKTIVITETSPENGER');
 
-	const harK9 = områder.includes('K9');
-	const harAktivitetspenger = områder.includes('AKTIVITETSPENGER');
+	if (valg.length === 0) return <IngenTilgang />;
 
+	const kanBytteOmråde = valg.length > 1;
+
+	if (harPrefiks(pathname, k9NySti)) {
+		return valg.includes('K9_NY') ? (
+			<OmrådeProvider område="K9" kanBytteOmråde={kanBytteOmråde}>
+				{fleromrade}
+			</OmrådeProvider>
+		) : (
+			<IngenTilgang />
+		);
+	}
+	if (harPrefiks(pathname, k9LegacySti)) {
+		return valg.includes('K9_LEGACY') ? k9(kanBytteOmråde) : <IngenTilgang />;
+	}
 	if (harPrefiks(pathname, aktivitetspengerSti)) {
-		if (!harAktivitetspenger) {
-			return <IngenTilgang tittel={`Du har ikke tilgang til ${områdenavn.AKTIVITETSPENGER.toLowerCase()}`} />;
-		}
-		if (k9Valgt) {
-			setK9Valgt(false);
-		}
-		return <OmrådeProvider område="AKTIVITETSPENGER">{fleromrade}</OmrådeProvider>;
-	}
-
-	if (harPrefiks(pathname, k9NyApiSti)) {
-		if (!harK9) {
-			return <IngenTilgang tittel={`Du har ikke tilgang til ${områdenavn.K9.toLowerCase()}`} />;
-		}
-		if (k9Valgt) {
-			setK9Valgt(false);
-		}
-		return <OmrådeProvider område="K9">{fleromrade}</OmrådeProvider>;
-	}
-
-	if (harPrefiks(pathname, k9Sti)) {
-		if (!harK9) {
-			return <IngenTilgang tittel={`Du har ikke tilgang til ${områdenavn.K9.toLowerCase()}`} />;
-		}
-		if (!k9Valgt) {
-			setK9Valgt(true);
-		}
-		return <Navigate replace to={{ pathname: pathname.slice(k9Sti.length) || '/', search, hash }} />;
-	}
-
-	if (!harK9) {
-		return (
-			<Navigate replace to={{ pathname: `${aktivitetspengerSti}${pathname === '/' ? '' : pathname}`, search, hash }} />
+		return valg.includes('AKTIVITETSPENGER') ? (
+			<OmrådeProvider område="AKTIVITETSPENGER" kanBytteOmråde={kanBytteOmråde}>
+				{fleromrade}
+			</OmrådeProvider>
+		) : (
+			<IngenTilgang />
 		);
 	}
 
-	if (harAktivitetspenger && pathname === '/' && !k9Valgt) {
+	if (pathname === områdevelgerSti || valg.length > 1) {
 		return (
 			<Side>
 				<VStack gap="space-24">
@@ -133,23 +130,29 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 						<BodyShort>Velg hvilket område du skal arbeide med.</BodyShort>
 					</VStack>
 					<VStack align="start" gap="space-12">
-						<Button variant="secondary" onClick={() => setK9Valgt(true)}>
-							{områdenavn.K9}
-						</Button>
-						<Button variant="secondary" onClick={() => navigate(aktivitetspengerSti)}>
-							{områdenavn.AKTIVITETSPENGER}
-						</Button>
+						{valg.includes('K9_LEGACY') && (
+							<Button variant="secondary" onClick={() => navigate(k9LegacySti)}>
+								{områdenavn.K9} (legacy)
+							</Button>
+						)}
+						{valg.includes('K9_NY') && (
+							<Button variant="secondary" onClick={() => navigate(k9NySti)}>
+								{områdenavn.K9} (ny)
+							</Button>
+						)}
+						{valg.includes('AKTIVITETSPENGER') && (
+							<Button variant="secondary" onClick={() => navigate(aktivitetspengerSti)}>
+								{områdenavn.AKTIVITETSPENGER}
+							</Button>
+						)}
 					</VStack>
 				</VStack>
 			</Side>
 		);
 	}
 
-	if (harAktivitetspenger && !k9Valgt) {
-		setK9Valgt(true);
-	}
-
-	return k9;
+	const målsti = stiForValg[valg[0]];
+	return <Navigate replace to={{ pathname: `${målsti}${pathname === '/' ? '' : pathname}`, search, hash }} />;
 };
 
 export default OmrådeResolver;

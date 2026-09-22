@@ -81,7 +81,10 @@ const OppgaveTabell = ({ oppgaver, velg }: Props) => {
 							}
 						: {};
 					return (
-						<Table.Row key={oppgave.oppgaveNøkkel.oppgaveEksternId} {...radProps}>
+						<Table.Row
+							key={`${oppgave.oppgaveNøkkel.områdeEksternId}|${oppgave.oppgaveNøkkel.oppgaveTypeEksternId}|${oppgave.oppgaveNøkkel.oppgaveEksternId}`}
+							{...radProps}
+						>
 							{visHastesak && <Table.DataCell>{oppgave.hastesak && <HastesakIkon />}</Table.DataCell>}
 							<Celle kopierbar={kopierbar}>
 								<Table.DataCell>

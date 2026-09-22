@@ -7,14 +7,23 @@ interface OmrådeKontekst {
 	urlSegment: OmradeUrlSegment;
 	/** Rotstien til området i appen, f.eks. `/akt` eller `/k9-ny`. */
 	basissti: string;
+	kanBytteOmråde: boolean;
 }
 
 const OmrådeContext = createContext<OmrådeKontekst | undefined>(undefined);
 
-export const OmrådeProvider = ({ område, children }: { område: Område; children: ReactNode }) => {
+export const OmrådeProvider = ({
+	område,
+	kanBytteOmråde = false,
+	children,
+}: {
+	område: Område;
+	kanBytteOmråde?: boolean;
+	children: ReactNode;
+}) => {
 	const verdi = useMemo(() => {
-		return { område, urlSegment: urlSegmentForOmråde[område], basissti: basisstiForOmråde[område] };
-	}, [område]);
+		return { område, urlSegment: urlSegmentForOmråde[område], basissti: basisstiForOmråde[område], kanBytteOmråde };
+	}, [område, kanBytteOmråde]);
 
 	return <OmrådeContext.Provider value={verdi}>{children}</OmrådeContext.Provider>;
 };
