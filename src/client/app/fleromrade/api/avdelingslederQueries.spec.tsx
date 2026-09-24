@@ -120,7 +120,7 @@ describe('avdelingslederQueries', () => {
 	it('lenker CSV-nedlasting via proxyen', () => {
 		const { result } = renderHook(() => useLastNedUttrekkCsvLenke(), lagHookWrapper());
 
-		expect(result.current(3)).toBe('/api/k9-los-api/fleromrade/akt/avdelingsleder/uttrekk/3/csv');
+		expect(result.current(3)).toBe('/api/k9-los-api/wip/akt/avdelingsleder/uttrekk/3/csv');
 	});
 
 	it('validerer kriterier mot området', async () => {

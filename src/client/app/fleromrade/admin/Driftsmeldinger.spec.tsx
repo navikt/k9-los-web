@@ -13,7 +13,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import DriftsmeldingerSide from './DriftsmeldingerSide';
 
 vi.mock('api/generated/los', () => ({
-	getHentDriftsmeldingerQueryKey: (omrade: string) => [`/api/fleromrade/${omrade}/driftsmeldinger`],
+	getHentDriftsmeldingerQueryKey: (omrade: string) => [`/api/wip/${omrade}/driftsmeldinger`],
 	useHentDriftsmeldinger: vi.fn(),
 	useOpprettDriftsmelding: vi.fn(),
 	useSlettDriftsmelding: vi.fn(),
