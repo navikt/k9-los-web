@@ -97,6 +97,14 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 
 	const kanBytteOmråde = valg.length > 1;
 
+	// Andre systemer lenker til rota (f.eks. `/?sok=...`) uten å kjenne til områdeprefiksene.
+	// Sti, query og hash må derfor overleve både områdevelgeren og den automatiske redirecten.
+	const tilOmråde = (målsti: string) => ({
+		pathname: `${målsti}${pathname === '/' || pathname === områdevelgerSti ? '' : pathname}`,
+		search,
+		hash,
+	});
+
 	if (harPrefiks(pathname, k9NySti)) {
 		return valg.includes('K9_NY') ? (
 			<OmrådeProvider område="K9" kanBytteOmråde={kanBytteOmråde}>
@@ -131,17 +139,17 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 					</VStack>
 					<VStack align="start" gap="space-12">
 						{valg.includes('K9_LEGACY') && (
-							<Button variant="secondary" onClick={() => navigate(k9LegacySti)}>
-								{områdenavn.K9} (legacy)
+							<Button variant="secondary" onClick={() => navigate(tilOmråde(k9LegacySti))}>
+								{områdenavn.K9} {valg.includes('K9_NY') && '(legacy)'}
 							</Button>
 						)}
 						{valg.includes('K9_NY') && (
-							<Button variant="secondary" onClick={() => navigate(k9NySti)}>
-								{områdenavn.K9} (ny)
+							<Button variant="secondary" onClick={() => navigate(tilOmråde(k9NySti))}>
+								{områdenavn.K9} {valg.includes('K9_LEGACY') && '(ny)'}
 							</Button>
 						)}
 						{valg.includes('AKTIVITETSPENGER') && (
-							<Button variant="secondary" onClick={() => navigate(aktivitetspengerSti)}>
+							<Button variant="secondary" onClick={() => navigate(tilOmråde(aktivitetspengerSti))}>
 								{områdenavn.AKTIVITETSPENGER}
 							</Button>
 						)}
@@ -151,8 +159,7 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 		);
 	}
 
-	const målsti = stiForValg[valg[0]];
-	return <Navigate replace to={{ pathname: `${målsti}${pathname === '/' ? '' : pathname}`, search, hash }} />;
+	return <Navigate replace to={tilOmråde(stiForValg[valg[0]])} />;
 };
 
 export default OmrådeResolver;

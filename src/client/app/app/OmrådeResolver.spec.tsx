@@ -69,6 +69,31 @@ describe('OmrådeResolver', () => {
 		expect(screen.getByTestId('sti')).toHaveTextContent('/akt/avdelingsleder?fane=reservasjoner');
 	});
 
+	it('beholder søkeparameter fra rota ved automatisk redirect', () => {
+		medOmråder(['AKTIVITETSPENGER']);
+		renderResolver('/?sok=brabra');
+
+		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/akt\?sok=brabra$/);
+	});
+
+	it('beholder søkeparameter når bruker velger område', async () => {
+		const user = userEvent.setup();
+		medOmråder(['K9', 'AKTIVITETSPENGER']);
+		renderResolver('/?sok=brabra');
+
+		await user.click(screen.getByRole('button', { name: 'Aktivitetspenger' }));
+		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/akt\?sok=brabra$/);
+	});
+
+	it('beholder søkeparameter når bruker velger område via /velg-omrade', async () => {
+		const user = userEvent.setup();
+		medOmråder(['K9', 'AKTIVITETSPENGER']);
+		renderResolver('/velg-omrade?sok=brabra');
+
+		await user.click(screen.getByRole('button', { name: /legacy/ }));
+		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/k9\?sok=brabra$/);
+	});
+
 	it('rendrer legacy K9 på /k9 med områdebytte', () => {
 		medOmråder(['K9']);
 		renderResolver('/k9');
