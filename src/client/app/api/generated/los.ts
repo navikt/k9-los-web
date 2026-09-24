@@ -93,11 +93,11 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
  * @summary Hent områder med basistilgang for innlogget bruker
  */
 export const hentInnloggetBrukersOmråder = (options?: SecondParameter<typeof losClient>, signal?: AbortSignal) => {
-	return losClient<Omrader[]>({ url: `/api/wip/innlogget-bruker/omrader`, method: 'GET', signal }, options);
+	return losClient<Omrader[]>({ url: `/api/wip/innlogget-bruker/omr\xE5der`, method: 'GET', signal }, options);
 };
 
 export const getHentInnloggetBrukersOmråderQueryKey = () => {
-	return [`/api/wip/innlogget-bruker/omrader`] as const;
+	return [`/api/wip/innlogget-bruker/omr\xE5der`] as const;
 };
 
 export const getHentInnloggetBrukersOmråderQueryOptions = <
