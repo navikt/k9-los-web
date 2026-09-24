@@ -47,7 +47,7 @@ import type {
 	NyttLagretSokRequest,
 	Omrader,
 	OmradeUrlSegment,
-	Oppgavefelter,
+	Oppgavefelt,
 	OppgaveIdMedOverstyringDto,
 	OppgaveKo,
 	OppgaveKoIdOgTittel,
@@ -93,11 +93,11 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
  * @summary Hent områder med basistilgang for innlogget bruker
  */
 export const hentInnloggetBrukersOmråder = (options?: SecondParameter<typeof losClient>, signal?: AbortSignal) => {
-	return losClient<Omrader[]>({ url: `/api/fleromrade/innlogget-bruker/omr\xE5der`, method: 'GET', signal }, options);
+	return losClient<Omrader[]>({ url: `/api/fleromrade/innlogget-bruker/omrader`, method: 'GET', signal }, options);
 };
 
 export const getHentInnloggetBrukersOmråderQueryKey = () => {
-	return [`/api/fleromrade/innlogget-bruker/omr\xE5der`] as const;
+	return [`/api/fleromrade/innlogget-bruker/omrader`] as const;
 };
 
 export const getHentInnloggetBrukersOmråderQueryOptions = <
@@ -5631,7 +5631,7 @@ export const hentOppgavefelter = (
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
-	return losClient<Oppgavefelter>(
+	return losClient<Oppgavefelt[]>(
 		{ url: `/api/fleromrade/${omrade}/avdelingsleder/query/felter`, method: 'GET', signal },
 		options,
 	);

@@ -11,7 +11,7 @@ export const useOppgavefelter = () => {
 		query: {
 			staleTime: Infinity,
 			// Generert type har bredere enum-typer for `synlighet` og `tolkes_som` enn `filter/`.
-			select: (data) => data.felter as unknown as Oppgavefelt[],
+			select: (data) => data as unknown as Oppgavefelt[],
 		},
 	});
 };

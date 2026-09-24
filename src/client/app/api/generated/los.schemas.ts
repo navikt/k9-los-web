@@ -330,9 +330,9 @@ export const Oppgavestatus = {
 	LUKKET: 'LUKKET',
 } as const;
 
-export type FagsakYtelseType = (typeof FagsakYtelseType)[keyof typeof FagsakYtelseType];
+export type K9FagsakYtelseType = (typeof K9FagsakYtelseType)[keyof typeof K9FagsakYtelseType];
 
-export const FagsakYtelseType = {
+export const K9FagsakYtelseType = {
 	PLEIEPENGER_SYKT_BARN: 'PLEIEPENGER_SYKT_BARN',
 	OMSORGSPENGER: 'OMSORGSPENGER',
 	OMSORGSDAGER: 'OMSORGSDAGER',
@@ -363,7 +363,7 @@ export interface GenerellOppgaveV3Dto {
 	søkersKjønn: string;
 	søkersNavn: string;
 	søkersPersonnr: string;
-	ytelsestype?: null | FagsakYtelseType;
+	ytelsestype?: null | K9FagsakYtelseType;
 }
 
 export interface ReservasjonV3Dto {
@@ -610,10 +610,6 @@ export interface Oppgavefelt {
 	verdiforklaringer?: Verdiforklaring[] | null;
 	verdiforklaringerErUttømmende: boolean;
 	visningsnavn: string;
-}
-
-export interface Oppgavefelter {
-	felter: Oppgavefelt[];
 }
 
 export type HentAktivReservasjonParams = {
