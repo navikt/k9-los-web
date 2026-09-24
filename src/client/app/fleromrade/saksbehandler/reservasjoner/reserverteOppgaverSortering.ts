@@ -1,4 +1,4 @@
-import type { GenerellOppgaveV3Dto, OppgaveNokkelDto, ReservasjonV3Dto } from 'api/generated/los.schemas';
+import type { OppgaveNokkelDto, OppgaveSammendragDto, ReservasjonMedOppgaverDto } from 'api/generated/los.schemas';
 
 // Samme regler som legacy-visningen på feature/reservasjon-sortering, på de genererte typene.
 
@@ -27,7 +27,7 @@ export const nøkkelStreng = (nøkkel: OppgaveNokkelDto): string =>
  * Sorterer oppgavene innenfor én reservasjon. Alle oppgavene deler
  * reservasjonsnøkkel, så de holdes samlet uansett rekkefølge.
  */
-export const sorterOppgaverIReservasjon = (oppgaver: GenerellOppgaveV3Dto[]): GenerellOppgaveV3Dto[] =>
+export const sorterOppgaverIReservasjon = (oppgaver: OppgaveSammendragDto[]): OppgaveSammendragDto[] =>
 	oppgaver.toSorted(
 		(a, b) =>
 			tidspunkt(a.opprettetTidspunkt) - tidspunkt(b.opprettetTidspunkt) ||
@@ -35,21 +35,22 @@ export const sorterOppgaverIReservasjon = (oppgaver: GenerellOppgaveV3Dto[]): Ge
 	);
 
 export const filtrerOppgaverEtterStatus = (
-	oppgaver: GenerellOppgaveV3Dto[],
+	oppgaver: OppgaveSammendragDto[],
 	visÅpne: boolean,
 	visPåVent: boolean,
-): GenerellOppgaveV3Dto[] =>
+): OppgaveSammendragDto[] =>
 	oppgaver.filter(
-		(oppgave) => (visÅpne && oppgave.oppgavestatus === 'AAPEN') || (visPåVent && oppgave.oppgavestatus === 'VENTER'),
+		({ oppgavestatus }) =>
+			(visÅpne && oppgavestatus.kode === 'AAPEN') || (visPåVent && oppgavestatus.kode === 'VENTER'),
 	);
 
 /**
  * Sorterer reservasjonene med den som utløper først øverst. Lik utløpstid brytes
  * på reservasjonsnøkkel, slik at rekkefølgen ikke avhenger av API-rekkefølgen.
  */
-export const sorterReservasjoner = (reservasjoner: ReservasjonV3Dto[]): ReservasjonV3Dto[] =>
+export const sorterReservasjoner = (reservasjoner: ReservasjonMedOppgaverDto[]): ReservasjonMedOppgaverDto[] =>
 	reservasjoner.toSorted(
-		(a, b) =>
+		({ reservasjon: a }, { reservasjon: b }) =>
 			dato(a.reservertTil)?.localeCompare(dato(b.reservertTil) ?? '') ||
 			a.reservasjonsnøkkel.localeCompare(b.reservasjonsnøkkel),
 	);

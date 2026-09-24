@@ -1,5 +1,6 @@
-import type { GenerellOppgaveV3Dto, ReservasjonV3Dto } from 'api/generated/los.schemas';
+import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
 import { describe, expect, it } from 'vitest';
+import { lagOppgaveSammendrag, lagReservasjonMedOppgaver } from '../testdata';
 import {
 	filtrerOppgaverEtterStatus,
 	sorterOppgaverIReservasjon,
@@ -9,35 +10,16 @@ import {
 const oppgave = (
 	oppgaveEksternId: string,
 	opprettetTidspunkt?: string,
-	overstyringer?: Partial<GenerellOppgaveV3Dto>,
-): GenerellOppgaveV3Dto =>
-	({
-		søkersNavn: 'Søker',
-		søkersPersonnr: '01234567890',
-		behandlingstype: { kode: 'BT-004', navn: 'Førstegangsbehandling', kodeverk: 'ae0034' },
+	overstyringer?: Partial<OppgaveSammendragDto>,
+) =>
+	lagOppgaveSammendrag({
 		opprettetTidspunkt,
-		saksnummer: '1',
 		oppgaveNøkkel: { områdeEksternId: 'K9', oppgaveTypeEksternId: 'k9sak', oppgaveEksternId },
-		journalpostId: '1',
-		oppgavestatus: 'AAPEN',
-		oppgavebehandlingsUrl: 'http://localhost/1',
 		...overstyringer,
-	}) as GenerellOppgaveV3Dto;
+	});
 
-const reservasjon = (
-	reservasjonsnøkkel: string,
-	reservertTil: string,
-	oppgaver: GenerellOppgaveV3Dto[] = [],
-): ReservasjonV3Dto =>
-	({
-		reservertAvIdent: 'Z123456',
-		reservertAvEpost: 'saksbehandler@nav.no',
-		reservertFra: '2026-08-01T10:00:00',
-		reservertTil,
-		reserverteV3Oppgaver: oppgaver,
-		reservasjonsnøkkel,
-		kommentar: '',
-	}) as ReservasjonV3Dto;
+const reservasjon = (reservasjonsnøkkel: string, reservertTil: string, oppgaver: OppgaveSammendragDto[] = []) =>
+	lagReservasjonMedOppgaver({ reservasjonsnøkkel, reservertTil }, oppgaver);
 
 describe('sorterReservasjoner', () => {
 	it('sorterer reservasjonen som utløper først øverst', () => {
@@ -45,7 +27,7 @@ describe('sorterReservasjoner', () => {
 			reservasjon('B', '2026-08-06T23:59:00'),
 			reservasjon('A', '2026-08-04T23:59:00'),
 		]);
-		expect(resultat.map((r) => r.reservasjonsnøkkel)).toEqual(['A', 'B']);
+		expect(resultat.map((r) => r.reservasjon.reservasjonsnøkkel)).toEqual(['A', 'B']);
 	});
 
 	it('bryter lik utløpstid på reservasjonsnøkkel', () => {
@@ -53,14 +35,14 @@ describe('sorterReservasjoner', () => {
 			reservasjon('K9_t_PSB', '2026-08-06T23:59:00'),
 			reservasjon('K9_p_abc', '2026-08-06T23:59:00'),
 		]);
-		expect(resultat.map((r) => r.reservasjonsnøkkel)).toEqual(['K9_p_abc', 'K9_t_PSB']);
+		expect(resultat.map((r) => r.reservasjon.reservasjonsnøkkel)).toEqual(['K9_p_abc', 'K9_t_PSB']);
 	});
 
 	it('gir samme rekkefølge uavhengig av rekkefølgen fra API-et', () => {
 		const a = reservasjon('A', '2026-08-06T23:59:00');
 		const b = reservasjon('B', '2026-08-06T23:59:00');
-		expect(sorterReservasjoner([a, b]).map((r) => r.reservasjonsnøkkel)).toEqual(
-			sorterReservasjoner([b, a]).map((r) => r.reservasjonsnøkkel),
+		expect(sorterReservasjoner([a, b]).map((r) => r.reservasjon.reservasjonsnøkkel)).toEqual(
+			sorterReservasjoner([b, a]).map((r) => r.reservasjon.reservasjonsnøkkel),
 		);
 	});
 
@@ -69,13 +51,13 @@ describe('sorterReservasjoner', () => {
 			reservasjon('Ugyldig', 'ikke-en-dato'),
 			reservasjon('Gyldig', '2026-08-06T23:59:00'),
 		]);
-		expect(resultat.map((r) => r.reservasjonsnøkkel)).toEqual(['Gyldig', 'Ugyldig']);
+		expect(resultat.map((r) => r.reservasjon.reservasjonsnøkkel)).toEqual(['Gyldig', 'Ugyldig']);
 	});
 
 	it('muterer ikke opprinnelig array', () => {
 		const original = [reservasjon('B', '2026-08-06T23:59:00'), reservasjon('A', '2026-08-04T23:59:00')];
 		sorterReservasjoner(original);
-		expect(original.map((r) => r.reservasjonsnøkkel)).toEqual(['B', 'A']);
+		expect(original.map((r) => r.reservasjon.reservasjonsnøkkel)).toEqual(['B', 'A']);
 	});
 });
 
@@ -129,7 +111,7 @@ describe('sorterOppgaverIReservasjon', () => {
 		];
 
 		const rader = sorterReservasjoner(reservasjoner).flatMap((r) =>
-			sorterOppgaverIReservasjon(r.reserverteV3Oppgaver).map((o) => o.oppgaveNøkkel.oppgaveEksternId),
+			sorterOppgaverIReservasjon(r.oppgaver).map((o) => o.oppgaveNøkkel.oppgaveEksternId),
 		);
 
 		expect(rader).toEqual(['a1', 'b1', 'b2']);
@@ -139,8 +121,8 @@ describe('sorterOppgaverIReservasjon', () => {
 describe('filtrerOppgaverEtterStatus', () => {
 	const oppgaver = [
 		oppgave('åpen'),
-		oppgave('venter', undefined, { oppgavestatus: 'VENTER' }),
-		oppgave('lukket', undefined, { oppgavestatus: 'LUKKET' }),
+		oppgave('venter', undefined, { oppgavestatus: { kode: 'VENTER', navn: 'Venter' } }),
+		oppgave('lukket', undefined, { oppgavestatus: { kode: 'LUKKET', navn: 'Lukket' } }),
 	];
 
 	it('viser bare åpne oppgaver som standard', () => {

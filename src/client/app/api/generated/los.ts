@@ -60,7 +60,8 @@ import type {
 	OpprettUttrekk,
 	ReservasjonDto,
 	ReservasjonEndringDto,
-	ReservasjonV3Dto,
+	ReservasjonMedOppgaverDto,
+	ReservasjonsinfoDto,
 	ReservasjonV3FraKoDto,
 	SaksbehandlerDto,
 	SaksbehandlerForKolisteDto,
@@ -1467,7 +1468,7 @@ export const hentReserverteOppgaver = (
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
-	return losClient<ReservasjonV3Dto[]>(
+	return losClient<ReservasjonMedOppgaverDto[]>(
 		{ url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/reserverte`, method: 'GET', signal },
 		options,
 	);
@@ -1673,7 +1674,7 @@ export const forlengReservasjon = (
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
-	return losClient<ReservasjonV3Dto>(
+	return losClient<ReservasjonMedOppgaverDto>(
 		{
 			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/forleng`,
 			method: 'POST',
@@ -1757,7 +1758,7 @@ export const flyttReservasjon = (
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
-	return losClient<ReservasjonV3Dto>(
+	return losClient<ReservasjonMedOppgaverDto>(
 		{
 			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/flytt`,
 			method: 'POST',
@@ -1843,7 +1844,7 @@ export const endreReservasjoner = (
 ) => {
 	return losClient<void>(
 		{
-			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/reservasjon/endre`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/endre`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: reservasjonEndringDto,
@@ -1920,7 +1921,7 @@ export const useEndreReservasjoner = <TError = ErrorType<void | string>, TContex
 };
 
 /**
- * @summary Hent saksbehandlere
+ * @summary Hent saksbehandlere reservasjonen kan flyttes til
  */
 export const hentSaksbehandlereForReservasjon = (
 	omrade: OmradeUrlSegment,
@@ -2016,7 +2017,7 @@ export function useHentSaksbehandlereForReservasjon<
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Hent saksbehandlere
+ * @summary Hent saksbehandlere reservasjonen kan flyttes til
  */
 
 export function useHentSaksbehandlereForReservasjon<
@@ -2048,7 +2049,7 @@ export const hentAktivReservasjon = (
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
-	return losClient<ReservasjonV3Dto | void>(
+	return losClient<ReservasjonsinfoDto | void>(
 		{ url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/aktiv-reservasjon`, method: 'GET', params, signal },
 		options,
 	);

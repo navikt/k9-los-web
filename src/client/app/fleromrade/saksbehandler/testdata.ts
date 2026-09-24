@@ -1,9 +1,9 @@
 import type {
-	GenerellOppgaveV3Dto,
 	InnloggetBrukerDtoNy,
 	OppgaveKo,
 	OppgaveSammendragDto,
-	ReservasjonV3Dto,
+	ReservasjonMedOppgaverDto,
+	ReservasjonsinfoDto,
 } from 'api/generated/los.schemas';
 
 // Formen er hentet fra faktiske svar fra backend.
@@ -34,14 +34,12 @@ export const lagOppgaveSammendrag = (overstyring: Partial<OppgaveSammendragDto> 
 	...overstyring,
 });
 
-export const lagReservasjon = (overstyring: Partial<ReservasjonV3Dto> = {}): ReservasjonV3Dto => ({
-	reserverteV3Oppgaver: [],
+export const lagReservasjon = (overstyring: Partial<ReservasjonsinfoDto> = {}): ReservasjonsinfoDto => ({
 	reservasjonsnøkkel: 'reservasjon-1',
 	reservertAvNavn: 'Saksbehandler Sara',
 	reservertAvIdent: 'Z123456',
 	reservertAvEpost: 'saksbehandler.sara@nav.no',
-	reservertAvId: 1,
-	kommentar: '',
+	kommentar: null,
 	reservertFra: '2026-09-17T13:31:12',
 	// Langt fram i tid, siden datovelgeren kun godtar datoer fra og med i dag.
 	reservertTil: '2099-09-21T23:59:00',
@@ -49,23 +47,12 @@ export const lagReservasjon = (overstyring: Partial<ReservasjonV3Dto> = {}): Res
 	...overstyring,
 });
 
-export const lagReservertOppgave = (overstyring: Partial<GenerellOppgaveV3Dto> = {}): GenerellOppgaveV3Dto => ({
-	søkersNavn: 'Kari Nordmann',
-	søkersPersonnr: '01234567890',
-	søkersKjønn: 'KVINNE',
-	søkersDødsdato: null,
-	// Backend sender kodeverkobjekter her, selv om spec-en sier enum-streng.
-	ytelsestype: { kode: 'AKT', navn: 'Aktivitetspenger' } as never,
-	behandlingstype: { kode: 'BT-002', navn: 'Førstegangsbehandling' } as never,
-	saksnummer: 'ABC12',
-	oppgaveNøkkel: { oppgaveEksternId: 'oppgave-1', oppgaveTypeEksternId: 'k9sak', områdeEksternId: 'AKTIVITETSPENGER' },
-	journalpostId: null,
-	opprettetTidspunkt: '2026-09-17T13:31:01',
-	oppgavestatus: 'AAPEN',
-	oppgavebehandlingsUrl: 'http://localhost:9000/fagsak/ABC12/',
-	reservasjonsnøkkel: 'reservasjon-1',
-	hastesak: false,
-	...overstyring,
+export const lagReservasjonMedOppgaver = (
+	reservasjon: Partial<ReservasjonsinfoDto> = {},
+	oppgaver: OppgaveSammendragDto[] = [],
+): ReservasjonMedOppgaverDto => ({
+	reservasjon: lagReservasjon(reservasjon),
+	oppgaver,
 });
 
 export const lagKø = (overstyring: Partial<OppgaveKo> = {}): OppgaveKo => ({

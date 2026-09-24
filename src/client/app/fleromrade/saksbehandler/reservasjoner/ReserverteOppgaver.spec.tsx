@@ -8,7 +8,7 @@ import {
 	useLagreSisteOppgave,
 	useOpphevReservasjoner,
 } from 'api/generated/los';
-import type { GenerellOppgaveV3Dto } from 'api/generated/los.schemas';
+import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
 import {
 	mutationResultat,
 	mutationSomLykkes,
@@ -17,37 +17,38 @@ import {
 	stubNavigering,
 } from 'fleromrade/testUtils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { lagReservasjon, lagReservertOppgave } from '../testdata';
+import { lagOppgaveSammendrag, lagReservasjonMedOppgaver } from '../testdata';
 import ReserverteOppgaver from './ReserverteOppgaver';
 
 vi.mock('api/generated/los');
 
 const mutate = (mutasjon: never) => (mutasjon as { mutate: ReturnType<typeof vi.fn> }).mutate;
 
-const oppgave = (id: string, overstyring: Partial<GenerellOppgaveV3Dto> = {}) =>
-	lagReservertOppgave({
+const oppgave = (id: string, overstyring: Partial<OppgaveSammendragDto> = {}) =>
+	lagOppgaveSammendrag({
 		saksnummer: id,
 		oppgaveNøkkel: { oppgaveEksternId: id, oppgaveTypeEksternId: 'k9sak', områdeEksternId: 'AKTIVITETSPENGER' },
 		...overstyring,
 	});
 
 // Reservasjonen med to oppgaver utløper sist, og skal derfor stå sist.
-const toOppgaver = lagReservasjon({
-	reservasjonsnøkkel: 'to-oppgaver',
-	reservertTil: '2099-09-22T23:59:00',
-	kommentar: 'Tatt over fordi Lars er syk',
-	endretAvNavn: 'Saksbehandler Edgar',
-	reserverteV3Oppgaver: [
+const toOppgaver = lagReservasjonMedOppgaver(
+	{
+		reservasjonsnøkkel: 'to-oppgaver',
+		reservertTil: '2099-09-22T23:59:00',
+		kommentar: 'Tatt over fordi Lars er syk',
+		endretAvNavn: 'Saksbehandler Edgar',
+	},
+	[
 		oppgave('NYEST', { opprettetTidspunkt: '2026-09-18T09:00:00' }),
 		oppgave('ELDST', { opprettetTidspunkt: '2026-09-10T09:00:00' }),
-		oppgave('LUKKET', { oppgavestatus: 'LUKKET' }),
+		oppgave('LUKKET', { oppgavestatus: { kode: 'LUKKET', navn: 'Lukket' } }),
 	],
-});
-const énOppgave = lagReservasjon({
-	reservasjonsnøkkel: 'én-oppgave',
-	reservertTil: '2099-09-21T23:59:00',
-	reserverteV3Oppgaver: [oppgave('FØRST'), oppgave('VENTER', { oppgavestatus: 'VENTER' })],
-});
+);
+const énOppgave = lagReservasjonMedOppgaver({ reservasjonsnøkkel: 'én-oppgave', reservertTil: '2099-09-21T23:59:00' }, [
+	oppgave('FØRST'),
+	oppgave('VENTER', { oppgavestatus: { kode: 'VENTER', navn: 'Venter' } }),
+]);
 
 const radtekster = () =>
 	screen
@@ -59,7 +60,7 @@ const radtekster = () =>
 beforeEach(() => {
 	vi.mocked(useHentReserverteOppgaver).mockReturnValue(
 		// Backend returnerer også reservasjoner uten oppgaver i området.
-		queryResultat([toOppgaver, énOppgave, lagReservasjon({ reservasjonsnøkkel: 'annet-område' })], {
+		queryResultat([toOppgaver, énOppgave, lagReservasjonMedOppgaver({ reservasjonsnøkkel: 'annet-område' })], {
 			dataUpdatedAt: 1,
 		}),
 	);

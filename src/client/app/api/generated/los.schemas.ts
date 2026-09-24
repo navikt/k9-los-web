@@ -292,94 +292,24 @@ export interface OppgaveStatusDto {
 	reservertTilTidspunkt?: null | LocalDateTime;
 }
 
-export type BehandlingType = (typeof BehandlingType)[keyof typeof BehandlingType];
-
-export const BehandlingType = {
-	FORSTEGANGSSOKNAD: 'FORSTEGANGSSOKNAD',
-	KLAGE: 'KLAGE',
-	REVURDERING: 'REVURDERING',
-	INNSYN: 'INNSYN',
-	TILBAKE: 'TILBAKE',
-	ANKE: 'ANKE',
-	REVURDERING_TILBAKEKREVING: 'REVURDERING_TILBAKEKREVING',
-	UNNTAKSBEHANDLING: 'UNNTAKSBEHANDLING',
-	SØKNAD_OM_NYE_PERIODER: 'SØKNAD_OM_NYE_PERIODER',
-	PAPIRSØKNAD: 'PAPIRSØKNAD',
-	DIGITAL_SØKNAD: 'DIGITAL_SØKNAD',
-	PAPIRETTERSENDELSE: 'PAPIRETTERSENDELSE',
-	PAPIRINNTEKTSOPPLYSNINGER: 'PAPIRINNTEKTSOPPLYSNINGER',
-	DIGITAL_ETTERSENDELSE: 'DIGITAL_ETTERSENDELSE',
-	INNLOGGET_CHAT: 'INNLOGGET_CHAT',
-	SKRIV_TIL_OSS_SPØRMSÅL: 'SKRIV_TIL_OSS_SPØRMSÅL',
-	SKRIV_TIL_OSS_SVAR: 'SKRIV_TIL_OSS_SVAR',
-	SAMTALEREFERAT: 'SAMTALEREFERAT',
-	KOPI: 'KOPI',
-	INNTEKTSMELDING_UTGÅTT: 'INNTEKTSMELDING_UTGÅTT',
-	UTEN_FNR_DNR: 'UTEN_FNR_DNR',
-	PUNSJOPPGAVE_IKKE_LENGER_NØDVENDIG: 'PUNSJOPPGAVE_IKKE_LENGER_NØDVENDIG',
-	JOURNALPOSTNOTAT: 'JOURNALPOSTNOTAT',
-	UKJENT: 'UKJENT',
-} as const;
-
-export type Oppgavestatus = (typeof Oppgavestatus)[keyof typeof Oppgavestatus];
-
-export const Oppgavestatus = {
-	AAPEN: 'AAPEN',
-	UAVKLART: 'UAVKLART',
-	VENTER: 'VENTER',
-	LUKKET: 'LUKKET',
-} as const;
-
-export type K9FagsakYtelseType = (typeof K9FagsakYtelseType)[keyof typeof K9FagsakYtelseType];
-
-export const K9FagsakYtelseType = {
-	PLEIEPENGER_SYKT_BARN: 'PLEIEPENGER_SYKT_BARN',
-	OMSORGSPENGER: 'OMSORGSPENGER',
-	OMSORGSDAGER: 'OMSORGSDAGER',
-	FRISINN: 'FRISINN',
-	PPN: 'PPN',
-	OLP: 'OLP',
-	OMSORGSPENGER_KS: 'OMSORGSPENGER_KS',
-	OMSORGSPENGER_MA: 'OMSORGSPENGER_MA',
-	OMSORGSPENGER_AO: 'OMSORGSPENGER_AO',
-	UNGDOMSYTELSE: 'UNGDOMSYTELSE',
-	UKJENT: 'UKJENT',
-} as const;
-
-export interface GenerellOppgaveV3Dto {
-	behandlingstype: BehandlingType;
-	hastesak: boolean;
-	/** @nullable */
-	journalpostId?: string | null;
-	oppgaveNøkkel: OppgaveNokkelDto;
-	/** @nullable */
-	oppgavebehandlingsUrl?: string | null;
-	oppgavestatus: Oppgavestatus;
-	opprettetTidspunkt?: null | LocalDateTime;
-	reservasjonsnøkkel: string;
-	/** @nullable */
-	saksnummer?: string | null;
-	søkersDødsdato?: null | LocalDate;
-	søkersKjønn: string;
-	søkersNavn: string;
-	søkersPersonnr: string;
-	ytelsestype?: null | K9FagsakYtelseType;
-}
-
-export interface ReservasjonV3Dto {
+export interface ReservasjonsinfoDto {
 	/** @nullable */
 	endretAvNavn?: string | null;
-	kommentar: string;
+	/** @nullable */
+	kommentar?: string | null;
 	reservasjonsnøkkel: string;
 	reservertAvEpost: string;
-	reservertAvId: number;
 	/** @nullable */
 	reservertAvIdent?: string | null;
 	/** @nullable */
 	reservertAvNavn?: string | null;
 	reservertFra: LocalDateTime;
 	reservertTil: LocalDateTime;
-	reserverteV3Oppgaver: GenerellOppgaveV3Dto[];
+}
+
+export interface ReservasjonMedOppgaverDto {
+	oppgaver: OppgaveSammendragDto[];
+	reservasjon: ReservasjonsinfoDto;
 }
 
 export interface AnnullerReservasjonDto {
@@ -437,6 +367,35 @@ export interface SaksbehandlerDto {
 export interface EpostDto {
 	epost: string;
 }
+
+export type BehandlingType = (typeof BehandlingType)[keyof typeof BehandlingType];
+
+export const BehandlingType = {
+	FORSTEGANGSSOKNAD: 'FORSTEGANGSSOKNAD',
+	KLAGE: 'KLAGE',
+	REVURDERING: 'REVURDERING',
+	INNSYN: 'INNSYN',
+	TILBAKE: 'TILBAKE',
+	ANKE: 'ANKE',
+	REVURDERING_TILBAKEKREVING: 'REVURDERING_TILBAKEKREVING',
+	UNNTAKSBEHANDLING: 'UNNTAKSBEHANDLING',
+	SØKNAD_OM_NYE_PERIODER: 'SØKNAD_OM_NYE_PERIODER',
+	PAPIRSØKNAD: 'PAPIRSØKNAD',
+	DIGITAL_SØKNAD: 'DIGITAL_SØKNAD',
+	PAPIRETTERSENDELSE: 'PAPIRETTERSENDELSE',
+	PAPIRINNTEKTSOPPLYSNINGER: 'PAPIRINNTEKTSOPPLYSNINGER',
+	DIGITAL_ETTERSENDELSE: 'DIGITAL_ETTERSENDELSE',
+	INNLOGGET_CHAT: 'INNLOGGET_CHAT',
+	SKRIV_TIL_OSS_SPØRMSÅL: 'SKRIV_TIL_OSS_SPØRMSÅL',
+	SKRIV_TIL_OSS_SVAR: 'SKRIV_TIL_OSS_SVAR',
+	SAMTALEREFERAT: 'SAMTALEREFERAT',
+	KOPI: 'KOPI',
+	INNTEKTSMELDING_UTGÅTT: 'INNTEKTSMELDING_UTGÅTT',
+	UTEN_FNR_DNR: 'UTEN_FNR_DNR',
+	PUNSJOPPGAVE_IKKE_LENGER_NØDVENDIG: 'PUNSJOPPGAVE_IKKE_LENGER_NØDVENDIG',
+	JOURNALPOSTNOTAT: 'JOURNALPOSTNOTAT',
+	UKJENT: 'UKJENT',
+} as const;
 
 export interface ReservasjonDto {
 	behandlingType: BehandlingType;

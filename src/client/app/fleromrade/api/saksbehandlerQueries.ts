@@ -21,7 +21,7 @@ import {
 	useReserverNesteOppgaveFraSaksbehandlerko,
 	useSøkEtterOppgaver,
 } from 'api/generated/los';
-import type { OppgaveNokkelDto, ReservasjonEndringDto, ReservasjonV3Dto } from 'api/generated/los.schemas';
+import type { OppgaveNokkelDto, ReservasjonEndringDto, ReservasjonsinfoDto } from 'api/generated/los.schemas';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 
 /**
@@ -78,7 +78,7 @@ export const useAktivReservasjon = (oppgaveNøkkel: OppgaveNokkelDto, enabled = 
 	return useHentAktivReservasjon(
 		urlSegment,
 		{ oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId, oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId },
-		{ query: { enabled, select: (data): ReservasjonV3Dto | null => data || null } },
+		{ query: { enabled, select: (data): ReservasjonsinfoDto | null => data || null } },
 	);
 };
 

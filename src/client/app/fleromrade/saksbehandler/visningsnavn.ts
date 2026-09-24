@@ -1,7 +1,7 @@
 /**
  * Henter visningsnavnet fra et kodeverkfelt.
  *
- * OpenAPI-spec-en typer f.eks. `GenerellOppgaveV3Dto.behandlingstype` som en enum-streng, mens backend
+ * OpenAPI-spec-en typer f.eks. `ReservasjonDto.behandlingType` som en enum-streng, mens backend
  * faktisk sender et objekt med `kode` og `navn`. Til spec-en er rettet håndterer vi begge formene.
  */
 export const visningsnavn = (verdi: unknown): string => {

@@ -13,13 +13,12 @@ import {
 	Table,
 	VStack,
 } from '@navikt/ds-react';
-import type { GenerellOppgaveV3Dto, ReservasjonV3Dto } from 'api/generated/los.schemas';
+import type { OppgaveSammendragDto, ReservasjonsinfoDto } from 'api/generated/los.schemas';
 import { useForlengReservasjon, useReserverteOppgaver, useÅpneOppgave } from 'fleromrade/api/saksbehandlerQueries';
 import { type ReactNode, useId, useRef, useState } from 'react';
 import { idKolonneTittel } from 'saksbehandler/tabellvisning';
 import { dateFormat, getDateAndTime } from 'utils/dateUtils';
 import SammenleggbarOverskrift from '../SammenleggbarOverskrift';
-import { visningsnavn } from '../visningsnavn';
 import FlyttReservasjonModal from './FlyttReservasjonModal';
 import OpphevReservasjonModal from './OpphevReservasjonModal';
 import { RAD_NØKKEL_ATTRIBUTT, useRadFlyttAnimasjon } from './radFlyttAnimasjon';
@@ -36,7 +35,7 @@ import {
  * reservasjon, reservasjonen som utløper først står øverst, og radene glir på plass etter en handling.
  */
 
-const Kommentar = ({ reservasjon }: { reservasjon: ReservasjonV3Dto }) => {
+const Kommentar = ({ reservasjon }: { reservasjon: ReservasjonsinfoDto }) => {
 	const knapp = useRef<HTMLButtonElement>(null);
 	const [åpen, setÅpen] = useState(false);
 	const popoverId = useId();
@@ -72,8 +71,8 @@ const Kommentar = ({ reservasjon }: { reservasjon: ReservasjonV3Dto }) => {
 };
 
 interface RadProps {
-	oppgave: GenerellOppgaveV3Dto;
-	reservasjon: ReservasjonV3Dto;
+	oppgave: OppgaveSammendragDto;
+	reservasjon: ReservasjonsinfoDto;
 	/** Antall viste oppgaver som deler denne reservasjonen. */
 	antallOppgaverIReservasjonen: number;
 	/** Kalles når en handling i menyen er lagret, slik at radene som flytter seg, animeres. */
@@ -92,17 +91,20 @@ const ReservertOppgaveRad = ({ oppgave, reservasjon, antallOppgaverIReservasjone
 		: 'Handlinger på reservasjonen';
 	const id = oppgave.saksnummer || oppgave.journalpostId;
 	const idNavn = oppgave.saksnummer ? 'saksnummer' : 'journalpost-id';
-	const ytelse = visningsnavn(oppgave.ytelsestype);
 
 	return (
 		<Table.Row {...{ [RAD_NØKKEL_ATTRIBUTT]: nøkkelStreng(oppgave.oppgaveNøkkel) }}>
 			<Kopieringsområde>
 				<Table.DataCell>
-					{oppgave.søkersNavn}
-					<br />
-					<KopierbarVerdi copyText={oppgave.søkersPersonnr} title="Kopier fødselsnummer">
-						<Detail>{oppgave.søkersPersonnr}</Detail>
-					</KopierbarVerdi>
+					{oppgave.person?.navn}
+					{oppgave.person?.fnr && (
+						<>
+							<br />
+							<KopierbarVerdi copyText={oppgave.person.fnr} title="Kopier fødselsnummer">
+								<Detail>{oppgave.person.fnr}</Detail>
+							</KopierbarVerdi>
+						</>
+					)}
 				</Table.DataCell>
 			</Kopieringsområde>
 			<Kopieringsområde>
@@ -110,7 +112,7 @@ const ReservertOppgaveRad = ({ oppgave, reservasjon, antallOppgaverIReservasjone
 					<KopierbarVerdi copyText={id} title={`Kopier ${idNavn}`}>
 						{id}
 					</KopierbarVerdi>
-					{oppgave.oppgavestatus === 'VENTER' && (
+					{oppgave.oppgavestatus.kode === 'VENTER' && (
 						<>
 							<br />
 							<Detail>På vent</Detail>
@@ -119,11 +121,11 @@ const ReservertOppgaveRad = ({ oppgave, reservasjon, antallOppgaverIReservasjone
 				</Table.DataCell>
 			</Kopieringsområde>
 			<Table.DataCell>
-				{visningsnavn(oppgave.behandlingstype)}
-				{ytelse && (
+				{oppgave.behandlingstype?.navn}
+				{oppgave.ytelse?.navn && (
 					<>
 						<br />
-						<Detail>{ytelse}</Detail>
+						<Detail>{oppgave.ytelse.navn}</Detail>
 					</>
 				)}
 			</Table.DataCell>
@@ -211,17 +213,15 @@ const ReserverteOppgaver = () => {
 
 	const { data: reservasjoner, dataUpdatedAt, isPending, isSuccess, isError } = useReserverteOppgaver();
 
-	const alleOppgaver = (reservasjoner ?? []).flatMap((reservasjon) => reservasjon.reserverteV3Oppgaver);
-	const antallÅpne = alleOppgaver.filter((oppgave) => oppgave.oppgavestatus === 'AAPEN').length;
-	const antallPåVent = alleOppgaver.filter((oppgave) => oppgave.oppgavestatus === 'VENTER').length;
+	const alleOppgaver = (reservasjoner ?? []).flatMap(({ oppgaver }) => oppgaver);
+	const antallÅpne = alleOppgaver.filter((oppgave) => oppgave.oppgavestatus.kode === 'AAPEN').length;
+	const antallPåVent = alleOppgaver.filter((oppgave) => oppgave.oppgavestatus.kode === 'VENTER').length;
 
 	// Én gruppe per reservasjon. Oppgavene i gruppen deler reservasjonsnøkkel, så handlingene gjelder hele gruppen.
 	const reservasjonsgrupper = sorterReservasjoner(reservasjoner ?? [])
-		.map((reservasjon) => ({
+		.map(({ reservasjon, oppgaver }) => ({
 			reservasjon,
-			oppgaver: sorterOppgaverIReservasjon(
-				filtrerOppgaverEtterStatus(reservasjon.reserverteV3Oppgaver, visÅpne, visPåVent),
-			),
+			oppgaver: sorterOppgaverIReservasjon(filtrerOppgaverEtterStatus(oppgaver, visÅpne, visPåVent)),
 		}))
 		.filter((gruppe) => gruppe.oppgaver.length > 0);
 

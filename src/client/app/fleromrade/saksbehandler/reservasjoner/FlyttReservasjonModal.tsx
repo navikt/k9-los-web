@@ -10,13 +10,13 @@ import {
 	useDatepicker,
 	VStack,
 } from '@navikt/ds-react';
-import type { ReservasjonV3Dto } from 'api/generated/los.schemas';
+import type { ReservasjonsinfoDto } from 'api/generated/los.schemas';
 import dayjs from 'dayjs';
 import { useEndreReservasjoner, useSaksbehandlereForReservasjon } from 'fleromrade/api/saksbehandlerQueries';
 import { type SubmitEvent, useState } from 'react';
 
 interface Props {
-	reservasjon: ReservasjonV3Dto;
+	reservasjon: ReservasjonsinfoDto;
 	/** Antall oppgaver som deler reservasjonen. */
 	antallOppgaver?: number;
 	lukk: () => void;
