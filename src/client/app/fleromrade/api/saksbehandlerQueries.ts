@@ -101,7 +101,16 @@ export const useReserverOppgave = () => {
 	return {
 		...resten,
 		reserver: (oppgaveNøkkel: OppgaveNokkelDto, options?: Parameters<typeof mutate>[1]) =>
-			mutate({ omrade: urlSegment, data: { oppgaveNøkkel, overstyrSjekk: false } }, options),
+			mutate(
+				{
+					omrade: urlSegment,
+					data: {
+						oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId,
+						oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId,
+					},
+				},
+				options,
+			),
 	};
 };
 

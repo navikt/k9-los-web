@@ -125,7 +125,13 @@ describe('Søkeboks', () => {
 
 		const oppgaveNøkkel = lagOppgaveSammendrag().oppgaveNøkkel;
 		expect((reserver as { mutate: ReturnType<typeof vi.fn> }).mutate).toHaveBeenCalledWith(
-			{ omrade: 'akt', data: { oppgaveNøkkel, overstyrSjekk: false } },
+			{
+				omrade: 'akt',
+				data: {
+					oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId,
+					oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId,
+				},
+			},
 			expect.anything(),
 		);
 		expect((lagre as { mutate: ReturnType<typeof vi.fn> }).mutate).toHaveBeenCalledWith(

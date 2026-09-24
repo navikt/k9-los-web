@@ -48,11 +48,11 @@ import type {
 	Omrader,
 	OmradeUrlSegment,
 	Oppgavefelt,
-	OppgaveIdMedOverstyringDto,
 	OppgaveKo,
 	OppgaveKoIdOgTittel,
 	OppgaveKoListeelement,
 	OppgaveNokkelDto,
+	OppgaveNokkelUtenOmradeDto,
 	OppgaveQuery,
 	OppgaveSammendragDto,
 	OppgaveStatusDto,
@@ -1379,7 +1379,7 @@ export const useReserverNesteOppgaveFraSaksbehandlerko = <TError = ErrorType<voi
  */
 export const reserverOppgave = (
 	omrade: OmradeUrlSegment,
-	oppgaveIdMedOverstyringDto?: BodyType<OppgaveIdMedOverstyringDto>,
+	oppgaveNokkelUtenOmradeDto?: BodyType<OppgaveNokkelUtenOmradeDto>,
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
@@ -1388,7 +1388,7 @@ export const reserverOppgave = (
 			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/reserver`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			data: oppgaveIdMedOverstyringDto,
+			data: oppgaveNokkelUtenOmradeDto,
 			signal,
 		},
 		options,
@@ -1430,11 +1430,11 @@ export const getReserverOppgaveMutationOptions = <TError = ErrorType<string>, TC
 };
 
 export type ReserverOppgaveMutationResult = NonNullable<Awaited<ReturnType<typeof reserverOppgave>>>;
-export type ReserverOppgaveMutationBody = BodyType<OppgaveIdMedOverstyringDto> | undefined;
+export type ReserverOppgaveMutationBody = BodyType<OppgaveNokkelUtenOmradeDto> | undefined;
 export type ReserverOppgaveMutationError = ErrorType<string>;
 export type ReserverOppgaveMutationVariables = {
 	omrade: OmradeUrlSegment;
-	data?: BodyType<OppgaveIdMedOverstyringDto>;
+	data?: BodyType<OppgaveNokkelUtenOmradeDto>;
 };
 
 /**

@@ -256,13 +256,9 @@ export interface ReservasjonV3FraKoDto {
 	reservertTil?: null | LocalDateTime;
 }
 
-export interface OppgaveIdMedOverstyringDto {
-	oppgaveNøkkel: OppgaveNokkelDto;
-	/** @nullable */
-	overstyrBegrunnelse?: string | null;
-	/** @nullable */
-	overstyrIdent?: string | null;
-	overstyrSjekk: boolean;
+export interface OppgaveNokkelUtenOmradeDto {
+	oppgaveEksternId: string;
+	oppgaveTypeEksternId: string;
 }
 
 export type Beskjed = (typeof Beskjed)[keyof typeof Beskjed];
