@@ -58,7 +58,6 @@ import type {
 	OppgaveStatusDto,
 	OpprettOppgaveKoDto,
 	OpprettUttrekk,
-	ReservasjonDto,
 	ReservasjonEndringDto,
 	ReservasjonMedOppgaverDto,
 	ReservasjonsinfoDto,
@@ -2739,7 +2738,7 @@ export const hentAlleAktiveReservasjoner = (
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
-	return losClient<ReservasjonDto[]>(
+	return losClient<ReservasjonMedOppgaverDto[]>(
 		{ url: `/api/fleromrade/${omrade}/avdelingsleder/reservasjon-admin/alle-reservasjoner`, method: 'GET', signal },
 		options,
 	);

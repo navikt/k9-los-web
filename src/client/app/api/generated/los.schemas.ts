@@ -364,54 +364,6 @@ export interface EpostDto {
 	epost: string;
 }
 
-export type BehandlingType = (typeof BehandlingType)[keyof typeof BehandlingType];
-
-export const BehandlingType = {
-	FORSTEGANGSSOKNAD: 'FORSTEGANGSSOKNAD',
-	KLAGE: 'KLAGE',
-	REVURDERING: 'REVURDERING',
-	INNSYN: 'INNSYN',
-	TILBAKE: 'TILBAKE',
-	ANKE: 'ANKE',
-	REVURDERING_TILBAKEKREVING: 'REVURDERING_TILBAKEKREVING',
-	UNNTAKSBEHANDLING: 'UNNTAKSBEHANDLING',
-	SØKNAD_OM_NYE_PERIODER: 'SØKNAD_OM_NYE_PERIODER',
-	PAPIRSØKNAD: 'PAPIRSØKNAD',
-	DIGITAL_SØKNAD: 'DIGITAL_SØKNAD',
-	PAPIRETTERSENDELSE: 'PAPIRETTERSENDELSE',
-	PAPIRINNTEKTSOPPLYSNINGER: 'PAPIRINNTEKTSOPPLYSNINGER',
-	DIGITAL_ETTERSENDELSE: 'DIGITAL_ETTERSENDELSE',
-	INNLOGGET_CHAT: 'INNLOGGET_CHAT',
-	SKRIV_TIL_OSS_SPØRMSÅL: 'SKRIV_TIL_OSS_SPØRMSÅL',
-	SKRIV_TIL_OSS_SVAR: 'SKRIV_TIL_OSS_SVAR',
-	SAMTALEREFERAT: 'SAMTALEREFERAT',
-	KOPI: 'KOPI',
-	INNTEKTSMELDING_UTGÅTT: 'INNTEKTSMELDING_UTGÅTT',
-	UTEN_FNR_DNR: 'UTEN_FNR_DNR',
-	PUNSJOPPGAVE_IKKE_LENGER_NØDVENDIG: 'PUNSJOPPGAVE_IKKE_LENGER_NØDVENDIG',
-	JOURNALPOSTNOTAT: 'JOURNALPOSTNOTAT',
-	UKJENT: 'UKJENT',
-} as const;
-
-export interface ReservasjonDto {
-	behandlingType: BehandlingType;
-	/** @nullable */
-	journalpostId?: string | null;
-	kommentar: string;
-	oppgavenøkkel: OppgaveNokkelDto;
-	reservasjonsnøkkel: string;
-	reservertAvEpost: string;
-	reservertAvId: number;
-	reservertAvIdent: string;
-	/** @nullable */
-	reservertAvNavn?: string | null;
-	reservertTilTidspunkt: LocalDateTime;
-	/** @nullable */
-	saksnummer?: string | null;
-	tilBeslutter: boolean;
-	ytelse: string;
-}
-
 export interface OppgaveKoListeelement {
 	antallSaksbehandlere: number;
 	id: number;

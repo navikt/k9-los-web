@@ -49,7 +49,6 @@ import {
 import type { OppgaveKoIdOgTittel } from 'api/generated/los.schemas';
 import { tilProxySti } from 'api/orvalMutator';
 import type { OppgaveQuery, SelectFelt } from 'filter/filterTsTypes';
-import type Reservasjon from 'fleromrade/avdelingsleder/reservasjoner/reservasjonTsType';
 import type { Saksbehandler } from 'fleromrade/avdelingsleder/saksbehandlere/saksbehandlerTsType';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import type { OppgavekøV3, OppgavekøV3Enkel } from 'types/OppgavekøV3Type';
@@ -219,11 +218,9 @@ export const useOppdaterKøMutation = (callback: () => void) => {
 
 export const useAvdelingslederReservasjoner = () => {
 	const { urlSegment } = useOmråde();
-	return useQuery<Reservasjon[]>({
+	return useQuery({
 		queryKey: getHentAlleAktiveReservasjonerQueryKey(urlSegment),
-		// Spec-en typer `behandlingType` som enum, men backend sender et kodeverkobjekt.
-		queryFn: ({ signal }) =>
-			hentAlleAktiveReservasjoner(urlSegment, undefined, signal) as unknown as Promise<Reservasjon[]>,
+		queryFn: ({ signal }) => hentAlleAktiveReservasjoner(urlSegment, undefined, signal),
 	});
 };
 

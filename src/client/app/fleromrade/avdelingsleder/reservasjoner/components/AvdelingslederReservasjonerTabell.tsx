@@ -12,19 +12,22 @@ import {
 	type SortState,
 	Table,
 } from '@navikt/ds-react';
+import type { OppgaveSammendragDto, ReservasjonsinfoDto } from 'api/generated/los.schemas';
 import { useAvdelingslederReservasjoner } from 'fleromrade/api/avdelingslederQueries';
 import ReservasjonerBolkButtons from 'fleromrade/avdelingsleder/reservasjoner/components/ReservasjonerBolkButtons';
-import { visningsnavn } from 'fleromrade/saksbehandler/visningsnavn';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getDateAndTime } from 'utils/dateUtils';
-import type Reservasjon from '../reservasjonTsType';
 import styles from './AvdelingslederReservasjonerTabell.module.css';
 import FlyttReservasjonerModal from './FlyttReservasjonerModal';
 import OpphevReservasjonerModal from './OpphevReservasjonerModal';
 
+// Én rad per reservert oppgave. Oppgaver som deler reservasjon, deler også reservasjonsnøkkel.
+type ReservertOppgave = { reservasjon: ReservasjonsinfoDto; oppgave: OppgaveSammendragDto };
+
 type ReservasjonTableData = {
-	reservasjon: Reservasjon;
+	reservasjon: ReservasjonsinfoDto;
+	nøkkel: string;
 	id: string;
 	navn: string;
 	ytelse: string;
@@ -35,7 +38,7 @@ type ReservasjonTableData = {
 // Snevrer inn typesettingen av vanlig SortState, slik at kun felter som finnes i tabellen kan sorteres på
 type ReservasjonTableDataSortState = SortState & { orderBy: keyof ReservasjonTableData };
 const erReservasjonSortKey = (sortKey: string): sortKey is keyof ReservasjonTableData =>
-	['reservasjon', 'id', 'navn', 'ytelse', 'type', 'reservertTil'].includes(sortKey);
+	['id', 'navn', 'ytelse', 'type', 'reservertTil'].includes(sortKey);
 
 const comparator = (a: ReservasjonTableData, b: ReservasjonTableData, orderBy: keyof ReservasjonTableData) => {
 	switch (orderBy) {
@@ -44,7 +47,7 @@ const comparator = (a: ReservasjonTableData, b: ReservasjonTableData, orderBy: k
 			return 0;
 		case 'reservertTil':
 			// Kan ikke bruke DD.MM.YYYY til å sortere på, må bruke YYYY-MM-DD
-			return a.reservasjon.reservertTilTidspunkt.localeCompare(b.reservasjon.reservertTilTidspunkt);
+			return a.reservasjon.reservertTil.localeCompare(b.reservasjon.reservertTil);
 		default:
 			return a[orderBy].localeCompare(b[orderBy]);
 	}
@@ -59,13 +62,14 @@ const sorter = (reservasjonerListe: ReservasjonTableData[], newSort: Reservasjon
 	});
 
 // Ren avbildning uten avhengigheter til komponent-state, derfor definert på modulnivå.
-const mapTilTableData = (reservasjon: Reservasjon): ReservasjonTableData => ({
+const mapTilTableData = ({ reservasjon, oppgave }: ReservertOppgave): ReservasjonTableData => ({
 	reservasjon,
+	nøkkel: JSON.stringify(oppgave.oppgaveNøkkel),
 	navn: reservasjon.reservertAvNavn || reservasjon.reservertAvEpost,
-	id: reservasjon.saksnummer || reservasjon.journalpostId,
-	ytelse: reservasjon.ytelse,
-	type: visningsnavn(reservasjon.behandlingType) + (reservasjon.tilBeslutter ? ' - [B] ' : ''),
-	reservertTil: getDateAndTime(reservasjon.reservertTilTidspunkt).date,
+	id: oppgave.saksnummer || oppgave.journalpostId || '',
+	ytelse: oppgave.ytelse?.navn ?? '',
+	type: oppgave.behandlingstype?.navn ?? '',
+	reservertTil: getDateAndTime(reservasjon.reservertTil).date,
 });
 
 const AvdelingslederReservasjonerTabell = () => {
@@ -91,11 +95,23 @@ const AvdelingslederReservasjonerTabell = () => {
 	};
 
 	const {
-		data: reservasjoner,
+		data,
 		isLoading: isLoadingReservasjoner,
 		isSuccess: isSuccessReservasjoner,
 		isError: isErrorReservasjoner,
 	} = useAvdelingslederReservasjoner();
+
+	const reservasjoner = useMemo(
+		() =>
+			data?.flatMap(({ reservasjon, oppgaver }) =>
+				oppgaver.map((oppgave): ReservertOppgave => ({ reservasjon, oppgave })),
+			),
+		[data],
+	);
+
+	// Områder med én implisitt ytelse (f.eks. Aktivitetspenger) sender ytelse som null. Da er kolonnen overflødig.
+	// Sjekker alle oppgaver, ikke bare søketreffene, så kolonnen ikke hopper inn og ut under søk.
+	const visYtelse = reservasjoner?.some(({ oppgave }) => oppgave.ytelse != null) ?? false;
 
 	// Holder gjeldende sortering tilgjengelig for effekten under uten at den abonnerer på den.
 	// handleSort sorterer allerede om umiddelbart ved brukerens klikk; hadde sort ligget i
@@ -122,11 +138,11 @@ const AvdelingslederReservasjonerTabell = () => {
 			}
 			const sokVerdi = value.toLowerCase();
 			const reservasjonerMedMatch = reservasjoner.filter(
-				(res) =>
+				({ reservasjon, oppgave }) =>
 					// reservertAvNavn kan mangle i praksis, jf. fallback til epost i mapTilTableData.
-					res.reservertAvNavn?.toLowerCase()?.includes(sokVerdi) ||
-					res.saksnummer?.toLowerCase()?.includes(sokVerdi) ||
-					res.journalpostId?.toLowerCase()?.includes(sokVerdi),
+					reservasjon.reservertAvNavn?.toLowerCase()?.includes(sokVerdi) ||
+					oppgave.saksnummer?.toLowerCase()?.includes(sokVerdi) ||
+					oppgave.journalpostId?.toLowerCase()?.includes(sokVerdi),
 			);
 			if (reservasjonerMedMatch.length > 0) {
 				setFinnesSokResultat(true);
@@ -223,9 +239,11 @@ const AvdelingslederReservasjonerTabell = () => {
 							<Table.ColumnHeader scope="col" sortable sortKey="id">
 								Id
 							</Table.ColumnHeader>
-							<Table.ColumnHeader scope="col" sortable sortKey="ytelse">
-								Ytelse
-							</Table.ColumnHeader>
+							{visYtelse && (
+								<Table.ColumnHeader scope="col" sortable sortKey="ytelse">
+									Ytelse
+								</Table.ColumnHeader>
+							)}
 							<Table.ColumnHeader scope="col" sortable sortKey="type">
 								Type
 							</Table.ColumnHeader>
@@ -236,8 +254,8 @@ const AvdelingslederReservasjonerTabell = () => {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{reservasjonerSomSkalVises.map(({ reservasjon, id, navn, ytelse, type, reservertTil }) => (
-							<Table.Row key={JSON.stringify(reservasjon.oppgavenøkkel)}>
+						{reservasjonerSomSkalVises.map(({ reservasjon, nøkkel, id, navn, ytelse, type, reservertTil }) => (
+							<Table.Row key={nøkkel}>
 								<Table.DataCell>
 									<Checkbox
 										hideLabel
@@ -268,7 +286,7 @@ const AvdelingslederReservasjonerTabell = () => {
 								</Table.DataCell>
 								<Table.DataCell>{navn}</Table.DataCell>
 								<Table.DataCell>{id}</Table.DataCell>
-								<Table.DataCell>{ytelse}</Table.DataCell>
+								{visYtelse && <Table.DataCell>{ytelse}</Table.DataCell>}
 								<Table.DataCell>{type}</Table.DataCell>
 								<Table.DataCell>{reservertTil}</Table.DataCell>
 								<Table.DataCell>
@@ -312,7 +330,7 @@ const AvdelingslederReservasjonerTabell = () => {
 													{
 														reservasjonsnøkkel: reservasjon.reservasjonsnøkkel,
 														begrunnelse: reservasjon.kommentar,
-														reserverTil: reservasjon.reservertTilTidspunkt,
+														reserverTil: reservasjon.reservertTil,
 														reservertAvIdent: reservasjon.reservertAvIdent,
 													},
 												]}
