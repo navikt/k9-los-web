@@ -15,10 +15,12 @@ interface OwnProps {
 type Appvalg = 'K9_LEGACY' | 'K9_NY' | 'AKTIVITETSPENGER';
 
 const erProd = window.location.hostname.includes('intern.nav.no');
+// Verdikjeden kjører mot docker-tjenestenavnet og skal oppføre seg som prod.
+const erVerdikjede = window.location.hostname === 'k9-los-web';
 
 // Enkle, midlertidige funksjonsbrytere. Endre verdien lokalt for å teste kombinasjonene.
-const visLegacyOgNyK9 = !erProd;
-const aktiverAktivitetspenger = !erProd;
+const visLegacyOgNyK9 = !erProd && !erVerdikjede;
+const aktiverAktivitetspenger = !erProd && !erVerdikjede;
 
 const k9LegacySti = '/k9';
 const k9NySti = basisstiForOmråde.K9;
