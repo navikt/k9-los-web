@@ -55,6 +55,7 @@
 		"@vitest/coverage-v8": "4.1.11",
 		"husky": "9.1.7",
 		"jsdom": "30.0.1",
+		"orval": "8.33.0",
 		"typescript": "7.0.2",
 		"vite": "8.2.2",
 		"vitest": "4.1.11"
@@ -70,7 +71,8 @@
 		"format": "biome format",
 		"fix": "biome check --write",
 		"verify": "tsc -b && biome ci --error-on-warnings",
-		"prepare": "husky"
+		"prepare": "husky",
+		"api:sync": "orval"
 	},
 	"packageManager": "pnpm@11.15.1"
 }

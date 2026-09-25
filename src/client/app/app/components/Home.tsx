@@ -17,7 +17,7 @@ import MissingPage from './MissingPage';
  * Presentasjonskomponent. Wrapper for sideinnholdet som vises under header.
  */
 
-const Home: FunctionComponent = () => {
+const Home: FunctionComponent<{ basissti?: string }> = ({ basissti = '' }) => {
 	const { data, isSuccess: harHentetFelter } = useQuery<{ felter: Oppgavefelt[] }>({
 		queryKey: [apiPaths.hentOppgaveFelter],
 	});
@@ -51,10 +51,10 @@ const Home: FunctionComponent = () => {
 		<div className="mt-5">
 			<AppContext.Provider value={contextValues}>
 				<ApmRoutes>
-					<Route path="/" element={<SaksbehandlerIndex />} />
-					<Route path="/avdelingsleder" element={<AvdelingslederIndex />} />
-					<Route path="/admin" element={<AdminIndex />} />
-					<Route path="*" element={<MissingPage />} />
+					<Route path={basissti || '/'} element={<SaksbehandlerIndex />} />
+					<Route path={`${basissti}/avdelingsleder`} element={<AvdelingslederIndex />} />
+					<Route path={`${basissti}/admin`} element={<AdminIndex />} />
+					<Route path="*" element={<MissingPage basissti={basissti} />} />
 				</ApmRoutes>
 			</AppContext.Provider>
 		</div>

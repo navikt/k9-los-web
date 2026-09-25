@@ -1,12 +1,14 @@
 import { ApmErrorBoundary } from '@nais/apm/react';
 import { ExclamationmarkTriangleIcon } from '@navikt/aksel-icons';
 import { Alert, Button, Modal } from '@navikt/ds-react';
+import OmrådeApp from 'fleromrade/OmrådeApp';
 import { type FunctionComponent, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import '../../styles/global.css';
 import HeaderWithErrorPanel from './components/HeaderWithErrorPanel';
 import Home from './components/Home';
 import InnloggetSaksbehandlerResolver from './InnloggetSaksbehandlerResolver';
+import OmrådeResolver from './OmrådeResolver';
 
 /**
  * AppIndex
@@ -43,34 +45,39 @@ const AppIndex: FunctionComponent = () => {
 				</div>
 			}
 		>
-			<InnloggetSaksbehandlerResolver>
-				<HeaderWithErrorPanel />
-				{sessionHarUtlopt && (
-					<Modal
-						className="min-w-[500px]"
-						open
-						onClose={() => window.location.reload()}
-						header={{ heading: 'Sesjonen er utløpt', icon: <ExclamationmarkTriangleIcon />, closeButton: false }}
-					>
-						<Modal.Body>
-							Økten din har utløpt etter en periode med inaktivitet. Vennligst logg inn på nytt for å fortsette.
-						</Modal.Body>
-						<Modal.Footer>
-							<Button onClick={() => window.location.reload()}>Logg inn på nytt</Button>
-						</Modal.Footer>
-					</Modal>
+			<OmrådeResolver
+				fleromrade={<OmrådeApp />}
+				k9={(kanBytteOmråde) => (
+					<InnloggetSaksbehandlerResolver>
+						<HeaderWithErrorPanel basissti="/k9" kanBytteOmråde={kanBytteOmråde} />
+						{sessionHarUtlopt && (
+							<Modal
+								className="min-w-[500px]"
+								open
+								onClose={() => window.location.reload()}
+								header={{ heading: 'Sesjonen er utløpt', icon: <ExclamationmarkTriangleIcon />, closeButton: false }}
+							>
+								<Modal.Body>
+									Økten din har utløpt etter en periode med inaktivitet. Vennligst logg inn på nytt for å fortsette.
+								</Modal.Body>
+								<Modal.Footer>
+									<Button onClick={() => window.location.reload()}>Logg inn på nytt</Button>
+								</Modal.Footer>
+							</Modal>
+						)}
+						<ApmErrorBoundary
+							fingerprint="app-innhold"
+							fallback={
+								<Alert variant="error" className="mt-5">
+									Det oppstod en teknisk feil. Last siden på nytt.
+								</Alert>
+							}
+						>
+							<Home basissti="/k9" />
+						</ApmErrorBoundary>
+					</InnloggetSaksbehandlerResolver>
 				)}
-				<ApmErrorBoundary
-					fingerprint="app-innhold"
-					fallback={
-						<Alert variant="error" className="mt-5">
-							Det oppstod en teknisk feil. Last siden på nytt.
-						</Alert>
-					}
-				>
-					<Home />
-				</ApmErrorBoundary>
-			</InnloggetSaksbehandlerResolver>
+			/>
 		</ApmErrorBoundary>
 	);
 };

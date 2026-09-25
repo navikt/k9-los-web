@@ -1,0 +1,56 @@
+import { InternalHeader, Spacer } from '@navikt/ds-react';
+import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
+import { useOmråde } from 'fleromrade/OmrådeContext';
+import { områdenavn } from 'fleromrade/områder';
+import { Link, useLocation, useNavigate } from 'react-router';
+import DriftsmeldingBanner from './DriftsmeldingBanner';
+import styles from './header.module.css';
+import K9Headerelementer from './K9Headerelementer';
+
+const isDev = !window.location.hostname.includes('intern.nav.no');
+
+const Header = () => {
+	const navigate = useNavigate();
+	const { pathname } = useLocation();
+	const { område, basissti, kanBytteOmråde } = useOmråde();
+	const { data: bruker } = useInnloggetBruker();
+
+	const avdelingslederSti = `${basissti}/avdelingsleder`;
+	const adminSti = `${basissti}/admin`;
+	const erPå = (sti: string) => pathname === sti || pathname.startsWith(`${sti}/`);
+
+	const loggUt = () => {
+		window.location.assign('/logout');
+		setTimeout(() => navigate(basissti), 1000);
+	};
+
+	return (
+		<header className={isDev ? styles.containerDev : ''}>
+			<InternalHeader>
+				<InternalHeader.Title as={Link} to={basissti}>
+					{områdenavn[område]}
+				</InternalHeader.Title>
+				<Spacer />
+				{bruker.tilganger.drift && !erPå(adminSti) && (
+					<InternalHeader.Button onClick={() => navigate(adminSti)}>Driftsmeldinger</InternalHeader.Button>
+				)}
+				{bruker.tilganger.oppgavestyring && !erPå(avdelingslederSti) && (
+					<InternalHeader.Button onClick={() => navigate(avdelingslederSti)}>Avdelingslederpanel</InternalHeader.Button>
+				)}
+				{kanBytteOmråde && (
+					<InternalHeader.Button onClick={() => navigate('/velg-omrade')}>Bytt område</InternalHeader.Button>
+				)}
+				{område === 'K9' && <K9Headerelementer brukerIdent={bruker.brukerIdent} />}
+				<InternalHeader.User name={bruker.brukerIdent} />
+				{isDev && (
+					<InternalHeader.Button type="button" onClick={loggUt}>
+						Logg ut
+					</InternalHeader.Button>
+				)}
+			</InternalHeader>
+			<DriftsmeldingBanner />
+		</header>
+	);
+};
+
+export default Header;
