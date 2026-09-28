@@ -25,7 +25,7 @@ import {
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { useId, useState } from 'react';
 import { getValueFromLocalStorage, setValueInLocalStorage } from 'utils/localStorageHelper';
-import OppgaveModal from '../oppgave/OppgaveModal';
+import OppgaveDialog from '../oppgave/OppgaveDialog';
 import OppgaveTabell from '../oppgave/OppgaveTabell';
 import ReserverteOppgaver from '../reservasjoner/ReserverteOppgaver';
 import SammenleggbarOverskrift from '../SammenleggbarOverskrift';
@@ -50,7 +50,7 @@ const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 				oppgaver={oppgaver}
 				velg={kø.frittValgAvOppgave ? { med: 'knapp', onVelgOppgave: setValgtOppgave } : undefined}
 			/>
-			{valgtOppgave && <OppgaveModal oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
+			{valgtOppgave && <OppgaveDialog oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
 		</>
 	);
 };

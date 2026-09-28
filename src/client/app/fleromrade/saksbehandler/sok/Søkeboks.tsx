@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { PersonInfo } from 'saksbehandler/sokeboks/PersonInfo';
 import { SøkForm } from 'saksbehandler/sokeboks/SøkForm';
-import OppgaveModal from '../oppgave/OppgaveModal';
+import OppgaveDialog from '../oppgave/OppgaveDialog';
 import OppgaveTabell from '../oppgave/OppgaveTabell';
 
 const saksnummerEllerJournalpostId = /^(?:\w{5}|\w{7}|\d{9})$/;
@@ -61,7 +61,7 @@ const Søkeboks = () => {
 			/>
 			{isError && <InlineMessage status="error">Søket feilet. Prøv igjen senere.</InlineMessage>}
 			{resultat && <Søkeresultat resultat={resultat} onVelgOppgave={setValgtOppgave} />}
-			{valgtOppgave && <OppgaveModal oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
+			{valgtOppgave && <OppgaveDialog oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
 		</VStack>
 	);
 };
