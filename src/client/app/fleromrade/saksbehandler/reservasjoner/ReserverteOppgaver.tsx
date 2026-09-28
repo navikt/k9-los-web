@@ -112,10 +112,10 @@ const ReservertOppgaveRad = ({ oppgave, reservasjon, antallOppgaverIReservasjone
 					<KopierbarVerdi copyText={id} title={`Kopier ${idNavn}`}>
 						{id}
 					</KopierbarVerdi>
-					{oppgave.oppgavestatus.kode === 'VENTER' && (
+					{['VENTER', 'LUKKET'].includes(oppgave.oppgavestatus.kode) && (
 						<>
 							<br />
-							<Detail>På vent</Detail>
+							<Detail>{oppgave.oppgavestatus.navn}</Detail>
 						</>
 					)}
 				</Table.DataCell>
@@ -250,7 +250,7 @@ const ReserverteOppgaver = () => {
 						</Chips.Toggle>
 						{antallPåVent > 0 && (
 							<Chips.Toggle selected={visPåVent} onClick={() => setVisPåVent((vis) => !vis)}>
-								{`${antallPåVent} på vent`}
+								{`${antallPåVent} venter`}
 							</Chips.Toggle>
 						)}
 					</Chips>

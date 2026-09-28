@@ -15,6 +15,8 @@ import {
 import type { OppgaveSammendragDto, ReservasjonsinfoDto } from 'api/generated/los.schemas';
 import { useAvdelingslederReservasjoner } from 'fleromrade/api/avdelingslederQueries';
 import ReservasjonerBolkButtons from 'fleromrade/avdelingsleder/reservasjoner/components/ReservasjonerBolkButtons';
+import { useOmråde } from 'fleromrade/OmrådeContext';
+import type { Område } from 'fleromrade/områder';
 import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getDateAndTime } from 'utils/dateUtils';
@@ -39,6 +41,12 @@ type ReservasjonTableData = {
 type ReservasjonTableDataSortState = SortState & { orderBy: keyof ReservasjonTableData };
 const erReservasjonSortKey = (sortKey: string): sortKey is keyof ReservasjonTableData =>
 	['id', 'navn', 'ytelse', 'type', 'reservertTil'].includes(sortKey);
+
+/** Aktivitetspenger har ikke journalpost-id på oppgavene. */
+const søkebeskrivelse: Record<Område, string> = {
+	K9: 'Du kan søke på navn, saksnummer eller journalpost-id',
+	AKTIVITETSPENGER: 'Du kan søke på navn eller saksnummer',
+};
 
 const comparator = (a: ReservasjonTableData, b: ReservasjonTableData, orderBy: keyof ReservasjonTableData) => {
 	switch (orderBy) {
@@ -73,6 +81,7 @@ const mapTilTableData = ({ reservasjon, oppgave }: ReservertOppgave): Reservasjo
 });
 
 const AvdelingslederReservasjonerTabell = () => {
+	const { område } = useOmråde();
 	const [reservasjonerSomSkalVises, setReservasjonerSomSkalVises] = useState<ReservasjonTableData[]>([]);
 	const [finnesSokResultat, setFinnesSokResultat] = useState(true);
 	const [valgteReservasjoner, setValgteReservasjoner] = useState<{ reservasjonsnøkkel: string; begrunnelse: string }[]>(
@@ -186,7 +195,7 @@ const AvdelingslederReservasjonerTabell = () => {
 						onChange={debounceFn}
 						label="Søk på reservasjon"
 						hideLabel={false}
-						description="Du kan søke på navn, saksnummer eller journalpost-ID"
+						description={søkebeskrivelse[område]}
 					/>
 				</div>
 			</div>

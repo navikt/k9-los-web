@@ -106,13 +106,13 @@ describe('ReserverteOppgaver', () => {
 		renderMedOmråde(<ReserverteOppgaver />);
 
 		expect(screen.getByRole('button', { name: '3 åpne' })).toBeInTheDocument();
-		await user.click(screen.getByRole('button', { name: '1 på vent' }));
+		await user.click(screen.getByRole('button', { name: '1 venter' }));
 
-		expect(radtekster()).toEqual(['FØRST', 'VENTERPå vent', 'ELDST', 'NYEST']);
+		expect(radtekster()).toEqual(['FØRST', 'VENTERVenter', 'ELDST', 'NYEST']);
 
 		await user.click(screen.getByRole('button', { name: '3 åpne' }));
 
-		expect(radtekster()).toEqual(['VENTERPå vent']);
+		expect(radtekster()).toEqual(['VENTERVenter']);
 	});
 
 	it('kan skjule og vise reservasjonene', async () => {

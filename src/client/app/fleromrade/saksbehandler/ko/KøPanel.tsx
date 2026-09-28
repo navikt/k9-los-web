@@ -55,9 +55,31 @@ const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 	);
 };
 
+const SaksbehandlereIKø = ({ køId }: { køId: number }) => {
+	const { data: saksbehandlere, isPending, isError } = useSaksbehandlereIKø(køId);
+
+	if (isPending) {
+		return <Loader size="small" title="Henter saksbehandlere i køen" />;
+	}
+	if (isError) {
+		return <InlineMessage status="error">Kunne ikke hente saksbehandlerne i køen</InlineMessage>;
+	}
+
+	return (
+		<ul>
+			{saksbehandlere
+				.toSorted((a, b) => a.epost.localeCompare(b.epost))
+				.map((saksbehandler) => (
+					<li key={saksbehandler.id}>{saksbehandler.navn ?? saksbehandler.epost}</li>
+				))}
+		</ul>
+	);
+};
+
 const KøDetaljer = ({ kø }: { kø: OppgaveKo }) => {
 	const { data: antall, isPending: henterAntall } = useAntallIKø(kø.id);
-	const { data: saksbehandlere } = useSaksbehandlereIKø(kø.id);
+	// Listen hentes først når brukeren åpner ReadMore, siden den sjelden brukes.
+	const [visSaksbehandlere, setVisSaksbehandlere] = useState(false);
 
 	return (
 		<VStack gap="space-8">
@@ -66,14 +88,13 @@ const KøDetaljer = ({ kø }: { kø: OppgaveKo }) => {
 			) : (
 				<BodyShort>{`Antall i kø: ${antall?.antallUtenReserverte}`}</BodyShort>
 			)}
-			<ReadMore size="small" header="Saksbehandlere i køen">
-				<ul>
-					{(saksbehandlere ?? [])
-						.toSorted((a, b) => a.epost.localeCompare(b.epost))
-						.map((saksbehandler) => (
-							<li key={saksbehandler.id}>{saksbehandler.navn ?? saksbehandler.epost}</li>
-						))}
-				</ul>
+			<ReadMore
+				size="small"
+				header="Saksbehandlere i køen"
+				open={visSaksbehandlere}
+				onOpenChange={setVisSaksbehandlere}
+			>
+				{visSaksbehandlere && <SaksbehandlereIKø køId={kø.id} />}
 			</ReadMore>
 		</VStack>
 	);

@@ -1,6 +1,8 @@
 import { BodyShort, InlineMessage, VStack } from '@navikt/ds-react';
 import type { OppgaveSammendragDto, SokeresultatSammendrag } from 'api/generated/los.schemas';
 import { useSøk } from 'fleromrade/api/saksbehandlerQueries';
+import { useOmråde } from 'fleromrade/OmrådeContext';
+import type { Område } from 'fleromrade/områder';
 import { useMount } from 'hooks/UseMount';
 import { useState } from 'react';
 import { useSearchParams } from 'react-router';
@@ -10,6 +12,12 @@ import OppgaveDialog from '../oppgave/OppgaveDialog';
 import OppgaveTabell from '../oppgave/OppgaveTabell';
 
 const saksnummerEllerJournalpostId = /^(?:\w{5}|\w{7}|\d{9})$/;
+
+/** Aktivitetspenger har ikke søk på journalpost-id. */
+const søkeetikett: Record<Område, string> = {
+	K9: 'Søk på saksnummer, fødselsnummer eller journalpost-id',
+	AKTIVITETSPENGER: 'Søk på saksnummer eller fødselsnummer',
+};
 
 const Søkeresultat = ({
 	resultat,
@@ -31,12 +39,13 @@ const Søkeresultat = ({
 	return (
 		<VStack gap="space-16">
 			{person && <PersonInfo person={person} />}
-			<OppgaveTabell oppgaver={resultat.oppgaver} velg={{ med: 'rad', onVelgOppgave }} />
+			<OppgaveTabell oppgaver={resultat.oppgaver} velg={{ med: 'rad', onVelgOppgave }} visBehandlingsstatus />
 		</VStack>
 	);
 };
 
 const Søkeboks = () => {
+	const { område } = useOmråde();
 	const [søkeparametere] = useSearchParams();
 	const søkeordFraUrl = søkeparametere.get('sok');
 	const gyldigSøkeordFraUrl =
@@ -54,6 +63,7 @@ const Søkeboks = () => {
 	return (
 		<VStack gap="space-16">
 			<SøkForm
+				label={søkeetikett[område]}
 				utførSøk={({ søkeord }) => søk(søkeord)}
 				loading={isPending}
 				nullstillSøk={reset}
