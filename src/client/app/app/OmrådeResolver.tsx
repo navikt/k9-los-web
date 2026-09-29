@@ -1,4 +1,4 @@
-import { BodyShort, Box, Button, Heading, Loader, LocalAlert, VStack } from '@navikt/ds-react';
+import { BodyShort, Box, Button, Heading, LocalAlert, VStack } from '@navikt/ds-react';
 import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { OmrådeProvider } from 'fleromrade/OmrådeContext';
 import { basisstiForOmråde, områdenavn } from 'fleromrade/områder';
@@ -60,14 +60,7 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 	const navigate = useNavigate();
 
 	if (isPending) {
-		return (
-			<Side>
-				<VStack align="center" gap="space-12">
-					<Loader size="2xlarge" title="Henter områdene dine" />
-					<BodyShort>Henter områdene dine</BodyShort>
-				</VStack>
-			</Side>
-		);
+		return null;
 	}
 
 	if (isError) {
@@ -76,7 +69,7 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 				<VStack gap="space-16">
 					<LocalAlert status="error">
 						<LocalAlert.Header>
-							<LocalAlert.Title>Kunne ikke hente områdene dine</LocalAlert.Title>
+							<LocalAlert.Title>Kunne ikke hente tilgangene dine</LocalAlert.Title>
 						</LocalAlert.Header>
 						<LocalAlert.Content>Prøv på nytt. Last siden på nytt hvis problemet fortsetter.</LocalAlert.Content>
 					</LocalAlert>

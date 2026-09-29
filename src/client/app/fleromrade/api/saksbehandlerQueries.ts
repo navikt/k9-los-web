@@ -1,8 +1,8 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { type Query, useQueryClient } from '@tanstack/react-query';
 import {
 	getHentAktivReservasjonQueryKey,
 	getHentAlleAktiveReservasjonerQueryKey,
-	getHentAntallOppgaverUtenReserverteISaksbehandlerkoQueryKey,
+	getHentOppgaverISaksbehandlerkoQueryKey,
 	getHentReserverteOppgaverQueryKey,
 	getHentSisteOppgaverQueryKey,
 	useEndreReservasjoner as useGenerertEndreReservasjoner,
@@ -23,6 +23,7 @@ import {
 } from 'api/generated/los';
 import type { OppgaveNokkelDto, ReservasjonEndringDto, ReservasjonsinfoDto } from 'api/generated/los.schemas';
 import { useOmråde } from 'fleromrade/OmrådeContext';
+import { useEffect, useRef } from 'react';
 
 /**
  * Omslutter de genererte hookene for saksbehandler. Setter område fra konteksten, og oppdaterer
@@ -40,10 +41,20 @@ export const useSaksbehandlersKøer = () => {
 	return useHentSaksbehandlersOppgavekoer(urlSegment);
 };
 
+/**
+ * Antallet er et billig kall, og brukes som signal for om neste oppgaver i køen må hentes på nytt. Andre
+ * saksbehandlere plukker fra de samme køene, så vi kan ikke stole på invalidering etter egne endringer alene.
+ */
+export const ANTALL_I_KØ_INTERVALL_MS = 15_000;
+
 export const useAntallIKø = (køId: number | undefined) => {
 	const { urlSegment } = useOmråde();
 	return useHentAntallOppgaverUtenReserverteISaksbehandlerko(urlSegment, køId, {
-		query: { enabled: køId !== undefined },
+		query: {
+			enabled: køId !== undefined,
+			refetchInterval: ANTALL_I_KØ_INTERVALL_MS,
+			refetchOnWindowFocus: true,
+		},
 	});
 };
 
@@ -52,8 +63,31 @@ export const useSaksbehandlereIKø = (køId: number | undefined) => {
 	return useHentSaksbehandlereISaksbehandlerko(urlSegment, køId, { query: { enabled: køId !== undefined } });
 };
 
+/**
+ * Listen er tung å hente, så den polles ikke selv. Den hentes på nytt når antallet i køen endrer seg. Kommer én
+ * oppgave inn og én ut mellom to målinger, merker vi det ikke, men det er godt nok for en forhåndsvisning.
+ */
 export const useOppgaverIKø = (køId: number | undefined) => {
 	const { urlSegment } = useOmråde();
+	const queryClient = useQueryClient();
+	const antall = useAntallIKø(køId).data?.antallUtenReserverte;
+	const forrigeMåling = useRef<{ køId: number; antall: number }>(undefined);
+
+	useEffect(() => {
+		if (køId === undefined || antall === undefined) {
+			return;
+		}
+		const forrige = forrigeMåling.current;
+		forrigeMåling.current = { køId, antall };
+		if (forrige?.køId === køId && forrige.antall !== antall) {
+			// cancelRefetch: false lar en henting som allerede pågår (f.eks. etter egen reservasjon) fullføre.
+			queryClient.invalidateQueries(
+				{ queryKey: getHentOppgaverISaksbehandlerkoQueryKey(urlSegment, køId), exact: true },
+				{ cancelRefetch: false },
+			);
+		}
+	}, [queryClient, urlSegment, køId, antall]);
+
 	return useHentOppgaverISaksbehandlerko(urlSegment, køId, { query: { enabled: køId !== undefined } });
 };
 
@@ -82,6 +116,19 @@ export const useAktivReservasjon = (oppgaveNøkkel: OppgaveNokkelDto, enabled = 
 	);
 };
 
+/**
+ * En reservasjon flytter oppgaven inn i eller ut av køene, så både listen og antallet må hentes på nytt. Nøklene er
+ * én streng med kø-id-en inni, så vi matcher på sti i stedet for prefiks, og treffer alle køer i området.
+ */
+const erKøinnhold = (urlSegment: string) => (query: Query) => {
+	const [url] = query.queryKey;
+	return (
+		typeof url === 'string' &&
+		url.startsWith(`/api/wip/${urlSegment}/saksbehandler/oppgaveko/`) &&
+		(url.endsWith('/oppgaver-i-koen') || url.endsWith('/antall-uten-reserverte'))
+	);
+};
+
 const useOppdaterReservasjoner = () => {
 	const queryClient = useQueryClient();
 	const { urlSegment } = useOmråde();
@@ -90,6 +137,7 @@ const useOppdaterReservasjoner = () => {
 		return Promise.all([
 			queryClient.invalidateQueries({ queryKey: getHentReserverteOppgaverQueryKey(urlSegment) }),
 			queryClient.invalidateQueries({ queryKey: getHentAlleAktiveReservasjonerQueryKey(urlSegment) }),
+			queryClient.invalidateQueries({ predicate: erKøinnhold(urlSegment) }),
 		]);
 	};
 };
@@ -116,21 +164,10 @@ export const useReserverOppgave = () => {
 
 export const usePlukkOppgave = () => {
 	const { urlSegment } = useOmråde();
-	const queryClient = useQueryClient();
 	const oppdaterReservasjoner = useOppdaterReservasjoner();
 	const { mutate, ...resten } = useReserverNesteOppgaveFraSaksbehandlerko({
 		mutation: {
-			onSuccess: (reservasjoner, { id }) => {
-				if (reservasjoner.length === 0) {
-					return undefined;
-				}
-				return Promise.all([
-					oppdaterReservasjoner(),
-					queryClient.invalidateQueries({
-						queryKey: getHentAntallOppgaverUtenReserverteISaksbehandlerkoQueryKey(urlSegment, id),
-					}),
-				]);
-			},
+			onSuccess: (reservasjoner) => (reservasjoner.length === 0 ? undefined : oppdaterReservasjoner()),
 		},
 	});
 	return {

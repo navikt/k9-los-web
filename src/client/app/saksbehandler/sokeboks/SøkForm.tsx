@@ -6,6 +6,7 @@ export function SøkForm(props: {
 	utførSøk: (søk: { søkeord: string }) => void;
 	nullstillSøk: () => void;
 	søkeordFraUrl?: string;
+	label: string;
 }) {
 	const [søkeord, setSøkeord] = useState(props.søkeordFraUrl);
 	const [feilmelding, setFeilmelding] = useState<string>();
@@ -37,7 +38,7 @@ export function SøkForm(props: {
 			>
 				<Search
 					error={feilmelding}
-					label="Søk på saksnummer, personnummer eller journalpost-id"
+					label={props.label}
 					variant="primary"
 					hideLabel={false}
 					onChange={endreSøkeord}

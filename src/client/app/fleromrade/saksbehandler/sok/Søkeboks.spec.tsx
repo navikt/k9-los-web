@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
 	useEndreReservasjoner,
@@ -44,6 +44,19 @@ afterEach(() => {
 });
 
 describe('Søkeboks', () => {
+	it('beskriver hva det kan søkes på i området', () => {
+		medSøkeresultat(undefined);
+		const { unmount } = renderMedOmråde(<Søkeboks />);
+		// Aktivitetspenger har ikke søk på journalpost-id.
+		expect(screen.getByRole('searchbox', { name: 'Søk på saksnummer eller fødselsnummer' })).toBeInTheDocument();
+		unmount();
+
+		renderMedOmråde(<Søkeboks />, { sti: '/k9-ny', område: 'K9' });
+		expect(
+			screen.getByRole('searchbox', { name: 'Søk på saksnummer, fødselsnummer eller journalpost-id' }),
+		).toBeInTheDocument();
+	});
+
 	it('søker i området med renset søkeord', async () => {
 		const user = userEvent.setup();
 		const søk = medSøkeresultat(undefined);
@@ -63,7 +76,7 @@ describe('Søkeboks', () => {
 		expect(søk).toHaveBeenCalledWith({ omrade: 'akt', data: { søkeord: 'ABC12' } });
 	});
 
-	it('viser personen og oppgavene i søkeresultatet, med samme kolonner som reserverte oppgaver', () => {
+	it('viser personen og oppgavene i søkeresultatet, med behandlingsstatus i tillegg til kolonnene i reserverte oppgaver', () => {
 		medSøkeresultat({
 			type: 'MED_RESULTAT',
 			oppgaver: [
@@ -88,13 +101,17 @@ describe('Søkeboks', () => {
 			'Sak',
 			'Behandlingstype',
 			'Oppgave opprettet',
+			'Behandlingsstatus',
 		]);
-		const [søker, sak, behandlingstype, opprettet] = within(screen.getAllByRole('row')[1]).getAllByRole('cell');
+		const [søker, sak, behandlingstype, opprettet, behandlingsstatus] = within(
+			screen.getAllByRole('row')[1],
+		).getAllByRole('cell');
 		expect(søker).toHaveTextContent('Kari Nordmann01234567890');
 		expect(sak).toHaveTextContent(/^ABC12 \(2026\)$/);
 		// Søket er ment for å klikke seg inn på oppgaven, og har verken kopiknapper eller Velg-knapp.
 		expect(screen.queryByRole('button', { name: /Kopier|Velg/ })).not.toBeInTheDocument();
 		expect(behandlingstype).toHaveTextContent('FørstegangsbehandlingAktivitetspenger');
+		expect(behandlingsstatus).toHaveTextContent(/^Utredes$/);
 		expect(opprettet).toHaveTextContent('07.09.2026');
 		expect(within(screen.getAllByRole('row')[2]).getAllByRole('cell')[1]).toHaveTextContent('Lukket');
 	});
@@ -175,6 +192,32 @@ describe('Søkeboks', () => {
 			{ omrade: 'akt', data: [{ reservasjonsnøkkel: 'reservasjon-1', brukerIdent: 'Z123456' }] },
 			expect.anything(),
 		);
+	});
+
+	it('kan åpne oppgaven igjen etter at den er lagt tilbake i kø', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(lagReservasjon()));
+		// Etter at reservasjonen er opphevet, fjernes den fra cachen og hentes på nytt.
+		const opphev = mutationResultat({
+			mutate: vi.fn((_variabler: unknown, options?: { onSuccess?: () => void }) => {
+				vi.mocked(useHentAktivReservasjon).mockReturnValue(
+					queryResultat(undefined, { isPending: true, isSuccess: false }),
+				);
+				options?.onSuccess?.();
+			}),
+		});
+		vi.mocked(useOpphevReservasjoner).mockReturnValue(opphev);
+		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
+
+		renderMedOmråde(<Søkeboks />);
+		await user.click(screen.getByRole('row', { name: /ABC12/ }));
+		await user.click(screen.getByRole('button', { name: 'Legg tilbake i kø' }));
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+
+		vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(null));
+		await user.click(screen.getByRole('row', { name: /ABC12/ }));
+
+		expect(await screen.findByRole('dialog', { name: 'Oppgaven er ikke reservert' })).toBeInTheDocument();
 	});
 
 	it('åpner oppgavemodalen fra raden med tastaturet', async () => {

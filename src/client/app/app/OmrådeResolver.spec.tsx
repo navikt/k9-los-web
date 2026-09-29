@@ -137,7 +137,7 @@ describe('OmrådeResolver', () => {
 		renderResolver('/');
 		await user.click(screen.getByRole('button', { name: 'Prøv på nytt' }));
 
-		expect(screen.getByText('Kunne ikke hente områdene dine')).toBeInTheDocument();
+		expect(screen.getByText('Kunne ikke hente tilgangene dine')).toBeInTheDocument();
 		expect(refetch).toHaveBeenCalledOnce();
 	});
 });

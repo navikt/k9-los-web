@@ -13,6 +13,11 @@ interface Props {
 	 * `rad` gjør hele raden klikkbar og uten kopiknapper (søkeresultatet).
 	 */
 	velg?: { med: 'knapp' | 'rad'; onVelgOppgave: (oppgave: OppgaveSammendragDto) => void };
+	/**
+	 * Unntak for søkeresultatet: det er ikke avklart om behandlingsstatus skal vises i de andre
+	 * oppgavetabellene.
+	 */
+	visBehandlingsstatus?: boolean;
 }
 
 /** Viser verdien med kopiknapp, eller bare verdien når tabellen ikke skal ha kopiknapper. */
@@ -41,7 +46,7 @@ const Celle = ({ kopierbar, children }: { kopierbar: boolean; children: ReactEle
 /**
  * Oppgaver i søkeresultatet og i neste oppgaver i køen, med samme kolonner og visning som reserverte oppgaver.
  */
-const OppgaveTabell = ({ oppgaver, velg }: Props) => {
+const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) => {
 	const visHastesak = oppgaver.some((oppgave) => oppgave.hastesak);
 	const klikkbarRad = velg?.med === 'rad';
 	const kopierbar = !klikkbarRad;
@@ -59,6 +64,7 @@ const OppgaveTabell = ({ oppgaver, velg }: Props) => {
 					<Table.HeaderCell scope="col">{idKolonneTittel(oppgaver)}</Table.HeaderCell>
 					<Table.HeaderCell scope="col">Behandlingstype</Table.HeaderCell>
 					<Table.HeaderCell scope="col">Oppgave opprettet</Table.HeaderCell>
+					{visBehandlingsstatus && <Table.HeaderCell scope="col">Behandlingsstatus</Table.HeaderCell>}
 					{velg?.med === 'knapp' && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
 				</Table.Row>
 			</Table.Header>
@@ -123,6 +129,7 @@ const OppgaveTabell = ({ oppgaver, velg }: Props) => {
 								)}
 							</Table.DataCell>
 							<Table.DataCell>{oppgave.opprettetTidspunkt && dateFormat(oppgave.opprettetTidspunkt)}</Table.DataCell>
+							{visBehandlingsstatus && <Table.DataCell>{oppgave.behandlingsstatus?.navn}</Table.DataCell>}
 							{velg?.med === 'knapp' && (
 								<Table.DataCell>
 									<Button
