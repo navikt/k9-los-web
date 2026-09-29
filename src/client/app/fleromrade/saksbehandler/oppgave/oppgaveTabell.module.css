@@ -1,0 +1,42 @@
+/*
+ * Chevronen viser at raden kan åpnes. Den er dempet i hvile og blir tydelig
+ * når raden har musepeker eller tastaturfokus.
+ */
+/*
+ * Smal kolonne med ekstra luft mot høyre, slik at chevronen har plass til å
+ * flytte seg uten å havne i kanten av raden.
+ */
+.chevronCelle {
+	width: 1%;
+	padding-inline-end: var(--ax-space-24);
+}
+
+.chevron {
+	display: block;
+	color: var(--ax-text-neutral-subtle);
+	transition:
+		transform 150ms ease-out,
+		color 150ms ease-out;
+}
+
+.klikkbarRad:focus-visible {
+	outline: 2px solid var(--ax-border-focus);
+	outline-offset: -2px;
+}
+
+.klikkbarRad:hover .chevron,
+.klikkbarRad:focus-visible .chevron {
+	color: var(--ax-text-accent);
+	transform: translateX(var(--ax-space-2));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.chevron {
+		transition: none;
+	}
+
+	.klikkbarRad:hover .chevron,
+	.klikkbarRad:focus-visible .chevron {
+		transform: none;
+	}
+}

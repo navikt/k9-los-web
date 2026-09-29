@@ -102,6 +102,7 @@ describe('Søkeboks', () => {
 			'Behandlingstype',
 			'Oppgave opprettet',
 			'Behandlingsstatus',
+			'Åpne oppgave',
 		]);
 		const [søker, sak, behandlingstype, opprettet, behandlingsstatus] = within(
 			screen.getAllByRole('row')[1],
