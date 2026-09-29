@@ -29,6 +29,7 @@ export function Søkeboks() {
 				loading={isPending}
 				nullstillSøk={nullstillSøk}
 				søkeordFraUrl={gyldigSøkeordFraUrl}
+				label="Søk på saksnummer, personnummer eller journalpost-id"
 			/>
 			<VerticalSpacer sixteenPx />
 			<SøkResultat søkeresultat={data} />
