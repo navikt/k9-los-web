@@ -16,7 +16,7 @@ describe('oppgaveModalInnhold', () => {
 	it('lar brukeren reservere en ledig oppgave', () => {
 		expect(oppgaveModalInnhold(åpen, innloggetBruker, null)).toEqual({
 			tittel: 'Oppgaven er ikke reservert',
-			tekst: '',
+			tekst: 'Hva ønsker du å gjøre med oppgaven?',
 			visReserver: true,
 			visOvertaReservasjon: false,
 			visLeggTilbake: false,

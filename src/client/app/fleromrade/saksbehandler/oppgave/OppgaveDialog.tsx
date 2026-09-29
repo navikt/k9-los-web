@@ -46,8 +46,7 @@ const OppgaveDialog = ({ oppgave, lukk }: Props) => {
 				</Dialog.Header>
 				<Dialog.Body>
 					<VStack gap="space-8">
-						{tekst && <BodyShort>{tekst}</BodyShort>}
-						<BodyShort>Hva ønsker du å gjøre med oppgaven?</BodyShort>
+						<BodyShort>{tekst}</BodyShort>
 						{feilmelding && <InlineMessage status="error">{feilmelding}</InlineMessage>}
 					</VStack>
 				</Dialog.Body>

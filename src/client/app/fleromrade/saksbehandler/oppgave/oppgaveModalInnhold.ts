@@ -40,7 +40,7 @@ export const oppgaveModalInnhold = (
 	if (reservertAvMeg) {
 		return {
 			tittel: 'Oppgaven er reservert av deg',
-			tekst: '',
+			tekst: 'Hva ønsker du å gjøre med oppgaven?',
 			visReserver: false,
 			visOvertaReservasjon: false,
 			visLeggTilbake: true,
@@ -50,7 +50,7 @@ export const oppgaveModalInnhold = (
 	if (!reservasjon) {
 		return {
 			tittel: 'Oppgaven er ikke reservert',
-			tekst: '',
+			tekst: 'Hva ønsker du å gjøre med oppgaven?',
 			visReserver: kanReservere,
 			visOvertaReservasjon: false,
 			visLeggTilbake: false,
