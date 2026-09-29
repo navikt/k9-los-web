@@ -1,10 +1,12 @@
 import { HastesakIkon } from 'sharedComponents/HastesakIkon';
 import KopierbarVerdi, { Kopieringsområde } from 'sharedComponents/KopierbarVerdi';
+import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Button, Detail, Table } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
 import type { KeyboardEvent, ReactElement, ReactNode } from 'react';
 import { idKolonneTittel } from 'saksbehandler/tabellvisning';
 import { dateFormat } from 'utils/dateUtils';
+import styles from './oppgaveTabell.module.css';
 
 interface Props {
 	oppgaver: OppgaveSammendragDto[];
@@ -66,6 +68,11 @@ const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) 
 					<Table.HeaderCell scope="col">Oppgave opprettet</Table.HeaderCell>
 					{visBehandlingsstatus && <Table.HeaderCell scope="col">Behandlingsstatus</Table.HeaderCell>}
 					{velg?.med === 'knapp' && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
+					{klikkbarRad && (
+						<Table.HeaderCell scope="col">
+							<span className="sr-only">Åpne oppgave</span>
+						</Table.HeaderCell>
+					)}
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
@@ -75,7 +82,7 @@ const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) 
 					const velgOppgave = () => velg?.onVelgOppgave(oppgave);
 					const radProps = klikkbarRad
 						? {
-								className: 'cursor-pointer',
+								className: `cursor-pointer ${styles.klikkbarRad}`,
 								tabIndex: 0,
 								onClick: velgOppgave,
 								onKeyDown: (event: KeyboardEvent) => {
@@ -140,6 +147,11 @@ const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) 
 									>
 										Velg
 									</Button>
+								</Table.DataCell>
+							)}
+							{klikkbarRad && (
+								<Table.DataCell className={styles.chevronCelle}>
+									<ChevronRightIcon aria-hidden fontSize="1.25rem" className={styles.chevron} />
 								</Table.DataCell>
 							)}
 						</Table.Row>

@@ -1,0 +1,34 @@
+.chevronCelle {
+	width: 1%;
+	padding-inline-end: var(--ax-space-24);
+}
+
+.chevron {
+	display: block;
+	color: var(--ax-text-neutral-subtle);
+	transition:
+		transform 150ms ease-out,
+		color 150ms ease-out;
+}
+
+.klikkbarRad:focus-visible {
+	outline: 2px solid var(--ax-border-focus);
+	outline-offset: -2px;
+}
+
+.klikkbarRad:hover .chevron,
+.klikkbarRad:focus-visible .chevron {
+	color: var(--ax-text-accent);
+	transform: translateX(var(--ax-space-2));
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.chevron {
+		transition: none;
+	}
+
+	.klikkbarRad:hover .chevron,
+	.klikkbarRad:focus-visible .chevron {
+		transform: none;
+	}
+}
