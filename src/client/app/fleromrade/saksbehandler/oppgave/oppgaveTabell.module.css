@@ -1,11 +1,3 @@
-/*
- * Chevronen viser at raden kan åpnes. Den er dempet i hvile og blir tydelig
- * når raden har musepeker eller tastaturfokus.
- */
-/*
- * Smal kolonne med ekstra luft mot høyre, slik at chevronen har plass til å
- * flytte seg uten å havne i kanten av raden.
- */
 .chevronCelle {
 	width: 1%;
 	padding-inline-end: var(--ax-space-24);
