@@ -13,7 +13,6 @@ import OppgaveTabell from '../oppgave/OppgaveTabell';
 
 const saksnummerEllerJournalpostId = /^(?:\w{5}|\w{7}|\d{9})$/;
 
-/** Aktivitetspenger har ikke søk på journalpost-id. */
 const søkeetikett: Record<Område, string> = {
 	K9: 'Søk på saksnummer, fødselsnummer eller journalpost-id',
 	AKTIVITETSPENGER: 'Søk på saksnummer eller fødselsnummer',
