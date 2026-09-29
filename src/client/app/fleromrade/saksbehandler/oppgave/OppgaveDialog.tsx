@@ -1,6 +1,6 @@
 import { BodyShort, Button, Dialog, InlineMessage, VStack } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useOppgaveDialogViewModel } from './oppgaveDialogViewModel';
 
 interface Props {
@@ -14,7 +14,14 @@ interface Props {
  */
 const OppgaveDialog = ({ oppgave, lukk }: Props) => {
 	const [åpen, setÅpen] = useState(true);
-	const viewModel = useOppgaveDialogViewModel(oppgave, () => setÅpen(false));
+	const nyViewModel = useOppgaveDialogViewModel(oppgave, () => setÅpen(false));
+	const sisteViewModel = useRef(nyViewModel);
+	if (nyViewModel.harHentetData) {
+		sisteViewModel.current = nyViewModel;
+	}
+	// Endringer i reservasjonen fjerner den fra cachen, så den hentes på nytt. Da viser vi forrige innhold, ellers
+	// avmonteres dialogen midt i lukkeanimasjonen, og `lukk` blir aldri kalt.
+	const viewModel = sisteViewModel.current;
 
 	// Dialogen vises først når dataene er hentet, så innholdet ikke bytter ut under åpningsanimasjonen.
 	if (!viewModel.harHentetData) {

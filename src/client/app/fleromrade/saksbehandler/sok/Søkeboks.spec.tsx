@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
 	useEndreReservasjoner,
@@ -192,6 +192,32 @@ describe('Søkeboks', () => {
 			{ omrade: 'akt', data: [{ reservasjonsnøkkel: 'reservasjon-1', brukerIdent: 'Z123456' }] },
 			expect.anything(),
 		);
+	});
+
+	it('kan åpne oppgaven igjen etter at den er lagt tilbake i kø', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(lagReservasjon()));
+		// Etter at reservasjonen er opphevet, fjernes den fra cachen og hentes på nytt.
+		const opphev = mutationResultat({
+			mutate: vi.fn((_variabler: unknown, options?: { onSuccess?: () => void }) => {
+				vi.mocked(useHentAktivReservasjon).mockReturnValue(
+					queryResultat(undefined, { isPending: true, isSuccess: false }),
+				);
+				options?.onSuccess?.();
+			}),
+		});
+		vi.mocked(useOpphevReservasjoner).mockReturnValue(opphev);
+		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
+
+		renderMedOmråde(<Søkeboks />);
+		await user.click(screen.getByRole('row', { name: /ABC12/ }));
+		await user.click(screen.getByRole('button', { name: 'Legg tilbake i kø' }));
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+
+		vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(null));
+		await user.click(screen.getByRole('row', { name: /ABC12/ }));
+
+		expect(await screen.findByRole('dialog', { name: 'Oppgaven er ikke reservert' })).toBeInTheDocument();
 	});
 
 	it('åpner oppgavemodalen fra raden med tastaturet', async () => {
