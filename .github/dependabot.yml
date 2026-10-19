@@ -14,6 +14,9 @@ updates:
     open-pull-requests-limit: 30
     registries:
       - npm-github
+    # @nais/apm styrer Faro-versjonen. Se overrides i pnpm-workspace.yaml.
+    ignore:
+      - dependency-name: '@grafana/faro-*'
     groups:
       patch-and-minor:
         patterns:

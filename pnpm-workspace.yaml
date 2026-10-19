@@ -29,16 +29,21 @@ peerDependencyRules:
   ignoreMissing:
     - react-router-dom
 
-# Hele Faro-familien låses til 2.11.0, av to grunner:
-# 1. faro-web-sdk 2.12 sender en Idempotency-Key-header som Nav sin telemetri-
-#    collector (Alloy) ikke tillater i CORS, så all telemetri blokkeres.
-#    @nais/apm 0.7.2 pinner derfor 2.11.0 (https://github.com/nais/apm/pull/87).
-# 2. Alle pakkene må dele én faro-core. Med to kopier ser faro-react (brukt av
-#    ApmErrorBoundary/ApmRoutes) en no-op-instans, og feil rapporteres ikke.
-# Internt bruker Faro-pakkene ^-ranges, så uten override drar pnpm inn 2.12 ved
-# neste re-resolusjon. Fjern når Alloy-fiksen er ute og @nais/apm slipper pinnen.
+# @nais/apm styrer Faro-versjonen. Hele Faro-familien (inkludert faro-react i
+# package.json) skal ha samme versjon som @nais/apm pinner for faro-web-sdk:
+#   pnpm view @nais/apm@<versjon> dependencies
+# Dependabot ignorerer @grafana/faro-*, så bump disse for hånd når apm bumpes.
+#
+# Alle pakkene må dele én faro-core. Med to kopier ser faro-react (brukt av
+# ApmErrorBoundary/ApmRoutes) en no-op-instans, og feil rapporteres ikke.
+# Internt bruker Faro-pakkene ^-ranges, så uten override kan pnpm dra inn en
+# nyere faro-core enn den @nais/apm bruker.
+#
+# Historikk: 2.11.0 var låst fordi faro-web-sdk 2.12 sender en Idempotency-Key-
+# header som Alloy ikke tillot i CORS (https://github.com/nais/apm/pull/87).
+# Nais rullet ut Alloy 1.20.0 med fiks 2026-10-02, og @nais/apm 0.7.3 pinner 2.12.1.
 overrides:
-  '@grafana/faro-core': 2.11.0
-  '@grafana/faro-web-sdk': 2.11.0
-  '@grafana/faro-web-tracing': 2.11.0
-  '@grafana/faro-react': 2.11.0
+  '@grafana/faro-core': 2.12.1
+  '@grafana/faro-web-sdk': 2.12.1
+  '@grafana/faro-web-tracing': 2.12.1
+  '@grafana/faro-react': 2.12.1
