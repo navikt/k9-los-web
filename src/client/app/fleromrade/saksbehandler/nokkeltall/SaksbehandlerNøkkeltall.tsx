@@ -1,5 +1,6 @@
 import ReactECharts from 'sharedComponents/echart/ReactEcharts';
 import { Heading, HelpText, HStack, InlineMessage, Select, VStack } from '@navikt/ds-react';
+import { keepPreviousData } from '@tanstack/react-query';
 import { useHentSaksbehandlerNøkkeltall } from 'api/generated/los';
 import dayjs from 'dayjs';
 import type { EChartsOption } from 'echarts';
@@ -11,7 +12,11 @@ import { graferOpacity, grafHeight, legendStyle } from '../../../../styles/echar
 function Nøkkeltall() {
 	const { urlSegment } = useOmråde();
 	const [gruppe, setGruppe] = useState('ALLE');
-	const { data, error } = useHentSaksbehandlerNøkkeltall(urlSegment, { gruppe }, { query: nøkkeltallQueryOptions });
+	const { data, error } = useHentSaksbehandlerNøkkeltall(
+		urlSegment,
+		{ gruppe },
+		{ query: { ...nøkkeltallQueryOptions, placeholderData: keepPreviousData } },
+	);
 
 	if (erIkkeImplementert(error)) return null;
 	if (error) return <InlineMessage status="error">Kunne ikke hente nye og ferdigstilte oppgaver</InlineMessage>;
