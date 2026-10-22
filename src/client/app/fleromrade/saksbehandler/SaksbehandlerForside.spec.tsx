@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { useHentSisteOppgaver } from 'api/generated/los';
+import { useHentSaksbehandlerNøkkeltall, useHentSisteOppgaver } from 'api/generated/los';
 import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
 import { queryResultat, renderMedOmråde } from 'fleromrade/testUtils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -10,14 +10,11 @@ vi.mock('api/generated/los');
 vi.mock('fleromrade/api/innloggetBrukerQueries', () => ({ useInnloggetBruker: vi.fn() }));
 vi.mock('./sok/Søkeboks', () => ({ default: () => <div>Søkeboks</div> }));
 vi.mock('./ko/KøPanel', () => ({ default: () => <div>Køpanel</div> }));
-vi.mock('fleromrade/k9legacy/legacyKomponenter', async () => {
-	const { KunK9Legacy } = await import('fleromrade/k9legacy/KunK9Legacy');
-	return { LegacySaksbehandlerNøkkeltall: () => <KunK9Legacy>Legacy-nøkkeltall</KunK9Legacy> };
-});
 
 beforeEach(() => {
 	vi.mocked(useInnloggetBruker).mockReturnValue(queryResultat(innloggetBruker));
 	vi.mocked(useHentSisteOppgaver).mockReturnValue(queryResultat([]));
+	vi.mocked(useHentSaksbehandlerNøkkeltall).mockReturnValue(queryResultat(undefined));
 });
 
 describe('SaksbehandlerForside', () => {
@@ -56,13 +53,13 @@ describe('SaksbehandlerForside', () => {
 		expect(screen.queryByText('Køpanel')).not.toBeInTheDocument();
 	});
 
-	it('viser nøkkeltall fra legacy bare for K9', () => {
+	it('henter nøkkeltall fra det nye API-et for begge områder', () => {
 		const { unmount } = renderMedOmråde(<SaksbehandlerForside />);
-		expect(screen.queryByText('Legacy-nøkkeltall')).not.toBeInTheDocument();
+		expect(useHentSaksbehandlerNøkkeltall).toHaveBeenCalledWith('akt', { gruppe: 'ALLE' }, expect.anything());
 		unmount();
 
 		renderMedOmråde(<SaksbehandlerForside />, { sti: '/k9-ny', område: 'K9' });
-		expect(screen.getByText('Legacy-nøkkeltall')).toBeInTheDocument();
+		expect(useHentSaksbehandlerNøkkeltall).toHaveBeenCalledWith('k9', { gruppe: 'ALLE' }, expect.anything());
 	});
 
 	it('forteller når brukeren ikke har siste oppgaver', () => {

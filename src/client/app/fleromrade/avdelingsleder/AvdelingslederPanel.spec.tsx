@@ -1,10 +1,15 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useHentOppgavefelter } from 'api/generated/los';
+import {
+	useHentFerdigstiltePerEnhet,
+	useHentInngangOgFerdigstilte,
+	useHentOppgavefelter,
+	useHentStatusfordeling,
+} from 'api/generated/los';
 import AppContext from 'app/AppContext';
 import { queryResultat, renderMedOmråde } from 'fleromrade/testUtils';
 import { useContext } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import AvdelingslederPanel from './AvdelingslederPanel';
 
 vi.mock('api/generated/los');
@@ -21,18 +26,15 @@ vi.mock('./reservasjoner/components/AvdelingslederReservasjonerTabell', () => ({
 }));
 vi.mock('./saksbehandlere/components/SaksbehandlereTabell', () => ({ default: () => <div>Saksbehandlertabell</div> }));
 
-vi.mock('fleromrade/k9legacy/legacyKomponenter', async () => {
-	const { KunK9Legacy } = await import('fleromrade/k9legacy/KunK9Legacy');
-	return {
-		LegacyAvdelingslederStatus: () => <KunK9Legacy>Legacy-statuslinje</KunK9Legacy>,
-		LegacyAvdelingslederNøkkeltall: () => <KunK9Legacy>Legacy-nøkkeltall</KunK9Legacy>,
-	};
-});
-
 const medFelter = () =>
 	vi.mocked(useHentOppgavefelter).mockReturnValue(queryResultat([{ kode: 'oppgavestatus' }, { kode: 'ytelsestype' }]));
 
 describe('AvdelingslederPanel', () => {
+	beforeEach(() => {
+		vi.mocked(useHentInngangOgFerdigstilte).mockReturnValue(queryResultat(undefined));
+		vi.mocked(useHentFerdigstiltePerEnhet).mockReturnValue(queryResultat(undefined));
+		vi.mocked(useHentStatusfordeling).mockReturnValue(queryResultat(undefined));
+	});
 	it('viser oppgavekøer som standard og gir filterkomponentene feltene for området', () => {
 		medFelter();
 
@@ -43,7 +45,8 @@ describe('AvdelingslederPanel', () => {
 		expect(screen.getByText('Køer: oppgavestatus, ytelsestype')).toBeInTheDocument();
 	});
 
-	it('har ikke fane for nøkkeltall for aktivitetspenger', () => {
+	it('har klikkbar nøkkeltallfane for aktivitetspenger og kaller backend når den åpnes', async () => {
+		const user = userEvent.setup();
 		medFelter();
 
 		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder' });
@@ -51,18 +54,25 @@ describe('AvdelingslederPanel', () => {
 		expect(screen.getAllByRole('tab').map((fane) => fane.textContent)).toEqual([
 			'Oppgavekøer',
 			'Lagrede søk',
+			'Nøkkeltall',
 			'Reservasjoner',
 			'Saksbehandlere',
 		]);
+		expect(useHentStatusfordeling).toHaveBeenCalledWith('akt', expect.anything());
+		expect(useHentInngangOgFerdigstilte).not.toHaveBeenCalled();
+		await user.click(screen.getByRole('tab', { name: 'Nøkkeltall' }));
+		expect(screen.getByRole('tab', { name: 'Nøkkeltall', selected: true })).toBeInTheDocument();
+		expect(useHentInngangOgFerdigstilte).toHaveBeenCalledWith('akt', expect.anything());
+		expect(useHentFerdigstiltePerEnhet).toHaveBeenCalledWith('akt', { gruppe: 'ALLE', uker: 2 }, expect.anything());
 	});
 
-	it('viser statuslinje og nøkkeltall-fane fra legacy for K9', async () => {
+	it('bruker de nye nøkkeltallhookene også for K9', async () => {
 		const user = userEvent.setup();
 		medFelter();
 
 		renderMedOmråde(<AvdelingslederPanel />, { sti: '/k9-ny/avdelingsleder', område: 'K9' });
 
-		expect(screen.getByText('Legacy-statuslinje')).toBeInTheDocument();
+		expect(useHentStatusfordeling).toHaveBeenCalledWith('k9', expect.anything());
 		expect(screen.getAllByRole('tab').map((fane) => fane.textContent)).toEqual([
 			'Oppgavekøer',
 			'Lagrede søk',
@@ -73,16 +83,17 @@ describe('AvdelingslederPanel', () => {
 
 		await user.click(screen.getByRole('tab', { name: 'Nøkkeltall' }));
 
-		expect(screen.getByText('Legacy-nøkkeltall')).toBeInTheDocument();
+		expect(useHentInngangOgFerdigstilte).toHaveBeenCalledWith('k9', expect.anything());
+		expect(useHentFerdigstiltePerEnhet).toHaveBeenCalledWith('k9', { gruppe: 'ALLE', uker: 2 }, expect.anything());
 	});
 
-	it('viser ikke legacy-komponentene for aktivitetspenger', () => {
+	it('åpner nøkkeltall for aktivitetspenger direkte fra URL-en', () => {
 		medFelter();
 
-		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder' });
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder?fane=nokkeltall' });
 
-		expect(screen.queryByText('Legacy-statuslinje')).not.toBeInTheDocument();
-		expect(screen.queryByRole('tab', { name: 'Nøkkeltall' })).not.toBeInTheDocument();
+		expect(screen.getByRole('tab', { name: 'Nøkkeltall', selected: true })).toBeInTheDocument();
+		expect(useHentInngangOgFerdigstilte).toHaveBeenCalledWith('akt', expect.anything());
 	});
 
 	it('åpner fanen fra URL-en og oppdaterer den ved fanebytte', async () => {

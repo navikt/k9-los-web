@@ -34,16 +34,21 @@ import type {
 	EndreLagretSokRequest,
 	EndreTittel,
 	EpostDto,
+	FerdigstiltePerEnhetResponse,
 	FlyttReservasjonDto,
 	ForlengReservasjonDto,
 	HentAktivReservasjonParams,
+	HentFerdigstiltePerEnhetParams,
 	HentOppgavekoerForSaksbehandlerSomAvdelingslederParams,
+	HentSaksbehandlerNøkkeltallParams,
 	HentUttrekksresultatSomJsonParams,
 	IdDto,
+	InngangOgFerdigstilteResponse,
 	InnloggetBrukerDtoNy,
 	KopierLagretSokRequest,
 	KopierOppgaveKoDto,
 	LagretSokRespons,
+	NyeOgFerdigstilteResponse,
 	NyttLagretSokRequest,
 	Omrader,
 	OmradeUrlSegment,
@@ -68,6 +73,7 @@ import type {
 	SisteOppgaverDto,
 	SokeresultatSammendrag,
 	SokRequest,
+	StatusFordelingResponse,
 	UttrekkRespons,
 	UttrekkResultatRespons,
 } from './los.schemas';
@@ -2353,6 +2359,136 @@ export const useLagreSisteOppgave = <TError = ErrorType<void>, TContext = unknow
 };
 
 /**
+ * Gruppene varierer per område. Responsen inneholder tilgjengelige grupper, datokolonner og seriene Nye og Ferdigstilte.
+ * @summary Hent nye og ferdigstilte oppgaver de siste sju dagene
+ */
+export const hentSaksbehandlerNøkkeltall = (
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: SecondParameter<typeof losClient>,
+	signal?: AbortSignal,
+) => {
+	return losClient<NyeOgFerdigstilteResponse>(
+		{ url: `/api/wip/${omrade}/saksbehandler/nokkeltall`, method: 'GET', params, signal },
+		options,
+	);
+};
+
+export const getHentSaksbehandlerNøkkeltallQueryKey = (
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+) => {
+	return [`/api/wip/${omrade}/saksbehandler/nokkeltall`, ...(params ? [params] : [])] as const;
+};
+
+export const getHentSaksbehandlerNøkkeltallQueryOptions = <
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getHentSaksbehandlerNøkkeltallQueryKey(omrade, params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>> = ({ signal }) =>
+		hentSaksbehandlerNøkkeltall(omrade, params, requestOptions, signal);
+
+	return { queryKey, queryFn, enabled: omrade !== null && omrade !== undefined, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type HentSaksbehandlerNøkkeltallQueryResult = NonNullable<
+	Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>
+>;
+export type HentSaksbehandlerNøkkeltallQueryError = ErrorType<void>;
+
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params: undefined | HentSaksbehandlerNøkkeltallParams,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+					TError,
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+					TError,
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Hent nye og ferdigstilte oppgaver de siste sju dagene
+ */
+
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getHentSaksbehandlerNøkkeltallQueryOptions(omrade, params, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return withQueryKey(query, queryOptions.queryKey);
+}
+
+/**
  * @summary Hent saksbehandlere
  */
 export const hentSaksbehandlereForAdministrasjon = (
@@ -3841,6 +3977,372 @@ export function useHentOppgavekoerForSaksbehandlerSomAvdelingsleder<
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 	const queryOptions = getHentOppgavekoerForSaksbehandlerSomAvdelingslederQueryOptions(omrade, params, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return withQueryKey(query, queryOptions.queryKey);
+}
+
+/**
+ * K9 har statuskort per behandlingsgruppe. Aktivitetspenger har behandlinger samlet, del 1, del 2, klager og feilutbetalinger.
+ * @summary Hent statusfordeling, tellingen vises som kort på toppen av siden
+ */
+export const hentStatusfordeling = (
+	omrade: OmradeUrlSegment,
+	options?: SecondParameter<typeof losClient>,
+	signal?: AbortSignal,
+) => {
+	return losClient<StatusFordelingResponse>(
+		{ url: `/api/wip/${omrade}/avdelingsleder/nokkeltall/statusfordeling`, method: 'GET', signal },
+		options,
+	);
+};
+
+export const getHentStatusfordelingQueryKey = (omrade: OmradeUrlSegment) => {
+	return [`/api/wip/${omrade}/avdelingsleder/nokkeltall/statusfordeling`] as const;
+};
+
+export const getHentStatusfordelingQueryOptions = <
+	TData = Awaited<ReturnType<typeof hentStatusfordeling>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentStatusfordeling>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getHentStatusfordelingQueryKey(omrade);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof hentStatusfordeling>>> = ({ signal }) =>
+		hentStatusfordeling(omrade, requestOptions, signal);
+
+	return { queryKey, queryFn, enabled: omrade !== null && omrade !== undefined, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof hentStatusfordeling>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type HentStatusfordelingQueryResult = NonNullable<Awaited<ReturnType<typeof hentStatusfordeling>>>;
+export type HentStatusfordelingQueryError = ErrorType<void>;
+
+export function useHentStatusfordeling<
+	TData = Awaited<ReturnType<typeof hentStatusfordeling>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentStatusfordeling>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentStatusfordeling>>,
+					TError,
+					Awaited<ReturnType<typeof hentStatusfordeling>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentStatusfordeling<
+	TData = Awaited<ReturnType<typeof hentStatusfordeling>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentStatusfordeling>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentStatusfordeling>>,
+					TError,
+					Awaited<ReturnType<typeof hentStatusfordeling>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentStatusfordeling<
+	TData = Awaited<ReturnType<typeof hentStatusfordeling>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentStatusfordeling>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Hent statusfordeling, tellingen vises som kort på toppen av siden
+ */
+
+export function useHentStatusfordeling<
+	TData = Awaited<ReturnType<typeof hentStatusfordeling>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentStatusfordeling>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getHentStatusfordelingQueryOptions(omrade, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return withQueryKey(query, queryOptions.queryKey);
+}
+
+/**
+ * Antall mottatte og ferdigstilte oppgaver i dag og siste én, to og fire uker. Grupper varierer per område. Aktivitetspenger har ikke manuelt/automatisk-fordeling.
+ * @summary Hent inngang og ferdigstilte, tidligere kalt dagens tall
+ */
+export const hentInngangOgFerdigstilte = (
+	omrade: OmradeUrlSegment,
+	options?: SecondParameter<typeof losClient>,
+	signal?: AbortSignal,
+) => {
+	return losClient<InngangOgFerdigstilteResponse>(
+		{ url: `/api/wip/${omrade}/avdelingsleder/nokkeltall/inngang-og-ferdigstilte`, method: 'GET', signal },
+		options,
+	);
+};
+
+export const getHentInngangOgFerdigstilteQueryKey = (omrade: OmradeUrlSegment) => {
+	return [`/api/wip/${omrade}/avdelingsleder/nokkeltall/inngang-og-ferdigstilte`] as const;
+};
+
+export const getHentInngangOgFerdigstilteQueryOptions = <
+	TData = Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getHentInngangOgFerdigstilteQueryKey(omrade);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>> = ({ signal }) =>
+		hentInngangOgFerdigstilte(omrade, requestOptions, signal);
+
+	return { queryKey, queryFn, enabled: omrade !== null && omrade !== undefined, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type HentInngangOgFerdigstilteQueryResult = NonNullable<Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>>;
+export type HentInngangOgFerdigstilteQueryError = ErrorType<void>;
+
+export function useHentInngangOgFerdigstilte<
+	TData = Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+					TError,
+					Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentInngangOgFerdigstilte<
+	TData = Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+					TError,
+					Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentInngangOgFerdigstilte<
+	TData = Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Hent inngang og ferdigstilte, tidligere kalt dagens tall
+ */
+
+export function useHentInngangOgFerdigstilte<
+	TData = Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentInngangOgFerdigstilte>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getHentInngangOgFerdigstilteQueryOptions(omrade, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return withQueryKey(query, queryOptions.queryKey);
+}
+
+/**
+ * Støttes foreløpig bare for K9.
+ * @summary Hent antall ferdigstilte behandlinger per enhet
+ */
+export const hentFerdigstiltePerEnhet = (
+	omrade: OmradeUrlSegment,
+	params?: HentFerdigstiltePerEnhetParams,
+	options?: SecondParameter<typeof losClient>,
+	signal?: AbortSignal,
+) => {
+	return losClient<FerdigstiltePerEnhetResponse>(
+		{ url: `/api/wip/${omrade}/avdelingsleder/nokkeltall/ferdigstilte-per-enhet`, method: 'GET', params, signal },
+		options,
+	);
+};
+
+export const getHentFerdigstiltePerEnhetQueryKey = (
+	omrade: OmradeUrlSegment,
+	params?: HentFerdigstiltePerEnhetParams,
+) => {
+	return [`/api/wip/${omrade}/avdelingsleder/nokkeltall/ferdigstilte-per-enhet`, ...(params ? [params] : [])] as const;
+};
+
+export const getHentFerdigstiltePerEnhetQueryOptions = <
+	TData = Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentFerdigstiltePerEnhetParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getHentFerdigstiltePerEnhetQueryKey(omrade, params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>> = ({ signal }) =>
+		hentFerdigstiltePerEnhet(omrade, params, requestOptions, signal);
+
+	return { queryKey, queryFn, enabled: omrade !== null && omrade !== undefined, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type HentFerdigstiltePerEnhetQueryResult = NonNullable<Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>>;
+export type HentFerdigstiltePerEnhetQueryError = ErrorType<void>;
+
+export function useHentFerdigstiltePerEnhet<
+	TData = Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params: undefined | HentFerdigstiltePerEnhetParams,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+					TError,
+					Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentFerdigstiltePerEnhet<
+	TData = Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentFerdigstiltePerEnhetParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+					TError,
+					Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentFerdigstiltePerEnhet<
+	TData = Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentFerdigstiltePerEnhetParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Hent antall ferdigstilte behandlinger per enhet
+ */
+
+export function useHentFerdigstiltePerEnhet<
+	TData = Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentFerdigstiltePerEnhetParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentFerdigstiltePerEnhet>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getHentFerdigstiltePerEnhetQueryOptions(omrade, params, options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;

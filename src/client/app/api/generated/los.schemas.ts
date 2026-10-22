@@ -10,6 +10,7 @@ export type Omrader = (typeof Omrader)[keyof typeof Omrader];
 export const Omrader = {
 	K9: 'K9',
 	AKTIVITETSPENGER: 'AKTIVITETSPENGER',
+	UNGDOMSPROGRAMYTELSEN: 'UNGDOMSPROGRAMYTELSEN',
 } as const;
 
 export type OmradeUrlSegment = (typeof OmradeUrlSegment)[keyof typeof OmradeUrlSegment];
@@ -346,6 +347,23 @@ export interface SisteOppgaverDto {
 	url?: string | null;
 }
 
+export interface KodeOgNavn {
+	kode: string;
+	navn: string;
+}
+
+export interface NyeOgFerdigstilteSerie {
+	data: number[];
+	navn: string;
+}
+
+export interface NyeOgFerdigstilteResponse {
+	grupper: KodeOgNavn[];
+	kolonner: string[];
+	oppdatertTidspunkt?: null | LocalDateTime;
+	serier: NyeOgFerdigstilteSerie[];
+}
+
 export interface SaksbehandlerDto {
 	/** @nullable */
 	antallAktiveReservasjoner?: number | null;
@@ -390,6 +408,89 @@ export interface AntallOppgaverOgReserverte {
 export interface OppgaveKoIdOgTittel {
 	id: number;
 	tittel: string;
+}
+
+export interface StatuslinjeDto {
+	kildespørring: OppgaveQuery;
+	verdi: number;
+	visningsnavn: string;
+}
+
+export interface StatuskortDto {
+	bunnlinje: StatuslinjeDto;
+	linjer: StatuslinjeDto[];
+	tittel: KodeOgNavn;
+	topplinje: StatuslinjeDto;
+}
+
+export interface StatusFordelingResponse {
+	oppdatertTidspunkt: LocalDateTime;
+	tall: StatuskortDto[];
+}
+
+export interface InngangOgFerdigstilteLinjeDto {
+	verdi: number;
+	visningsnavn: string;
+}
+
+export interface InngangOgFerdigstilteKortDto {
+	hovedtall: InngangOgFerdigstilteLinjeDto;
+	linjer: InngangOgFerdigstilteLinjeDto[];
+}
+
+export interface PairNonavk9losnokkeltallavdelingslederinngangogferdigstilteInngangOgFerdigstilteKortDtoNonavk9losnokkeltallavdelingslederinngangogferdigstilteInngangOgFerdigstilteKortDto {
+	first: InngangOgFerdigstilteKortDto;
+	second: InngangOgFerdigstilteKortDto;
+}
+
+export type InngangOgFerdigstilteDtoMånedSerier = {
+	[
+		key: string
+	]: PairNonavk9losnokkeltallavdelingslederinngangogferdigstilteInngangOgFerdigstilteKortDtoNonavk9losnokkeltallavdelingslederinngangogferdigstilteInngangOgFerdigstilteKortDto;
+};
+
+export type InngangOgFerdigstilteDtoSerier = {
+	[
+		key: string
+	]: PairNonavk9losnokkeltallavdelingslederinngangogferdigstilteInngangOgFerdigstilteKortDtoNonavk9losnokkeltallavdelingslederinngangogferdigstilteInngangOgFerdigstilteKortDto;
+};
+
+export interface InngangOgFerdigstilteDto {
+	hovedgruppe: string;
+	månedSerier: InngangOgFerdigstilteDtoMånedSerier;
+	serier: InngangOgFerdigstilteDtoSerier;
+	undergruppe: string;
+}
+
+export interface InngangOgFerdigstilteResponse {
+	hovedgrupper: KodeOgNavn[];
+	oppdatertTidspunkt?: null | LocalDateTime;
+	tall: InngangOgFerdigstilteDto[];
+	undergrupper: KodeOgNavn[];
+}
+
+export type FerdigstiltePerEnhetGruppe = (typeof FerdigstiltePerEnhetGruppe)[keyof typeof FerdigstiltePerEnhetGruppe];
+
+export const FerdigstiltePerEnhetGruppe = {
+	ALLE: 'ALLE',
+	OMSORGSPENGER: 'OMSORGSPENGER',
+	OMSORGSDAGER: 'OMSORGSDAGER',
+	OPPLÆRINGSPENGER: 'OPPLÆRINGSPENGER',
+	PLEIEPENGER_SYKT_BARN: 'PLEIEPENGER_SYKT_BARN',
+	PPN: 'PPN',
+	PUNSJ: 'PUNSJ',
+} as const;
+
+export interface FerdigstiltePerEnhetSerie {
+	data: number[];
+	navn: string;
+}
+
+export interface FerdigstiltePerEnhetResponse {
+	grupper: KodeOgNavn[];
+	kolonner: string[];
+	oppdatertTidspunkt?: null | LocalDateTime;
+	serier: FerdigstiltePerEnhetSerie[];
 }
 
 export interface LagretSokRespons {
@@ -513,8 +614,7 @@ export interface Oppgavefelt {
 	område?: null | Omrader;
 	synlighet: Synlighet;
 	tolkes_som: string;
-	/** @nullable */
-	verdiforklaringer?: Verdiforklaring[] | null;
+	verdiforklaringer: Verdiforklaring[];
 	verdiforklaringerErUttømmende: boolean;
 	visningsnavn: string;
 }
@@ -530,8 +630,26 @@ export type HentAktivReservasjonParams = {
 	oppgaveTypeEksternId: string;
 };
 
+export type HentSaksbehandlerNøkkeltallParams = {
+	/**
+	 * Gruppekode fra responsens grupper. Standard ALLE.
+	 */
+	gruppe?: string;
+};
+
 export type HentOppgavekoerForSaksbehandlerSomAvdelingslederParams = {
 	saksbehandlerId: number;
+};
+
+export type HentFerdigstiltePerEnhetParams = {
+	/**
+	 * Behandlingsgruppe, standard ALLE
+	 */
+	gruppe?: FerdigstiltePerEnhetGruppe;
+	/**
+	 * Antall uker, 2 eller 4. Standard 2.
+	 */
+	uker?: number;
 };
 
 export type HentUttrekksresultatSomJsonParams = {
