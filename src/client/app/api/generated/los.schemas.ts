@@ -347,6 +347,23 @@ export interface SisteOppgaverDto {
 	url?: string | null;
 }
 
+export interface KodeOgNavn {
+	kode: string;
+	navn: string;
+}
+
+export interface NyeOgFerdigstilteSerie {
+	data: number[];
+	navn: string;
+}
+
+export interface NyeOgFerdigstilteResponse {
+	grupper: KodeOgNavn[];
+	kolonner: string[];
+	oppdatertTidspunkt?: null | LocalDateTime;
+	serier: NyeOgFerdigstilteSerie[];
+}
+
 export interface SaksbehandlerDto {
 	/** @nullable */
 	antallAktiveReservasjoner?: number | null;
@@ -397,11 +414,6 @@ export interface StatuslinjeDto {
 	kildespørring: OppgaveQuery;
 	verdi: number;
 	visningsnavn: string;
-}
-
-export interface KodeOgNavn {
-	kode: string;
-	navn: string;
 }
 
 export interface StatuskortDto {
@@ -616,6 +628,13 @@ export type HentAktivReservasjonParams = {
 	 * Oppgavetypens eksterne id
 	 */
 	oppgaveTypeEksternId: string;
+};
+
+export type HentSaksbehandlerNøkkeltallParams = {
+	/**
+	 * Gruppekode fra responsens grupper. Standard ALLE.
+	 */
+	gruppe?: string;
 };
 
 export type HentOppgavekoerForSaksbehandlerSomAvdelingslederParams = {

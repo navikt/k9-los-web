@@ -9,6 +9,7 @@ import type {
 } from 'api/generated/los.schemas';
 import { losClient } from 'api/orvalMutator';
 import { AxiosError, type AxiosResponse } from 'axios';
+import { nøkkeltallQueryOptions } from 'fleromrade/api/nøkkeltallQueryOptions';
 import { OmrådeProvider } from 'fleromrade/OmrådeContext';
 import type { Område } from 'fleromrade/områder';
 import { renderMedOmråde } from 'fleromrade/testUtils';
@@ -16,7 +17,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import FerdigstiltePerEnhet from './FerdigstiltePerEnhet';
 import InngangOgFerdigstilte from './InngangOgFerdigstilte';
 import Nøkkeltall from './Nøkkeltall';
-import { nøkkeltallQueryOptions } from './nøkkeltallQueryOptions';
 import { StatusFordeling } from './StatusFordeling';
 
 vi.mock('api/orvalMutator', () => ({ losClient: vi.fn() }));
@@ -41,7 +41,12 @@ const inngangOgFerdigstilte: InngangOgFerdigstilteResponse = {
 			hovedgruppe: 'ALLE',
 			undergruppe: 'TOTALT',
 			månedSerier: {},
-			serier: { idag: { first: kort(11), second: kort(12) }, sisteUke: { first: kort(21), second: kort(22) } },
+			serier: {
+				idag: { first: kort(11), second: kort(12) },
+				sisteUke: { first: kort(21), second: kort(22) },
+				siste2Uker: { first: kort(35), second: kort(36) },
+				siste4Uker: { first: kort(41), second: kort(42) },
+			},
 		},
 		{
 			hovedgruppe: 'PPN',
@@ -113,12 +118,20 @@ describe('Nøkkeltall for flerområde', () => {
 		const user = userEvent.setup();
 		vi.mocked(losClient).mockResolvedValue(inngangOgFerdigstilte);
 		renderMedOmråde(<InngangOgFerdigstilte />, { område });
-		expect(await screen.findByText('11')).toBeInTheDocument();
+		expect(await screen.findByText('41')).toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Inngang og ferdigstilte' })).toBeInTheDocument();
+		expect(screen.getByRole('radio', { name: 'Siste 4 uker' })).toBeChecked();
+		expect(screen.getAllByRole('radio').map((valg) => valg.textContent)).toEqual([
+			'I dag',
+			'Siste uke',
+			'Siste 2 uker',
+			'Siste 4 uker',
+		]);
 		await user.click(screen.getByRole('radio', { name: 'Siste uke' }));
 		expect(screen.getByText('21')).toBeInTheDocument();
 		await user.selectOptions(screen.getByRole('combobox', { name: 'Valgt ytelse' }), 'PPN');
 		expect(screen.getByText('31')).toBeInTheDocument();
+		expect(screen.getByRole('radio', { name: 'I dag' })).toBeChecked();
 		expect(losClient).toHaveBeenCalledTimes(1);
 	});
 
@@ -210,9 +223,9 @@ describe('Nøkkeltall for flerområde', () => {
 			</QueryClientProvider>
 		);
 		const { rerender } = render(vis('K9'));
-		expect(await screen.findByText('11')).toBeInTheDocument();
+		expect(await screen.findByText('41')).toBeInTheDocument();
 		rerender(vis('AKTIVITETSPENGER'));
-		expect(screen.queryByText('11')).not.toBeInTheDocument();
+		expect(screen.queryByText('41')).not.toBeInTheDocument();
 		await waitFor(() => expect(losClient).toHaveBeenCalledTimes(2));
 		expect(screen.queryByRole('heading')).not.toBeInTheDocument();
 	});

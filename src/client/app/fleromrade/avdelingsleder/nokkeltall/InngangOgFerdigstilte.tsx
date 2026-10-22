@@ -1,9 +1,9 @@
 import { Box, Detail, Heading, HGrid, HStack, InlineMessage, Select, ToggleGroup, VStack } from '@navikt/ds-react';
 import { useHentInngangOgFerdigstilte } from 'api/generated/los';
 import dayjs from 'dayjs';
+import { erIkkeImplementert, nøkkeltallQueryOptions } from 'fleromrade/api/nøkkeltallQueryOptions';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { useState } from 'react';
-import { erIkkeImplementert, nøkkeltallQueryOptions } from './nøkkeltallQueryOptions';
 import Teller from './Teller';
 
 const serieLabels: Record<string, string> = {
@@ -12,19 +12,23 @@ const serieLabels: Record<string, string> = {
 	siste2Uker: 'Siste 2 uker',
 	siste4Uker: 'Siste 4 uker',
 };
+const serieRekkefølge = Object.keys(serieLabels);
 
 export default function InngangOgFerdigstilte() {
 	const { urlSegment } = useOmråde();
 	const { data, error } = useHentInngangOgFerdigstilte(urlSegment, { query: nøkkeltallQueryOptions });
 	const [valgtHovedgruppe, setValgtHovedgruppe] = useState('ALLE');
-	const [valgtSerie, setValgtSerie] = useState('idag');
+	const [valgtSerie, setValgtSerie] = useState('siste4Uker');
 
 	if (erIkkeImplementert(error)) return null;
 	if (error) return <InlineMessage status="error">Kunne ikke hente inngang og ferdigstilte</InlineMessage>;
 	if (!data) return null;
 
 	const filtrerteTall = data.tall.filter(({ hovedgruppe }) => hovedgruppe === valgtHovedgruppe);
-	const tilgjengeligeSerier = filtrerteTall.length > 0 ? Object.keys(filtrerteTall[0].serier) : [];
+	const tilgjengeligeSerier =
+		filtrerteTall.length > 0
+			? Object.keys(filtrerteTall[0].serier).sort((a, b) => serieRekkefølge.indexOf(a) - serieRekkefølge.indexOf(b))
+			: [];
 	const aktivSerie = tilgjengeligeSerier.includes(valgtSerie) ? valgtSerie : tilgjengeligeSerier[0];
 
 	return (

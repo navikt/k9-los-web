@@ -4,10 +4,10 @@ import { useHentFerdigstiltePerEnhet } from 'api/generated/los';
 import type { FerdigstiltePerEnhetGruppe } from 'api/generated/los.schemas';
 import dayjs from 'dayjs';
 import type { EChartsOption } from 'echarts';
+import { erIkkeImplementert, nøkkeltallQueryOptions } from 'fleromrade/api/nøkkeltallQueryOptions';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { useState } from 'react';
 import { grafHeight } from '../../../../styles/echartStyle';
-import { erIkkeImplementert, nøkkeltallQueryOptions } from './nøkkeltallQueryOptions';
 
 export default function FerdigstiltePerEnhet() {
 	const { urlSegment } = useOmråde();

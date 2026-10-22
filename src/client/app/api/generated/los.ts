@@ -40,6 +40,7 @@ import type {
 	HentAktivReservasjonParams,
 	HentFerdigstiltePerEnhetParams,
 	HentOppgavekoerForSaksbehandlerSomAvdelingslederParams,
+	HentSaksbehandlerNøkkeltallParams,
 	HentUttrekksresultatSomJsonParams,
 	IdDto,
 	InngangOgFerdigstilteResponse,
@@ -47,6 +48,7 @@ import type {
 	KopierLagretSokRequest,
 	KopierOppgaveKoDto,
 	LagretSokRespons,
+	NyeOgFerdigstilteResponse,
 	NyttLagretSokRequest,
 	Omrader,
 	OmradeUrlSegment,
@@ -2357,6 +2359,136 @@ export const useLagreSisteOppgave = <TError = ErrorType<void>, TContext = unknow
 };
 
 /**
+ * Gruppene varierer per område. Responsen inneholder tilgjengelige grupper, datokolonner og seriene Nye og Ferdigstilte.
+ * @summary Hent nye og ferdigstilte oppgaver de siste sju dagene
+ */
+export const hentSaksbehandlerNøkkeltall = (
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: SecondParameter<typeof losClient>,
+	signal?: AbortSignal,
+) => {
+	return losClient<NyeOgFerdigstilteResponse>(
+		{ url: `/api/wip/${omrade}/saksbehandler/nokkeltall`, method: 'GET', params, signal },
+		options,
+	);
+};
+
+export const getHentSaksbehandlerNøkkeltallQueryKey = (
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+) => {
+	return [`/api/wip/${omrade}/saksbehandler/nokkeltall`, ...(params ? [params] : [])] as const;
+};
+
+export const getHentSaksbehandlerNøkkeltallQueryOptions = <
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+) => {
+	const { query: queryOptions, request: requestOptions } = options ?? {};
+
+	const queryKey = queryOptions?.queryKey ?? getHentSaksbehandlerNøkkeltallQueryKey(omrade, params);
+
+	const queryFn: QueryFunction<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>> = ({ signal }) =>
+		hentSaksbehandlerNøkkeltall(omrade, params, requestOptions, signal);
+
+	return { queryKey, queryFn, enabled: omrade !== null && omrade !== undefined, ...queryOptions } as UseQueryOptions<
+		Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+		TError,
+		TData
+	> & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type HentSaksbehandlerNøkkeltallQueryResult = NonNullable<
+	Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>
+>;
+export type HentSaksbehandlerNøkkeltallQueryError = ErrorType<void>;
+
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params: undefined | HentSaksbehandlerNøkkeltallParams,
+	options: {
+		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>> &
+			Pick<
+				DefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+					TError,
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>> &
+			Pick<
+				UndefinedInitialDataOptions<
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+					TError,
+					Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>
+				>,
+				'initialData'
+			>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Hent nye og ferdigstilte oppgaver de siste sju dagene
+ */
+
+export function useHentSaksbehandlerNøkkeltall<
+	TData = Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>,
+	TError = ErrorType<void>,
+>(
+	omrade: OmradeUrlSegment,
+	params?: HentSaksbehandlerNøkkeltallParams,
+	options?: {
+		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentSaksbehandlerNøkkeltall>>, TError, TData>>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+	const queryOptions = getHentSaksbehandlerNøkkeltallQueryOptions(omrade, params, options);
+
+	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+		queryKey: DataTag<QueryKey, TData, TError>;
+	};
+
+	return withQueryKey(query, queryOptions.queryKey);
+}
+
+/**
  * @summary Hent saksbehandlere
  */
 export const hentSaksbehandlereForAdministrasjon = (
@@ -3854,8 +3986,8 @@ export function useHentOppgavekoerForSaksbehandlerSomAvdelingsleder<
 }
 
 /**
- * K9 har statuskort per behandlingsgruppe. Aktivitetspenger har behandlinger samlet, del 1 og del 2.
- * @summary Hent statusfordeling for området
+ * K9 har statuskort per behandlingsgruppe. Aktivitetspenger har behandlinger samlet, del 1, del 2, klager og feilutbetalinger.
+ * @summary Hent statusfordeling, tellingen vises som kort på toppen av siden
  */
 export const hentStatusfordeling = (
 	omrade: OmradeUrlSegment,
@@ -3949,7 +4081,7 @@ export function useHentStatusfordeling<
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Hent statusfordeling for området
+ * @summary Hent statusfordeling, tellingen vises som kort på toppen av siden
  */
 
 export function useHentStatusfordeling<
@@ -3974,7 +4106,7 @@ export function useHentStatusfordeling<
 
 /**
  * Antall mottatte og ferdigstilte oppgaver i dag og siste én, to og fire uker. Grupper varierer per område. Aktivitetspenger har ikke manuelt/automatisk-fordeling.
- * @summary Hent inngang og ferdigstilte for området
+ * @summary Hent inngang og ferdigstilte, tidligere kalt dagens tall
  */
 export const hentInngangOgFerdigstilte = (
 	omrade: OmradeUrlSegment,
@@ -4068,7 +4200,7 @@ export function useHentInngangOgFerdigstilte<
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Hent inngang og ferdigstilte for området
+ * @summary Hent inngang og ferdigstilte, tidligere kalt dagens tall
  */
 
 export function useHentInngangOgFerdigstilte<

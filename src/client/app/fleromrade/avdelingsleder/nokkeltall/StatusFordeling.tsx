@@ -2,10 +2,10 @@ import { BodyShort, Box, InlineMessage, Popover, VStack } from '@navikt/ds-react
 import { useHentStatusfordeling } from 'api/generated/los';
 import type { StatuslinjeDto } from 'api/generated/los.schemas';
 import KøKriterieViewer from 'filter/KøKriterieViewer';
+import { erIkkeImplementert, nøkkeltallQueryOptions } from 'fleromrade/api/nøkkeltallQueryOptions';
 import { fraKlientQuery } from 'fleromrade/api/oppgaveQuery';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { type ReactNode, useId, useState } from 'react';
-import { erIkkeImplementert, nøkkeltallQueryOptions } from './nøkkeltallQueryOptions';
 import styles from './statusFordeling.module.css';
 
 function KildeViewer({ tittel, linje, children }: { tittel: string; linje: StatuslinjeDto; children: ReactNode }) {
