@@ -1,6 +1,6 @@
 import type { Omrader, OmradeUrlSegment } from 'api/generated/los.schemas';
 
-export type Område = Omrader;
+export type Område = Extract<Omrader, 'K9' | 'AKTIVITETSPENGER'>;
 
 export const områdenavn: Record<Område, string> = {
 	K9: 'Pleiepenger, omsorgspenger og opplæringspenger',

@@ -67,7 +67,7 @@ export function StatusFordeling() {
 			{isSuccess && (
 				<>
 					<div className="mt-4 mb-4">
-						<Heading size="small">Status</Heading>
+						<Heading size="small">Beholdning</Heading>
 						<VerticalSpacer eightPx />
 						<Detail>Oppdatert {dayjs(data.oppdatertTidspunkt).format('DD.MM.YYYY kl. HH:mm:ss')}</Detail>
 					</div>

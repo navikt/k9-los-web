@@ -1,0 +1,56 @@
+.rammer {
+	display: flex;
+	gap: var(--ax-space-16);
+	flex-wrap: wrap;
+}
+
+.ramme {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	background-color: var(--ax-bg-raised);
+	border: 1px solid var(--ax-border-neutral-subtle);
+	border-radius: var(--ax-radius-4);
+	color: var(--ax-text-neutral);
+	width: 13.1875rem;
+	padding: calc(var(--ax-space-12) - var(--ax-space-1));
+}
+
+.hovedtall {
+	line-height: 1;
+	margin-block: calc(var(--ax-space-12) - var(--ax-space-2));
+	font-size: 1.375rem;
+	display: flex;
+	justify-content: center;
+}
+
+.nedbrytning {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: calc(var(--ax-space-4) + var(--ax-space-1));
+}
+
+.nedbrytningElement {
+	display: block;
+	line-height: 1;
+	font-size: 0.8125rem;
+	color: var(--ax-text-neutral-subtle);
+	font-weight: 500;
+	white-space: nowrap;
+}
+
+.tallcontainer {
+	flex-grow: 1;
+}
+
+.forklaring {
+	align-items: center;
+	display: flex;
+}
+
+.forklaringTekst {
+	font-size: 0.9375rem;
+	font-weight: 600;
+}
