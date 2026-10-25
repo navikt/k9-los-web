@@ -21,7 +21,7 @@ export const lagOppgaveSammendrag = (overstyring: Partial<OppgaveSammendragDto> 
 	oppgaveNøkkel: { oppgaveEksternId: 'oppgave-1', oppgaveTypeEksternId: 'k9sak', områdeEksternId: 'AKTIVITETSPENGER' },
 	reservasjonsnøkkel: 'reservasjon-1',
 	person: { navn: 'Kari Nordmann', fnr: '01234567890', kjønn: 'KVINNE', dødsdato: null },
-	ytelse: { kode: 'AKT', navn: 'Aktivitetspenger' },
+	ytelse: { kode: 'AVP', navn: 'Aktivitetspenger' },
 	behandlingstype: { kode: 'BT-002', navn: 'Førstegangsbehandling' },
 	saksnummer: 'ABC12',
 	journalpostId: null,
