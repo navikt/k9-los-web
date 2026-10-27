@@ -124,7 +124,7 @@ const erKøinnhold = (urlSegment: string) => (query: Query) => {
 	const [url] = query.queryKey;
 	return (
 		typeof url === 'string' &&
-		url.startsWith(`/api/wip/${urlSegment}/saksbehandler/oppgaveko/`) &&
+		url.startsWith(`/api/fleromrade/${urlSegment}/saksbehandler/oppgaveko/`) &&
 		(url.endsWith('/oppgaver-i-koen') || url.endsWith('/antall-uten-reserverte'))
 	);
 };

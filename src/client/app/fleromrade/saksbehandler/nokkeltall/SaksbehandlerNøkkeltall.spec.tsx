@@ -47,7 +47,10 @@ describe('SaksbehandlerNøkkeltall', () => {
 		).toBeInTheDocument();
 		expect(screen.getByText('Nøkkeltallgraf')).toBeInTheDocument();
 		expect(losClient).toHaveBeenCalledWith(
-			expect.objectContaining({ url: `/api/wip/${segment}/saksbehandler/nokkeltall`, params: { gruppe: 'ALLE' } }),
+			expect.objectContaining({
+				url: `/api/fleromrade/${segment}/saksbehandler/nokkeltall`,
+				params: { gruppe: 'ALLE' },
+			}),
 			undefined,
 		);
 	});
@@ -110,7 +113,7 @@ describe('SaksbehandlerNøkkeltall', () => {
 		rerender(vis('AKTIVITETSPENGER'));
 		await waitFor(() =>
 			expect(losClient).toHaveBeenLastCalledWith(
-				expect.objectContaining({ url: '/api/wip/akt/saksbehandler/nokkeltall', params: { gruppe: 'ALLE' } }),
+				expect.objectContaining({ url: '/api/fleromrade/akt/saksbehandler/nokkeltall', params: { gruppe: 'ALLE' } }),
 				undefined,
 			),
 		);

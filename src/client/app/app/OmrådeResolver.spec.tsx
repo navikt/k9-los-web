@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
-import { MemoryRouter, useLocation } from 'react-router';
+import { MemoryRouter, useLocation, useNavigationType } from 'react-router';
 import { describe, expect, it, vi } from 'vitest';
 import OmrådeResolver from './OmrådeResolver';
 
@@ -14,8 +14,9 @@ const queryResult = (overrides: Record<string, unknown>) =>
 	>;
 
 const Sti = () => {
-	const { pathname, search } = useLocation();
-	return <div data-testid="sti">{`${pathname}${search}`}</div>;
+	const { pathname, search, hash } = useLocation();
+	const navigering = useNavigationType();
+	return <div data-testid="sti" data-navigering={navigering}>{`${pathname}${search}${hash}`}</div>;
 };
 
 const FlerområdeApp = () => {
@@ -54,26 +55,66 @@ describe('OmrådeResolver', () => {
 		expect(screen.getAllByRole('button')).toHaveLength(3);
 	});
 
-	it('sender bruker med bare aktivitetspenger direkte til /akt', () => {
+	it('sender bruker med bare aktivitetspenger direkte til /avp', () => {
 		medOmråder(['AKTIVITETSPENGER']);
 		renderResolver('/');
 
-		expect(screen.getByText('App for AKTIVITETSPENGER på /akt')).toBeInTheDocument();
-		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/akt$/);
+		expect(screen.getByText('App for AKTIVITETSPENGER på /avp')).toBeInTheDocument();
+		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/avp$/);
+	});
+
+	it.each([
+		['/akt', '/avp'],
+		['/akt/', '/avp/'],
+		['/akt?sok=ABC12#resultat', '/avp?sok=ABC12#resultat'],
+		['/akt/avdelingsleder?fane=reservasjoner#oversikt', '/avp/avdelingsleder?fane=reservasjoner#oversikt'],
+		['/akt/admin', '/avp/admin'],
+	])('redirecter gammel lenke %s til %s og erstatter historikkinnslaget', (gammelSti, nySti) => {
+		medOmråder(['K9', 'AKTIVITETSPENGER']);
+		renderResolver(gammelSti);
+
+		expect(screen.getByTestId('sti').textContent).toBe(nySti);
+		expect(screen.getByTestId('sti')).toHaveAttribute('data-navigering', 'REPLACE');
+		expect(screen.getByText('App for AKTIVITETSPENGER på /avp')).toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'Velg område' })).not.toBeInTheDocument();
+	});
+
+	it('rendrer aktivitetspenger direkte på /avp uten redirect', () => {
+		medOmråder(['K9', 'AKTIVITETSPENGER']);
+		renderResolver('/avp');
+
+		expect(screen.getByText('App for AKTIVITETSPENGER på /avp')).toBeInTheDocument();
+		expect(screen.getByTestId('sti')).toHaveAttribute('data-navigering', 'POP');
+	});
+
+	it.each(['/akt', '/avp'])('krever tilgang til aktivitetspenger på %s', (sti) => {
+		medOmråder(['K9']);
+		renderResolver(sti);
+
+		expect(screen.getByText('Du har ikke tilgang til systemet')).toBeInTheDocument();
+		expect(screen.queryByText('App for AKTIVITETSPENGER på /avp')).not.toBeInTheDocument();
+	});
+
+	it('redirecter ikke andre stier som begynner med akt', () => {
+		medOmråder(['K9', 'AKTIVITETSPENGER']);
+		renderResolver('/aktivitet');
+
+		expect(screen.getByTestId('sti').textContent).toBe('/aktivitet');
+		expect(screen.getByRole('heading', { name: 'Velg område' })).toBeInTheDocument();
 	});
 
 	it('beholder dyplenken ved automatisk redirect', () => {
 		medOmråder(['AKTIVITETSPENGER']);
 		renderResolver('/avdelingsleder?fane=reservasjoner');
 
-		expect(screen.getByTestId('sti')).toHaveTextContent('/akt/avdelingsleder?fane=reservasjoner');
+		expect(screen.getByTestId('sti')).toHaveTextContent('/avp/avdelingsleder?fane=reservasjoner');
 	});
 
 	it('beholder søkeparameter fra rota ved automatisk redirect', () => {
 		medOmråder(['AKTIVITETSPENGER']);
 		renderResolver('/?sok=brabra');
 
-		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/akt\?sok=brabra$/);
+		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/avp\?sok=brabra$/);
 	});
 
 	it('beholder søkeparameter når bruker velger område', async () => {
@@ -82,7 +123,7 @@ describe('OmrådeResolver', () => {
 		renderResolver('/?sok=brabra');
 
 		await user.click(screen.getByRole('button', { name: 'Aktivitetspenger' }));
-		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/akt\?sok=brabra$/);
+		expect(screen.getByTestId('sti')).toHaveTextContent(/^\/avp\?sok=brabra$/);
 	});
 
 	it('beholder søkeparameter når bruker velger område via /velg-omrade', async () => {

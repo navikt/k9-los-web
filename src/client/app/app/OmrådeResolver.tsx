@@ -25,6 +25,7 @@ const aktiverAktivitetspenger = !erProd && !erVerdikjede;
 const k9LegacySti = '/k9';
 const k9NySti = basisstiForOmråde.K9;
 const aktivitetspengerSti = basisstiForOmråde.AKTIVITETSPENGER;
+const gammelAktivitetspengerSti = '/akt';
 const områdevelgerSti = '/velg-omrade';
 
 const harPrefiks = (sti: string, prefiks: string) => sti === prefiks || sti.startsWith(`${prefiks}/`);
@@ -91,6 +92,15 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 	if (valg.length === 0) return <IngenTilgang />;
 
 	const kanBytteOmråde = valg.length > 1;
+
+	if (harPrefiks(pathname, gammelAktivitetspengerSti)) {
+		return (
+			<Navigate
+				replace
+				to={{ pathname: `${aktivitetspengerSti}${pathname.slice(gammelAktivitetspengerSti.length)}`, search, hash }}
+			/>
+		);
+	}
 
 	// Andre systemer lenker til rota (f.eks. `/?sok=...`) uten å kjenne til områdeprefiksene.
 	// Sti, query og hash må derfor overleve både områdevelgeren og den automatiske redirecten.

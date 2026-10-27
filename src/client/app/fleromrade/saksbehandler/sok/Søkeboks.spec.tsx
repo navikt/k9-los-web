@@ -71,7 +71,7 @@ describe('Søkeboks', () => {
 	it('søker på søkeordet i URL-en ved første visning', () => {
 		const søk = medSøkeresultat(undefined);
 
-		renderMedOmråde(<Søkeboks />, { sti: '/akt?sok=ABC12' });
+		renderMedOmråde(<Søkeboks />, { sti: '/avp?sok=ABC12' });
 
 		expect(søk).toHaveBeenCalledWith({ omrade: 'akt', data: { søkeord: 'ABC12' } });
 	});

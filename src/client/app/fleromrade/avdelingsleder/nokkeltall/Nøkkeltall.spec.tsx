@@ -102,7 +102,7 @@ describe('Nøkkeltall for flerområde', () => {
 			expect(losClient).toHaveBeenCalledTimes(3);
 			for (const endepunkt of ['statusfordeling', 'inngang-og-ferdigstilte', 'ferdigstilte-per-enhet']) {
 				expect(losClient).toHaveBeenCalledWith(
-					expect.objectContaining({ url: `/api/wip/${segment}/avdelingsleder/nokkeltall/${endepunkt}` }),
+					expect.objectContaining({ url: `/api/fleromrade/${segment}/avdelingsleder/nokkeltall/${endepunkt}` }),
 					undefined,
 				);
 			}

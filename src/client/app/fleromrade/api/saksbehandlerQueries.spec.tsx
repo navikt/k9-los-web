@@ -12,8 +12,8 @@ vi.mock('api/orvalMutator', async (importOriginal) => ({
 	losClient: vi.fn(),
 }));
 
-const antallUrl = '/api/wip/akt/saksbehandler/oppgaveko/1/antall-uten-reserverte';
-const oppgaverUrl = '/api/wip/akt/saksbehandler/oppgaveko/1/oppgaver-i-koen';
+const antallUrl = '/api/fleromrade/akt/saksbehandler/oppgaveko/1/antall-uten-reserverte';
+const oppgaverUrl = '/api/fleromrade/akt/saksbehandler/oppgaveko/1/oppgaver-i-koen';
 
 let antallIKø = 5;
 

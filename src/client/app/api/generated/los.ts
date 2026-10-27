@@ -99,11 +99,11 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
  * @summary Hent områder med basistilgang for innlogget bruker
  */
 export const hentInnloggetBrukersOmråder = (options?: SecondParameter<typeof losClient>, signal?: AbortSignal) => {
-	return losClient<Omrader[]>({ url: `/api/wip/innlogget-bruker/omr\xE5der`, method: 'GET', signal }, options);
+	return losClient<Omrader[]>({ url: `/api/fleromrade/innlogget-bruker/omrader`, method: 'GET', signal }, options);
 };
 
 export const getHentInnloggetBrukersOmråderQueryKey = () => {
-	return [`/api/wip/innlogget-bruker/omr\xE5der`] as const;
+	return [`/api/fleromrade/innlogget-bruker/omrader`] as const;
 };
 
 export const getHentInnloggetBrukersOmråderQueryOptions = <
@@ -210,13 +210,13 @@ export const hentInnloggetBruker = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<InnloggetBrukerDtoNy>(
-		{ url: `/api/wip/${omrade}/innlogget-bruker`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/innlogget-bruker`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentInnloggetBrukerQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/innlogget-bruker`] as const;
+	return [`/api/fleromrade/${omrade}/innlogget-bruker`] as const;
 };
 
 export const getHentInnloggetBrukerQueryOptions = <
@@ -327,11 +327,14 @@ export const hentDriftsmeldinger = (
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
-	return losClient<DriftsmeldingDto[]>({ url: `/api/wip/${omrade}/driftsmeldinger`, method: 'GET', signal }, options);
+	return losClient<DriftsmeldingDto[]>(
+		{ url: `/api/fleromrade/${omrade}/driftsmeldinger`, method: 'GET', signal },
+		options,
+	);
 };
 
 export const getHentDriftsmeldingerQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/driftsmeldinger`] as const;
+	return [`/api/fleromrade/${omrade}/driftsmeldinger`] as const;
 };
 
 export const getHentDriftsmeldingerQueryOptions = <
@@ -445,7 +448,7 @@ export const opprettDriftsmelding = (
 ) => {
 	return losClient<DriftsmeldingDto>(
 		{
-			url: `/api/wip/${omrade}/driftsmeldinger`,
+			url: `/api/fleromrade/${omrade}/driftsmeldinger`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: driftsmelding,
@@ -529,7 +532,7 @@ export const slettDriftsmelding = (
 ) => {
 	return losClient<void>(
 		{
-			url: `/api/wip/${omrade}/driftsmeldinger/slett`,
+			url: `/api/fleromrade/${omrade}/driftsmeldinger/slett`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: idDto,
@@ -613,7 +616,7 @@ export const endreDriftsmeldingstatus = (
 ) => {
 	return losClient<void>(
 		{
-			url: `/api/wip/${omrade}/driftsmeldinger/toggle`,
+			url: `/api/fleromrade/${omrade}/driftsmeldinger/toggle`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: driftsmeldingSwitch,
@@ -701,7 +704,7 @@ export const søkEtterOppgaver = (
 ) => {
 	return losClient<SokeresultatSammendrag>(
 		{
-			url: `/api/wip/${omrade}/saksbehandler/sok`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/sok`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: sokRequest,
@@ -783,13 +786,13 @@ export const hentSaksbehandlersOppgavekoer = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<OppgaveKo[]>(
-		{ url: `/api/wip/${omrade}/saksbehandler/oppgaveko/saksbehandlerskoer`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/oppgaveko/saksbehandlerskoer`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentSaksbehandlersOppgavekoerQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/saksbehandler/oppgaveko/saksbehandlerskoer`] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/oppgaveko/saksbehandlerskoer`] as const;
 };
 
 export const getHentSaksbehandlersOppgavekoerQueryOptions = <
@@ -904,13 +907,13 @@ export const hentOppgaverISaksbehandlerko = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<OppgaveSammendragDto[]>(
-		{ url: `/api/wip/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentOppgaverISaksbehandlerkoQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`] as const;
 };
 
 export const getHentOppgaverISaksbehandlerkoQueryOptions = <
@@ -1033,13 +1036,13 @@ export const hentSaksbehandlereISaksbehandlerko = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<SaksbehandlerForKolisteDto[]>(
-		{ url: `/api/wip/${omrade}/saksbehandler/oppgaveko/${id}/koens-saksbehandlere`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/koens-saksbehandlere`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentSaksbehandlereISaksbehandlerkoQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/saksbehandler/oppgaveko/${id}/koens-saksbehandlere`] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/koens-saksbehandlere`] as const;
 };
 
 export const getHentSaksbehandlereISaksbehandlerkoQueryOptions = <
@@ -1162,13 +1165,13 @@ export const hentAntallOppgaverUtenReserverteISaksbehandlerko = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<AntallOppgaver>(
-		{ url: `/api/wip/${omrade}/saksbehandler/oppgaveko/${id}/antall-uten-reserverte`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/antall-uten-reserverte`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentAntallOppgaverUtenReserverteISaksbehandlerkoQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/saksbehandler/oppgaveko/${id}/antall-uten-reserverte`] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/antall-uten-reserverte`] as const;
 };
 
 export const getHentAntallOppgaverUtenReserverteISaksbehandlerkoQueryOptions = <
@@ -1302,7 +1305,7 @@ export const reserverNesteOppgaveFraSaksbehandlerko = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<ReservasjonV3FraKoDto[]>(
-		{ url: `/api/wip/${omrade}/saksbehandler/oppgaveko/${id}/fa-oppgave`, method: 'POST', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/fa-oppgave`, method: 'POST', signal },
 		options,
 	);
 };
@@ -1387,7 +1390,7 @@ export const reserverOppgave = (
 ) => {
 	return losClient<OppgaveStatusDto>(
 		{
-			url: `/api/wip/${omrade}/saksbehandler/reservasjoner/reserver`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/reserver`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: oppgaveNokkelUtenOmradeDto,
@@ -1471,13 +1474,13 @@ export const hentReserverteOppgaver = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<ReservasjonMedOppgaverDto[]>(
-		{ url: `/api/wip/${omrade}/saksbehandler/reservasjoner/reserverte`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/reserverte`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentReserverteOppgaverQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/saksbehandler/reservasjoner/reserverte`] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/reservasjoner/reserverte`] as const;
 };
 
 export const getHentReserverteOppgaverQueryOptions = <
@@ -1591,7 +1594,7 @@ export const opphevReservasjoner = (
 ) => {
 	return losClient<void>(
 		{
-			url: `/api/wip/${omrade}/saksbehandler/reservasjoner/opphev`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/opphev`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: annullerReservasjonDto,
@@ -1678,7 +1681,7 @@ export const forlengReservasjon = (
 ) => {
 	return losClient<ReservasjonMedOppgaverDto>(
 		{
-			url: `/api/wip/${omrade}/saksbehandler/reservasjoner/forleng`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/forleng`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: forlengReservasjonDto,
@@ -1762,7 +1765,7 @@ export const flyttReservasjon = (
 ) => {
 	return losClient<ReservasjonMedOppgaverDto>(
 		{
-			url: `/api/wip/${omrade}/saksbehandler/reservasjoner/flytt`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/flytt`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: flyttReservasjonDto,
@@ -1846,7 +1849,7 @@ export const endreReservasjoner = (
 ) => {
 	return losClient<void>(
 		{
-			url: `/api/wip/${omrade}/saksbehandler/reservasjoner/endre`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/endre`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: reservasjonEndringDto,
@@ -1931,13 +1934,13 @@ export const hentSaksbehandlereForReservasjon = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<SaksbehandlerPaReservasjonDto[]>(
-		{ url: `/api/wip/${omrade}/saksbehandler/reservasjoner/saksbehandlere`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/saksbehandlere`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentSaksbehandlereForReservasjonQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/saksbehandler/reservasjoner/saksbehandlere`] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/reservasjoner/saksbehandlere`] as const;
 };
 
 export const getHentSaksbehandlereForReservasjonQueryOptions = <
@@ -2052,13 +2055,16 @@ export const hentAktivReservasjon = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<ReservasjonsinfoDto | void>(
-		{ url: `/api/wip/${omrade}/saksbehandler/reservasjoner/aktiv-reservasjon`, method: 'GET', params, signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/aktiv-reservasjon`, method: 'GET', params, signal },
 		options,
 	);
 };
 
 export const getHentAktivReservasjonQueryKey = (omrade: OmradeUrlSegment, params?: HentAktivReservasjonParams) => {
-	return [`/api/wip/${omrade}/saksbehandler/reservasjoner/aktiv-reservasjon`, ...(params ? [params] : [])] as const;
+	return [
+		`/api/fleromrade/${omrade}/saksbehandler/reservasjoner/aktiv-reservasjon`,
+		...(params ? [params] : []),
+	] as const;
 };
 
 export const getHentAktivReservasjonQueryOptions = <
@@ -2176,13 +2182,13 @@ export const hentSisteOppgaver = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<SisteOppgaverDto[]>(
-		{ url: `/api/wip/${omrade}/saksbehandler/siste-oppgaver`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/siste-oppgaver`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentSisteOppgaverQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/saksbehandler/siste-oppgaver`] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/siste-oppgaver`] as const;
 };
 
 export const getHentSisteOppgaverQueryOptions = <
@@ -2285,7 +2291,7 @@ export const lagreSisteOppgave = (
 ) => {
 	return losClient<void>(
 		{
-			url: `/api/wip/${omrade}/saksbehandler/siste-oppgaver`,
+			url: `/api/fleromrade/${omrade}/saksbehandler/siste-oppgaver`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: oppgaveNokkelDto,
@@ -2369,7 +2375,7 @@ export const hentSaksbehandlerNøkkeltall = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<NyeOgFerdigstilteResponse>(
-		{ url: `/api/wip/${omrade}/saksbehandler/nokkeltall`, method: 'GET', params, signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/nokkeltall`, method: 'GET', params, signal },
 		options,
 	);
 };
@@ -2378,7 +2384,7 @@ export const getHentSaksbehandlerNøkkeltallQueryKey = (
 	omrade: OmradeUrlSegment,
 	params?: HentSaksbehandlerNøkkeltallParams,
 ) => {
-	return [`/api/wip/${omrade}/saksbehandler/nokkeltall`, ...(params ? [params] : [])] as const;
+	return [`/api/fleromrade/${omrade}/saksbehandler/nokkeltall`, ...(params ? [params] : [])] as const;
 };
 
 export const getHentSaksbehandlerNøkkeltallQueryOptions = <
@@ -2497,13 +2503,13 @@ export const hentSaksbehandlereForAdministrasjon = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<SaksbehandlerDto[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentSaksbehandlereForAdministrasjonQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere`] as const;
 };
 
 export const getHentSaksbehandlereForAdministrasjonQueryOptions = <
@@ -2619,7 +2625,7 @@ export const leggTilSaksbehandler = (
 ) => {
 	return losClient<null>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere/legg-til`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere/legg-til`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: epostDto,
@@ -2703,7 +2709,7 @@ export const slettSaksbehandlerMedEpost = (
 ) => {
 	return losClient<null>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere/slett`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere/slett`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: epostDto,
@@ -2788,7 +2794,11 @@ export const slettSaksbehandlerMedId = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<null>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere/${id}`, method: 'DELETE', signal },
+		{
+			url: `/api/fleromrade/${omrade}/avdelingsleder/saksbehandler-admin/saksbehandlere/${id}`,
+			method: 'DELETE',
+			signal,
+		},
 		options,
 	);
 };
@@ -2865,13 +2875,13 @@ export const hentAlleAktiveReservasjoner = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<ReservasjonMedOppgaverDto[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/reservasjon-admin/alle-reservasjoner`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/reservasjon-admin/alle-reservasjoner`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentAlleAktiveReservasjonerQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/reservasjon-admin/alle-reservasjoner`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/reservasjon-admin/alle-reservasjoner`] as const;
 };
 
 export const getHentAlleAktiveReservasjonerQueryOptions = <
@@ -2985,13 +2995,13 @@ export const hentAlleOppgavekoerForAvdelingsleder = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<OppgaveKoListeelement[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/alle-koer`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/alle-koer`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentAlleOppgavekoerForAvdelingslederQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/oppgaveko/alle-koer`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/alle-koer`] as const;
 };
 
 export const getHentAlleOppgavekoerForAvdelingslederQueryOptions = <
@@ -3107,7 +3117,7 @@ export const endreOppgavekoSomAvdelingsleder = (
 ) => {
 	return losClient<OppgaveKo>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/endre`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/endre`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: oppgaveKo,
@@ -3196,7 +3206,7 @@ export const kopierOppgavekoSomAvdelingsleder = (
 ) => {
 	return losClient<OppgaveKo>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/kopier`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/kopier`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: kopierOppgaveKoDto,
@@ -3286,13 +3296,13 @@ export const hentAlleSaksbehandlereForOppgavekoadministrasjon = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<SaksbehandlerForKolisteDto[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/alle-saksbehandlere`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/alle-saksbehandlere`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentAlleSaksbehandlereForOppgavekoadministrasjonQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/oppgaveko/alle-saksbehandlere`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/alle-saksbehandlere`] as const;
 };
 
 export const getHentAlleSaksbehandlereForOppgavekoadministrasjonQueryOptions = <
@@ -3419,7 +3429,7 @@ export const opprettOppgavekoSomAvdelingsleder = (
 ) => {
 	return losClient<OppgaveKo>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/opprett`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/opprett`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: opprettOppgaveKoDto,
@@ -3510,13 +3520,13 @@ export const hentOppgavekoSomAvdelingsleder = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<OppgaveKo>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/${id}`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/${id}`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentOppgavekoSomAvdelingslederQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/avdelingsleder/oppgaveko/${id}`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/${id}`] as const;
 };
 
 export const getHentOppgavekoSomAvdelingslederQueryOptions = <
@@ -3639,7 +3649,7 @@ export const slettOppgavekoSomAvdelingsleder = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<null>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/${id}`, method: 'DELETE', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/${id}`, method: 'DELETE', signal },
 		options,
 	);
 };
@@ -3722,13 +3732,13 @@ export const hentAntallOppgaverIAvdelingslederko = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<AntallOppgaverOgReserverte>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/${id}/antall`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/${id}/antall`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentAntallOppgaverIAvdelingslederkoQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/avdelingsleder/oppgaveko/${id}/antall`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/${id}/antall`] as const;
 };
 
 export const getHentAntallOppgaverIAvdelingslederkoQueryOptions = <
@@ -3851,7 +3861,12 @@ export const hentOppgavekoerForSaksbehandlerSomAvdelingsleder = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<OppgaveKoIdOgTittel[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/oppgaveko/andre-saksbehandleres-koer`, method: 'GET', params, signal },
+		{
+			url: `/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/andre-saksbehandleres-koer`,
+			method: 'GET',
+			params,
+			signal,
+		},
 		options,
 	);
 };
@@ -3861,7 +3876,7 @@ export const getHentOppgavekoerForSaksbehandlerSomAvdelingslederQueryKey = (
 	params?: HentOppgavekoerForSaksbehandlerSomAvdelingslederParams,
 ) => {
 	return [
-		`/api/wip/${omrade}/avdelingsleder/oppgaveko/andre-saksbehandleres-koer`,
+		`/api/fleromrade/${omrade}/avdelingsleder/oppgaveko/andre-saksbehandleres-koer`,
 		...(params ? [params] : []),
 	] as const;
 };
@@ -3995,13 +4010,13 @@ export const hentStatusfordeling = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<StatusFordelingResponse>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/nokkeltall/statusfordeling`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/nokkeltall/statusfordeling`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentStatusfordelingQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/nokkeltall/statusfordeling`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/nokkeltall/statusfordeling`] as const;
 };
 
 export const getHentStatusfordelingQueryOptions = <
@@ -4114,13 +4129,13 @@ export const hentInngangOgFerdigstilte = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<InngangOgFerdigstilteResponse>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/nokkeltall/inngang-og-ferdigstilte`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/nokkeltall/inngang-og-ferdigstilte`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentInngangOgFerdigstilteQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/nokkeltall/inngang-og-ferdigstilte`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/nokkeltall/inngang-og-ferdigstilte`] as const;
 };
 
 export const getHentInngangOgFerdigstilteQueryOptions = <
@@ -4234,7 +4249,12 @@ export const hentFerdigstiltePerEnhet = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<FerdigstiltePerEnhetResponse>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/nokkeltall/ferdigstilte-per-enhet`, method: 'GET', params, signal },
+		{
+			url: `/api/fleromrade/${omrade}/avdelingsleder/nokkeltall/ferdigstilte-per-enhet`,
+			method: 'GET',
+			params,
+			signal,
+		},
 		options,
 	);
 };
@@ -4243,7 +4263,10 @@ export const getHentFerdigstiltePerEnhetQueryKey = (
 	omrade: OmradeUrlSegment,
 	params?: HentFerdigstiltePerEnhetParams,
 ) => {
-	return [`/api/wip/${omrade}/avdelingsleder/nokkeltall/ferdigstilte-per-enhet`, ...(params ? [params] : [])] as const;
+	return [
+		`/api/fleromrade/${omrade}/avdelingsleder/nokkeltall/ferdigstilte-per-enhet`,
+		...(params ? [params] : []),
+	] as const;
 };
 
 export const getHentFerdigstiltePerEnhetQueryOptions = <
@@ -4360,13 +4383,13 @@ export const hentLagredeSok = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<LagretSokRespons[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/lagret-sok`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentLagredeSokQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/lagret-sok`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/lagret-sok`] as const;
 };
 
 export const getHentLagredeSokQueryOptions = <
@@ -4467,13 +4490,13 @@ export const hentLagretSok = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<LagretSokRespons>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/lagret-sok/${id}`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/${id}`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentLagretSokQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/avdelingsleder/lagret-sok/${id}`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/${id}`] as const;
 };
 
 export const getHentLagretSokQueryOptions = <
@@ -4582,13 +4605,13 @@ export const hentAntallForLagretSok = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<number>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/lagret-sok/${id}/antall`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/${id}/antall`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentAntallForLagretSokQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/avdelingsleder/lagret-sok/${id}/antall`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/${id}/antall`] as const;
 };
 
 export const getHentAntallForLagretSokQueryOptions = <
@@ -4708,13 +4731,13 @@ export const hentStandardOppgaveQuery = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<OppgaveQuery>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/lagret-sok/default-query`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/default-query`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentStandardOppgaveQueryQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/lagret-sok/default-query`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/default-query`] as const;
 };
 
 export const getHentStandardOppgaveQueryQueryOptions = <
@@ -4828,7 +4851,7 @@ export const opprettLagretSok = (
 ) => {
 	return losClient<number>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/lagret-sok/nytt`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/nytt`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: nyttLagretSokRequest,
@@ -4913,7 +4936,7 @@ export const endreLagretSok = (
 ) => {
 	return losClient<LagretSokRespons>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/lagret-sok/${id}/endre`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/${id}/endre`,
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 			data: endreLagretSokRequest,
@@ -4996,7 +5019,7 @@ export const kopierLagretSok = (
 ) => {
 	return losClient<number>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/lagret-sok/${id}/kopier`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/${id}/kopier`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: kopierLagretSokRequest,
@@ -5082,7 +5105,7 @@ export const slettLagretSok = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<void>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/lagret-sok/${id}/slett`, method: 'DELETE', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/lagret-sok/${id}/slett`, method: 'DELETE', signal },
 		options,
 	);
 };
@@ -5153,13 +5176,13 @@ export const hentUttrekk = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<UttrekkRespons[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/uttrekk`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentUttrekkQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/uttrekk`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/uttrekk`] as const;
 };
 
 export const getHentUttrekkQueryOptions = <TData = Awaited<ReturnType<typeof hentUttrekk>>, TError = ErrorType<void>>(
@@ -5257,13 +5280,13 @@ export const hentUttrekkMedId = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<UttrekkRespons>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/uttrekk/${id}`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentUttrekkMedIdQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/avdelingsleder/uttrekk/${id}`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}`] as const;
 };
 
 export const getHentUttrekkMedIdQueryOptions = <
@@ -5373,7 +5396,7 @@ export const opprettUttrekk = (
 ) => {
 	return losClient<number>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/uttrekk/opprett`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk/opprett`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: opprettUttrekkBody,
@@ -5452,7 +5475,7 @@ export const endreTittelPåUttrekk = (
 ) => {
 	return losClient<void>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/uttrekk/${id}/tittel`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}/tittel`,
 			method: 'PUT',
 			headers: { 'Content-Type': 'application/json' },
 			data: endreTittel,
@@ -5539,7 +5562,7 @@ export const slettUttrekk = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<void>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/uttrekk/${id}/slett`, method: 'DELETE', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}/slett`, method: 'DELETE', signal },
 		options,
 	);
 };
@@ -5606,7 +5629,7 @@ export const slettUttrekkForLagretSøk = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<number>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/uttrekk/lagret-sok/${lagretSokId}`, method: 'DELETE', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk/lagret-sok/${lagretSokId}`, method: 'DELETE', signal },
 		options,
 	);
 };
@@ -5684,13 +5707,13 @@ export const lastNedUttrekkSomCsv = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<string>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/uttrekk/${id}/csv`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}/csv`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getLastNedUttrekkSomCsvQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/wip/${omrade}/avdelingsleder/uttrekk/${id}/csv`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}/csv`] as const;
 };
 
 export const getLastNedUttrekkSomCsvQueryOptions = <
@@ -5812,7 +5835,7 @@ export const hentUttrekksresultatSomJson = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<UttrekkResultatRespons>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/uttrekk/${id}/json`, method: 'GET', params, signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}/json`, method: 'GET', params, signal },
 		options,
 	);
 };
@@ -5822,7 +5845,7 @@ export const getHentUttrekksresultatSomJsonQueryKey = (
 	id: number,
 	params?: HentUttrekksresultatSomJsonParams,
 ) => {
-	return [`/api/wip/${omrade}/avdelingsleder/uttrekk/${id}/json`, ...(params ? [params] : [])] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/uttrekk/${id}/json`, ...(params ? [params] : [])] as const;
 };
 
 export const getHentUttrekksresultatSomJsonQueryOptions = <
@@ -5951,7 +5974,7 @@ export const hentAntallOppgaverForQuery = (
 ) => {
 	return losClient<number>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/query/antall`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/query/antall`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: oppgaveQuery,
@@ -6037,7 +6060,7 @@ export const validerOppgaveQuery = (
 ) => {
 	return losClient<boolean>(
 		{
-			url: `/api/wip/${omrade}/avdelingsleder/query/validate`,
+			url: `/api/fleromrade/${omrade}/avdelingsleder/query/validate`,
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			data: oppgaveQuery,
@@ -6119,13 +6142,13 @@ export const hentOppgavefelter = (
 	signal?: AbortSignal,
 ) => {
 	return losClient<Oppgavefelt[]>(
-		{ url: `/api/wip/${omrade}/avdelingsleder/query/felter`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/avdelingsleder/query/felter`, method: 'GET', signal },
 		options,
 	);
 };
 
 export const getHentOppgavefelterQueryKey = (omrade: OmradeUrlSegment) => {
-	return [`/api/wip/${omrade}/avdelingsleder/query/felter`] as const;
+	return [`/api/fleromrade/${omrade}/avdelingsleder/query/felter`] as const;
 };
 
 export const getHentOppgavefelterQueryOptions = <

@@ -38,7 +38,7 @@ describe('AvdelingslederPanel', () => {
 	it('viser oppgavekøer som standard og gir filterkomponentene feltene for området', () => {
 		medFelter();
 
-		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder' });
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/avp/avdelingsleder' });
 
 		expect(useHentOppgavefelter).toHaveBeenCalledWith('akt', expect.anything());
 		expect(screen.getByRole('tab', { name: 'Oppgavekøer', selected: true })).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('AvdelingslederPanel', () => {
 		const user = userEvent.setup();
 		medFelter();
 
-		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder' });
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/avp/avdelingsleder' });
 
 		expect(screen.getAllByRole('tab').map((fane) => fane.textContent)).toEqual([
 			'Oppgavekøer',
@@ -90,7 +90,7 @@ describe('AvdelingslederPanel', () => {
 	it('åpner nøkkeltall for aktivitetspenger direkte fra URL-en', () => {
 		medFelter();
 
-		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder?fane=nokkeltall' });
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/avp/avdelingsleder?fane=nokkeltall' });
 
 		expect(screen.getByRole('tab', { name: 'Nøkkeltall', selected: true })).toBeInTheDocument();
 		expect(useHentInngangOgFerdigstilte).toHaveBeenCalledWith('akt', expect.anything());
@@ -100,19 +100,19 @@ describe('AvdelingslederPanel', () => {
 		const user = userEvent.setup();
 		medFelter();
 
-		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder?fane=lagredesok&sok=1' });
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/avp/avdelingsleder?fane=lagredesok&sok=1' });
 		expect(screen.getByText('Lagrede søk: oppgavestatus, ytelsestype')).toBeInTheDocument();
 
 		await user.click(screen.getByRole('tab', { name: 'Saksbehandlere' }));
 
 		expect(screen.getByText('Saksbehandlertabell')).toBeInTheDocument();
-		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/akt/avdelingsleder?fane=saksbehandlere&sok=1');
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/avp/avdelingsleder?fane=saksbehandlere&sok=1');
 	});
 
 	it('forteller når feltene ikke kan hentes', () => {
 		vi.mocked(useHentOppgavefelter).mockReturnValue(queryResultat(undefined, { isError: true, isSuccess: false }));
 
-		renderMedOmråde(<AvdelingslederPanel />, { sti: '/akt/avdelingsleder' });
+		renderMedOmråde(<AvdelingslederPanel />, { sti: '/avp/avdelingsleder' });
 
 		expect(screen.getByText('Kunne ikke hente oppgavefeltene for området')).toBeInTheDocument();
 		expect(screen.queryByRole('tab')).not.toBeInTheDocument();
