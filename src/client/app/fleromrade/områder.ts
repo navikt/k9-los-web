@@ -15,5 +15,5 @@ export const urlSegmentForOmråde: Record<Område, OmradeUrlSegment> = {
 /** Rotstien for hvert område på nytt API. Legacy-K9 ligger separat under `/k9`. */
 export const basisstiForOmråde: Record<Område, string> = {
 	K9: '/k9-ny',
-	AKTIVITETSPENGER: '/akt',
+	AKTIVITETSPENGER: '/avp',
 };

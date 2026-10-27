@@ -17,7 +17,7 @@ const AktivSti = () => {
 };
 
 interface Valg {
-	/** Startstien i routeren. Standard er `/akt`. */
+	/** Startstien i routeren. Standard er `/avp`. */
 	sti?: string;
 	område?: Område;
 	kanBytteOmråde?: boolean;
@@ -29,7 +29,7 @@ interface Valg {
  */
 export const renderMedOmråde = (
 	ui: ReactElement,
-	{ sti = '/akt', område = 'AKTIVITETSPENGER', kanBytteOmråde = false }: Valg = {},
+	{ sti = '/avp', område = 'AKTIVITETSPENGER', kanBytteOmråde = false }: Valg = {},
 ) => {
 	const queryClient = new QueryClient({
 		defaultOptions: { queries: { retry: false }, mutations: { retry: false } },

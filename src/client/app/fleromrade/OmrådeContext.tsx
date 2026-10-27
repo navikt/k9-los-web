@@ -5,7 +5,7 @@ import { basisstiForOmråde, type Område, urlSegmentForOmråde } from './områd
 interface OmrådeKontekst {
 	område: Område;
 	urlSegment: OmradeUrlSegment;
-	/** Rotstien til området i appen, f.eks. `/akt` eller `/k9-ny`. */
+	/** Rotstien til området i appen, f.eks. `/avp` eller `/k9-ny`. */
 	basissti: string;
 	kanBytteOmråde: boolean;
 }

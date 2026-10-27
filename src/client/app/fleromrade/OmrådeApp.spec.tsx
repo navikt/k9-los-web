@@ -68,9 +68,9 @@ describe('OmrådeApp', () => {
 	it('viser områdets navn og brukeren i headeren', () => {
 		medBruker({ basis: true });
 
-		renderApp('/akt');
+		renderApp('/avp');
 
-		expect(screen.getByRole('link', { name: 'Aktivitetspenger' })).toHaveAttribute('href', '/akt');
+		expect(screen.getByRole('link', { name: 'Aktivitetspenger' })).toHaveAttribute('href', '/avp');
 		expect(screen.getByText('Z123456')).toBeInTheDocument();
 		expect(screen.queryByText('Ola Nordmann')).not.toBeInTheDocument();
 		expect(screen.queryByText('Endringslogg')).not.toBeInTheDocument();
@@ -81,7 +81,7 @@ describe('OmrådeApp', () => {
 	it('krever basistilgang på forsiden', () => {
 		medBruker({});
 
-		renderApp('/akt');
+		renderApp('/avp');
 
 		expect(screen.getByText('Du har ikke tilgang til å bruke dette programmet')).toBeInTheDocument();
 	});
@@ -90,10 +90,10 @@ describe('OmrådeApp', () => {
 		const user = userEvent.setup();
 		medBruker({ basis: true, oppgavestyring: true });
 
-		renderApp('/akt');
+		renderApp('/avp');
 		await user.click(screen.getByRole('button', { name: 'Avdelingslederpanel' }));
 
-		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/akt/avdelingsleder');
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/avp/avdelingsleder');
 		expect(screen.getByRole('heading', { name: 'Avdelingslederpanel' })).toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Avdelingslederpanel' })).not.toBeInTheDocument();
 	});
@@ -101,7 +101,7 @@ describe('OmrådeApp', () => {
 	it('skjuler knapper brukeren ikke har tilgang til, og krever tilgang på sidene', () => {
 		medBruker({ basis: true });
 
-		renderApp('/akt/avdelingsleder');
+		renderApp('/avp/avdelingsleder');
 
 		expect(screen.queryByRole('button', { name: 'Avdelingslederpanel' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Driftsmeldinger' })).not.toBeInTheDocument();
@@ -112,10 +112,10 @@ describe('OmrådeApp', () => {
 		const user = userEvent.setup();
 		medBruker({ basis: true, drift: true });
 
-		renderApp('/akt');
+		renderApp('/avp');
 		await user.click(screen.getByRole('button', { name: 'Driftsmeldinger' }));
 
-		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/akt/admin');
+		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/avp/admin');
 		expect(screen.getByRole('heading', { name: 'Driftsmeldinger' })).toBeInTheDocument();
 	});
 
@@ -123,7 +123,7 @@ describe('OmrådeApp', () => {
 		const user = userEvent.setup();
 		medBruker({ basis: true }, ['K9', 'AKTIVITETSPENGER']);
 
-		renderApp('/akt', 'AKTIVITETSPENGER', true);
+		renderApp('/avp', 'AKTIVITETSPENGER', true);
 		await user.click(screen.getByRole('button', { name: 'Bytt område' }));
 
 		expect(screen.getByTestId('aktiv-sti')).toHaveTextContent('/velg-omrade');
@@ -132,7 +132,7 @@ describe('OmrådeApp', () => {
 	it('viser ikke bytt område for brukere med ett område', () => {
 		medBruker({ basis: true });
 
-		renderApp('/akt');
+		renderApp('/avp');
 
 		expect(screen.queryByRole('button', { name: 'Bytt område' })).not.toBeInTheDocument();
 	});
@@ -159,9 +159,9 @@ describe('OmrådeApp', () => {
 	it('viser en side for ukjente stier med lenke til områdets forside', () => {
 		medBruker({ basis: true });
 
-		renderApp('/akt/finnes-ikke');
+		renderApp('/avp/finnes-ikke');
 
 		expect(screen.getByText(/Denne siden finnes ikke/)).toBeInTheDocument();
-		expect(screen.getByRole('link', { name: 'Gå til forsiden' })).toHaveAttribute('href', '/akt');
+		expect(screen.getByRole('link', { name: 'Gå til forsiden' })).toHaveAttribute('href', '/avp');
 	});
 });
