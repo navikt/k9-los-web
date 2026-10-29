@@ -20,7 +20,6 @@ const erVerdikjede = window.location.hostname === 'k9-los-web';
 
 // Enkle, midlertidige funksjonsbrytere. Endre verdien lokalt for å teste kombinasjonene.
 const visLegacyOgNyK9 = !erProd && !erVerdikjede;
-const aktiverAktivitetspenger = !erProd && !erVerdikjede;
 
 const k9LegacySti = '/k9';
 const k9NySti = basisstiForOmråde.K9;
@@ -87,7 +86,7 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 		valg.push('K9_LEGACY');
 		if (visLegacyOgNyK9) valg.push('K9_NY');
 	}
-	if (aktiverAktivitetspenger && områder.includes('AKTIVITETSPENGER')) valg.push('AKTIVITETSPENGER');
+	if (områder.includes('AKTIVITETSPENGER')) valg.push('AKTIVITETSPENGER');
 
 	if (valg.length === 0) return <IngenTilgang />;
 
