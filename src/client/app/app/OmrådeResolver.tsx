@@ -2,7 +2,7 @@ import { BodyShort, Box, Button, Heading, LocalAlert, VStack } from '@navikt/ds-
 import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { OmrådeProvider } from 'fleromrade/OmrådeContext';
 import { basisstiForOmråde, områdenavn } from 'fleromrade/områder';
-import type { FunctionComponent, ReactElement } from 'react';
+import { type FunctionComponent, type ReactElement, useEffect } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 
 interface OwnProps {
@@ -58,6 +58,10 @@ const OmrådeResolver: FunctionComponent<OwnProps> = ({ k9, fleromrade }) => {
 	const { data: områder, isPending, isError, refetch } = useInnloggetBrukersOmråder();
 	const { pathname, search, hash } = useLocation();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		document.title = harPrefiks(pathname, aktivitetspengerSti) ? områdenavn.AKTIVITETSPENGER : 'K9 LOS';
+	}, [pathname]);
 
 	if (isPending) {
 		return null;
