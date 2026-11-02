@@ -13,10 +13,9 @@ import {
 	Skeleton,
 	VStack,
 } from '@navikt/ds-react';
-import type { OppgaveKo, OppgaveSammendragDto } from 'api/generated/los.schemas';
+import type { OppgaveKo } from 'api/generated/los.schemas';
 import {
 	useAntallIKø,
-	useOppgaverIKø,
 	usePlukkOppgave,
 	useSaksbehandlereIKø,
 	useSaksbehandlersKøer,
@@ -25,35 +24,9 @@ import {
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { useId, useState } from 'react';
 import { getValueFromLocalStorage, setValueInLocalStorage } from 'utils/localStorageHelper';
-import OppgaveDialog from '../oppgave/OppgaveDialog';
-import OppgaveTabell from '../oppgave/OppgaveTabell';
 import ReserverteOppgaver from '../reservasjoner/ReserverteOppgaver';
 import SammenleggbarOverskrift from '../SammenleggbarOverskrift';
-
-const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
-	const { data: oppgaver, isPending, isError } = useOppgaverIKø(kø.id);
-	const [valgtOppgave, setValgtOppgave] = useState<OppgaveSammendragDto>();
-
-	if (isPending) {
-		return <Loader title="Henter oppgaver i køen" />;
-	}
-	if (isError) {
-		return <InlineMessage status="error">Kunne ikke hente de neste oppgavene i køen</InlineMessage>;
-	}
-	if (oppgaver.length === 0) {
-		return <BodyShort size="small">Det er ingen flere oppgaver i køen som kan plukkes</BodyShort>;
-	}
-
-	return (
-		<>
-			<OppgaveTabell
-				oppgaver={oppgaver}
-				velg={kø.frittValgAvOppgave ? { med: 'knapp', onVelgOppgave: setValgtOppgave } : undefined}
-			/>
-			{valgtOppgave && <OppgaveDialog oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
-		</>
-	);
-};
+import NesteOppgaver from './NesteOppgaver';
 
 const SaksbehandlereIKø = ({ køId }: { køId: number }) => {
 	const { data: saksbehandlere, isPending, isError } = useSaksbehandlereIKø(køId);
@@ -125,6 +98,8 @@ const KøPanel = () => {
 
 	const velgKø = (id: number) => {
 		setValgtKøId(id);
+		setMelding(undefined);
+		setVisNesteOppgaver(false);
 		setValueInLocalStorage(lagringsnøkkel, String(id));
 	};
 
@@ -163,11 +138,13 @@ const KøPanel = () => {
 										))}
 									</Select>
 									<KøDetaljer kø={kø} />
-									<div>
-										<Button loading={plukker} onClick={plukkNesteOppgave}>
-											Gi meg neste oppgave i køen
-										</Button>
-									</div>
+									{!kø.frittValgAvOppgave && (
+										<div>
+											<Button loading={plukker} onClick={plukkNesteOppgave}>
+												Gi meg neste oppgave i køen
+											</Button>
+										</div>
+									)}
 								</VStack>
 								<div>
 									<Detail>Beskrivelse av køen</Detail>
@@ -180,15 +157,24 @@ const KøPanel = () => {
 									oppgaver.
 								</InlineMessage>
 							)}
-							<div>
-								<SammenleggbarOverskrift
-									tittel="Neste oppgaver"
-									åpen={visNesteOppgaver}
-									onToggle={() => setVisNesteOppgaver(!visNesteOppgaver)}
-									innholdId={nesteOppgaverId}
-								/>
-								<div id={nesteOppgaverId}>{visNesteOppgaver && <NesteOppgaver kø={kø} />}</div>
-							</div>
+							{kø.frittValgAvOppgave ? (
+								<VStack gap="space-16">
+									<Heading level="3" size="small">
+										Neste oppgaver
+									</Heading>
+									<NesteOppgaver key={kø.id} kø={kø} />
+								</VStack>
+							) : (
+								<div>
+									<SammenleggbarOverskrift
+										tittel="Neste oppgaver"
+										åpen={visNesteOppgaver}
+										onToggle={() => setVisNesteOppgaver(!visNesteOppgaver)}
+										innholdId={nesteOppgaverId}
+									/>
+									<div id={nesteOppgaverId}>{visNesteOppgaver && <NesteOppgaver key={kø.id} kø={kø} />}</div>
+								</div>
+							)}
 						</VStack>
 					</Box>
 					<ReserverteOppgaver />

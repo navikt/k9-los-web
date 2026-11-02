@@ -15,6 +15,7 @@ interface Props {
 	 * `rad` gjør hele raden klikkbar og uten kopiknapper (søkeresultatet).
 	 */
 	velg?: { med: 'knapp' | 'rad'; onVelgOppgave: (oppgave: OppgaveSammendragDto) => void };
+	handlinger?: (oppgave: OppgaveSammendragDto) => ReactNode;
 	/**
 	 * Unntak for søkeresultatet: det er ikke avklart om behandlingsstatus skal vises i de andre
 	 * oppgavetabellene.
@@ -48,7 +49,7 @@ const Celle = ({ kopierbar, children }: { kopierbar: boolean; children: ReactEle
 /**
  * Oppgaver i søkeresultatet og i neste oppgaver i køen, med samme kolonner og visning som reserverte oppgaver.
  */
-const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) => {
+const OppgaveTabell = ({ oppgaver, velg, handlinger, visBehandlingsstatus = false }: Props) => {
 	const visHastesak = oppgaver.some((oppgave) => oppgave.hastesak);
 	const klikkbarRad = velg?.med === 'rad';
 	const kopierbar = !klikkbarRad;
@@ -67,7 +68,7 @@ const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) 
 					<Table.HeaderCell scope="col">Behandlingstype</Table.HeaderCell>
 					<Table.HeaderCell scope="col">Oppgave opprettet</Table.HeaderCell>
 					{visBehandlingsstatus && <Table.HeaderCell scope="col">Behandlingsstatus</Table.HeaderCell>}
-					{velg?.med === 'knapp' && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
+					{(handlinger || velg?.med === 'knapp') && <Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>}
 					{klikkbarRad && (
 						<Table.HeaderCell scope="col">
 							<span className="sr-only">Åpne oppgave</span>
@@ -137,7 +138,9 @@ const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) 
 							</Table.DataCell>
 							<Table.DataCell>{oppgave.opprettetTidspunkt && dateFormat(oppgave.opprettetTidspunkt)}</Table.DataCell>
 							{visBehandlingsstatus && <Table.DataCell>{oppgave.behandlingsstatus?.navn}</Table.DataCell>}
-							{velg?.med === 'knapp' && (
+							{handlinger ? (
+								<Table.DataCell>{handlinger(oppgave)}</Table.DataCell>
+							) : velg?.med === 'knapp' ? (
 								<Table.DataCell>
 									<Button
 										variant="secondary"
@@ -148,7 +151,7 @@ const OppgaveTabell = ({ oppgaver, velg, visBehandlingsstatus = false }: Props) 
 										Velg
 									</Button>
 								</Table.DataCell>
-							)}
+							) : null}
 							{klikkbarRad && (
 								<Table.DataCell className={styles.chevronCelle}>
 									<ChevronRightIcon aria-hidden fontSize="1.25rem" className={styles.chevron} />

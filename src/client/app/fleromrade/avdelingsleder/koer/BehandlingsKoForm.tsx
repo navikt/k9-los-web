@@ -1,6 +1,17 @@
 import SearchWithDropdown from 'sharedComponents/searchWithDropdown/SearchWithDropdown';
 import { PencilIcon } from '@navikt/aksel-icons';
-import { Alert, Button, ErrorMessage, Heading, Label, Modal, Textarea, TextField } from '@navikt/ds-react';
+import {
+	Alert,
+	Button,
+	ErrorMessage,
+	Heading,
+	Label,
+	Modal,
+	Switch,
+	Textarea,
+	TextField,
+	VStack,
+} from '@navikt/ds-react';
 import AppContext from 'app/AppContext';
 import { OppgavefilterKode, type OppgaveQuery } from 'filter/filterTsTypes';
 import {
@@ -146,6 +157,14 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 								maxLength: { value: 4000, message: 'Feltet kan ikke være lengre enn 4000 tegn' },
 							})}
 						/>
+						<VStack paddingBlock="space-16 space-0">
+							<Switch
+								description={`"Gi meg neste oppgaven i køen"-knapp vises ikke.`}
+								{...formMethods.register(fieldnames.FRITT_VALG_AV_OPPGAVE)}
+							>
+								Fritt valg av oppgave
+							</Switch>
+						</VStack>
 					</div>
 				</div>
 				<div className="w-full">

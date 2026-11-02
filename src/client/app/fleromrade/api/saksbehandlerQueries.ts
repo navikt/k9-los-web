@@ -1,17 +1,18 @@
-import { type Query, useQueryClient } from '@tanstack/react-query';
+import { type Query, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import {
 	getHentAktivReservasjonQueryKey,
 	getHentAlleAktiveReservasjonerQueryKey,
 	getHentOppgaverISaksbehandlerkoQueryKey,
 	getHentReserverteOppgaverQueryKey,
 	getHentSisteOppgaverQueryKey,
+	hentOppgaverISaksbehandlerko,
 	useEndreReservasjoner as useGenerertEndreReservasjoner,
 	useForlengReservasjon as useGenerertForlengReservasjon,
 	useOpphevReservasjoner as useGenerertOpphevReservasjoner,
 	useReserverOppgave as useGenerertReserverOppgave,
+	useReserverOppgaveForSaksbehandler as useGenerertReserverOppgaveForSaksbehandler,
 	useHentAktivReservasjon,
 	useHentAntallOppgaverUtenReserverteISaksbehandlerko,
-	useHentOppgaverISaksbehandlerko,
 	useHentReserverteOppgaver,
 	useHentSaksbehandlereForReservasjon,
 	useHentSaksbehandlereISaksbehandlerko,
@@ -88,7 +89,17 @@ export const useOppgaverIKø = (køId: number | undefined) => {
 		}
 	}, [queryClient, urlSegment, køId, antall]);
 
-	return useHentOppgaverISaksbehandlerko(urlSegment, køId, { query: { enabled: køId !== undefined } });
+	return useInfiniteQuery({
+		queryKey: getHentOppgaverISaksbehandlerkoQueryKey(urlSegment, køId),
+		queryFn: ({ pageParam, signal }) =>
+			hentOppgaverISaksbehandlerko(urlSegment, køId, { limit: 10, offset: pageParam }, undefined, signal),
+		initialPageParam: 0,
+		getNextPageParam: (sisteSide, _sider, offset) => (sisteSide.length === 0 ? undefined : offset + 10),
+		enabled: køId !== undefined,
+		gcTime: 0,
+		select: ({ pages }) =>
+			Array.from(new Map(pages.flat().map((oppgave) => [JSON.stringify(oppgave.oppgaveNøkkel), oppgave])).values()),
+	});
 };
 
 export const useReserverteOppgaver = () => {
@@ -173,6 +184,29 @@ export const usePlukkOppgave = () => {
 	return {
 		...resten,
 		plukk: (køId: number, options?: Parameters<typeof mutate>[1]) => mutate({ omrade: urlSegment, id: køId }, options),
+	};
+};
+
+export const useReserverOppgaveForSaksbehandler = () => {
+	const { urlSegment } = useOmråde();
+	const onSuccess = useOppdaterReservasjoner();
+	const { mutate, ...resten } = useGenerertReserverOppgaveForSaksbehandler({ mutation: { onSuccess } });
+	return {
+		...resten,
+		reserver: (oppgaveNøkkel: OppgaveNokkelDto, navident: string, options?: Parameters<typeof mutate>[1]) =>
+			mutate(
+				{
+					omrade: urlSegment,
+					data: {
+						navident,
+						oppgaveNøkkel: {
+							oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId,
+							oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId,
+						},
+					},
+				},
+				options,
+			),
 	};
 };
 
