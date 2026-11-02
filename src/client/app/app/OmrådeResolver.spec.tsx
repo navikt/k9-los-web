@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useInnloggetBrukersOmråder } from 'fleromrade/api/områdeQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
-import { MemoryRouter, useLocation, useNavigationType } from 'react-router';
-import { describe, expect, it, vi } from 'vitest';
+import { Link, MemoryRouter, useLocation, useNavigationType } from 'react-router';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import OmrådeResolver from './OmrådeResolver';
 
 vi.mock('fleromrade/api/områdeQueries', () => ({ useInnloggetBrukersOmråder: vi.fn() }));
@@ -39,6 +39,54 @@ const medOmråder = (områder: string[]) =>
 	vi.mocked(useInnloggetBrukersOmråder).mockReturnValue(queryResult({ data: områder }));
 
 describe('OmrådeResolver', () => {
+	afterEach(() => {
+		document.title = '';
+	});
+
+	it.each([
+		['/avp', 'Aktivitetspenger'],
+		['/avp/', 'Aktivitetspenger'],
+		['/avp/avdelingsleder?fane=reservasjoner', 'Aktivitetspenger'],
+		['/avp/admin', 'Aktivitetspenger'],
+		['/avp/finnes-ikke', 'Aktivitetspenger'],
+		['/avpannet', 'K9 LOS'],
+		['/k9', 'K9 LOS'],
+		['/k9-ny', 'K9 LOS'],
+		['/velg-omrade', 'K9 LOS'],
+	])('viser tittelen for %s som %s', (sti, tittel) => {
+		medOmråder(['K9', 'AKTIVITETSPENGER']);
+		renderResolver(sti);
+
+		expect(document.title).toBe(tittel);
+	});
+
+	it('oppdaterer tittelen ved områdebytte', async () => {
+		const user = userEvent.setup();
+		medOmråder(['K9', 'AKTIVITETSPENGER']);
+		render(
+			<MemoryRouter initialEntries={['/velg-omrade']}>
+				<OmrådeResolver k9={() => <div>Legacy K9</div>} fleromrade={<FlerområdeApp />} />
+				<Link to="/avp/admin">AVP admin</Link>
+				<Link to="/velg-omrade">Bytt område</Link>
+			</MemoryRouter>,
+		);
+
+		expect(document.title).toBe('K9 LOS');
+		await user.click(screen.getByRole('button', { name: 'Aktivitetspenger' }));
+		expect(document.title).toBe('Aktivitetspenger');
+		await user.click(screen.getByRole('link', { name: 'AVP admin' }));
+		expect(document.title).toBe('Aktivitetspenger');
+		await user.click(screen.getByRole('link', { name: 'Bytt område' }));
+		expect(document.title).toBe('K9 LOS');
+	});
+
+	it('setter tittelen mens tilgangene lastes', () => {
+		vi.mocked(useInnloggetBrukersOmråder).mockReturnValue(queryResult({ isPending: true }));
+		renderResolver('/avp');
+
+		expect(document.title).toBe('Aktivitetspenger');
+	});
+
 	it('viser K9-velgeren når K9 har både legacy og ny app', () => {
 		medOmråder(['K9']);
 		renderResolver('/');
