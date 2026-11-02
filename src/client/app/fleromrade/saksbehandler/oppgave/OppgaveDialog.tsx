@@ -1,6 +1,7 @@
-import { BodyShort, Button, Dialog, InlineMessage, VStack } from '@navikt/ds-react';
+import { BodyShort, Button, Dialog, HStack, InlineMessage, VStack } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
 import { useRef, useState } from 'react';
+import OppgaveOppsummering from './OppgaveOppsummering';
 import { useOppgaveDialogViewModel } from './oppgaveDialogViewModel';
 
 interface Props {
@@ -45,55 +46,60 @@ const OppgaveDialog = ({ oppgave, lukk }: Props) => {
 					<Dialog.Title>{tittel}</Dialog.Title>
 				</Dialog.Header>
 				<Dialog.Body>
-					<VStack gap="space-8">
-						<BodyShort>{tekst}</BodyShort>
-						{feilmelding && <InlineMessage status="error">{feilmelding}</InlineMessage>}
+					<VStack gap="space-24">
+						<OppgaveOppsummering oppgave={oppgave} />
+						<VStack gap="space-8">
+							<BodyShort>{tekst}</BodyShort>
+							{feilmelding && <InlineMessage status="error">{feilmelding}</InlineMessage>}
+						</VStack>
+						<HStack gap="space-8" wrap>
+							{knapper.åpneOppgave.vis && (
+								<Button
+									loading={knapper.åpneOppgave.loading}
+									disabled={knapper.åpneOppgave.disabled}
+									onClick={knapper.åpneOppgave.handling}
+								>
+									Åpne oppgave
+								</Button>
+							)}
+							{knapper.reserverOgÅpne.vis && (
+								<Button
+									variant="secondary"
+									loading={knapper.reserverOgÅpne.loading}
+									disabled={knapper.reserverOgÅpne.disabled}
+									onClick={knapper.reserverOgÅpne.handling}
+								>
+									Reserver og åpne oppgave
+								</Button>
+							)}
+							{knapper.overtaOgÅpne.vis && (
+								<Button
+									variant="secondary"
+									loading={knapper.overtaOgÅpne.loading}
+									disabled={knapper.overtaOgÅpne.disabled}
+									onClick={knapper.overtaOgÅpne.handling}
+								>
+									Overta reservasjon og åpne oppgave
+								</Button>
+							)}
+							{knapper.leggTilbakeIKø.vis && (
+								<Button
+									variant="secondary"
+									loading={knapper.leggTilbakeIKø.loading}
+									disabled={knapper.leggTilbakeIKø.disabled}
+									onClick={knapper.leggTilbakeIKø.handling}
+								>
+									Legg tilbake i kø
+								</Button>
+							)}
+							<Dialog.CloseTrigger>
+								<Button type="button" variant="tertiary">
+									Avbryt
+								</Button>
+							</Dialog.CloseTrigger>
+						</HStack>
 					</VStack>
 				</Dialog.Body>
-				<Dialog.Footer>
-					<Dialog.CloseTrigger>
-						<Button variant="tertiary">Avbryt</Button>
-					</Dialog.CloseTrigger>
-					{knapper.leggTilbakeIKø.vis && (
-						<Button
-							variant="secondary"
-							loading={knapper.leggTilbakeIKø.loading}
-							disabled={knapper.leggTilbakeIKø.disabled}
-							onClick={knapper.leggTilbakeIKø.handling}
-						>
-							Legg tilbake i kø
-						</Button>
-					)}
-					{knapper.overtaOgÅpne.vis && (
-						<Button
-							variant="secondary"
-							loading={knapper.overtaOgÅpne.loading}
-							disabled={knapper.overtaOgÅpne.disabled}
-							onClick={knapper.overtaOgÅpne.handling}
-						>
-							Overta reservasjon og åpne oppgave
-						</Button>
-					)}
-					{knapper.reserverOgÅpne.vis && (
-						<Button
-							variant="secondary"
-							loading={knapper.reserverOgÅpne.loading}
-							disabled={knapper.reserverOgÅpne.disabled}
-							onClick={knapper.reserverOgÅpne.handling}
-						>
-							Reserver og åpne oppgave
-						</Button>
-					)}
-					{knapper.åpneOppgave.vis && (
-						<Button
-							loading={knapper.åpneOppgave.loading}
-							disabled={knapper.åpneOppgave.disabled}
-							onClick={knapper.åpneOppgave.handling}
-						>
-							Åpne oppgave
-						</Button>
-					)}
-				</Dialog.Footer>
 			</Dialog.Popup>
 		</Dialog>
 	);
