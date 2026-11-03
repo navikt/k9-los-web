@@ -3,9 +3,11 @@ import userEvent from '@testing-library/user-event';
 import {
 	useEndreReservasjoner,
 	useHentAktivReservasjon,
+	useHentSaksbehandlereForReservasjon,
 	useLagreSisteOppgave,
 	useOpphevReservasjoner,
 	useReserverOppgave,
+	useReserverOppgaveForSaksbehandler,
 	useSøkEtterOppgaver,
 } from 'api/generated/los';
 import type { SokeresultatSammendrag } from 'api/generated/los.schemas';
@@ -35,6 +37,8 @@ beforeEach(() => {
 	vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(null));
 	vi.mocked(useLagreSisteOppgave).mockReturnValue(mutationSomLykkes());
 	vi.mocked(useReserverOppgave).mockReturnValue(mutationResultat());
+	vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(mutationResultat());
+	vi.mocked(useHentSaksbehandlereForReservasjon).mockReturnValue(queryResultat([]));
 	vi.mocked(useEndreReservasjoner).mockReturnValue(mutationResultat());
 	vi.mocked(useOpphevReservasjoner).mockReturnValue(mutationResultat());
 });
@@ -102,15 +106,15 @@ describe('Søkeboks', () => {
 			'Behandlingstype',
 			'Oppgave opprettet',
 			'Behandlingsstatus',
-			'Åpne oppgave',
+			'Handlinger',
 		]);
 		const [søker, sak, behandlingstype, opprettet, behandlingsstatus] = within(
 			screen.getAllByRole('row')[1],
 		).getAllByRole('cell');
 		expect(søker).toHaveTextContent('Kari Nordmann01234567890');
-		expect(sak).toHaveTextContent(/^ABC12 \(2026\)$/);
-		// Søket er ment for å klikke seg inn på oppgaven, og har verken kopiknapper eller Velg-knapp.
-		expect(screen.queryByRole('button', { name: /Kopier|Velg/ })).not.toBeInTheDocument();
+		expect(sak).toHaveTextContent('ABC12 (2026)');
+		expect(within(søker).getByRole('button', { name: 'Kopier fødselsnummer' })).toBeInTheDocument();
+		expect(within(sak).getByRole('button', { name: 'Kopier saksnummer' })).toBeInTheDocument();
 		expect(behandlingstype).toHaveTextContent('FørstegangsbehandlingAktivitetspenger');
 		expect(behandlingsstatus).toHaveTextContent(/^Utredes$/);
 		expect(opprettet).toHaveTextContent('07.09.2026');
@@ -138,8 +142,8 @@ describe('Søkeboks', () => {
 		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
 
 		renderMedOmråde(<Søkeboks />);
-		await user.click(screen.getByRole('row', { name: /ABC12/ }));
-		await user.click(screen.getByRole('button', { name: 'Reserver og åpne oppgave' }));
+		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver og åpne oppgave' }));
 
 		const oppgaveNøkkel = lagOppgaveSammendrag().oppgaveNøkkel;
 		expect((reserver as { mutate: ReturnType<typeof vi.fn> }).mutate).toHaveBeenCalledWith(
@@ -168,8 +172,8 @@ describe('Søkeboks', () => {
 		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
 
 		renderMedOmråde(<Søkeboks />);
-		await user.click(screen.getByRole('row', { name: /ABC12/ }));
-		await user.click(screen.getByRole('button', { name: 'Reserver og åpne oppgave' }));
+		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver og åpne oppgave' }));
 
 		expect(screen.getByText('Oppgaven ble reservert av Saksbehandler Lars.')).toBeInTheDocument();
 		expect(assign).not.toHaveBeenCalled();
@@ -186,8 +190,8 @@ describe('Søkeboks', () => {
 		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
 
 		renderMedOmråde(<Søkeboks />);
-		await user.click(screen.getByRole('row', { name: /ABC12/ }));
-		await user.click(screen.getByRole('button', { name: 'Overta reservasjon og åpne oppgave' }));
+		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Overta reservasjon og åpne oppgave' }));
 
 		expect((endre as { mutate: ReturnType<typeof vi.fn> }).mutate).toHaveBeenCalledWith(
 			{ omrade: 'akt', data: [{ reservasjonsnøkkel: 'reservasjon-1', brukerIdent: 'Z123456' }] },
@@ -211,25 +215,30 @@ describe('Søkeboks', () => {
 		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
 
 		renderMedOmråde(<Søkeboks />);
-		await user.click(screen.getByRole('row', { name: /ABC12/ }));
-		await user.click(screen.getByRole('button', { name: 'Legg tilbake i kø' }));
-		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Legg tilbake i kø' }));
+		await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
 
 		vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(null));
-		await user.click(screen.getByRole('row', { name: /ABC12/ }));
+		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
 
-		expect(await screen.findByRole('dialog', { name: 'Oppgaven er ikke reservert' })).toBeInTheDocument();
+		expect(await screen.findByRole('menuitem', { name: 'Reserver og åpne oppgave' })).toBeInTheDocument();
 	});
 
-	it('åpner oppgavemodalen fra raden med tastaturet', async () => {
+	it('åpner handlingsmenyen med tastaturet og returnerer fokus ved Escape', async () => {
 		const user = userEvent.setup();
 		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
 
 		renderMedOmråde(<Søkeboks />);
-		screen.getByRole('row', { name: /ABC12/ }).focus();
+		const menyknapp = screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' });
+		menyknapp.focus();
 		await user.keyboard('{Enter}');
 
-		expect(screen.getByRole('dialog', { name: 'Oppgaven er ikke reservert' })).toBeInTheDocument();
+		await waitFor(() => expect(screen.getByRole('menu')).toHaveFocus());
+		await user.keyboard('{ArrowDown}');
+		expect(screen.getByRole('menuitem', { name: 'Åpne oppgave' })).toHaveFocus();
+		await user.keyboard('{Escape}');
+		expect(menyknapp).toHaveFocus();
 	});
 
 	it('henter aktiv reservasjon for oppgaven i området', async () => {
@@ -237,12 +246,24 @@ describe('Søkeboks', () => {
 		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
 
 		renderMedOmråde(<Søkeboks />);
-		await user.click(screen.getByRole('row', { name: /ABC12/ }));
+		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
 
 		expect(useHentAktivReservasjon).toHaveBeenCalledWith(
 			'akt',
 			{ oppgaveEksternId: 'oppgave-1', oppgaveTypeEksternId: 'k9sak' },
 			expect.anything(),
 		);
+	});
+
+	it('tilbyr ikke reservering når aktiv reservasjon ikke kunne hentes', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(undefined, { isError: true, isSuccess: false }));
+		medSøkeresultat({ type: 'MED_RESULTAT', oppgaver: [lagOppgaveSammendrag()] } as SokeresultatSammendrag);
+		renderMedOmråde(<Søkeboks />);
+
+		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+
+		expect(screen.getByRole('alert')).toHaveTextContent('Kunne ikke hente oppgavens reservasjon eller tilganger.');
+		expect(screen.queryByRole('menuitem', { name: 'Reserver og åpne oppgave' })).not.toBeInTheDocument();
 	});
 });

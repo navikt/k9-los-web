@@ -3,11 +3,11 @@ import { PencilIcon } from '@navikt/aksel-icons';
 import {
 	Alert,
 	Button,
+	Checkbox,
 	ErrorMessage,
 	Heading,
 	Label,
 	Modal,
-	Switch,
 	Textarea,
 	TextField,
 	VStack,
@@ -158,12 +158,12 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 							})}
 						/>
 						<VStack paddingBlock="space-16 space-0">
-							<Switch
-								description={`"Gi meg neste oppgaven i køen"-knapp vises ikke.`}
+							<Checkbox
+								description={`"Gi meg neste oppgave i køen"-knapp vises ikke.`}
 								{...formMethods.register(fieldnames.FRITT_VALG_AV_OPPGAVE)}
 							>
 								Fritt valg av oppgave
-							</Switch>
+							</Checkbox>
 						</VStack>
 					</div>
 				</div>

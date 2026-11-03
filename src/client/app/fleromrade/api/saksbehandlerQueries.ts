@@ -118,12 +118,14 @@ export const useSisteOppgaver = () => {
 };
 
 /** Aktiv reservasjon for en oppgave, eller `null` når oppgaven ikke er reservert (backend svarer 204). */
-export const useAktivReservasjon = (oppgaveNøkkel: OppgaveNokkelDto, enabled = true) => {
+export const useAktivReservasjon = (oppgaveNøkkel: OppgaveNokkelDto | undefined, enabled = true) => {
 	const { urlSegment } = useOmråde();
 	return useHentAktivReservasjon(
 		urlSegment,
-		{ oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId, oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId },
-		{ query: { enabled, select: (data): ReservasjonsinfoDto | null => data || null } },
+		oppgaveNøkkel
+			? { oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId, oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId }
+			: undefined,
+		{ query: { enabled: !!oppgaveNøkkel && enabled, select: (data): ReservasjonsinfoDto | null => data || null } },
 	);
 };
 

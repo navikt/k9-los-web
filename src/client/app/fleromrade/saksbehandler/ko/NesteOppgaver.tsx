@@ -1,9 +1,7 @@
 import { BodyShort, Button, InlineMessage, Loader, VStack } from '@navikt/ds-react';
-import type { OppgaveKo, OppgaveSammendragDto } from 'api/generated/los.schemas';
+import type { OppgaveKo } from 'api/generated/los.schemas';
 import { useOppgaverIKø } from 'fleromrade/api/saksbehandlerQueries';
-import { useState } from 'react';
 import OppgaveTabell from '../oppgave/OppgaveTabell';
-import NesteOppgaveDialog from './NesteOppgaveDialog';
 
 const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 	const {
@@ -17,19 +15,14 @@ const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 		fetchNextPage,
 		refetch,
 	} = useOppgaverIKø(kø.id);
-	const [valgtOppgave, setValgtOppgave] = useState<OppgaveSammendragDto>();
 
 	if (isPending) return <Loader title="Henter oppgaver i køen" />;
 
 	return (
 		<VStack gap="space-16">
-			{oppgaver && oppgaver.length > 0 ? (
-				<OppgaveTabell
-					oppgaver={oppgaver}
-					velg={kø.frittValgAvOppgave ? { med: 'rad', onVelgOppgave: setValgtOppgave } : undefined}
-				/>
-			) : (
-				!isError && <BodyShort size="small">Det er ingen flere oppgaver i køen som kan plukkes</BodyShort>
+			{oppgaver && <OppgaveTabell oppgaver={oppgaver} visHandlinger={kø.frittValgAvOppgave} />}
+			{!isError && oppgaver?.length === 0 && (
+				<BodyShort size="small">Det er ingen flere oppgaver i køen som kan plukkes</BodyShort>
 			)}
 			{isError && (
 				<InlineMessage status="error" role="alert">
@@ -49,7 +42,6 @@ const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 					</Button>
 				</div>
 			)}
-			{valgtOppgave && <NesteOppgaveDialog oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
 		</VStack>
 	);
 };

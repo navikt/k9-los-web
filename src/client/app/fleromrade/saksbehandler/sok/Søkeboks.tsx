@@ -1,14 +1,12 @@
 import { BodyShort, InlineMessage, VStack } from '@navikt/ds-react';
-import type { OppgaveSammendragDto, SokeresultatSammendrag } from 'api/generated/los.schemas';
+import type { SokeresultatSammendrag } from 'api/generated/los.schemas';
 import { useSøk } from 'fleromrade/api/saksbehandlerQueries';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import type { Område } from 'fleromrade/områder';
 import { useMount } from 'hooks/UseMount';
-import { useState } from 'react';
 import { useSearchParams } from 'react-router';
 import { PersonInfo } from 'saksbehandler/sokeboks/PersonInfo';
 import { SøkForm } from 'saksbehandler/sokeboks/SøkForm';
-import OppgaveDialog from '../oppgave/OppgaveDialog';
 import OppgaveTabell from '../oppgave/OppgaveTabell';
 
 const saksnummerEllerJournalpostId = /^(?:\w{5}|\w{7}|\d{9})$/;
@@ -18,13 +16,7 @@ const søkeetikett: Record<Område, string> = {
 	AKTIVITETSPENGER: 'Søk på saksnummer eller fødselsnummer',
 };
 
-const Søkeresultat = ({
-	resultat,
-	onVelgOppgave,
-}: {
-	resultat: SokeresultatSammendrag;
-	onVelgOppgave: (oppgave: OppgaveSammendragDto) => void;
-}) => {
+const Søkeresultat = ({ resultat }: { resultat: SokeresultatSammendrag }) => {
 	if (resultat.type === 'IKKE_TILGANG') {
 		return <BodyShort>Du har ikke tilgang til å slå opp denne personen</BodyShort>;
 	}
@@ -38,7 +30,7 @@ const Søkeresultat = ({
 	return (
 		<VStack gap="space-16">
 			{person && <PersonInfo person={person} />}
-			<OppgaveTabell oppgaver={resultat.oppgaver} velg={{ med: 'rad', onVelgOppgave }} visBehandlingsstatus />
+			<OppgaveTabell oppgaver={resultat.oppgaver} visHandlinger visBehandlingsstatus />
 		</VStack>
 	);
 };
@@ -50,7 +42,6 @@ const Søkeboks = () => {
 	const gyldigSøkeordFraUrl =
 		søkeordFraUrl && saksnummerEllerJournalpostId.test(søkeordFraUrl) ? søkeordFraUrl : undefined;
 	const { søk, isPending, isError, data: resultat, reset } = useSøk();
-	const [valgtOppgave, setValgtOppgave] = useState<OppgaveSammendragDto>();
 
 	// Søker kun på søkeordet som lå i URL-en ved førstegangsvisning. Senere søk styres av skjemaet.
 	useMount(() => {
@@ -69,8 +60,7 @@ const Søkeboks = () => {
 				søkeordFraUrl={gyldigSøkeordFraUrl}
 			/>
 			{isError && <InlineMessage status="error">Søket feilet. Prøv igjen senere.</InlineMessage>}
-			{resultat && <Søkeresultat resultat={resultat} onVelgOppgave={setValgtOppgave} />}
-			{valgtOppgave && <OppgaveDialog oppgave={valgtOppgave} lukk={() => setValgtOppgave(undefined)} />}
+			{resultat && <Søkeresultat resultat={resultat} />}
 		</VStack>
 	);
 };

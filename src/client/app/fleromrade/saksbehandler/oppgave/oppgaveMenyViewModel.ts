@@ -5,9 +5,9 @@ import {
 	useEndreReservasjoner,
 	useOpphevReservasjoner,
 	useReserverOppgave,
+	useReserverOppgaveForSaksbehandler,
 	useÅpneOppgave,
 } from 'fleromrade/api/saksbehandlerQueries';
-import { useState } from 'react';
 import { oppgaveModalInnhold } from './oppgaveModalInnhold';
 
 interface Knapp {
@@ -17,29 +17,48 @@ interface Knapp {
 	disabled: boolean;
 }
 
-type OppgaveDialogViewModel =
-	| { harHentetData: false }
+export type OppgaveMenyViewModel =
+	| { harHentetData: false; feilmelding?: string }
 	| {
 			harHentetData: true;
 			tittel: string;
 			tekst: string;
-			feilmelding: string | undefined;
+			reserverForAnnen: (navident: string) => void;
 			knapper: Record<'åpneOppgave' | 'reserverOgÅpne' | 'overtaOgÅpne' | 'leggTilbakeIKø', Knapp>;
 	  };
 
-export const useOppgaveDialogViewModel = (oppgave: OppgaveSammendragDto, lukk: () => void): OppgaveDialogViewModel => {
-	const [feilmelding, setFeilmelding] = useState<string>();
+export const useOppgaveMenyViewModel = (
+	oppgave: OppgaveSammendragDto | undefined,
+	lukk: () => void,
+	visFeil: (melding: string | undefined) => void,
+): OppgaveMenyViewModel => {
+	const setFeilmelding = (melding: string) => {
+		visFeil(melding);
+		lukk();
+	};
 
 	const { åpne, isPending: åpner } = useÅpneOppgave();
 	const { reserver, isPending: reserverer } = useReserverOppgave();
+	const { reserver: reserverForAnnen, isPending: reservererForAnnen } = useReserverOppgaveForSaksbehandler();
 	const { endre, isPending: endrer } = useEndreReservasjoner();
 	const { opphev, isPending: opphever } = useOpphevReservasjoner();
-	const venter = åpner || reserverer || endrer || opphever;
+	const venter = åpner || reserverer || reservererForAnnen || endrer || opphever;
 
-	const { data: bruker, isSuccess: harHentetBruker } = useInnloggetBruker();
-	const { data: reservasjon, isPending: henterReservasjon } = useAktivReservasjon(oppgave.oppgaveNøkkel, !venter);
+	const { data: bruker, isSuccess: harHentetBruker, isError: brukerfeil } = useInnloggetBruker();
+	const {
+		data: reservasjon,
+		isPending: henterReservasjon,
+		isError: reservasjonsfeil,
+	} = useAktivReservasjon(oppgave?.oppgaveNøkkel, !venter);
 
-	if (!harHentetBruker || henterReservasjon) {
+	if (brukerfeil || reservasjonsfeil) {
+		return {
+			harHentetData: false,
+			feilmelding: 'Kunne ikke hente oppgavens reservasjon eller tilganger. Lukk menyen og prøv igjen.',
+		};
+	}
+
+	if (!oppgave || !harHentetBruker || henterReservasjon) {
 		return { harHentetData: false };
 	}
 
@@ -61,7 +80,13 @@ export const useOppgaveDialogViewModel = (oppgave: OppgaveSammendragDto, lukk: (
 		harHentetData: true,
 		tittel,
 		tekst,
-		feilmelding,
+		reserverForAnnen: (navident) => {
+			visFeil(undefined);
+			reserverForAnnen(oppgave.oppgaveNøkkel, navident, {
+				onSuccess: lukk,
+				onError: () => setFeilmelding('Kunne ikke reservere oppgaven for saksbehandleren. Prøv igjen.'),
+			});
+		},
 		knapper: {
 			åpneOppgave: {
 				vis: true,
@@ -71,11 +96,18 @@ export const useOppgaveDialogViewModel = (oppgave: OppgaveSammendragDto, lukk: (
 			},
 			reserverOgÅpne: {
 				vis: visReserver,
-				handling: () =>
+				handling: () => {
+					visFeil(undefined);
 					reserver(oppgave.oppgaveNøkkel, {
 						onSuccess: (status) => {
 							if (status.erReservertAvInnloggetBruker) {
-								åpneOppgave();
+								if (oppgave.oppgavebehandlingsUrl) {
+									åpneOppgave();
+								} else {
+									setFeilmelding(
+										'Oppgaven er reservert på deg, men mangler lenke til fagsystemet. Du finner den under reserverte oppgaver.',
+									);
+								}
 							} else {
 								setFeilmelding(`Oppgaven ble reservert av ${status.reservertAvNavn ?? 'en annen saksbehandler'}.`);
 							}
@@ -84,7 +116,8 @@ export const useOppgaveDialogViewModel = (oppgave: OppgaveSammendragDto, lukk: (
 							setFeilmelding(
 								'Reservering av oppgave feilet. Dette kan skyldes at oppgaven ble reservert av noen andre.',
 							),
-					}),
+					});
+				},
 				loading: reserverer,
 				disabled: venter,
 			},
