@@ -252,7 +252,7 @@ describe('KøPanel', () => {
 		renderMedOmråde(<KøPanel />);
 
 		await screen.findByRole('table');
-		expect(screen.getByRole('button', { name: 'Oppfrisk neste oppgaver og antall i kø' })).toBeDisabled();
+		expect(screen.getByTitle('Oppfrisk neste oppgaver og antall i kø')).toBeDisabled();
 	});
 
 	it('viser journalpost-id i menyen når oppgaven ikke har saksnummer', async () => {
