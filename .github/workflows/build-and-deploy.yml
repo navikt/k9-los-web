@@ -74,7 +74,8 @@ jobs:
       - uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 # v0
         id: docker-push
         with:
-          tag: ${{ github.sha }}
+          # Verdikjedetester fra andre repoer henter latest. Actionen lager også en unik versjonstagg.
+          tag: latest
           team: k9saksbehandling
 
       - name: Deploy k9-los-web til dev
