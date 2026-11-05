@@ -1,10 +1,14 @@
 import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
 import { ActionMenu, Button, HStack, InlineMessage } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
-import { useSaksbehandlereForReservasjon } from 'fleromrade/api/saksbehandlerQueries';
+import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
+import {
+	useReserverOppgaveForSaksbehandler,
+	useSaksbehandlereForReservasjon,
+} from 'fleromrade/api/saksbehandlerQueries';
 import { Fragment, useState } from 'react';
-import { type OppgaveMenyViewModel, useOppgaveMenyViewModel } from './oppgaveMenyViewModel';
 import { saksbehandlerEnhet } from './saksbehandlerEnhet';
+import { useOppgaveHandlinger } from './useOppgaveHandlinger';
 
 const Saksbehandlermeny = ({ reserver, disabled }: { reserver: (navident: string) => void; disabled: boolean }) => {
 	const { data: saksbehandlere, isPending, isError } = useSaksbehandlereForReservasjon();
@@ -45,49 +49,39 @@ const Saksbehandlermeny = ({ reserver, disabled }: { reserver: (navident: string
 	);
 };
 
-const Menyinnhold = ({ oppgave, viewModel }: { oppgave: OppgaveSammendragDto; viewModel: OppgaveMenyViewModel }) => {
+const Menyinnhold = ({
+	oppgave,
+	kanReservere,
+	venter,
+	åpneOppgave,
+	reserverForAnnen,
+}: {
+	oppgave: OppgaveSammendragDto;
+	kanReservere: boolean;
+	venter: boolean;
+	åpneOppgave: () => void;
+	reserverForAnnen: (navident: string) => void;
+}) => {
 	const [visSaksbehandlere, setVisSaksbehandlere] = useState(false);
-
-	if (viewModel.harHentetData === false) {
-		return viewModel.feilmelding ? (
-			<InlineMessage status="error" role="alert">
-				{viewModel.feilmelding}
-			</InlineMessage>
-		) : (
-			<ActionMenu.Item disabled>Henter oppgave…</ActionMenu.Item>
-		);
-	}
-
-	const { knapper, reserverForAnnen } = viewModel;
-	const handlinger = [{ knapp: knapper.åpneOppgave, tekst: 'Åpne oppgave' }];
 
 	return (
 		<ActionMenu.Group
 			label={`${oppgave.saksnummer ? 'Sak' : 'Journalpost-id'} ${oppgave.saksnummer || oppgave.journalpostId}`}
 		>
-			{handlinger
-				.filter(({ knapp }) => knapp.vis)
-				.map(({ knapp, tekst }) => (
-					<ActionMenu.Item
-						key={tekst}
-						disabled={knapp.disabled}
-						onSelect={(event) => {
-							event.preventDefault();
-							knapp.handling();
-						}}
-					>
-						{tekst}
-					</ActionMenu.Item>
-				))}
-			{knapper.reserverOgÅpne.vis && (
+			<ActionMenu.Item
+				disabled={venter}
+				onSelect={(event) => {
+					event.preventDefault();
+					åpneOppgave();
+				}}
+			>
+				Åpne oppgave
+			</ActionMenu.Item>
+			{kanReservere && (
 				<ActionMenu.Sub open={visSaksbehandlere} onOpenChange={setVisSaksbehandlere}>
-					<ActionMenu.SubTrigger disabled={knapper.reserverOgÅpne.disabled}>
-						Reserver for annen saksbehandler
-					</ActionMenu.SubTrigger>
+					<ActionMenu.SubTrigger disabled={venter}>Reserver for saksbehandler</ActionMenu.SubTrigger>
 					<ActionMenu.SubContent>
-						{visSaksbehandlere && (
-							<Saksbehandlermeny reserver={reserverForAnnen} disabled={knapper.reserverOgÅpne.disabled} />
-						)}
+						{visSaksbehandlere && <Saksbehandlermeny reserver={reserverForAnnen} disabled={venter} />}
 					</ActionMenu.SubContent>
 				</ActionMenu.Sub>
 			)}
@@ -103,19 +97,35 @@ const OppgaveMeny = ({
 	visFeil: (melding: string | undefined) => void;
 }) => {
 	const [åpen, setÅpen] = useState(false);
-	const viewModel = useOppgaveMenyViewModel(oppgave, () => setÅpen(false), visFeil);
-	const reserver = viewModel.harHentetData ? viewModel.knapper.reserverOgÅpne : undefined;
+	const { data: bruker } = useInnloggetBruker();
+	const kanReservere = bruker?.tilganger.reservering === true;
+	const visHandlingsfeil = (melding: string | undefined) => {
+		visFeil(melding);
+		if (melding) {
+			setÅpen(false);
+		}
+	};
+	const { åpneOppgave, reserverOgÅpne, åpner, reserverer } = useOppgaveHandlinger(oppgave, visHandlingsfeil);
+	const { reserver: reserverForSaksbehandler, isPending: reservererForAnnen } = useReserverOppgaveForSaksbehandler();
+	const venter = åpner || reserverer || reservererForAnnen;
+	const reserverForAnnen = (navident: string) => {
+		visFeil(undefined);
+		reserverForSaksbehandler(oppgave.oppgaveNøkkel, navident, {
+			onSuccess: () => setÅpen(false),
+			onError: () => visHandlingsfeil('Kunne ikke reservere oppgaven for saksbehandleren. Prøv igjen.'),
+		});
+	};
 	return (
 		<HStack gap="space-12" align="center" justify="end" wrap={false}>
-			{(!viewModel.harHentetData || reserver?.vis) && (
+			{kanReservere && (
 				<Button
 					type="button"
 					variant="secondary"
 					size="small"
 					aria-label={`Reserver oppgave ${oppgave.saksnummer || oppgave.journalpostId}`}
-					loading={(viewModel.harHentetData === false && !viewModel.feilmelding) || reserver?.loading}
-					disabled={!reserver || reserver.disabled}
-					onClick={reserver?.handling}
+					loading={reserverer}
+					disabled={venter}
+					onClick={reserverOgÅpne}
 				>
 					Reserver
 				</Button>
@@ -130,7 +140,15 @@ const OppgaveMeny = ({
 					/>
 				</ActionMenu.Trigger>
 				<ActionMenu.Content align="end">
-					{åpen && <Menyinnhold oppgave={oppgave} viewModel={viewModel} />}
+					{åpen && (
+						<Menyinnhold
+							oppgave={oppgave}
+							kanReservere={kanReservere}
+							venter={venter}
+							åpneOppgave={åpneOppgave}
+							reserverForAnnen={reserverForAnnen}
+						/>
+					)}
 				</ActionMenu.Content>
 			</ActionMenu>
 		</HStack>

@@ -1,16 +1,23 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
+import { useReserverOppgaveForSaksbehandler } from 'fleromrade/api/saksbehandlerQueries';
+import { mutationResultat, queryResultat } from 'fleromrade/testUtils';
 import { describe, expect, it, vi } from 'vitest';
-import { lagOppgaveSammendrag } from '../testdata';
+import { innloggetBruker, lagOppgaveSammendrag } from '../testdata';
 import OppgaveTabell from './OppgaveTabell';
 
-vi.mock('./oppgaveMenyViewModel', () => ({ useOppgaveMenyViewModel: () => ({ harHentetData: false }) }));
+vi.mock('fleromrade/api/innloggetBrukerQueries');
+vi.mock('fleromrade/api/saksbehandlerQueries');
+vi.mock('./useOppgaveHandlinger', () => ({ useOppgaveHandlinger: () => ({}) }));
 
 const oppgave = lagOppgaveSammendrag({ saksnummer: '238' });
 
 describe('OppgaveTabell', () => {
 	it('viser kopiknapper uten å gjøre raden klikkbar', async () => {
 		const user = userEvent.setup();
+		vi.mocked(useInnloggetBruker).mockReturnValue(queryResultat(innloggetBruker));
+		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(mutationResultat());
 		render(<OppgaveTabell oppgaver={[oppgave]} visHandlinger />);
 		const rad = screen.getAllByRole('row')[1];
 

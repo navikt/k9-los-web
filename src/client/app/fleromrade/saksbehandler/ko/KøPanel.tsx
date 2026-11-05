@@ -158,12 +158,7 @@ const KøPanel = () => {
 								</InlineMessage>
 							)}
 							{kø.frittValgAvOppgave ? (
-								<VStack gap="space-16">
-									<Heading level="3" size="small">
-										Neste oppgaver
-									</Heading>
-									<NesteOppgaver key={kø.id} kø={kø} />
-								</VStack>
+								<NesteOppgaver key={kø.id} kø={kø} />
 							) : (
 								<div>
 									<SammenleggbarOverskrift

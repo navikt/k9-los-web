@@ -2,12 +2,12 @@ import { BodyShort, Button, Dialog, InlineMessage, VStack } from '@navikt/ds-rea
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
 import { useRef, useState } from 'react';
 import OppgaveOppsummering from './OppgaveOppsummering';
-import { useOppgaveMenyViewModel } from './oppgaveMenyViewModel';
+import { useOppgaveDialogViewModel } from './oppgaveDialogViewModel';
 
 const OppgaveDialog = ({ oppgave, lukk }: { oppgave: OppgaveSammendragDto; lukk: () => void }) => {
 	const [åpen, setÅpen] = useState(true);
 	const [feilmelding, setFeilmelding] = useState<string>();
-	const nyViewModel = useOppgaveMenyViewModel(oppgave, () => setÅpen(false), setFeilmelding, false);
+	const nyViewModel = useOppgaveDialogViewModel(oppgave, () => setÅpen(false), setFeilmelding);
 	const sisteViewModel = useRef(nyViewModel);
 	if (nyViewModel.harHentetData) {
 		sisteViewModel.current = nyViewModel;

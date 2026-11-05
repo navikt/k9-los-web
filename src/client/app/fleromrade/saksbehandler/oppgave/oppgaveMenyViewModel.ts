@@ -57,7 +57,7 @@ export const useOppgaveMenyViewModel = (
 	if (brukerfeil || reservasjonsfeil) {
 		return {
 			harHentetData: false,
-			feilmelding: 'Kunne ikke hente oppgavens reservasjon eller tilganger. Lukk menyen og prøv igjen.',
+			feilmelding: 'Kunne ikke hente oppgavens reservasjon eller tilganger.',
 		};
 	}
 
@@ -87,7 +87,7 @@ export const useOppgaveMenyViewModel = (
 			visFeil(undefined);
 			reserverForAnnen(oppgave.oppgaveNøkkel, navident, {
 				onSuccess: lukk,
-				onError: () => setFeilmelding('Kunne ikke reservere oppgaven for saksbehandleren. Prøv igjen.'),
+				onError: () => setFeilmelding('Kunne ikke reservere oppgaven for saksbehandleren.'),
 			});
 		},
 		knapper: {
