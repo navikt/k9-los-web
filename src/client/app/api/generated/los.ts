@@ -40,6 +40,7 @@ import type {
 	HentAktivReservasjonParams,
 	HentFerdigstiltePerEnhetParams,
 	HentOppgavekoerForSaksbehandlerSomAvdelingslederParams,
+	HentOppgaverISaksbehandlerkoParams,
 	HentSaksbehandlerNøkkeltallParams,
 	HentUttrekksresultatSomJsonParams,
 	IdDto,
@@ -67,6 +68,7 @@ import type {
 	ReservasjonMedOppgaverDto,
 	ReservasjonsinfoDto,
 	ReservasjonV3FraKoDto,
+	ReserverForSaksbehandlerDto,
 	SaksbehandlerDto,
 	SaksbehandlerForKolisteDto,
 	SaksbehandlerPaReservasjonDto,
@@ -903,17 +905,25 @@ export function useHentSaksbehandlersOppgavekoer<
 export const hentOppgaverISaksbehandlerko = (
 	omrade: OmradeUrlSegment,
 	id: number,
+	params?: HentOppgaverISaksbehandlerkoParams,
 	options?: SecondParameter<typeof losClient>,
 	signal?: AbortSignal,
 ) => {
 	return losClient<OppgaveSammendragDto[]>(
-		{ url: `/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`, method: 'GET', signal },
+		{ url: `/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`, method: 'GET', params, signal },
 		options,
 	);
 };
 
-export const getHentOppgaverISaksbehandlerkoQueryKey = (omrade: OmradeUrlSegment, id: number) => {
-	return [`/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`] as const;
+export const getHentOppgaverISaksbehandlerkoQueryKey = (
+	omrade: OmradeUrlSegment,
+	id: number,
+	params?: HentOppgaverISaksbehandlerkoParams,
+) => {
+	return [
+		`/api/fleromrade/${omrade}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`,
+		...(params ? [params] : []),
+	] as const;
 };
 
 export const getHentOppgaverISaksbehandlerkoQueryOptions = <
@@ -922,6 +932,7 @@ export const getHentOppgaverISaksbehandlerkoQueryOptions = <
 >(
 	omrade: OmradeUrlSegment,
 	id: number,
+	params?: HentOppgaverISaksbehandlerkoParams,
 	options?: {
 		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentOppgaverISaksbehandlerko>>, TError, TData>>;
 		request?: SecondParameter<typeof losClient>;
@@ -929,10 +940,10 @@ export const getHentOppgaverISaksbehandlerkoQueryOptions = <
 ) => {
 	const { query: queryOptions, request: requestOptions } = options ?? {};
 
-	const queryKey = queryOptions?.queryKey ?? getHentOppgaverISaksbehandlerkoQueryKey(omrade, id);
+	const queryKey = queryOptions?.queryKey ?? getHentOppgaverISaksbehandlerkoQueryKey(omrade, id, params);
 
 	const queryFn: QueryFunction<Awaited<ReturnType<typeof hentOppgaverISaksbehandlerko>>> = ({ signal }) =>
-		hentOppgaverISaksbehandlerko(omrade, id, requestOptions, signal);
+		hentOppgaverISaksbehandlerko(omrade, id, params, requestOptions, signal);
 
 	return {
 		queryKey,
@@ -955,6 +966,7 @@ export function useHentOppgaverISaksbehandlerko<
 >(
 	omrade: OmradeUrlSegment,
 	id: number,
+	params: undefined | HentOppgaverISaksbehandlerkoParams,
 	options: {
 		query: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentOppgaverISaksbehandlerko>>, TError, TData>> &
 			Pick<
@@ -975,6 +987,7 @@ export function useHentOppgaverISaksbehandlerko<
 >(
 	omrade: OmradeUrlSegment,
 	id: number,
+	params?: HentOppgaverISaksbehandlerkoParams,
 	options?: {
 		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentOppgaverISaksbehandlerko>>, TError, TData>> &
 			Pick<
@@ -995,6 +1008,7 @@ export function useHentOppgaverISaksbehandlerko<
 >(
 	omrade: OmradeUrlSegment,
 	id: number,
+	params?: HentOppgaverISaksbehandlerkoParams,
 	options?: {
 		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentOppgaverISaksbehandlerko>>, TError, TData>>;
 		request?: SecondParameter<typeof losClient>;
@@ -1011,13 +1025,14 @@ export function useHentOppgaverISaksbehandlerko<
 >(
 	omrade: OmradeUrlSegment,
 	id: number,
+	params?: HentOppgaverISaksbehandlerkoParams,
 	options?: {
 		query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof hentOppgaverISaksbehandlerko>>, TError, TData>>;
 		request?: SecondParameter<typeof losClient>;
 	},
 	queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-	const queryOptions = getHentOppgaverISaksbehandlerkoQueryOptions(omrade, id, options);
+	const queryOptions = getHentOppgaverISaksbehandlerkoQueryOptions(omrade, id, params, options);
 
 	const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
 		queryKey: DataTag<QueryKey, TData, TError>;
@@ -1463,6 +1478,98 @@ export const useReserverOppgave = <TError = ErrorType<string>, TContext = unknow
 	TContext
 > => {
 	return useMutation(getReserverOppgaveMutationOptions(options), queryClient);
+};
+
+/**
+ * @summary Reserver oppgave for en saksbehandler
+ */
+export const reserverOppgaveForSaksbehandler = (
+	omrade: OmradeUrlSegment,
+	reserverForSaksbehandlerDto?: BodyType<ReserverForSaksbehandlerDto>,
+	options?: SecondParameter<typeof losClient>,
+	signal?: AbortSignal,
+) => {
+	return losClient<void>(
+		{
+			url: `/api/fleromrade/${omrade}/saksbehandler/reservasjoner/reserver-for-saksbehandler`,
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			data: reserverForSaksbehandlerDto,
+			signal,
+		},
+		options,
+	);
+};
+
+export const getReserverOppgaveForSaksbehandlerMutationKey = () => ['reserverOppgaveForSaksbehandler'] as const;
+
+export const getReserverOppgaveForSaksbehandlerMutationOptions = <
+	TError = ErrorType<void>,
+	TContext = unknown,
+>(options?: {
+	mutation?: UseMutationOptions<
+		Awaited<ReturnType<typeof reserverOppgaveForSaksbehandler>>,
+		TError,
+		ReserverOppgaveForSaksbehandlerMutationVariables,
+		TContext
+	>;
+	request?: SecondParameter<typeof losClient>;
+}): UseMutationOptions<
+	Awaited<ReturnType<typeof reserverOppgaveForSaksbehandler>>,
+	TError,
+	ReserverOppgaveForSaksbehandlerMutationVariables,
+	TContext
+> => {
+	const mutationKey = getReserverOppgaveForSaksbehandlerMutationKey();
+	const { mutation: mutationOptions, request: requestOptions } = options
+		? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+			? options
+			: { ...options, mutation: { ...options.mutation, mutationKey } }
+		: { mutation: { mutationKey }, request: undefined };
+
+	const mutationFn: MutationFunction<
+		Awaited<ReturnType<typeof reserverOppgaveForSaksbehandler>>,
+		ReserverOppgaveForSaksbehandlerMutationVariables
+	> = (props) => {
+		const { omrade, data } = props ?? {};
+
+		return reserverOppgaveForSaksbehandler(omrade, data, requestOptions);
+	};
+
+	return { mutationFn, ...mutationOptions };
+};
+
+export type ReserverOppgaveForSaksbehandlerMutationResult = NonNullable<
+	Awaited<ReturnType<typeof reserverOppgaveForSaksbehandler>>
+>;
+export type ReserverOppgaveForSaksbehandlerMutationBody = BodyType<ReserverForSaksbehandlerDto> | undefined;
+export type ReserverOppgaveForSaksbehandlerMutationError = ErrorType<void>;
+export type ReserverOppgaveForSaksbehandlerMutationVariables = {
+	omrade: OmradeUrlSegment;
+	data?: BodyType<ReserverForSaksbehandlerDto>;
+};
+
+/**
+ * @summary Reserver oppgave for en saksbehandler
+ */
+export const useReserverOppgaveForSaksbehandler = <TError = ErrorType<void>, TContext = unknown>(
+	options?: {
+		mutation?: UseMutationOptions<
+			Awaited<ReturnType<typeof reserverOppgaveForSaksbehandler>>,
+			TError,
+			ReserverOppgaveForSaksbehandlerMutationVariables,
+			TContext
+		>;
+		request?: SecondParameter<typeof losClient>;
+	},
+	queryClient?: QueryClient,
+): UseMutationResult<
+	Awaited<ReturnType<typeof reserverOppgaveForSaksbehandler>>,
+	TError,
+	ReserverOppgaveForSaksbehandlerMutationVariables,
+	TContext
+> => {
+	return useMutation(getReserverOppgaveForSaksbehandlerMutationOptions(options), queryClient);
 };
 
 /**

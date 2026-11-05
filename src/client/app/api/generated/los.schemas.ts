@@ -289,6 +289,11 @@ export interface OppgaveStatusDto {
 	reservertTilTidspunkt?: null | LocalDateTime;
 }
 
+export interface ReserverForSaksbehandlerDto {
+	navident: string;
+	oppgaveNøkkel: OppgaveNokkelUtenOmradeDto;
+}
+
 export interface ReservasjonsinfoDto {
 	/** @nullable */
 	endretAvNavn?: string | null;
@@ -337,6 +342,8 @@ export interface ReservasjonEndringDto {
 
 export interface SaksbehandlerPaReservasjonDto {
 	brukerIdent: string;
+	/** @nullable */
+	enhet?: string | null;
 	navn: string;
 }
 
@@ -618,6 +625,17 @@ export interface Oppgavefelt {
 	verdiforklaringerErUttømmende: boolean;
 	visningsnavn: string;
 }
+
+export type HentOppgaverISaksbehandlerkoParams = {
+	/**
+	 * Maksimalt antall oppgaver. Standard er 10. Må være mellom 1 og 100.
+	 */
+	limit?: number;
+	/**
+	 * Antall oppgaver som hoppes over før tilgangsfiltrering. Standard er 0. Må være 0 eller større.
+	 */
+	offset?: number;
+};
 
 export type HentAktivReservasjonParams = {
 	/**

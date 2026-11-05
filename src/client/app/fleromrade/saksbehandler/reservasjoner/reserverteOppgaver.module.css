@@ -1,3 +1,8 @@
+.handlingskolonne {
+	width: calc(var(--ax-space-128) + var(--ax-space-32));
+	white-space: nowrap;
+}
+
 /* Samme utseende som legacy-visningen på feature/reservasjon-sortering. */
 
 /*

@@ -1,38 +1,59 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
+import { useReserverOppgaveForSaksbehandler } from 'fleromrade/api/saksbehandlerQueries';
+import { mutationResultat, queryResultat } from 'fleromrade/testUtils';
 import { describe, expect, it, vi } from 'vitest';
-import { lagOppgaveSammendrag } from '../testdata';
+import { innloggetBruker, lagOppgaveSammendrag } from '../testdata';
 import OppgaveTabell from './OppgaveTabell';
+
+vi.mock('fleromrade/api/innloggetBrukerQueries');
+vi.mock('fleromrade/api/saksbehandlerQueries');
+vi.mock('./useOppgaveHandlinger', () => ({ useOppgaveHandlinger: () => ({}) }));
 
 const oppgave = lagOppgaveSammendrag({ saksnummer: '238' });
 
-const dataRad = () => screen.getAllByRole('row')[1];
-
 describe('OppgaveTabell', () => {
-	it('viser en chevron som markerer at raden kan åpnes når hele raden er klikkbar', () => {
-		render(<OppgaveTabell oppgaver={[oppgave]} velg={{ med: 'rad', onVelgOppgave: vi.fn() }} />);
-
-		expect(screen.getByRole('columnheader', { name: 'Åpne oppgave' })).toBeInTheDocument();
-		const sisteCelle = within(dataRad()).getAllByRole('cell').at(-1);
-		expect(sisteCelle?.querySelector('svg[aria-hidden="true"]')).not.toBeNull();
-	});
-
-	it('viser ikke chevron når oppgaven velges med knapp', () => {
-		render(<OppgaveTabell oppgaver={[oppgave]} velg={{ med: 'knapp', onVelgOppgave: vi.fn() }} />);
-
-		expect(screen.queryByRole('columnheader', { name: 'Åpne oppgave' })).not.toBeInTheDocument();
-		expect(screen.getByRole('button', { name: 'Velg oppgave 238' })).toBeInTheDocument();
-	});
-
-	it('velger oppgaven når raden har fokus og brukeren trykker Enter', async () => {
+	it('viser kopiknapper uten å gjøre raden klikkbar', async () => {
 		const user = userEvent.setup();
-		const onVelgOppgave = vi.fn();
-		render(<OppgaveTabell oppgaver={[oppgave]} velg={{ med: 'rad', onVelgOppgave }} />);
+		vi.mocked(useInnloggetBruker).mockReturnValue(queryResultat(innloggetBruker));
+		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(mutationResultat());
+		render(<OppgaveTabell oppgaver={[oppgave]} visHandlinger />);
+		const rad = screen.getAllByRole('row')[1];
 
-		await user.tab();
-		expect(dataRad()).toHaveFocus();
-		await user.keyboard('{Enter}');
+		expect(rad).not.toHaveAttribute('tabindex');
+		expect(within(rad).getByRole('button', { name: 'Kopier fødselsnummer' })).toBeInTheDocument();
+		expect(within(rad).getByRole('button', { name: 'Kopier saksnummer' })).toBeInTheDocument();
+		expect(within(rad).getByRole('button', { name: 'Reserver oppgave 238' })).toBeInTheDocument();
+		expect(within(rad).getByRole('button', { name: 'Handlinger på oppgave 238' })).toBeInTheDocument();
+		await user.click(within(rad).getByText('Kari Nordmann'));
+		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+	});
 
-		expect(onVelgOppgave).toHaveBeenCalledWith(oppgave);
+	it('viser ikke handlingsmenyen når fritt valg er slått av', () => {
+		render(<OppgaveTabell oppgaver={[oppgave]} />);
+
+		expect(screen.queryByRole('columnheader', { name: 'Handlinger' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: /Handlinger på oppgave/ })).not.toBeInTheDocument();
+	});
+
+	it('viser kopiknapp på journalpost-id når oppgaven ikke har saksnummer', () => {
+		render(<OppgaveTabell oppgaver={[lagOppgaveSammendrag({ saksnummer: null, journalpostId: '000111222' })]} />);
+
+		expect(screen.getByRole('button', { name: 'Kopier journalpost-id' })).toBeInTheDocument();
+	});
+
+	it('lar hele søkeresultatraden velges med mus, Enter og mellomrom uten kopiknapper', async () => {
+		const user = userEvent.setup();
+		const velg = vi.fn();
+		render(<OppgaveTabell oppgaver={[oppgave]} onVelgOppgave={velg} />);
+		const rad = screen.getByRole('row', { name: /238/ });
+		expect(rad).toHaveAttribute('tabindex', '0');
+		expect(within(rad).queryByRole('button')).not.toBeInTheDocument();
+		await user.click(rad);
+		rad.focus();
+		await user.keyboard('{Enter} ');
+		expect(velg).toHaveBeenCalledTimes(3);
+		expect(velg).toHaveBeenLastCalledWith(oppgave);
 	});
 });

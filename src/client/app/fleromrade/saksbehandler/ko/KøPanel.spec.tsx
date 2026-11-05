@@ -1,18 +1,21 @@
-import { screen, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
+	getHentOppgaverISaksbehandlerkoQueryKey,
+	hentOppgaverISaksbehandlerko,
 	useEndreReservasjoner,
 	useForlengReservasjon,
 	useHentAktivReservasjon,
 	useHentAntallOppgaverUtenReserverteISaksbehandlerko,
-	useHentOppgaverISaksbehandlerko,
 	useHentReserverteOppgaver,
+	useHentSaksbehandlereForReservasjon,
 	useHentSaksbehandlereISaksbehandlerko,
 	useHentSaksbehandlersOppgavekoer,
 	useLagreSisteOppgave,
 	useOpphevReservasjoner,
 	useReserverNesteOppgaveFraSaksbehandlerko,
 	useReserverOppgave,
+	useReserverOppgaveForSaksbehandler,
 } from 'api/generated/los';
 import type { OppgaveKo } from 'api/generated/los.schemas';
 import { useInnloggetBruker } from 'fleromrade/api/innloggetBrukerQueries';
@@ -49,13 +52,20 @@ beforeEach(() => {
 	vi.mocked(useHentSaksbehandlereISaksbehandlerko).mockReturnValue(
 		queryResultat([{ id: 2, epost: 'lars@nav.no', navn: 'Saksbehandler Lars' }]),
 	);
-	vi.mocked(useHentOppgaverISaksbehandlerko).mockReturnValue(queryResultat([lagOppgaveSammendrag()]));
+	vi.mocked(getHentOppgaverISaksbehandlerkoQueryKey).mockImplementation((område, id) => [
+		`/api/fleromrade/${område}/saksbehandler/oppgaveko/${id}/oppgaver-i-koen`,
+	]);
+	vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue([lagOppgaveSammendrag()]);
+	vi.mocked(useHentSaksbehandlereForReservasjon).mockReturnValue(
+		queryResultat([{ brukerIdent: 'Z167457', navn: 'Saksbehandler Lars' }]),
+	);
 	vi.mocked(useHentReserverteOppgaver).mockReturnValue(queryResultat([]));
 	vi.mocked(useHentAktivReservasjon).mockReturnValue(queryResultat(null));
 	vi.mocked(useReserverNesteOppgaveFraSaksbehandlerko).mockReturnValue(mutationResultat());
 	vi.mocked(useLagreSisteOppgave).mockReturnValue(mutationSomLykkes());
 	vi.mocked(useForlengReservasjon).mockReturnValue(mutationResultat());
 	vi.mocked(useReserverOppgave).mockReturnValue(mutationResultat());
+	vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(mutationResultat());
 	vi.mocked(useEndreReservasjoner).mockReturnValue(mutationResultat());
 	vi.mocked(useOpphevReservasjoner).mockReturnValue(mutationResultat());
 });
@@ -143,11 +153,17 @@ describe('KøPanel', () => {
 		const user = userEvent.setup();
 		renderMedOmråde(<KøPanel />);
 
-		expect(useHentOppgaverISaksbehandlerko).not.toHaveBeenCalled();
+		expect(hentOppgaverISaksbehandlerko).not.toHaveBeenCalled();
 
 		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
 
-		expect(useHentOppgaverISaksbehandlerko).toHaveBeenCalledWith('akt', 1, expect.anything());
+		expect(hentOppgaverISaksbehandlerko).toHaveBeenCalledWith(
+			'akt',
+			1,
+			{ limit: 10, offset: 0 },
+			undefined,
+			expect.anything(),
+		);
 		expect(screen.queryByRole('button', { name: 'Velg oppgave ABC12' })).not.toBeInTheDocument();
 	});
 
@@ -156,7 +172,7 @@ describe('KøPanel', () => {
 		renderMedOmråde(<KøPanel />);
 		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
 
-		const tabell = screen.getByRole('table');
+		const tabell = await screen.findByRole('table');
 		expect(
 			within(tabell)
 				.getAllByRole('columnheader')
@@ -171,14 +187,451 @@ describe('KøPanel', () => {
 		expect(opprettet).toHaveTextContent('07.09.2026');
 	});
 
-	it('lar brukeren velge oppgave fra listen når køen har fritt valg', async () => {
+	it('viser lista automatisk og skjuler plukkeknappen når køen har fritt valg', async () => {
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await screen.findByRole('table');
+		expect(screen.getByRole('row', { name: /ABC12/ })).toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Gi meg neste oppgave i køen' })).not.toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Neste oppgaver' })).toBeInTheDocument();
+	});
+
+	it('viser Reserver og en handlingsmeny med to valg, uten å gjøre raden klikkbar', async () => {
 		const user = userEvent.setup();
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await user.click(await screen.findByRole('row', { name: /ABC12/ }));
+		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Reserver oppgave ABC12' })).toBeInTheDocument();
+		await user.click(screen.getByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		expect(screen.getByRole('menuitem', { name: 'Åpne oppgave' })).toBeInTheDocument();
+		expect(screen.getAllByRole('menuitem')).toHaveLength(2);
+		expect(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' })).toBeInTheDocument();
+		expect(useHentSaksbehandlereForReservasjon).not.toHaveBeenCalled();
+	});
+
+	it('henter antallet og neste oppgaver på nytt med oppfrisk-knappen', async () => {
+		const user = userEvent.setup();
+		const hentAntall = vi.fn().mockResolvedValue(queryResultat({ antallUtenReserverte: 17 }));
+		vi.mocked(useHentAntallOppgaverUtenReserverteISaksbehandlerko).mockReturnValue(
+			queryResultat({ antallUtenReserverte: 17 }, { refetch: hentAntall }),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await screen.findByRole('row', { name: /ABC12/ });
+		vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue([lagOppgaveSammendrag({ saksnummer: 'NY123' })]);
+
+		const knapp = screen.getByRole('button', { name: 'Oppfrisk neste oppgaver og antall i kø' });
+		expect(knapp).toHaveAttribute('data-variant', 'tertiary');
+		expect(knapp.textContent).toBe('');
+		await user.click(knapp);
+
+		expect(hentAntall).toHaveBeenCalledTimes(1);
+		expect(await screen.findByRole('row', { name: /NY123/ })).toBeInTheDocument();
+		expect(screen.queryByRole('row', { name: /ABC12/ })).not.toBeInTheDocument();
+		expect(hentOppgaverISaksbehandlerko).toHaveBeenCalledTimes(2);
+	});
+
+	it('viser ikke oppfrisk-knappen for køer uten fritt valg', async () => {
+		const user = userEvent.setup();
+		renderMedOmråde(<KøPanel />);
+		expect(screen.queryByRole('button', { name: 'Oppfrisk neste oppgaver og antall i kø' })).not.toBeInTheDocument();
+
+		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
+		await screen.findByRole('table');
+		expect(screen.queryByRole('button', { name: 'Oppfrisk neste oppgaver og antall i kø' })).not.toBeInTheDocument();
+	});
+
+	it('deaktiverer oppfrisk-knappen mens antallet hentes', async () => {
+		vi.mocked(useHentAntallOppgaverUtenReserverteISaksbehandlerko).mockReturnValue(
+			queryResultat({ antallUtenReserverte: 17 }, { isFetching: true }),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await screen.findByRole('table');
+		expect(screen.getByTitle('Oppfrisk neste oppgaver og antall i kø')).toBeDisabled();
+	});
+
+	it('viser journalpost-id i menyen når oppgaven ikke har saksnummer', async () => {
+		const user = userEvent.setup();
+		vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue([
+			lagOppgaveSammendrag({ saksnummer: null, journalpostId: '000111222' }),
+		]);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave 000111222' }));
+		expect(screen.getByRole('group', { name: 'Journalpost-id 000111222' })).toBeInTheDocument();
+	});
+
+	it('viser køhandlinger uten å hente aktiv reservasjon, også når menyen åpnes igjen', async () => {
+		const user = userEvent.setup();
+		vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue(
+			Array.from({ length: 10 }, (_, i) =>
+				lagOppgaveSammendrag({
+					saksnummer: `SAK${i}`,
+					oppgaveNøkkel: { ...lagOppgaveSammendrag().oppgaveNøkkel, oppgaveEksternId: `oppgave-${i}` },
+				}),
+			),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		expect(await screen.findAllByRole('button', { name: /Reserver oppgave/ })).toHaveLength(10);
+		expect(useHentAktivReservasjon).not.toHaveBeenCalled();
+		const menyknapp = screen.getByRole('button', { name: 'Handlinger på oppgave SAK0' });
+		await user.click(menyknapp);
+		expect(screen.getByRole('menuitem', { name: 'Åpne oppgave' })).toBeInTheDocument();
+		await user.keyboard('{Escape}');
+		await waitFor(() => expect(menyknapp).toHaveFocus());
+		await user.click(menyknapp);
+		expect(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' })).toBeInTheDocument();
+		expect(useHentAktivReservasjon).not.toHaveBeenCalled();
+	});
+
+	it('åpner oppgaven uten å reservere', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		const reserver = mutationResultat();
+		vi.mocked(useReserverOppgave).mockReturnValue(reserver);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Åpne oppgave' }));
+
+		expect((reserver as { mutateAsync: ReturnType<typeof vi.fn> }).mutateAsync).not.toHaveBeenCalled();
+		expect(assign).toHaveBeenCalledWith(lagOppgaveSammendrag().oppgavebehandlingsUrl);
+		expect(useHentAktivReservasjon).not.toHaveBeenCalled();
+	});
+
+	it('reserverer valgt oppgave på innlogget bruker og åpner den', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		const reserver = mutationSomLykkes({ erReservertAvInnloggetBruker: true });
+		vi.mocked(useReserverOppgave).mockReturnValue(reserver);
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 
 		renderMedOmråde(<KøPanel />);
-		await user.click(screen.getByRole('button', { name: 'Neste oppgaver' }));
-		await user.click(screen.getByRole('button', { name: 'Velg oppgave ABC12' }));
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
 
-		expect(screen.getByRole('dialog', { name: 'Oppgaven er ikke reservert' })).toBeInTheDocument();
+		expect((reserver as { mutateAsync: ReturnType<typeof vi.fn> }).mutateAsync).toHaveBeenCalledWith({
+			omrade: 'akt',
+			data: { oppgaveEksternId: 'oppgave-1', oppgaveTypeEksternId: 'k9sak' },
+		});
+		expect(assign).toHaveBeenCalledWith(lagOppgaveSammendrag().oppgavebehandlingsUrl);
+		expect(useHentAktivReservasjon).not.toHaveBeenCalled();
+	});
+
+	it('deaktiverer køhandlingene mens reserveringen pågår', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useReserverOppgave).mockReturnValue(mutationResultat({ isPending: true }));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		expect(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' })).toBeDisabled();
+		await user.click(screen.getByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		expect(screen.getByRole('menuitem', { name: 'Åpne oppgave' })).toHaveAttribute('aria-disabled', 'true');
+		expect(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' })).toHaveAttribute(
+			'aria-disabled',
+			'true',
+		);
+	});
+
+	it('viser kun åpne-knappen uten reserveringstilgang', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useInnloggetBruker).mockReturnValue(
+			queryResultat({
+				...innloggetBruker,
+				tilganger: { ...innloggetBruker.tilganger, reservering: false },
+			}),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		expect(screen.getByRole('menuitem', { name: 'Åpne oppgave' })).toBeInTheDocument();
+		expect(screen.queryByRole('menuitem', { name: 'Reserver og åpne oppgave' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('menuitem', { name: 'Reserver for saksbehandler' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Reserver oppgave ABC12' })).not.toBeInTheDocument();
+	});
+
+	it('åpner ikke oppgaven når den ble reservert av en annen', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		vi.mocked(useReserverOppgave).mockReturnValue(mutationSomLykkes({ erReservertAvInnloggetBruker: false }));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
+
+		expect(screen.getByText('Oppgaven ble reservert av en annen saksbehandler.')).toBeInTheDocument();
+		expect(assign).not.toHaveBeenCalled();
+	});
+
+	it('forteller om manglende lenke etter reservasjon', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue([lagOppgaveSammendrag({ oppgavebehandlingsUrl: null })]);
+		vi.mocked(useReserverOppgave).mockReturnValue(mutationSomLykkes({ erReservertAvInnloggetBruker: true }));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
+
+		expect(screen.getByText(/Oppgaven er reservert på deg, men mangler lenke/)).toBeInTheDocument();
+		expect(assign).not.toHaveBeenCalled();
+	});
+
+	it('viser reservasjonsfeil uten å åpne oppgaven', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		vi.mocked(useReserverOppgave).mockReturnValue(
+			mutationResultat({
+				mutateAsync: vi.fn().mockRejectedValue(new Error('Konflikt')),
+			}),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
+
+		expect(screen.getByText(/Reservering av oppgave feilet/)).toBeInTheDocument();
+		expect(assign).not.toHaveBeenCalled();
+	});
+
+	it('reserverer for en annen fra undermenyen uten å åpne oppgaven', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		const reserver = mutationSomLykkes();
+		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(reserver);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' }));
+		await user.click(await screen.findByRole('menuitem', { name: 'Saksbehandler Lars (Z167457)' }));
+
+		expect(mutate(reserver)).toHaveBeenCalledWith(
+			{
+				omrade: 'akt',
+				data: { navident: 'Z167457', oppgaveNøkkel: { oppgaveEksternId: 'oppgave-1', oppgaveTypeEksternId: 'k9sak' } },
+			},
+			expect.anything(),
+		);
+		expect(assign).not.toHaveBeenCalled();
+		expect(useHentAktivReservasjon).not.toHaveBeenCalled();
+	});
+
+	it('lar brukeren prøve reservering på nytt etter en konflikt', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		const reserver = vi
+			.fn()
+			.mockRejectedValueOnce(new Error('Konflikt'))
+			.mockResolvedValueOnce({ erReservertAvInnloggetBruker: true });
+		vi.mocked(useReserverOppgave).mockReturnValue(mutationResultat({ mutateAsync: reserver }));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
+		expect(screen.getByRole('alert')).toHaveTextContent('Reservering av oppgave feilet.');
+		expect(assign).not.toHaveBeenCalled();
+		await user.click(screen.getByRole('button', { name: 'Reserver oppgave ABC12' }));
+		expect(reserver).toHaveBeenCalledTimes(2);
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+		expect(assign).toHaveBeenCalledWith(lagOppgaveSammendrag().oppgavebehandlingsUrl);
+		expect(useHentAktivReservasjon).not.toHaveBeenCalled();
+	});
+
+	it('grupperer saksbehandlere etter enhet og sorterer navn innenfor enheten', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useHentSaksbehandlereForReservasjon).mockReturnValue(
+			queryResultat([
+				{ brukerIdent: 'Z222222', navn: 'Zara', enhet: 'NAV 2103' },
+				{ brukerIdent: 'Z333333', navn: 'Lars', enhet: 'NAV 4403' },
+				{ brukerIdent: 'Z111111', navn: 'Anna', enhet: 'NAV 2103' },
+				{ brukerIdent: 'Z444444', navn: 'Uten enhet', enhet: null },
+			]),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' }));
+		const enhet = await screen.findByRole('group', { name: 'Nav 2103' });
+		expect(
+			within(enhet)
+				.getAllByRole('menuitem')
+				.map((item) => item.textContent),
+		).toEqual(['Anna (Z111111)', 'Zara (Z222222)']);
+		expect(
+			within(screen.getByRole('group', { name: 'Nav 4403' })).getByRole('menuitem', { name: 'Lars (Z333333)' }),
+		).toBeInTheDocument();
+		expect(screen.getByRole('group', { name: 'Ukjent enhet' })).toBeInTheDocument();
+	});
+
+	it('lar ikke brukeren reservere når saksbehandlerlisten er tom', async () => {
+		const user = userEvent.setup();
+		const reserver = mutationResultat();
+		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(reserver);
+		vi.mocked(useHentSaksbehandlereForReservasjon).mockReturnValue(queryResultat([]));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' }));
+
+		expect(await screen.findByRole('menuitem', { name: 'Ingen saksbehandlere tilgjengelig' })).toHaveAttribute(
+			'aria-disabled',
+			'true',
+		);
+		expect(mutate(reserver)).not.toHaveBeenCalled();
+	});
+
+	it('viser feil hvis reservasjon for en annen feiler', async () => {
+		const user = userEvent.setup();
+		const reserver = mutationResultat({
+			mutate: vi.fn((_data, options) => options.onError(new Error('Konflikt'))),
+		});
+		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(reserver);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' }));
+		await user.click(await screen.findByRole('menuitem', { name: 'Saksbehandler Lars (Z167457)' }));
+
+		expect(screen.getByRole('alert')).toHaveTextContent('Kunne ikke reservere oppgaven for saksbehandleren.');
+	});
+
+	it('viser hentefeil i undermenyen uten å tilby saksbehandlere', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useHentSaksbehandlereForReservasjon).mockReturnValue(
+			queryResultat(undefined, { isError: true, isSuccess: false }),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' }));
+
+		expect(await screen.findByRole('alert')).toHaveTextContent('Kunne ikke hente saksbehandlere. Prøv igjen.');
+		expect(screen.queryByRole('menuitem', { name: /Saksbehandler Lars/ })).not.toBeInTheDocument();
+	});
+
+	it('lar brukeren åpne menyen og reservere for en annen på nytt etter en konflikt', async () => {
+		const user = userEvent.setup();
+		const assign = stubNavigering();
+		const reserver = vi
+			.fn()
+			.mockImplementationOnce((_data, options) => options.onError(new Error('Konflikt')))
+			.mockImplementationOnce((_data, options) => options.onSuccess());
+		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(mutationResultat({ mutate: reserver }));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		const menyknapp = await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' });
+		await user.click(menyknapp);
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' }));
+		await user.click(await screen.findByRole('menuitem', { name: 'Saksbehandler Lars (Z167457)' }));
+		expect(screen.getByRole('alert')).toHaveTextContent('Kunne ikke reservere oppgaven for saksbehandleren.');
+		await waitFor(() => expect(menyknapp).toHaveFocus());
+		await user.click(menyknapp);
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for saksbehandler' }));
+		await user.click(await screen.findByRole('menuitem', { name: 'Saksbehandler Lars (Z167457)' }));
+
+		expect(reserver).toHaveBeenCalledTimes(2);
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+		await waitFor(() => expect(screen.queryByRole('menu')).not.toBeInTheDocument());
+		expect(assign).not.toHaveBeenCalled();
+		expect(useHentAktivReservasjon).not.toHaveBeenCalled();
+	});
+
+	it('lar brukeren navigere til saksbehandlerne med tastaturet', async () => {
+		const user = userEvent.setup();
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		const knapp = await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' });
+		knapp.focus();
+		await user.keyboard('{Enter}');
+		await waitFor(() => expect(screen.getByRole('menu')).toHaveFocus());
+		await user.keyboard('{End}{ArrowRight}');
+
+		expect(await screen.findByRole('menuitem', { name: 'Saksbehandler Lars (Z167457)' })).toBeInTheDocument();
+		await user.keyboard('{Escape}{Escape}');
+		await waitFor(() => expect(knapp).toHaveFocus());
+	});
+
+	it('beholder lista og lar brukeren prøve igjen når neste side feiler', async () => {
+		const user = userEvent.setup();
+		vi.mocked(hentOppgaverISaksbehandlerko)
+			.mockResolvedValueOnce(
+				Array.from({ length: 10 }, (_, i) =>
+					lagOppgaveSammendrag({
+						saksnummer: i === 0 ? 'ABC12' : `SAK${i}`,
+						oppgaveNøkkel: { ...lagOppgaveSammendrag().oppgaveNøkkel, oppgaveEksternId: `oppgave-${i}` },
+					}),
+				),
+			)
+			.mockRejectedValueOnce(new Error('Feil'));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Vis flere oppgaver' }));
+		expect(await screen.findByText(/Kunne ikke hente de neste oppgavene/)).toBeInTheDocument();
+		expect(screen.getByRole('row', { name: /ABC12/ })).toBeInTheDocument();
+		await user.click(screen.getByRole('button', { name: 'Prøv igjen' }));
+		await waitFor(() => expect(hentOppgaverISaksbehandlerko).toHaveBeenCalledTimes(3));
+	});
+
+	it.each([9, 10])('viser neste side bare når siste henting ga ti treff (antall=%i)', async (antall) => {
+		vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue(
+			Array.from({ length: antall }, (_, i) =>
+				lagOppgaveSammendrag({
+					oppgaveNøkkel: { ...lagOppgaveSammendrag().oppgaveNøkkel, oppgaveEksternId: `oppgave-${i}` },
+				}),
+			),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await screen.findByRole('table');
+		if (antall === 10) {
+			expect(screen.getByRole('button', { name: 'Vis flere oppgaver' })).toBeInTheDocument();
+		} else {
+			expect(screen.queryByRole('button', { name: 'Vis flere oppgaver' })).not.toBeInTheDocument();
+		}
+	});
+
+	it('henter ti om gangen og nullstiller lista ved købytte', async () => {
+		const user = userEvent.setup();
+		const oppgaver = Array.from({ length: 30 }, (_, i) =>
+			lagOppgaveSammendrag({
+				saksnummer: `SAK${i}`,
+				oppgaveNøkkel: { ...lagOppgaveSammendrag().oppgaveNøkkel, oppgaveEksternId: `oppgave-${i}` },
+			}),
+		);
+		vi.mocked(hentOppgaverISaksbehandlerko).mockImplementation(async (_område, _id, params) =>
+			oppgaver.slice(params.offset, params.offset + params.limit),
+		);
+		vi.mocked(useHentAntallOppgaverUtenReserverteISaksbehandlerko).mockReturnValue(
+			queryResultat({ antallUtenReserverte: 30 }),
+		);
+		medKøer([lagKø({ ...køA, frittValgAvOppgave: true }), lagKø({ ...køB, frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await screen.findByRole('table');
+		expect(screen.getAllByRole('row')).toHaveLength(11);
+		await user.click(screen.getByRole('button', { name: 'Vis flere oppgaver' }));
+		await waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(21));
+		await user.click(screen.getByRole('button', { name: 'Vis flere oppgaver' }));
+		await waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(31));
+		await user.click(screen.getByRole('button', { name: 'Vis flere oppgaver' }));
+		await waitFor(() => expect(screen.queryByRole('button', { name: 'Vis flere oppgaver' })).not.toBeInTheDocument());
+		expect(screen.getAllByRole('row')).toHaveLength(31);
+		await user.selectOptions(screen.getByRole('combobox', { name: 'Velg oppgavekø' }), 'Beta');
+		await waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(11));
+		expect(hentOppgaverISaksbehandlerko).toHaveBeenLastCalledWith(
+			'akt',
+			2,
+			{ limit: 10, offset: 0 },
+			undefined,
+			expect.anything(),
+		);
 	});
 });

@@ -1,3 +1,8 @@
+.handlingskolonne {
+	width: calc(var(--ax-space-128) + var(--ax-space-32));
+	white-space: nowrap;
+}
+
 .chevronCelle {
 	width: 1%;
 	padding-inline-end: var(--ax-space-24);

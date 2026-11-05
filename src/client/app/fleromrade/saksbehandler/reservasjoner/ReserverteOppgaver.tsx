@@ -136,8 +136,8 @@ const ReservertOppgaveRad = ({ oppgave, reservasjon, antallOppgaverIReservasjone
 					<Kommentar reservasjon={reservasjon} />
 				</HStack>
 			</Table.DataCell>
-			<Table.DataCell>
-				<HStack gap="space-12" align="center" wrap={false}>
+			<Table.DataCell align="right">
+				<HStack gap="space-12" align="center" justify="end" wrap={false}>
 					<Button
 						variant="secondary"
 						size="small"
@@ -273,7 +273,7 @@ const ReserverteOppgaver = () => {
 										<Table.HeaderCell scope="col">Behandlingstype</Table.HeaderCell>
 										<Table.HeaderCell scope="col">Oppgave opprettet</Table.HeaderCell>
 										<Table.HeaderCell scope="col">Reservert t.o.m.</Table.HeaderCell>
-										<Table.HeaderCell scope="col">Handlinger</Table.HeaderCell>
+										<Table.HeaderCell scope="col" align="right" className={styles.handlingskolonne}></Table.HeaderCell>
 									</Table.Row>
 								</Table.Header>
 								{reservasjonsgrupper.map(({ reservasjon, oppgaver }) => (

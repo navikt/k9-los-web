@@ -80,6 +80,7 @@ interface MutateOptions {
 /** En mutation-hook der `mutate` lykkes med `svar` og kaller `onSuccess` og `onSettled` fra kallstedet. */
 export const mutationSomLykkes = (svar?: unknown): never =>
 	mutationResultat({
+		mutateAsync: vi.fn(async () => svar),
 		mutate: vi.fn((variabler: unknown, options?: MutateOptions) => {
 			options?.onSuccess?.(svar, variabler);
 			options?.onSettled?.();
@@ -113,7 +114,7 @@ export const stubLocalStorage = () => {
 export const mutationResultat = (overstyring: Record<string, unknown> = {}): never =>
 	({
 		mutate: vi.fn(),
-		mutateAsync: vi.fn(),
+		mutateAsync: vi.fn().mockResolvedValue(undefined),
 		isPending: false,
 		isError: false,
 		...overstyring,
