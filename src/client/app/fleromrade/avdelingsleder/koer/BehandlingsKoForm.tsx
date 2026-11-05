@@ -21,6 +21,7 @@ import {
 } from 'fleromrade/api/avdelingslederQueries';
 import type { Saksbehandler } from 'fleromrade/avdelingsleder/saksbehandlere/saksbehandlerTsType';
 import KøKriterieEditor from 'fleromrade/filter/KøKriterieEditor';
+import { saksbehandlerEnhet } from 'fleromrade/saksbehandler/oppgave/saksbehandlerEnhet';
 import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { OppgavekøV3 } from 'types/OppgavekøV3Type';
@@ -47,21 +48,10 @@ interface BehandlingsKoFormProps extends BaseProps {
 type LagreKøSkjemaData = Omit<OppgavekøV3, 'saksbehandlerIds'> & { saksbehandlerIds: string[] };
 
 const saksbehandlereMapper = (saksbehandlere: Saksbehandler[]) => {
-	const relevanteEnheterForAvdelingsleder = ['2103', '4403', '4410'];
-	const isProd = window.location.hostname.includes('intern.nav.no');
-	if (isProd) {
-		return saksbehandlere.map((saksbehandler) => ({
-			value: String(saksbehandler.id),
-			label: saksbehandler.navn || saksbehandler.epost,
-			group: relevanteEnheterForAvdelingsleder.find((enhet) => saksbehandler.enhet?.includes(enhet))
-				? saksbehandler.enhet?.replace('NAV', 'Nav')
-				: 'Andre enheter',
-		}));
-	}
 	return saksbehandlere.map((saksbehandler) => ({
 		value: String(saksbehandler.id),
 		label: saksbehandler.navn || saksbehandler.epost,
-		group: saksbehandler.enhet?.replace('NAV', 'Nav') || 'Ukjent enhet',
+		group: saksbehandlerEnhet(saksbehandler.enhet),
 	}));
 };
 
@@ -159,7 +149,7 @@ const BehandlingsKoForm = ({ kø, alleSaksbehandlere, lukk, ekspandert, id }: Be
 						/>
 						<VStack paddingBlock="space-16 space-0">
 							<Checkbox
-								description={`"Gi meg neste oppgave i køen"-knapp vises ikke.`}
+								description={`Viser ikke knappen "Gi meg neste oppgave i køen".`}
 								{...formMethods.register(fieldnames.FRITT_VALG_AV_OPPGAVE)}
 							>
 								Fritt valg av oppgave

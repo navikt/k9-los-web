@@ -1,14 +1,17 @@
-import { ActionMenu, Button, InlineMessage } from '@navikt/ds-react';
+import { MenuElipsisVerticalIcon } from '@navikt/aksel-icons';
+import { ActionMenu, Button, HStack, InlineMessage } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
 import { useSaksbehandlereForReservasjon } from 'fleromrade/api/saksbehandlerQueries';
-import { useState } from 'react';
-import type { OppgaveMenyViewModel } from './oppgaveMenyViewModel';
+import { Fragment, useState } from 'react';
+import { type OppgaveMenyViewModel, useOppgaveMenyViewModel } from './oppgaveMenyViewModel';
+import { saksbehandlerEnhet } from './saksbehandlerEnhet';
 
 const Saksbehandlermeny = ({ reserver, disabled }: { reserver: (navident: string) => void; disabled: boolean }) => {
 	const { data: saksbehandlere, isPending, isError } = useSaksbehandlereForReservasjon();
+	const grupper = [...new Set(saksbehandlere?.map(({ enhet }) => saksbehandlerEnhet(enhet)))].sort();
 
 	return (
-		<ActionMenu.Group label="Saksbehandlere">
+		<>
 			{isPending && <ActionMenu.Item disabled>Henter saksbehandlere…</ActionMenu.Item>}
 			{isError && (
 				<InlineMessage status="error" role="alert">
@@ -16,21 +19,29 @@ const Saksbehandlermeny = ({ reserver, disabled }: { reserver: (navident: string
 				</InlineMessage>
 			)}
 			{saksbehandlere?.length === 0 && <ActionMenu.Item disabled>Ingen saksbehandlere tilgjengelig</ActionMenu.Item>}
-			{saksbehandlere
-				?.toSorted((a, b) => a.navn.localeCompare(b.navn, 'nb'))
-				.map(({ brukerIdent, navn }) => (
-					<ActionMenu.Item
-						key={brukerIdent}
-						disabled={disabled}
-						onSelect={(event) => {
-							event.preventDefault();
-							reserver(brukerIdent);
-						}}
-					>
-						{navn} ({brukerIdent})
-					</ActionMenu.Item>
-				))}
-		</ActionMenu.Group>
+			{grupper.map((enhet, indeks) => (
+				<Fragment key={enhet}>
+					{indeks > 0 && <ActionMenu.Divider />}
+					<ActionMenu.Group label={enhet}>
+						{saksbehandlere
+							?.filter((saksbehandler) => saksbehandlerEnhet(saksbehandler.enhet) === enhet)
+							?.toSorted((a, b) => a.navn.localeCompare(b.navn, 'nb'))
+							.map(({ brukerIdent, navn }) => (
+								<ActionMenu.Item
+									key={brukerIdent}
+									disabled={disabled}
+									onSelect={(event) => {
+										event.preventDefault();
+										reserver(brukerIdent);
+									}}
+								>
+									{navn} ({brukerIdent})
+								</ActionMenu.Item>
+							))}
+					</ActionMenu.Group>
+				</Fragment>
+			))}
+		</>
 	);
 };
 
@@ -48,12 +59,7 @@ const Menyinnhold = ({ oppgave, viewModel }: { oppgave: OppgaveSammendragDto; vi
 	}
 
 	const { knapper, reserverForAnnen } = viewModel;
-	const handlinger = [
-		{ knapp: knapper.åpneOppgave, tekst: 'Åpne oppgave' },
-		{ knapp: knapper.reserverOgÅpne, tekst: 'Reserver og åpne oppgave' },
-		{ knapp: knapper.overtaOgÅpne, tekst: 'Overta reservasjon og åpne oppgave' },
-		{ knapp: knapper.leggTilbakeIKø, tekst: 'Legg tilbake i kø' },
-	];
+	const handlinger = [{ knapp: knapper.åpneOppgave, tekst: 'Åpne oppgave' }];
 
 	return (
 		<ActionMenu.Group
@@ -91,31 +97,43 @@ const Menyinnhold = ({ oppgave, viewModel }: { oppgave: OppgaveSammendragDto; vi
 
 const OppgaveMeny = ({
 	oppgave,
-	viewModel,
-	åpen,
-	onOpenChange,
+	visFeil,
 }: {
 	oppgave: OppgaveSammendragDto;
-	viewModel: OppgaveMenyViewModel;
-	åpen: boolean;
-	onOpenChange: (åpen: boolean) => void;
+	visFeil: (melding: string | undefined) => void;
 }) => {
+	const [åpen, setÅpen] = useState(false);
+	const viewModel = useOppgaveMenyViewModel(oppgave, () => setÅpen(false), visFeil);
+	const reserver = viewModel.harHentetData ? viewModel.knapper.reserverOgÅpne : undefined;
 	return (
-		<ActionMenu open={åpen} onOpenChange={onOpenChange}>
-			<ActionMenu.Trigger>
+		<HStack gap="space-12" align="center" justify="end" wrap={false}>
+			{(!viewModel.harHentetData || reserver?.vis) && (
 				<Button
+					type="button"
 					variant="secondary"
 					size="small"
-					aria-label={`Reserver/åpne oppgave ${oppgave.saksnummer || oppgave.journalpostId}`}
-					iconPosition="right"
+					aria-label={`Reserver oppgave ${oppgave.saksnummer || oppgave.journalpostId}`}
+					loading={(viewModel.harHentetData === false && !viewModel.feilmelding) || reserver?.loading}
+					disabled={!reserver || reserver.disabled}
+					onClick={reserver?.handling}
 				>
 					Reserver
 				</Button>
-			</ActionMenu.Trigger>
-			<ActionMenu.Content align="end">
-				{åpen && <Menyinnhold oppgave={oppgave} viewModel={viewModel} />}
-			</ActionMenu.Content>
-		</ActionMenu>
+			)}
+			<ActionMenu open={åpen} onOpenChange={setÅpen}>
+				<ActionMenu.Trigger>
+					<Button
+						variant="secondary"
+						size="small"
+						aria-label={`Handlinger på oppgave ${oppgave.saksnummer || oppgave.journalpostId}`}
+						icon={<MenuElipsisVerticalIcon aria-hidden />}
+					/>
+				</ActionMenu.Trigger>
+				<ActionMenu.Content align="end">
+					{åpen && <Menyinnhold oppgave={oppgave} viewModel={viewModel} />}
+				</ActionMenu.Content>
+			</ActionMenu>
+		</HStack>
 	);
 };
 

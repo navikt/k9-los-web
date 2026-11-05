@@ -1,24 +1,47 @@
 import { HastesakIkon } from 'sharedComponents/HastesakIkon';
 import KopierbarVerdi, { Kopieringsområde } from 'sharedComponents/KopierbarVerdi';
+import { ChevronRightIcon } from '@navikt/aksel-icons';
 import { Detail, InlineMessage, Table } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
-import { useState } from 'react';
+import { type KeyboardEvent, type ReactElement, type ReactNode, useState } from 'react';
 import { idKolonneTittel } from 'saksbehandler/tabellvisning';
 import { dateFormat } from 'utils/dateUtils';
 import OppgaveMeny from './OppgaveMeny';
-import { useOppgaveMenyViewModel } from './oppgaveMenyViewModel';
+import styles from './oppgaveTabell.module.css';
 
 interface Props {
 	oppgaver: OppgaveSammendragDto[];
 	visHandlinger?: boolean;
 	visBehandlingsstatus?: boolean;
+	onVelgOppgave?: (oppgave: OppgaveSammendragDto) => void;
 }
 
-const OppgaveTabell = ({ oppgaver, visHandlinger = false, visBehandlingsstatus = false }: Props) => {
+const Verdi = ({
+	kopierbar,
+	copyText,
+	title,
+	children,
+}: {
+	kopierbar: boolean;
+	copyText: string;
+	title: string;
+	children: ReactNode;
+}) =>
+	kopierbar ? (
+		<KopierbarVerdi copyText={copyText} title={title}>
+			{children}
+		</KopierbarVerdi>
+	) : (
+		children
+	);
+const Celle = ({ kopierbar, children }: { kopierbar: boolean; children: ReactElement<{ className?: string }> }) =>
+	kopierbar ? <Kopieringsområde>{children}</Kopieringsområde> : children;
+
+const OppgaveTabell = ({ oppgaver, visHandlinger = false, visBehandlingsstatus = false, onVelgOppgave }: Props) => {
 	const visHastesak = oppgaver.some((oppgave) => oppgave.hastesak);
 	const [feilmelding, setFeilmelding] = useState<string>();
-	const [valgtOppgave, setValgtOppgave] = useState<OppgaveSammendragDto>();
-	const viewModel = useOppgaveMenyViewModel(valgtOppgave, () => setValgtOppgave(undefined), setFeilmelding);
+	const klikkbarRad = !!onVelgOppgave;
+	const kopierbar = !klikkbarRad;
 
 	return (
 		<>
@@ -37,8 +60,11 @@ const OppgaveTabell = ({ oppgaver, visHandlinger = false, visBehandlingsstatus =
 							<Table.HeaderCell scope="col">Oppgave opprettet</Table.HeaderCell>
 							{visBehandlingsstatus && <Table.HeaderCell scope="col">Behandlingsstatus</Table.HeaderCell>}
 							{visHandlinger && (
-								<Table.HeaderCell scope="col" align="right">
-									Handlinger
+								<Table.HeaderCell scope="col" align="right" className={styles.handlingskolonne}></Table.HeaderCell>
+							)}
+							{klikkbarRad && (
+								<Table.HeaderCell scope="col">
+									<span className="sr-only">Åpne oppgave</span>
 								</Table.HeaderCell>
 							)}
 						</Table.Row>
@@ -47,30 +73,44 @@ const OppgaveTabell = ({ oppgaver, visHandlinger = false, visBehandlingsstatus =
 						{oppgaver.map((oppgave) => {
 							const id = oppgave.saksnummer || oppgave.journalpostId;
 							const idNavn = oppgave.saksnummer ? 'saksnummer' : 'journalpost-id';
+							const radProps = klikkbarRad
+								? {
+										className: `cursor-pointer ${styles.klikkbarRad}`,
+										tabIndex: 0,
+										onClick: () => onVelgOppgave?.(oppgave),
+										onKeyDown: (event: KeyboardEvent) => {
+											if (event.key === 'Enter' || event.key === ' ') {
+												event.preventDefault();
+												onVelgOppgave?.(oppgave);
+											}
+										},
+									}
+								: {};
 							return (
 								<Table.Row
 									key={`${oppgave.oppgaveNøkkel.områdeEksternId}|${oppgave.oppgaveNøkkel.oppgaveTypeEksternId}|${oppgave.oppgaveNøkkel.oppgaveEksternId}`}
+									{...radProps}
 								>
 									{visHastesak && <Table.DataCell>{oppgave.hastesak && <HastesakIkon />}</Table.DataCell>}
-									<Kopieringsområde>
+									<Celle kopierbar={kopierbar}>
 										<Table.DataCell>
 											{oppgave.person?.navn}
 											{oppgave.person?.fnr && (
 												<>
 													<br />
-													<KopierbarVerdi copyText={oppgave.person.fnr} title="Kopier fødselsnummer">
+													<Verdi kopierbar={kopierbar} copyText={oppgave.person.fnr} title="Kopier fødselsnummer">
 														<Detail>{oppgave.person.fnr}</Detail>
-													</KopierbarVerdi>
+													</Verdi>
 												</>
 											)}
 										</Table.DataCell>
-									</Kopieringsområde>
-									<Kopieringsområde>
+									</Celle>
+									<Celle kopierbar={kopierbar}>
 										<Table.DataCell>
-											<KopierbarVerdi copyText={id} title={`Kopier ${idNavn}`}>
+											<Verdi kopierbar={kopierbar} copyText={id} title={`Kopier ${idNavn}`}>
 												{id}
 												{oppgave.fagsakÅr && ` (${oppgave.fagsakÅr})`}
-											</KopierbarVerdi>
+											</Verdi>
 											{oppgave.oppgavestatus.kode !== 'AAPEN' && (
 												<>
 													<br />
@@ -78,7 +118,7 @@ const OppgaveTabell = ({ oppgaver, visHandlinger = false, visBehandlingsstatus =
 												</>
 											)}
 										</Table.DataCell>
-									</Kopieringsområde>
+									</Celle>
 									<Table.DataCell>
 										{oppgave.behandlingstype?.navn}
 										{oppgave.ytelse?.navn && (
@@ -94,12 +134,12 @@ const OppgaveTabell = ({ oppgaver, visHandlinger = false, visBehandlingsstatus =
 									{visBehandlingsstatus && <Table.DataCell>{oppgave.behandlingsstatus?.navn}</Table.DataCell>}
 									{visHandlinger && (
 										<Table.DataCell align="right">
-											<OppgaveMeny
-												oppgave={oppgave}
-												viewModel={viewModel}
-												åpen={valgtOppgave === oppgave}
-												onOpenChange={(åpen) => setValgtOppgave(åpen ? oppgave : undefined)}
-											/>
+											<OppgaveMeny oppgave={oppgave} visFeil={setFeilmelding} />
+										</Table.DataCell>
+									)}
+									{klikkbarRad && (
+										<Table.DataCell className={styles.chevronCelle}>
+											<ChevronRightIcon aria-hidden fontSize="1.25rem" className={styles.chevron} />
 										</Table.DataCell>
 									)}
 								</Table.Row>

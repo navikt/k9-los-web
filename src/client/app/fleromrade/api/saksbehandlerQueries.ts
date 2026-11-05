@@ -22,7 +22,12 @@ import {
 	useReserverNesteOppgaveFraSaksbehandlerko,
 	useSøkEtterOppgaver,
 } from 'api/generated/los';
-import type { OppgaveNokkelDto, ReservasjonEndringDto, ReservasjonsinfoDto } from 'api/generated/los.schemas';
+import type {
+	OppgaveNokkelDto,
+	OppgaveStatusDto,
+	ReservasjonEndringDto,
+	ReservasjonsinfoDto,
+} from 'api/generated/los.schemas';
 import { useOmråde } from 'fleromrade/OmrådeContext';
 import { useEffect, useRef } from 'react';
 
@@ -94,7 +99,7 @@ export const useOppgaverIKø = (køId: number | undefined) => {
 		queryFn: ({ pageParam, signal }) =>
 			hentOppgaverISaksbehandlerko(urlSegment, køId, { limit: 10, offset: pageParam }, undefined, signal),
 		initialPageParam: 0,
-		getNextPageParam: (sisteSide, _sider, offset) => (sisteSide.length === 0 ? undefined : offset + 10),
+		getNextPageParam: (sisteSide, _sider, offset) => (sisteSide.length < 10 ? undefined : offset + 10),
 		enabled: køId !== undefined,
 		gcTime: 0,
 		select: ({ pages }) =>
@@ -158,20 +163,24 @@ const useOppdaterReservasjoner = () => {
 export const useReserverOppgave = () => {
 	const { urlSegment } = useOmråde();
 	const onSuccess = useOppdaterReservasjoner();
-	const { mutate, ...resten } = useGenerertReserverOppgave({ mutation: { onSuccess } });
+	const { mutateAsync, ...resten } = useGenerertReserverOppgave({ mutation: { onSuccess } });
 	return {
 		...resten,
-		reserver: (oppgaveNøkkel: OppgaveNokkelDto, options?: Parameters<typeof mutate>[1]) =>
-			mutate(
-				{
-					omrade: urlSegment,
-					data: {
-						oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId,
-						oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId,
-					},
+		reserver: (
+			oppgaveNøkkel: OppgaveNokkelDto,
+			options?: { onSuccess?: (status: OppgaveStatusDto) => void; onError?: () => void },
+		) => {
+			void mutateAsync({
+				omrade: urlSegment,
+				data: {
+					oppgaveEksternId: oppgaveNøkkel.oppgaveEksternId,
+					oppgaveTypeEksternId: oppgaveNøkkel.oppgaveTypeEksternId,
 				},
-				options,
-			),
+			}).then(
+				(status) => options?.onSuccess?.(status),
+				() => options?.onError?.(),
+			);
+		},
 	};
 };
 
@@ -279,17 +288,16 @@ export const useEndreReservasjoner = (førOppdatering?: () => void) => {
 export const useÅpneOppgave = () => {
 	const { urlSegment } = useOmråde();
 	const queryClient = useQueryClient();
-	const { mutate, isPending } = useLagreSisteOppgave({
+	const { mutateAsync, isPending } = useLagreSisteOppgave({
 		mutation: {
 			onSettled: () => queryClient.invalidateQueries({ queryKey: getHentSisteOppgaverQueryKey(urlSegment) }),
 		},
 	});
 	return {
 		isPending,
-		åpne: (oppgaveNøkkel: OppgaveNokkelDto, oppgavebehandlingsUrl: string) =>
-			mutate(
-				{ omrade: urlSegment, data: oppgaveNøkkel },
-				{ onSettled: () => window.location.assign(oppgavebehandlingsUrl) },
-			),
+		åpne: (oppgaveNøkkel: OppgaveNokkelDto, oppgavebehandlingsUrl: string) => {
+			const naviger = () => window.location.assign(oppgavebehandlingsUrl);
+			void mutateAsync({ omrade: urlSegment, data: oppgaveNøkkel }).then(naviger, naviger);
+		},
 	};
 };

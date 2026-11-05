@@ -197,16 +197,17 @@ describe('KøPanel', () => {
 		expect(screen.getByRole('heading', { name: 'Neste oppgaver' })).toBeInTheDocument();
 	});
 
-	it('åpner handlingsmenyen fra Reserver/åpne-knappen, ikke raden', async () => {
+	it('viser Reserver og en handlingsmeny med to valg, uten å gjøre raden klikkbar', async () => {
 		const user = userEvent.setup();
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
 
 		await user.click(await screen.findByRole('row', { name: /ABC12/ }));
 		expect(screen.queryByRole('menu')).not.toBeInTheDocument();
-		await user.click(screen.getByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		expect(screen.getByRole('button', { name: 'Reserver oppgave ABC12' })).toBeInTheDocument();
+		await user.click(screen.getByRole('button', { name: 'Handlinger på oppgave ABC12' }));
 		expect(screen.getByRole('menuitem', { name: 'Åpne oppgave' })).toBeInTheDocument();
-		expect(screen.getByRole('menuitem', { name: 'Reserver og åpne oppgave' })).toBeInTheDocument();
+		expect(screen.getAllByRole('menuitem')).toHaveLength(2);
 		expect(screen.getByRole('menuitem', { name: 'Reserver for annen saksbehandler' })).toBeInTheDocument();
 		expect(useHentSaksbehandlereForReservasjon).not.toHaveBeenCalled();
 	});
@@ -219,7 +220,7 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
 
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave 000111222' }));
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave 000111222' }));
 		expect(screen.getByRole('group', { name: 'Journalpost-id 000111222' })).toBeInTheDocument();
 	});
 
@@ -231,10 +232,10 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
 
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
 		await user.click(screen.getByRole('menuitem', { name: 'Åpne oppgave' }));
 
-		expect(mutate(reserver)).not.toHaveBeenCalled();
+		expect((reserver as { mutateAsync: ReturnType<typeof vi.fn> }).mutateAsync).not.toHaveBeenCalled();
 		expect(assign).toHaveBeenCalledWith(lagOppgaveSammendrag().oppgavebehandlingsUrl);
 	});
 
@@ -246,16 +247,12 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 
 		renderMedOmråde(<KøPanel />);
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
-		await user.click(screen.getByRole('menuitem', { name: 'Reserver og åpne oppgave' }));
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
 
-		expect(mutate(reserver)).toHaveBeenCalledWith(
-			{
-				omrade: 'akt',
-				data: { oppgaveEksternId: 'oppgave-1', oppgaveTypeEksternId: 'k9sak' },
-			},
-			expect.anything(),
-		);
+		expect((reserver as { mutateAsync: ReturnType<typeof vi.fn> }).mutateAsync).toHaveBeenCalledWith({
+			omrade: 'akt',
+			data: { oppgaveEksternId: 'oppgave-1', oppgaveTypeEksternId: 'k9sak' },
+		});
 		expect(assign).toHaveBeenCalledWith(lagOppgaveSammendrag().oppgavebehandlingsUrl);
 	});
 
@@ -270,10 +267,11 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
 
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
 		expect(screen.getByRole('menuitem', { name: 'Åpne oppgave' })).toBeInTheDocument();
 		expect(screen.queryByRole('menuitem', { name: 'Reserver og åpne oppgave' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('menuitem', { name: 'Reserver for annen saksbehandler' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Reserver oppgave ABC12' })).not.toBeInTheDocument();
 	});
 
 	it('åpner ikke oppgaven når den ble reservert av en annen', async () => {
@@ -282,8 +280,7 @@ describe('KøPanel', () => {
 		vi.mocked(useReserverOppgave).mockReturnValue(mutationSomLykkes({ erReservertAvInnloggetBruker: false }));
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
-		await user.click(screen.getByRole('menuitem', { name: 'Reserver og åpne oppgave' }));
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
 
 		expect(screen.getByText('Oppgaven ble reservert av en annen saksbehandler.')).toBeInTheDocument();
 		expect(assign).not.toHaveBeenCalled();
@@ -296,8 +293,7 @@ describe('KøPanel', () => {
 		vi.mocked(useReserverOppgave).mockReturnValue(mutationSomLykkes({ erReservertAvInnloggetBruker: true }));
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
-		await user.click(screen.getByRole('menuitem', { name: 'Reserver og åpne oppgave' }));
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
 
 		expect(screen.getByText(/Oppgaven er reservert på deg, men mangler lenke/)).toBeInTheDocument();
 		expect(assign).not.toHaveBeenCalled();
@@ -308,13 +304,12 @@ describe('KøPanel', () => {
 		const assign = stubNavigering();
 		vi.mocked(useReserverOppgave).mockReturnValue(
 			mutationResultat({
-				mutate: vi.fn((_data, options) => options.onError(new Error('Konflikt'))),
+				mutateAsync: vi.fn().mockRejectedValue(new Error('Konflikt')),
 			}),
 		);
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
-		await user.click(screen.getByRole('menuitem', { name: 'Reserver og åpne oppgave' }));
+		await user.click(await screen.findByRole('button', { name: 'Reserver oppgave ABC12' }));
 
 		expect(screen.getByText(/Reservering av oppgave feilet/)).toBeInTheDocument();
 		expect(assign).not.toHaveBeenCalled();
@@ -327,7 +322,7 @@ describe('KøPanel', () => {
 		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(reserver);
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
 		await user.click(screen.getByRole('menuitem', { name: 'Reserver for annen saksbehandler' }));
 		await user.click(await screen.findByRole('menuitem', { name: 'Saksbehandler Lars (Z167457)' }));
 
@@ -341,6 +336,32 @@ describe('KøPanel', () => {
 		expect(assign).not.toHaveBeenCalled();
 	});
 
+	it('grupperer saksbehandlere etter enhet og sorterer navn innenfor enheten', async () => {
+		const user = userEvent.setup();
+		vi.mocked(useHentSaksbehandlereForReservasjon).mockReturnValue(
+			queryResultat([
+				{ brukerIdent: 'Z222222', navn: 'Zara', enhet: 'NAV 2103' },
+				{ brukerIdent: 'Z333333', navn: 'Lars', enhet: 'NAV 4403' },
+				{ brukerIdent: 'Z111111', navn: 'Anna', enhet: 'NAV 2103' },
+				{ brukerIdent: 'Z444444', navn: 'Uten enhet', enhet: null },
+			]),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Reserver for annen saksbehandler' }));
+		const enhet = await screen.findByRole('group', { name: 'Nav 2103' });
+		expect(
+			within(enhet)
+				.getAllByRole('menuitem')
+				.map((item) => item.textContent),
+		).toEqual(['Anna (Z111111)', 'Zara (Z222222)']);
+		expect(
+			within(screen.getByRole('group', { name: 'Nav 4403' })).getByRole('menuitem', { name: 'Lars (Z333333)' }),
+		).toBeInTheDocument();
+		expect(screen.getByRole('group', { name: 'Ukjent enhet' })).toBeInTheDocument();
+	});
+
 	it('lar ikke brukeren reservere når saksbehandlerlisten er tom', async () => {
 		const user = userEvent.setup();
 		const reserver = mutationResultat();
@@ -348,7 +369,7 @@ describe('KøPanel', () => {
 		vi.mocked(useHentSaksbehandlereForReservasjon).mockReturnValue(queryResultat([]));
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
 		await user.click(screen.getByRole('menuitem', { name: 'Reserver for annen saksbehandler' }));
 
 		expect(await screen.findByRole('menuitem', { name: 'Ingen saksbehandlere tilgjengelig' })).toHaveAttribute(
@@ -366,7 +387,7 @@ describe('KøPanel', () => {
 		vi.mocked(useReserverOppgaveForSaksbehandler).mockReturnValue(reserver);
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
 		await user.click(screen.getByRole('menuitem', { name: 'Reserver for annen saksbehandler' }));
 		await user.click(await screen.findByRole('menuitem', { name: 'Saksbehandler Lars (Z167457)' }));
 
@@ -381,7 +402,7 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
 
-		await user.click(await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' }));
+		await user.click(await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' }));
 		await user.click(screen.getByRole('menuitem', { name: 'Reserver for annen saksbehandler' }));
 
 		expect(await screen.findByRole('alert')).toHaveTextContent('Kunne ikke hente saksbehandlere. Prøv igjen.');
@@ -393,7 +414,7 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
 
-		const knapp = await screen.findByRole('button', { name: 'Reserver/åpne oppgave ABC12' });
+		const knapp = await screen.findByRole('button', { name: 'Handlinger på oppgave ABC12' });
 		knapp.focus();
 		await user.keyboard('{Enter}');
 		await waitFor(() => expect(screen.getByRole('menu')).toHaveFocus());
@@ -407,7 +428,14 @@ describe('KøPanel', () => {
 	it('beholder lista og lar brukeren prøve igjen når neste side feiler', async () => {
 		const user = userEvent.setup();
 		vi.mocked(hentOppgaverISaksbehandlerko)
-			.mockResolvedValueOnce([lagOppgaveSammendrag()])
+			.mockResolvedValueOnce(
+				Array.from({ length: 10 }, (_, i) =>
+					lagOppgaveSammendrag({
+						saksnummer: i === 0 ? 'ABC12' : `SAK${i}`,
+						oppgaveNøkkel: { ...lagOppgaveSammendrag().oppgaveNøkkel, oppgaveEksternId: `oppgave-${i}` },
+					}),
+				),
+			)
 			.mockRejectedValueOnce(new Error('Feil'));
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
@@ -416,6 +444,24 @@ describe('KøPanel', () => {
 		expect(screen.getByRole('row', { name: /ABC12/ })).toBeInTheDocument();
 		await user.click(screen.getByRole('button', { name: 'Prøv igjen' }));
 		await waitFor(() => expect(hentOppgaverISaksbehandlerko).toHaveBeenCalledTimes(3));
+	});
+
+	it.each([9, 10])('viser neste side bare når siste henting ga ti treff (antall=%i)', async (antall) => {
+		vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue(
+			Array.from({ length: antall }, (_, i) =>
+				lagOppgaveSammendrag({
+					oppgaveNøkkel: { ...lagOppgaveSammendrag().oppgaveNøkkel, oppgaveEksternId: `oppgave-${i}` },
+				}),
+			),
+		);
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+		await screen.findByRole('table');
+		if (antall === 10) {
+			expect(screen.getByRole('button', { name: 'Vis flere oppgaver' })).toBeInTheDocument();
+		} else {
+			expect(screen.queryByRole('button', { name: 'Vis flere oppgaver' })).not.toBeInTheDocument();
+		}
 	});
 
 	it('henter ti om gangen og nullstiller lista ved købytte', async () => {

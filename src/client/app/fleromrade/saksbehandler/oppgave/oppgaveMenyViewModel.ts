@@ -31,10 +31,13 @@ export const useOppgaveMenyViewModel = (
 	oppgave: OppgaveSammendragDto | undefined,
 	lukk: () => void,
 	visFeil: (melding: string | undefined) => void,
+	lukkVedFeil = true,
 ): OppgaveMenyViewModel => {
 	const setFeilmelding = (melding: string) => {
 		visFeil(melding);
-		lukk();
+		if (lukkVedFeil) {
+			lukk();
+		}
 	};
 
 	const { åpne, isPending: åpner } = useÅpneOppgave();

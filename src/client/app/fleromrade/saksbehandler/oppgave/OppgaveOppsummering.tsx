@@ -2,12 +2,10 @@ import KopierbarVerdi, { Kopieringsområde } from 'sharedComponents/KopierbarVer
 import { BodyShort, Box, Detail, VStack } from '@navikt/ds-react';
 import type { OppgaveSammendragDto } from 'api/generated/los.schemas';
 
-/** Oppsummering av søker og sak/journalpost-id, brukt øverst i oppgavedialogene. */
 const OppgaveOppsummering = ({ oppgave }: { oppgave: OppgaveSammendragDto }) => {
 	const idTittel = oppgave.saksnummer ? 'Sak' : 'Journalpost-id';
 	const id = oppgave.saksnummer || oppgave.journalpostId;
 	const idNavn = oppgave.saksnummer ? 'saksnummer' : 'journalpost-id';
-
 	return (
 		<Box background="neutral-soft" borderRadius="8" padding="space-16">
 			<VStack gap="space-12">

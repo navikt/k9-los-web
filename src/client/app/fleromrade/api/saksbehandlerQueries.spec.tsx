@@ -1,9 +1,11 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { getHentAntallOppgaverUtenReserverteISaksbehandlerkoQueryKey } from 'api/generated/los';
 import { losClient } from 'api/orvalMutator';
-import { lagOppgaveSammendrag } from 'fleromrade/saksbehandler/testdata';
-import { lagHookWrapper } from 'fleromrade/testUtils';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import OppgaveTabell from 'fleromrade/saksbehandler/oppgave/OppgaveTabell';
+import { innloggetBruker, lagOppgaveSammendrag } from 'fleromrade/saksbehandler/testdata';
+import { lagHookWrapper, renderMedOmråde, stubNavigering } from 'fleromrade/testUtils';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useOppgaverIKø, useReserverOppgave, useReserverOppgaveForSaksbehandler } from './saksbehandlerQueries';
 
 // Den genererte koden kaller fetch-funksjonene internt i modulen, så vi mocker klienten under dem.
@@ -27,10 +29,54 @@ beforeEach(() => {
 			return { antallUtenReserverte: antallIKø } as never;
 		}
 		if (url === oppgaverUrl) {
-			return [lagOppgaveSammendrag()] as never;
+			return Array.from({ length: 10 }, () => lagOppgaveSammendrag()) as never;
 		}
 		return {} as never;
 	});
+});
+
+afterEach(() => vi.unstubAllGlobals());
+
+describe('reserver og åpne fra køen', () => {
+	it.each([false, true])(
+		'åpner fagsystemet etter at raden forsvinner, også ved lagringsfeil=%s',
+		async (lagringsfeil) => {
+			const user = userEvent.setup();
+			const assign = stubNavigering();
+			let reservert = false;
+			let fullførLagring: () => void = () => {};
+			const lagring = new Promise<void>((resolve) => {
+				fullførLagring = resolve;
+			});
+			vi.mocked(losClient).mockImplementation(async ({ url, method }) => {
+				if (url === antallUrl) return { antallUtenReserverte: reservert ? 0 : 1 } as never;
+				if (url === oppgaverUrl) return (reservert ? [] : [lagOppgaveSammendrag()]) as never;
+				if (url?.endsWith('/innlogget-bruker')) return innloggetBruker as never;
+				if (url?.endsWith('/aktiv-reservasjon')) return null as never;
+				if (url?.endsWith('/reservasjoner/reserver')) {
+					reservert = true;
+					return { erReservertAvInnloggetBruker: true } as never;
+				}
+				if (url?.endsWith('/siste-oppgaver') && method === 'POST') {
+					await lagring;
+					if (lagringsfeil) throw new Error('Kunne ikke lagre siste oppgave');
+				}
+				return {} as never;
+			});
+			const Oppgaver = () => {
+				const { data } = useOppgaverIKø(1);
+				return <OppgaveTabell oppgaver={data ?? []} visHandlinger />;
+			};
+			renderMedOmråde(<Oppgaver />);
+			const knapp = await screen.findByRole('button', { name: 'Reserver oppgave ABC12' });
+			await waitFor(() => expect(knapp).toBeEnabled());
+			await user.click(knapp);
+			await waitFor(() => expect(screen.queryByRole('row', { name: /ABC12/ })).not.toBeInTheDocument());
+			expect(kallTil('/api/fleromrade/akt/saksbehandler/siste-oppgaver')).toBe(1);
+			await act(async () => fullførLagring());
+			await waitFor(() => expect(assign).toHaveBeenCalledWith(lagOppgaveSammendrag().oppgavebehandlingsUrl));
+		},
+	);
 });
 
 const renderOppgaverIKø = () => {
@@ -75,20 +121,20 @@ describe('useOppgaverIKø', () => {
 		expect(kallTil(antallUrl)).toBe(2);
 	});
 
-	it('fortsetter etter korte sider uavhengig av køantallet og stopper ved en tom side', async () => {
+	it('henter neste side etter ti treff og stopper etter en kort side uavhengig av køantallet', async () => {
 		antallIKø = 1;
 		const oppgave = lagOppgaveSammendrag();
 		vi.mocked(losClient).mockImplementation(async ({ url, params }) => {
 			if (url === antallUrl) return { antallUtenReserverte: antallIKø } as never;
-			if (url === oppgaverUrl) return (params.offset === 20 ? [] : [oppgave]) as never;
+			if (url === oppgaverUrl)
+				return (params.offset === 0 ? Array.from({ length: 10 }, () => oppgave) : [oppgave]) as never;
 			return {} as never;
 		});
 		const { result } = renderHook(() => useOppgaverIKø(1), lagHookWrapper());
 		await waitFor(() => expect(result.current.isSuccess).toBe(true));
 		expect(result.current.hasNextPage).toBe(true);
 		await act(() => result.current.fetchNextPage());
-		expect(result.current.hasNextPage).toBe(true);
-		await act(() => result.current.fetchNextPage());
+		await waitFor(() => expect(result.current.hasNextPage).toBe(false));
 
 		expect(
 			vi
@@ -98,10 +144,22 @@ describe('useOppgaverIKø', () => {
 		).toEqual([
 			{ limit: 10, offset: 0 },
 			{ limit: 10, offset: 10 },
-			{ limit: 10, offset: 20 },
 		]);
 		expect(result.current.data).toEqual([oppgave]);
 		await waitFor(() => expect(result.current.hasNextPage).toBe(false));
+	});
+
+	it.each([1, 9])('stopper etter en første side med %i treff selv om køantallet er høyere', async (antall) => {
+		antallIKø = 100;
+		vi.mocked(losClient).mockImplementation(async ({ url }) => {
+			if (url === antallUrl) return { antallUtenReserverte: antallIKø } as never;
+			return Array.from({ length: antall }, () => lagOppgaveSammendrag()) as never;
+		});
+		const { result } = renderHook(() => useOppgaverIKø(1), lagHookWrapper());
+		await waitFor(() => expect(result.current.isSuccess).toBe(true));
+		expect(result.current.hasNextPage).toBe(false);
+		await act(() => result.current.fetchNextPage());
+		expect(kallTil(oppgaverUrl)).toBe(1);
 	});
 
 	it('stopper ved en tom første side selv om køantallet sier at det finnes oppgaver', async () => {
@@ -156,6 +214,25 @@ describe('useOppgaverIKø', () => {
 				.mock.calls.filter(([config]) => config.url === oppgaverUrl)
 				.map(([config]) => config.params.offset),
 		).toEqual([0, 10, 0]);
+	});
+});
+
+describe('useReserverOppgave', () => {
+	it('fullfører onSuccess selv om komponenten avmonteres før reservasjonen er ferdig', async () => {
+		let fullfør: () => void = () => {};
+		const respons = new Promise<void>((resolve) => {
+			fullfør = resolve;
+		});
+		vi.mocked(losClient).mockImplementation(async () => {
+			await respons;
+			return { erReservertAvInnloggetBruker: true } as never;
+		});
+		const onSuccess = vi.fn();
+		const { result, unmount } = renderHook(() => useReserverOppgave(), lagHookWrapper());
+		act(() => result.current.reserver(lagOppgaveSammendrag().oppgaveNøkkel, { onSuccess }));
+		unmount();
+		await act(async () => fullfør());
+		await waitFor(() => expect(onSuccess).toHaveBeenCalledWith({ erReservertAvInnloggetBruker: true }));
 	});
 });
 

@@ -342,6 +342,8 @@ export interface ReservasjonEndringDto {
 
 export interface SaksbehandlerPaReservasjonDto {
 	brukerIdent: string;
+	/** @nullable */
+	enhet?: string | null;
 	navn: string;
 }
 
