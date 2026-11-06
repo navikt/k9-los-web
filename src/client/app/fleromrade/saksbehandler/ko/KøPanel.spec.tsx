@@ -212,7 +212,26 @@ describe('KøPanel', () => {
 		expect(useHentSaksbehandlereForReservasjon).not.toHaveBeenCalled();
 	});
 
-	it('henter antallet og neste oppgaver på nytt med oppfrisk-knappen', async () => {
+	it('skjuler oppfrisk-knappen under første innlasting og beholder spinneren ved tabellen', async () => {
+		let fullførHenting = () => {};
+		const henting = new Promise<void>((resolve) => {
+			fullførHenting = resolve;
+		});
+		vi.mocked(hentOppgaverISaksbehandlerko).mockReturnValueOnce(henting.then(() => [lagOppgaveSammendrag()]));
+		medKøer([lagKø({ frittValgAvOppgave: true })]);
+		renderMedOmråde(<KøPanel />);
+
+		expect(screen.getByRole('heading', { name: 'Neste oppgaver' })).toBeInTheDocument();
+		expect(screen.queryByTitle('Oppfrisk neste oppgaver og antall i kø')).not.toBeInTheDocument();
+		expect(screen.getByTitle('Henter oppgaver i køen')).toBeInTheDocument();
+
+		fullførHenting();
+		await screen.findByRole('table');
+		expect(screen.getByRole('button', { name: 'Oppfrisk neste oppgaver og antall i kø' })).toBeEnabled();
+		expect(screen.queryByTitle('Henter oppgaver i køen')).not.toBeInTheDocument();
+	});
+
+	it('henter antallet og neste oppgaver på nytt med spinner på oppfrisk-knappen', async () => {
 		const user = userEvent.setup();
 		const hentAntall = vi.fn().mockResolvedValue(queryResultat({ antallUtenReserverte: 17 }));
 		vi.mocked(useHentAntallOppgaverUtenReserverteISaksbehandlerko).mockReturnValue(
@@ -221,7 +240,13 @@ describe('KøPanel', () => {
 		medKøer([lagKø({ frittValgAvOppgave: true })]);
 		renderMedOmråde(<KøPanel />);
 		await screen.findByRole('row', { name: /ABC12/ });
-		vi.mocked(hentOppgaverISaksbehandlerko).mockResolvedValue([lagOppgaveSammendrag({ saksnummer: 'NY123' })]);
+		let fullførHenting = () => {};
+		const henting = new Promise<void>((resolve) => {
+			fullførHenting = resolve;
+		});
+		vi.mocked(hentOppgaverISaksbehandlerko).mockReturnValueOnce(
+			henting.then(() => [lagOppgaveSammendrag({ saksnummer: 'NY123' })]),
+		);
 
 		const knapp = screen.getByRole('button', { name: 'Oppfrisk neste oppgaver og antall i kø' });
 		expect(knapp).toHaveAttribute('data-variant', 'tertiary');
@@ -229,7 +254,13 @@ describe('KøPanel', () => {
 		await user.click(knapp);
 
 		expect(hentAntall).toHaveBeenCalledTimes(1);
+		await waitFor(() => expect(knapp).toBeDisabled());
+		expect(within(knapp).getByRole('img', { hidden: true })).toBeInTheDocument();
+		expect(screen.queryByTitle('Henter oppgaver i køen')).not.toBeInTheDocument();
+		expect(screen.getByRole('row', { name: /ABC12/ })).toBeInTheDocument();
+		fullførHenting();
 		expect(await screen.findByRole('row', { name: /NY123/ })).toBeInTheDocument();
+		expect(knapp).toBeEnabled();
 		expect(screen.queryByRole('row', { name: /ABC12/ })).not.toBeInTheDocument();
 		expect(hentOppgaverISaksbehandlerko).toHaveBeenCalledTimes(2);
 	});
