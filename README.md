@@ -69,7 +69,15 @@ Testene i `e2e/` bruker ekte LOS-backend, uten å opprette saker i k9-sak.
 
 Du trenger ikke starte Compose-servicen `k9-los` eller stoppe IntelliJ-backenden. Playwright starter ingen tjenester lokalt. En annen frontend-adresse kan angis med `PLAYWRIGHT_BASE_URL`.
 
-Hver test oppretter sin egen oppgave gjennom testdata-API-et og reserverer den gjennom ordinært LOS-API. Oppryddingen kjører også ved testfeil og sletter bare oppgaven som denne backend-instansen har opprettet for testen. Ikke start backend på nytt mens testen kjører: oversikten over hvilke oppgaver testdata-API-et eier, ligger i minnet.
+Suiten dekker køadministrasjon, plukking og fem reservasjonsflyter: tilbakelegging, forlengelse, flytting til en annen saksbehandler og avdelingsleders oppheving og endring av reservasjoner. Alle testene kontrollerer at det LOCAL-avgrensede testdata-API-et er tilgjengelig før de endrer data.
+
+Reservasjonstestene oppretter egne oppgaver gjennom testdata-API-et og reserverer dem gjennom ordinært LOS-API. Køadministrasjonstesten trenger ingen oppgave. Plukktesten oppretter en egen kø avgrenset til testoppgavens UUID, samt en annen oppgave som skal bli liggende ureservert.
+
+Plukktesten stubber lagring av «siste oppgaver», fordi den ellers kan skyve ut eksisterende historikk for den lokale saksbehandleren Sara. Navigasjonsmålet erstattes med en statisk side, slik at k9-sak-web ikke må kjøre. Køfiltrering og reservering bruker ekte LOS-backend i både lokal kjøring og CI.
+
+Oppryddingen kjører også ved testfeil og sletter bare testenes registrerte kø-ID-er og egne oppgaver. Ikke start backend på nytt mens testen kjører: oversikten over hvilke oppgaver testdata-API-et eier, ligger i minnet.
+
+Enkelte flyter kan kjøres separat, for eksempel `pnpm test:e2e reservasjoner` eller `pnpm test:e2e plukke-oppgave`.
 
 ### GitHub Actions
 
