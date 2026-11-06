@@ -25,19 +25,21 @@ const NesteOppgaver = ({ kø }: { kø: OppgaveKo }) => {
 					<Heading level="3" size="small">
 						Neste oppgaver
 					</Heading>
-					<Button
-						type="button"
-						variant="tertiary"
-						size="xsmall"
-						title="Oppfrisk neste oppgaver og antall i kø"
-						icon={<ArrowsCirclepathIcon aria-hidden />}
-						loading={isFetching || henterAntall}
-						disabled={isFetching || henterAntall}
-						onClick={() => {
-							void hentAntall();
-							void refetch();
-						}}
-					/>
+					{!isPending && (
+						<Button
+							type="button"
+							variant="tertiary"
+							size="xsmall"
+							title="Oppfrisk neste oppgaver og antall i kø"
+							icon={<ArrowsCirclepathIcon aria-hidden />}
+							loading={isFetching || henterAntall}
+							disabled={isFetching || henterAntall}
+							onClick={() => {
+								void hentAntall();
+								void refetch();
+							}}
+						/>
+					)}
 				</HStack>
 			)}
 			{isPending && <Loader title="Henter oppgaver i køen" />}
