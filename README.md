@@ -58,7 +58,30 @@ Nå kan du søke opp saksnummeret eller søkeren i k9-los-web. Dersom oppgaven m
    docker run -p 8031:8031 --env IS_VERDIKJEDE=true --env PORT=8031 --env PROXY_CONFIG='{"apis":[{"path":"/api/k9-los-api","url":"http://host.docker.internal:8020","auth":"obo","scopes":"api://k9-los-web/.default", "backendPath":"/api"}]}' k9-los-web:din-valgfrie-tag
 ```
 
-### For NAV-ansatte
+## Playwright mot lokal LOS
+
+Testene i `e2e/` bruker ekte LOS-backend, uten å opprette saker i k9-sak.
+
+1. Behold de vanlige støttetjenestene i Podman. Start `K9LosDev` fra `k9-los-api` i IntelliJ på port 8020. Starteren aktiverer testdata-API-et i LOCAL-profilen.
+2. Kjør `pnpm dev` i dette repoet på port 8031.
+3. Installer Chromium én gang med `pnpm exec playwright install chromium`.
+4. Kjør `pnpm test:e2e`, eller `pnpm test:e2e:ui` for interaktiv kjøring.
+
+Du trenger ikke starte Compose-servicen `k9-los` eller stoppe IntelliJ-backenden. Playwright starter ingen tjenester lokalt. En annen frontend-adresse kan angis med `PLAYWRIGHT_BASE_URL`.
+
+Hver test oppretter sin egen oppgave gjennom testdata-API-et og reserverer den gjennom ordinært LOS-API. Oppryddingen kjører også ved testfeil og sletter bare oppgaven som denne backend-instansen har opprettet for testen. Ikke start backend på nytt mens testen kjører: oversikten over hvilke oppgaver testdata-API-et eier, ligger i minnet.
+
+### GitHub Actions
+
+Workflowen `los-e2e.yml` bygger backend fra kildekode og starter PostgreSQL, Kafka og azure-mock. VTP og k9-sak inngår ikke. CI starter frontend med Vite og kjører samme `pnpm test:e2e` som lokalt. Dette tester ikke produksjonsinnlogging eller frontendens Node-proxy.
+
+Før første automatiske kjøring må backend-endringene være tilgjengelige på GitHub. Sett repo-variabelen `LOS_E2E_API_REF` til en full commit-SHA i `k9-los-api` som inneholder testdatastøtten og `.github/e2e/`. Workflowen bruker eksisterende `READER_TOKEN` til lesing av backend-repoet og pakker. Ingen flytende `latest` brukes for applikasjonskoden.
+
+Ved manuell kjøring kan `api_ref` overstyre backend-versjonen. Workflowen kan også kalles fra backend-repoet med eksplisitte `api_ref` og `web_ref`. Fest da workflow-referansen til en publisert commit-SHA. Begge applikasjonsversjonene vises i kjøringsrapporten. Playwright-rapport og tjenestelogger lastes opp som artifacts.
+
+Verdikjedetestene i `k9-verdikjede` er foreløpig beholdt uendret.
+
+### For Nav-ansatte
 
 Interne henvendelser kan sendes via Slack i kanalen **#k9-los**.
 

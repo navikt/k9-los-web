@@ -9,6 +9,7 @@
 
 # testing
 /coverage
+/playwright-report/
 /target/
 **/test-results
 # production
