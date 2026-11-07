@@ -1,10 +1,6 @@
 name: LOS nettlesertester
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-  push:
-    branches: [master]
   workflow_dispatch:
     inputs:
       api_ref:

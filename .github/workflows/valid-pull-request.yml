@@ -3,7 +3,7 @@ on:
   pull_request:
     branches-ignore:
       - slette_V1
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
     paths-ignore:
       - '**.md'
       - '**.MD'
@@ -75,18 +75,16 @@ jobs:
       - uses: navikt/sif-gha-workflows/.github/actions/sif-code-scan@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
 
 
-  verdikjede-tester:
-    name: Verdikjedetester
+  los-tester:
+    name: LOS nettlesertester
     needs: [build-and-test]
-    secrets: inherit
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
-      id-token: write
       contents: read
       packages: read
-    uses: navikt/sif-gha-workflows/.github/workflows/verdikjede-test-v2.yml@main
-    if: ${{github.actor != 'dependabot[bot]'}}
+    uses: ./.github/workflows/los-e2e.yml
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     with:
-      suites: 'frontend-los'
-      tag: ${{ needs.build-and-test.outputs.image_version }}
-      image_version: ${{ needs.build-and-test.outputs.image_version }}
-      override_image_artifact_name: ${{ needs.build-and-test.outputs.image_artifact_name }}
+      api_ref: ${{ vars.LOS_E2E_API_REF || 'db1337e60d00bd9fa0cb44df7b9ea7f9cd7cd1ba' }}
+      web_ref: ${{ github.sha }}
