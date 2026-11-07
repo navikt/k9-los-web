@@ -87,7 +87,7 @@ Før første automatiske kjøring må backend-endringene være tilgjengelige på
 
 Ved manuell kjøring kan `api_ref` overstyre backend-versjonen. Workflowen kan også kalles fra backend-repoet med eksplisitte `api_ref` og `web_ref`. Fest da workflow-referansen til en publisert commit-SHA. Begge applikasjonsversjonene vises i kjøringsrapporten. Playwright-rapport og tjenestelogger lastes opp som artifacts.
 
-Verdikjedetestene i `k9-verdikjede` er foreløpig beholdt uendret.
+`k9-verdikjede/frontend/k9-los-web-e2e` inneholder én smal test av faktisk hendelsesleveranse fra k9-sak til en plukkbar oppgave i LOS. Den brede kriteriematrisen er flyttet til 12 komponenttester i `src/client/app/filter/KøKriterieEditor.spec.tsx`, som kontrollerer verdier, operatorer og gruppering gjennom lagring og gjenåpning av editoren. HTTP-valideringen mockes i komponenttestene; ekte frontend/backend-lagring dekkes av Playwright-suiten her.
 
 ### For Nav-ansatte
 
