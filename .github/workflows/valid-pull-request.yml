@@ -86,5 +86,4 @@ jobs:
     uses: ./.github/workflows/los-e2e.yml
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     with:
-      api_ref: ${{ vars.LOS_E2E_API_REF || 'db1337e60d00bd9fa0cb44df7b9ea7f9cd7cd1ba' }}
-      web_ref: ${{ github.sha }}
+      api_ref: ${{ vars.LOS_E2E_API_REF || 'master' }}

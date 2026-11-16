@@ -81,15 +81,15 @@ Enkelte flyter kan kjøres separat, for eksempel `pnpm test:e2e reservasjoner` e
 
 ### GitHub Actions
 
-Workflowen `los-e2e.yml` bygger backend fra kildekode og starter PostgreSQL, Kafka og azure-mock. VTP og k9-sak inngår ikke. CI starter frontend med Vite og kjører samme `pnpm test:e2e` som lokalt. Dette tester ikke produksjonsinnlogging eller frontendens Node-proxy.
+Workflowen `los-e2e.yml` bygger backend fra kildekode og starter PostgreSQL, Kafka og azure-mock. VTP og k9-sak inngår ikke. CI starter frontend med Vite og kjører samme `pnpm test:e2e` som lokalt. Nettleseren kjører i `sif-playwright-server`-imaget fra `k9-verdikjede`, som testene kobler seg til via `PW_TEST_CONNECT_WS_ENDPOINT`. Imaget er festet i `PLAYWRIGHT_IMAGE` og må ha samme Playwright-versjon som `@playwright/test`. Hvis versjonene er ulike, stopper workflowen med en feilmelding. Dette tester ikke produksjonsinnlogging eller frontendens Node-proxy.
 
-PR- og hovedbranch-pipeline kaller `los-e2e.yml` direkte. Workflowen har ikke egne push-/PR-triggere, så suiten kjøres ikke dobbelt. Web-pipelinen kaller ikke lenger den store verdikjeden, og prod-deploy venter på de avgrensede LOS-testene.
+PR- og hovedbranch-pipeline kaller `los-e2e.yml` direkte. Workflowen har ikke egne push-/PR-triggere, så suiten kjøres ikke dobbelt. Web-pipelinen kaller ikke lenger den store verdikjeden. Feilende LOS-tester gjør kjøringen rød, men blokkerer ikke prod-deploy. Kjøringer på samme PR avbryter eldre kjøringer.
 
-Backend-revisjonen er som standard pinnet til `db1337e60d00bd9fa0cb44df7b9ea7f9cd7cd1ba`. Repo-variabelen `LOS_E2E_API_REF` kan overstyre den med en full commit-SHA som inneholder testdatastøtten og `.github/e2e/`. Den valgte commiten må være publisert på GitHub. Workflowen bruker eksisterende `READER_TOKEN` til lesing av backend-repoet og pakker. Ingen flytende `latest` brukes for applikasjonskoden.
+Kallerne sender `api_ref`, som følger `master` i `k9-los-api`. Repo-variabelen `LOS_E2E_API_REF` kan overstyre dette med en branch, tag eller commit-SHA som inneholder testdatastøtten og `.github/e2e/`. Frontend er alltid commiten som utløste kjøringen. Workflowen bruker eksisterende `READER_TOKEN` til lesing av backend-repoet og pakker.
 
-Ved manuell kjøring kan `api_ref` overstyre backend-versjonen. Workflowen kan også kalles fra backend-repoet med eksplisitte `api_ref` og `web_ref`. Fest da workflow-referansen til en publisert commit-SHA. Begge applikasjonsversjonene vises i kjøringsrapporten. Playwright-rapport og tjenestelogger lastes opp som artifacts.
+Ved manuell kjøring kan `api_ref` overstyre backend-versjonen. Begge faktiske applikasjonscommitene vises i kjøringsrapporten. Playwright-rapport og tjenestelogger lastes opp som artifacts.
 
-`k9-verdikjede/verdikjede/src/test/java/no/nav/k9/los/LosApiVerdikjedeTest.java` inneholder én API-basert test av faktisk hendelsesleveranse fra k9-sak til en plukkbar oppgave i LOS. Den trigges fra `k9-los-api` og nattlig fra `k9-verdikjede`, ikke fra web-pipelinen. API-pipelinen kan også kalle denne repoets avgrensede Playwright-workflow med eget `api_ref` og en fast valgt `web_ref`, for å kontrollere kompatibilitet med eksisterende web.
+`k9-verdikjede/verdikjede/src/test/java/no/nav/k9/los/LosApiVerdikjedeTest.java` inneholder én API-basert test av faktisk hendelsesleveranse fra k9-sak til en plukkbar oppgave i LOS. Den trigges fra `k9-los-api` og nattlig fra `k9-verdikjede`, ikke fra web-pipelinen.
 
 Den brede kriteriematrisen dekkes av 12 komponenttester i `src/client/app/filter/KøKriterieEditor.spec.tsx`, som kontrollerer verdier, operatorer og gruppering gjennom lagring og gjenåpning av editoren. HTTP-valideringen mockes i komponenttestene; ekte frontend/backend-lagring dekkes av Playwright-suiten her.
 

@@ -62,10 +62,7 @@ export const test = base.extend<{
 		async ({ request }, use) => {
 			// Kontroller dev-oppsettet før også tester uten oppgaver får endre køer.
 			const ready = await request.get(`${testdataApi}/ready`);
-			expect(
-				ready.status(),
-				'Start K9LosDev fra k9-los-api med testdatastøtte og frontend med pnpm dev. Ingen verdikjedetjenester skal startes av testen.',
-			).toBe(200);
+			expect(ready.status(), 'Start K9LosDev fra k9-los-api med testdatastøtte.').toBe(200);
 			expect(await ready.text(), 'Forventet testdata-API-et, ikke en innloggingsside eller frontend-fallback').toBe('');
 			await use(undefined);
 		},

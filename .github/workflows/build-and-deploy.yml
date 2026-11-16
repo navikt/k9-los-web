@@ -118,8 +118,7 @@ jobs:
       packages: read
     uses: ./.github/workflows/los-e2e.yml
     with:
-      api_ref: ${{ vars.LOS_E2E_API_REF || 'db1337e60d00bd9fa0cb44df7b9ea7f9cd7cd1ba' }}
-      web_ref: ${{ github.sha }}
+      api_ref: ${{ vars.LOS_E2E_API_REF || 'master' }}
 
   compare-url-prod:
     name: Compare URL
@@ -127,7 +126,7 @@ jobs:
       id-token: write
       contents: write
     if: github.ref_name == 'master'
-    needs: [los-tester, build-and-deploy]
+    needs: [build-and-deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Compare URL
@@ -144,7 +143,7 @@ jobs:
       contents: write
     if: github.ref_name == 'master'
     environment: prod-gcp:k9saksbehandling
-    needs: [build-and-deploy, los-tester]
+    needs: [build-and-deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
