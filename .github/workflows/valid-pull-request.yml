@@ -19,12 +19,8 @@ jobs:
     name: Bygg og test kode
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: read
       packages: read
-    outputs:
-      image_artifact_name: ${{ steps.docker-push.outputs.image-artifact-name }}
-      image_version: ${{ github.sha }}
 
     steps:
       - name: Hente kode
@@ -58,18 +54,7 @@ jobs:
           pnpm --filter=@k9-los-web/server --config.node-linker=hoisted deploy --prod ./deploy
           test -f ./deploy/server.js || { echo "::error ::deploy/server.js mangler"; exit 1; }
           test "$(find ./deploy -type l | wc -l)" -eq 0 || { echo "::error ::deploy inneholder symlenker"; exit 1; }
-      - name: Bygg Dockerimage
-        uses: navikt/sif-gha-workflows/.github/actions/maven/build-push-docker-image@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
-        id: docker-push
-        if: ${{github.actor != 'dependabot[bot]'}}
-        with:
-          build-version: ${{ github.sha }}
-          push-image: 'false'
-          upload-image: 'true'
-          docker_platforms: 'linux/amd64'
-          without_navikt_prefix: 'true'
 
-          
   sif-code-scan:
     runs-on: ubuntu-latest
     permissions:
