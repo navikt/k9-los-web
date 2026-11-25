@@ -89,11 +89,11 @@ På en web-PR tester GitHub PR-ens merge-commit mot `master` i `k9-los-api`. For
 k9-los-api: feature/xyz
 ```
 
-Endringer i PR-beskrivelsen kjører nettlesertestene på nytt uten å bygge Dockerimage. Kjøringer på samme PR avbryter eldre kjøringer. En push til API-branchen starter ikke en ny kjøring i web-repoet. Bruk **Run workflow** på **LOS nettlesertester** for en ny manuell kjøring. Feltene `api_ref` og `web_ref` godtar branchnavn eller full commit-SHA.
+Endringer i PR-beskrivelsen starter PR-workflowen på nytt. Nettlesertestene kjører først når frontend-bygget og de ordinære testene har bestått. Nyere kjøringer på samme PR avbryter eldre kjøringer. En push til API-branchen starter ikke en ny kjøring i web-repoet. Bruk **Run workflow** på **LOS nettlesertester** for en ny manuell kjøring. Feltene `api_ref` og `web_ref` godtar branchnavn eller full commit-SHA.
 
 Når API-repoet kobler seg på den delte workflowen, kan en API-PR velge en web-branch med `k9-los-web: feature/e2e`. API-kalleren skal sende sin egen commit som `api_ref` og `master` som `web_ref`, og kalle `navikt/k9-los-web/.github/workflows/los-e2e.yml` fra en betrodd SHA med det eksisterende `READER_TOKEN`. Testene bygger fortsatt den web-versjonen PR-en velger.
 
-Push til web `master` tester mot API `master`, uavhengig av PR-beskrivelsen. API-versjonen må ha testdata-API-et og oppstartsskriptene i `.github/e2e/`. Kjøringsrapporten viser de to commit-SHA-ene; Playwright-rapporten og tjenesteloggene lastes opp som artifacts. Nettlesertestene blokkerer ikke prod-deploy.
+Push til web `master` tester mot API `master`, uavhengig av PR-beskrivelsen. API-versjonen må ha testdata-API-et, `.github/e2e/compose.yml` og `scripts/start-dev.sh`. Kjøringsrapporten viser de to commit-SHA-ene. Workflowen laster opp Playwright-rapporten og tjenesteloggene som artifacts. Nettlesertestene blokkerer ikke prod-deploy.
 
 `k9-verdikjede/verdikjede/src/test/java/no/nav/k9/los/LosApiVerdikjedeTest.java` inneholder én API-basert test av faktisk hendelsesleveranse fra k9-sak til en plukkbar oppgave i LOS. Den trigges fra `k9-los-api` og nattlig fra `k9-verdikjede`, ikke fra web-pipelinen.
 
