@@ -119,6 +119,8 @@ jobs:
     uses: ./.github/workflows/los-e2e.yml
     with:
       api_ref: ${{ vars.LOS_E2E_API_REF || 'master' }}
+      web_ref: ${{ github.sha }}
+
 
   compare-url-prod:
     name: Compare URL

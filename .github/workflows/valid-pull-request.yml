@@ -87,3 +87,5 @@ jobs:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     with:
       api_ref: ${{ vars.LOS_E2E_API_REF || 'master' }}
+      web_ref: ${{ github.sha }}
+
