@@ -9,6 +9,7 @@
 
 # testing
 /coverage
+/playwright-report/
 /target/
 **/test-results
 # production
@@ -31,3 +32,4 @@ pnpm-debug.log*
 
 .vscode
 .playwright-mcp
+playwright-report

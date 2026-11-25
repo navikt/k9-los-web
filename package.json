@@ -41,6 +41,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.5.15",
 		"@navikt/aksel": "8.19.2",
+		"@playwright/test": "1.63.0",
 		"@tanstack/react-query-devtools": "5.104.3",
 		"@testing-library/dom": "10.4.2",
 		"@testing-library/jest-dom": "7.0.1",
@@ -67,6 +68,8 @@
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
+		"test:e2e": "playwright test",
+		"test:e2e:ui": "playwright test --ui",
 		"lint": "biome lint",
 		"format": "biome format",
 		"fix": "biome check --write",

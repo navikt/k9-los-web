@@ -1,0 +1,9 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.2.0">
+  <servers>
+    <server>
+      <id>github-navikt</id>
+      <username>${env.GITHUB_ACTOR}</username>
+      <password>${env.MAVEN_PASSWORD}</password>
+    </server>
+  </servers>
+</settings>

@@ -1,4 +1,7 @@
 name: Build and deploy
+concurrency:
+  group: k9-los-web-${{ github.ref }}
+  cancel-in-progress: false
 on:
   push:
     paths-ignore:
@@ -105,19 +108,19 @@ jobs:
       - uses: navikt/sif-gha-workflows/.github/actions/sif-code-scan@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
 
 
-  verdikjede-tester:
-    name: Verdikjedetester
+  los-tester:
+    name: LOS nettlesertester
     needs: [build-and-deploy]
-    secrets: inherit
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
-      id-token: write
       contents: read
       packages: read
-    uses: navikt/sif-gha-workflows/.github/workflows/verdikjede-test-v2.yml@main
+    uses: ./.github/workflows/los-e2e.yml
     with:
-      suites: 'frontend-los'
-      tag: ${{ needs.build-and-deploy.outputs.image_version}}
-      image_version: ${{ needs.build-and-deploy.outputs.image_version}}
+      api_ref: master
+      web_ref: ${{ github.sha }}
+
 
   compare-url-prod:
     name: Compare URL
@@ -125,7 +128,7 @@ jobs:
       id-token: write
       contents: write
     if: github.ref_name == 'master'
-    needs: [verdikjede-tester, build-and-deploy]
+    needs: [build-and-deploy]
     runs-on: ubuntu-latest
     steps:
       - name: Compare URL
