@@ -1,0 +1,26 @@
+name: LOS nettlesertester på pull request
+
+on:
+  pull_request:
+    branches-ignore:
+      - slette_V1
+    types: [opened, synchronize, reopened, edited]
+    paths-ignore:
+      - '**.md'
+      - '**.MD'
+      - '.gitignore'
+      - 'CODEOWNERS'
+
+jobs:
+  los-tester:
+    name: LOS nettlesertester
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      packages: read
+    uses: ./.github/workflows/los-e2e.yml
+    with:
+      api_ref: master
+      web_ref: ${{ github.sha }}
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}

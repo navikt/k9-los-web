@@ -118,7 +118,7 @@ jobs:
       packages: read
     uses: ./.github/workflows/los-e2e.yml
     with:
-      api_ref: ${{ vars.LOS_E2E_API_REF || 'master' }}
+      api_ref: master
       web_ref: ${{ github.sha }}
 
 

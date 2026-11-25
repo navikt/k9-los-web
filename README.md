@@ -62,14 +62,14 @@ Nå kan du søke opp saksnummeret eller søkeren i k9-los-web. Dersom oppgaven m
 
 Testene i `e2e/` bruker ekte LOS-backend, uten å opprette saker i k9-sak.
 
-1. Behold de vanlige støttetjenestene i Podman. Start `K9LosDev` fra `k9-los-api` i IntelliJ på port 8020. Starteren aktiverer testdata-API-et i LOCAL-profilen.
+1. Start PostgreSQL og azure-mock i Docker Compose/Podman e.l. hvis de ikke allerede kjører. Start `K9LosDev` fra `k9-los-api` i IntelliJ på port 8020. Starteren aktiverer testdata-API-et i LOCAL-profilen og trenger ikke Kafka.
 2. Kjør `pnpm dev` i dette repoet på port 8031.
 3. Installer Chromium én gang med `pnpm exec playwright install chromium`.
 4. Kjør `pnpm test:e2e`, eller `pnpm test:e2e:ui` for interaktiv kjøring.
 
 Du trenger ikke starte Compose-servicen `k9-los` eller stoppe IntelliJ-backenden. Playwright starter ingen tjenester lokalt. En annen frontend-adresse kan angis med `PLAYWRIGHT_BASE_URL`.
 
-Suiten dekker køadministrasjon, plukking og fem reservasjonsflyter: tilbakelegging, forlengelse, flytting til en annen saksbehandler og avdelingsleders oppheving og endring av reservasjoner. Alle testene kontrollerer at det LOCAL-avgrensede testdata-API-et er tilgjengelig før de endrer data.
+Suiten dekker køadministrasjon, plukking og fem reservasjonsflyter: oppheve, forlengelse, flytting til en annen saksbehandler og avdelingsleders oppheving og endring av reservasjoner. Alle testene kontrollerer at det LOCAL-avgrensede testdata-API-et er tilgjengelig før de endrer data.
 
 Reservasjonstestene oppretter egne oppgaver gjennom testdata-API-et og reserverer dem gjennom ordinært LOS-API. Køadministrasjonstesten trenger ingen oppgave. Plukktesten oppretter en egen kø avgrenset til testoppgavens UUID, samt en annen oppgave som skal bli liggende ureservert.
 
@@ -81,13 +81,19 @@ Enkelte flyter kan kjøres separat, for eksempel `pnpm test:e2e reservasjoner` e
 
 ### GitHub Actions
 
-Workflowen `los-e2e.yml` bygger backend fra kildekode og starter PostgreSQL, Kafka og azure-mock. VTP og k9-sak inngår ikke. CI starter frontend med Vite og kjører samme `pnpm test:e2e` som lokalt. Nettleseren kjører i `sif-playwright-server`-imaget fra `k9-verdikjede`, som testene kobler seg til via `PW_TEST_CONNECT_WS_ENDPOINT`. Imaget er festet i `PLAYWRIGHT_IMAGE` og må ha samme Playwright-versjon som `@playwright/test`. Hvis versjonene er ulike, stopper workflowen med en feilmelding. Dette tester ikke produksjonsinnlogging eller frontendens Node-proxy.
+Workflowen `los-e2e.yml` bygger backend fra kildekode, starter støttetjenestene fra API-repoets `.github/e2e/compose.yml` og kjører `pnpm test:e2e` med Chromium. `K9LosDev` trenger bare PostgreSQL og azure-mock. VTP og k9-sak inngår ikke. Testene dekker ikke produksjonsinnlogging eller frontendens Node-proxy.
 
-PR- og hovedbranch-pipeline kaller `los-e2e.yml` direkte. Workflowen har ikke egne push-/PR-triggere, så suiten kjøres ikke dobbelt. Web-pipelinen kaller ikke lenger den store verdikjeden. Feilende LOS-tester gjør kjøringen rød, men blokkerer ikke prod-deploy. Kjøringer på samme PR avbryter eldre kjøringer.
+På en web-PR tester GitHub PR-ens merge-commit mot `master` i `k9-los-api`. For å teste mot en annen API-branch, legg en egen linje i PR-beskrivelsen:
 
-Kallerne sender `api_ref`, som følger `master` i `k9-los-api`. Repo-variabelen `LOS_E2E_API_REF` kan overstyre dette med en branch, tag eller commit-SHA som inneholder testdatastøtten og `.github/e2e/`. Frontend er alltid commiten som utløste kjøringen. Workflowen bruker eksisterende `READER_TOKEN` til lesing av backend-repoet og pakker.
+```text
+k9-los-api: feature/xyz
+```
 
-Ved manuell kjøring kan `api_ref` overstyre backend-versjonen. Begge faktiske applikasjonscommitene vises i kjøringsrapporten. Playwright-rapport og tjenestelogger lastes opp som artifacts.
+Endringer i PR-beskrivelsen kjører nettlesertestene på nytt uten å bygge Dockerimage. Kjøringer på samme PR avbryter eldre kjøringer. En push til API-branchen starter ikke en ny kjøring i web-repoet. Bruk **Run workflow** på **LOS nettlesertester** for en ny manuell kjøring. Feltene `api_ref` og `web_ref` godtar branchnavn eller full commit-SHA.
+
+Når API-repoet kobler seg på den delte workflowen, kan en API-PR velge en web-branch med `k9-los-web: feature/e2e`. API-kalleren skal sende sin egen commit som `api_ref` og `master` som `web_ref`, og kalle `navikt/k9-los-web/.github/workflows/los-e2e.yml` fra en betrodd SHA med det eksisterende `READER_TOKEN`. Testene bygger fortsatt den web-versjonen PR-en velger.
+
+Push til web `master` tester mot API `master`, uavhengig av PR-beskrivelsen. API-versjonen må ha testdata-API-et og oppstartsskriptene i `.github/e2e/`. Kjøringsrapporten viser de to commit-SHA-ene; Playwright-rapporten og tjenesteloggene lastes opp som artifacts. Nettlesertestene blokkerer ikke prod-deploy.
 
 `k9-verdikjede/verdikjede/src/test/java/no/nav/k9/los/LosApiVerdikjedeTest.java` inneholder én API-basert test av faktisk hendelsesleveranse fra k9-sak til en plukkbar oppgave i LOS. Den trigges fra `k9-los-api` og nattlig fra `k9-verdikjede`, ikke fra web-pipelinen.
 

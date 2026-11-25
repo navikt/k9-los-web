@@ -4,9 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       api_ref:
-        description: 'Commit-SHA i k9-los-api med testdatastøtte'
+        description: 'Branch eller full commit-SHA i k9-los-api'
         type: string
-        required: true
+        default: master
+      web_ref:
+        description: 'Branch eller full commit-SHA i k9-los-web (tomt felt bruker commiten for kjøringen)'
+        type: string
   workflow_call:
     inputs:
       api_ref:
@@ -25,42 +28,104 @@ permissions:
 jobs:
   playwright:
     name: Frontend og ekte LOS-backend
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      (github.repository == 'navikt/k9-los-web' || github.repository == 'navikt/k9-los-api') &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+    concurrency:
+      group: los-e2e-${{ github.event.pull_request.number || github.run_id }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: read
       packages: read
-    env:
-      CI: 'true'
-      API_REF: ${{ inputs.api_ref || vars.LOS_E2E_API_REF }}
     steps:
-      - name: Kontroller backend-versjon
+      - name: Velg web- og API-versjon
+        id: versions
         shell: bash
+        env:
+          API_REF: ${{ inputs.api_ref || 'master' }}
+          WEB_REF: ${{ inputs.web_ref || github.sha }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if [[ ! "$API_REF" =~ ^[0-9a-f]{40}$ ]]; then
-            echo '::error::Sett LOS_E2E_API_REF til commit-SHA i k9-los-api med testdatastøtte, eller oppgi api_ref.'
-            exit 1
+          if [[ "$GITHUB_EVENT_NAME" == pull_request ]]; then
+            case "$GITHUB_REPOSITORY" in
+              navikt/k9-los-web) peer=k9-los-api ;;
+              navikt/k9-los-api) peer=k9-los-web ;;
+            esac
+            # shellcheck disable=SC2016
+            overrides=$(jq -c --arg prefix "$peer:" '
+              (.pull_request.body // "") | split("\n")
+              | map(gsub("^[[:space:]]+|[[:space:]]+$"; "")
+                    | select(startswith($prefix)) | ltrimstr($prefix)
+                    | gsub("^[[:space:]]+|[[:space:]]+$"; ""))
+            ' "$GITHUB_EVENT_PATH")
+            case $(jq 'length' <<< "$overrides") in
+              0) ;;
+              1)
+                branch=$(jq -r '.[0]' <<< "$overrides")
+                case "$peer" in
+                  k9-los-api) API_REF="refs/heads/$branch" ;;
+                  k9-los-web) WEB_REF="refs/heads/$branch" ;;
+                esac
+                ;;
+              *) echo "::error::Bruk bare én linje med $peer: <branch> i PR-beskrivelsen."; exit 1 ;;
+            esac
           fi
+
+          resolve() {
+            local repo=$1 ref=$2 branch encoded sha
+            if [[ "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+              printf '%s\n' "$ref"
+              return
+            fi
+            branch=${ref#refs/heads/}
+            if [[ ! "$branch" =~ ^[a-zA-Z0-9._/-]+$ ]] || ! git check-ref-format "refs/heads/$branch"; then
+              echo "::error::Bruk et gyldig branchnavn i navikt/$repo." >&2
+              return 1
+            fi
+            encoded=$(printf '%s' "$branch" | jq -sRr @uri)
+            if ! sha=$(gh api "repos/navikt/$repo/git/ref/heads/$encoded" --jq '.object.sha') || [[ ! "$sha" =~ ^[0-9a-f]{40}$ ]]; then
+              echo "::error::Kunne ikke slå opp branchen $branch i navikt/$repo." >&2
+              return 1
+            fi
+            printf '%s\n' "$sha"
+          }
+
+          web_sha=$(resolve k9-los-web "$WEB_REF")
+          api_sha=$(resolve k9-los-api "$API_REF")
+          printf 'web_sha=%s\napi_sha=%s\n' "$web_sha" "$api_sha" >> "$GITHUB_OUTPUT"
+
+          if [[ "$GITHUB_REPOSITORY" == navikt/k9-los-web && "$WEB_REF" == "$GITHUB_SHA" ]]; then
+            WEB_REF=$GITHUB_REF
+          elif [[ "$GITHUB_REPOSITORY" == navikt/k9-los-api && "$API_REF" == "$GITHUB_SHA" ]]; then
+            API_REF=$GITHUB_REF
+          fi
+          # shellcheck disable=SC2016
+          printf '### LOS nettlesertester\n\n- k9-los-web: `%s` → `%s`\n- k9-los-api: `%s` → `%s`\n' \
+            "${WEB_REF#refs/heads/}" "$web_sha" "${API_REF#refs/heads/}" "$api_sha" >> "$GITHUB_STEP_SUMMARY"
       - name: Hent frontend
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: navikt/k9-los-web
-          ref: ${{ inputs.web_ref || github.sha }}
+          ref: ${{ steps.versions.outputs.web_sha }}
           path: web
           persist-credentials: false
       - name: Hent backend
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: navikt/k9-los-api
-          ref: ${{ env.API_REF }}
+          ref: ${{ steps.versions.outputs.api_sha }}
           path: api
           persist-credentials: false
-          token: ${{ secrets.READER_TOKEN }}
-      - name: Registrer versjoner
+      - name: Kontroller E2E-støtte i backend
         run: |
-          git -C web rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
-          git -C api rev-parse HEAD >> "$GITHUB_STEP_SUMMARY"
+          for file in .github/e2e/compose.yml scripts/start-dev.sh; do
+            if [[ ! -f "api/$file" ]]; then
+              echo "::error::Valgt API-commit mangler $file. Velg en branch med E2E-støtte."
+              exit 1
+            fi
+          done
       - name: Sett opp Java
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
@@ -86,24 +151,9 @@ jobs:
           printf '//npm.pkg.github.com/:_authToken=%s\n' "$NODE_AUTH_TOKEN" >> ~/.npmrc
           pnpm install --frozen-lockfile
           pnpm exec playwright install --with-deps chromium
-      - name: Autentiser mot GHCR
-        env:
-          REGISTRY_TOKEN: ${{ secrets.READER_TOKEN }}
-        run: printf '%s' "$REGISTRY_TOKEN" | docker login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
       - name: Klargjør isolerte støttetjenester
         id: support
-        shell: bash
-        run: |
-          export E2E_CERT_DIR="$RUNNER_TEMP/los-e2e-certificates"
-          export E2E_DB_PASSWORD="$(openssl rand -hex 16)"
-          export E2E_STORE_PASSWORD="$(openssl rand -hex 16)"
-          echo "::add-mask::$E2E_DB_PASSWORD"
-          echo "::add-mask::$E2E_STORE_PASSWORD"
-          echo "E2E_DB_PASSWORD=$E2E_DB_PASSWORD" >> "$GITHUB_ENV"
-          echo "E2E_STORE_PASSWORD=$E2E_STORE_PASSWORD" >> "$GITHUB_ENV"
-          echo "E2E_CERT_DIR=$E2E_CERT_DIR" >> "$GITHUB_ENV"
-          bash api/.github/e2e/create-keystores.sh
-          docker compose -f api/.github/e2e/compose.yml up -d --wait --wait-timeout 180
+        run: docker compose -f api/.github/e2e/compose.yml up -d --wait --wait-timeout 180
       - name: Bygg backend
         working-directory: api
         env:
@@ -112,11 +162,12 @@ jobs:
           mvn --batch-mode --settings ../web/.github/maven-settings.xml test-compile dependency:build-classpath \
             -DincludeScope=test -Dmdep.outputFile=target/dev-classpath.txt
       - name: Start backend
+        working-directory: api
         shell: bash
         run: |
-          bash api/.github/e2e/start-backend.sh > "$RUNNER_TEMP/los-e2e-backend.log" 2>&1 &
+          bash scripts/start-dev.sh --no-build > "$RUNNER_TEMP/los-e2e-backend.log" 2>&1 &
           echo "$!" > "$RUNNER_TEMP/los-e2e-backend.pid"
-          for attempt in {1..90}; do
+          for ((attempt = 0; attempt < 90; attempt++)); do
             if curl --silent --fail --max-time 2 http://localhost:8020/api/testdata/ready > /dev/null; then
               exit 0
             fi
@@ -135,7 +186,7 @@ jobs:
         if: always() && steps.support.outcome != 'skipped'
         run: docker compose -f api/.github/e2e/compose.yml logs --no-color > "$RUNNER_TEMP/los-e2e-services.log"
       - name: Last opp rapport og logger
-        if: always()
+        if: always() && steps.support.outcome != 'skipped'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: los-e2e
