@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Bygg, test og deploy
 concurrency:
   group: k9-los-web-${{ github.ref }}
   cancel-in-progress: true
@@ -84,7 +84,7 @@ jobs:
 
   deploy-dev:
     name: Deploy dev
-    needs: build-and-test
+    needs: [build-and-test, los-e2e]
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -110,7 +110,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: navikt/sif-gha-workflows/.github/actions/sif-code-scan@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
 
-  los-tester:
+  los-e2e:
     name: Nettlesertester frontend og backend
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
@@ -129,7 +129,7 @@ jobs:
       contents: read
     if: github.ref_name == 'master'
     environment: prod-gcp:k9saksbehandling
-    needs: build-and-test
+    needs: [build-and-test, los-e2e]
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
