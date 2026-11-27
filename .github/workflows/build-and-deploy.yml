@@ -14,8 +14,8 @@ on:
       - master
 
 jobs:
-  build-and-deploy:
-    name: Build docker image
+  build-and-test:
+    name: Bygg og enhetstester
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -74,19 +74,31 @@ jobs:
           pnpm --filter=@k9-los-web/server --config.node-linker=hoisted deploy --prod ./deploy
           test -f ./deploy/server.js || { echo "::error ::deploy/server.js mangler"; exit 1; }
           test "$(find ./deploy -type l | wc -l)" -eq 0 || { echo "::error ::deploy inneholder symlenker"; exit 1; }
-      - uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 # v0
+      - name: Bygg og publiser Docker-image
+        uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 # v0
         id: docker-push
         with:
           # Verdikjedetester fra andre repoer henter latest. Actionen lager også en unik versjonstagg.
           tag: latest
           team: k9saksbehandling
 
+  deploy-dev:
+    name: Deploy dev
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Hente kode
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Deploy k9-los-web til dev
         uses: nais/deploy/actions/deploy@f93637de5533a1bb573f940ceb7527a5b3b0dea0 # v2
         env:
           PRINT_PAYLOAD: true
           CLUSTER: dev-gcp
-          IMAGE: ${{ steps.docker-push.outputs.image }}
+          IMAGE: ${{ needs.build-and-test.outputs.image }}
           RESOURCE: nais/k9-los-web.yml
           VARS: nais/dev-gcp.yml
 
@@ -98,10 +110,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: navikt/sif-gha-workflows/.github/actions/sif-code-scan@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
 
-
   los-tester:
-    name: LOS nettlesertester
-    needs: [build-and-deploy]
+    name: Nettlesertester frontend og backend
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
     permissions:
@@ -119,7 +129,7 @@ jobs:
       contents: read
     if: github.ref_name == 'master'
     environment: prod-gcp:k9saksbehandling
-    needs: [build-and-deploy]
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
       - name: Hente kode
@@ -129,12 +139,12 @@ jobs:
         env:
           PRINT_PAYLOAD: true
           CLUSTER: prod-gcp
-          IMAGE: ${{ needs.build-and-deploy.outputs.image }}
+          IMAGE: ${{ needs.build-and-test.outputs.image }}
           RESOURCE: nais/k9-los-web.yml
           VARS: nais/prod-gcp.yml
 
   trivy:
-    needs: [build-and-deploy]
+    needs: build-and-test
     uses: navikt/sif-gha-workflows/.github/workflows/trivy.yml@main
     permissions:
       contents: write
@@ -143,5 +153,5 @@ jobs:
       actions: read
     secrets: inherit
     with:
-      image: ${{ needs.build-and-deploy.outputs.image }}
+      image: ${{ needs.build-and-test.outputs.image }}
       team: k9saksbehandling
