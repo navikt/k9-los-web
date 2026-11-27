@@ -1,4 +1,4 @@
-name: LOS nettlesertester
+name: Nettlesertester frontend og backend
 
 on:
   workflow_dispatch:
@@ -27,7 +27,6 @@ permissions:
 
 jobs:
   playwright:
-    name: Frontend og ekte LOS-backend
     if: >-
       (github.repository == 'navikt/k9-los-web' || github.repository == 'navikt/k9-los-api') &&
       (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
@@ -118,14 +117,6 @@ jobs:
           ref: ${{ steps.versions.outputs.api_sha }}
           path: api
           persist-credentials: false
-      - name: Kontroller E2E-støtte i backend
-        run: |
-          for file in .github/e2e/compose.yml scripts/start-dev.sh; do
-            if [[ ! -f "api/$file" ]]; then
-              echo "::error::Valgt API-commit mangler $file. Velg en branch med E2E-støtte."
-              exit 1
-            fi
-          done
       - name: Sett opp Java
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
