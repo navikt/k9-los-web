@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       actions: read
-      contents: write
+      contents: read
       id-token: write
       issues: write
     outputs:
@@ -90,15 +90,6 @@ jobs:
           RESOURCE: nais/k9-los-web.yml
           VARS: nais/dev-gcp.yml
 
-      - name: Tag commit with dev
-        if: success()
-        uses: navikt/sif-gha-workflows/.github/actions/create-or-update-tag@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
-        with:
-          tag: dev
-          sha: ${{ github.sha }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-
   sif-code-scan:
     runs-on: ubuntu-latest
     permissions:
@@ -121,28 +112,11 @@ jobs:
       api_ref: master
       web_ref: ${{ github.sha }}
 
-
-  compare-url-prod:
-    name: Compare URL
-    permissions:
-      id-token: write
-      contents: write
-    if: github.ref_name == 'master'
-    needs: [build-and-deploy]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Compare URL
-        id: compare
-        uses: navikt/sif-gha-workflows/.github/actions/compare-commits@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
-        with:
-          base_commit: prod
-          newest_commit: ${{ github.sha }}
-
   deploy-prod:
     name: Deploy prod
     permissions:
       id-token: write
-      contents: write
+      contents: read
     if: github.ref_name == 'master'
     environment: prod-gcp:k9saksbehandling
     needs: [build-and-deploy]
@@ -158,13 +132,6 @@ jobs:
           IMAGE: ${{ needs.build-and-deploy.outputs.image }}
           RESOURCE: nais/k9-los-web.yml
           VARS: nais/prod-gcp.yml
-      - name: Tag commit with prod
-        uses: navikt/sif-gha-workflows/.github/actions/create-or-update-tag@97a944ba12c0db588a29cfeed8a7dcb22e087d3f # v1.0.1
-        if: success()
-        with:
-          tag: prod
-          sha: ${{ github.sha }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
   trivy:
     needs: [build-and-deploy]
